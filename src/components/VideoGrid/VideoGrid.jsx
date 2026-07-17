@@ -35,7 +35,7 @@ const VideoGrid = () => {
     <section className="w-full px-4 md:px-8 pb-0 bg-white">
       <div className="w-full mx-auto">
         <motion.div 
-          className="grid grid-cols-[repeat(2,48%)] md:grid-cols-[repeat(4,14%)] xl:grid-cols-[repeat(4,12%)] justify-center gap-x-[8%] xl:gap-x-[11%] gap-y-4 w-full"
+          className="grid grid-cols-[repeat(2,46%)] md:grid-cols-[repeat(4,14%)] xl:grid-cols-[repeat(4,12%)] justify-center gap-x-[8%] xl:gap-x-[11%] gap-y-4 w-full"
           variants={containerVariants}
           initial="hidden"
           whileInView="show"

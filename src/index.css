@@ -23,6 +23,10 @@
   background-image: url('./assets/Hero/2007/2007.png');
 }
 
+html, body {
+  overflow-x: hidden;
+}
+
 body {
   background-color: white;
   color: var(--color-brand-black);

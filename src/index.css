@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@500;700&family=Poppins:wght@400;600;700&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  --color-brand-red: #E20002;
+  --color-brand-blue: #1672EF;
+  --color-brand-gray: #6A6A6A;
+  --color-brand-black: #111111;
+  
+  --font-main: "Poppins", sans-serif;
+  --font-hero: "Bebas Neue", sans-serif;
+  --font-subtitle: "Oswald", sans-serif;
+}
+
+@utility bg-film {
+  background-image: url('./assets/hero/FIlm/film.png');
+}
+@utility bg-ad {
+  background-image: url('./assets/hero/Ad/ad.png');
+}
+@utility bg-year {
+  background-image: url('./assets/hero/2007/2007.png');
+}
+
+body {
+  background-color: white;
+  color: var(--color-brand-black);
+  font-family: var(--font-main);
+  -webkit-font-smoothing: antialiased;
+}

@@ -14,13 +14,13 @@
 }
 
 @utility bg-film {
-  background-image: url('./assets/hero/FIlm/film.png');
+  background-image: url('./assets/Hero/FIlm/film.png');
 }
 @utility bg-ad {
-  background-image: url('./assets/hero/Ad/ad.png');
+  background-image: url('./assets/Hero/Ad/ad.png');
 }
 @utility bg-year {
-  background-image: url('./assets/hero/2007/2007.png');
+  background-image: url('./assets/Hero/2007/2007.png');
 }
 
 body {

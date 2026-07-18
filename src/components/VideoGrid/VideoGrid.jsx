@@ -30,19 +30,38 @@ const VideoGrid = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  let displayVideos = videos.map(v => ({ ...v, uniqueId: v.id }));
+  
+  // Repeat videos until we have a multiple of 6 AND at least 24 videos (4 rows)
+  while (displayVideos.length < 24 || displayVideos.length % 6 !== 0) {
+    const index = displayVideos.length % videos.length;
+    const v = videos[index];
+    displayVideos.push({ ...v, uniqueId: `${v.id}-pad-${displayVideos.length}` });
+  }
+
   return (
     <>
     <section className="w-full px-4 md:px-8 pb-0 bg-white">
+      <style>
+        {`
+          @media (max-width: 1023px) and (orientation: landscape) {
+            .mobile-landscape-grid {
+              grid-template-columns: repeat(4, 22.75%) !important;
+              column-gap: 3% !important;
+            }
+          }
+        `}
+      </style>
       <div className="w-full mx-auto">
         <motion.div 
-          className="grid grid-cols-[repeat(2,46%)] md:grid-cols-[repeat(4,14%)] xl:grid-cols-[repeat(4,12%)] justify-center gap-x-[8%] xl:gap-x-[11%] gap-y-4 w-full"
+          className="grid grid-cols-[repeat(2,46%)] md:grid-cols-[repeat(6,14%)] xl:grid-cols-[repeat(6,12%)] mobile-landscape-grid justify-center gap-x-[8%] md:gap-x-[3%] xl:gap-x-[5%] gap-y-4 w-full"
           variants={containerVariants}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
         >
-          {videos.map((video) => (
-            <motion.div key={video.id} variants={itemVariants}>
+          {displayVideos.map((video) => (
+            <motion.div key={video.uniqueId} variants={itemVariants}>
               <VideoCard video={video} onClick={() => setSelectedVideo(video)} />
             </motion.div>
           ))}

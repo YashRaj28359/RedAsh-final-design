@@ -36,7 +36,7 @@ const HeroSection = () => {
         <HeroColumn 
           bgWord="2007" 
           fgWord="2007" 
-          subtitle="FOUNDED BY AN IIT DELHI ENGINEER" 
+          subtitle="IIT ENGINEER'S VENTURE" 
           underlineClass="bg-brand-gray"
           imageClass="bg-year"
           subtitleClass="text-brand-gray"

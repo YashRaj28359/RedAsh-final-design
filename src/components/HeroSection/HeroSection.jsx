@@ -8,7 +8,7 @@ const SectionDivider = ({ colorClass = "bg-black/20" }) => (
 const HeroSection = () => {
   return (
     <section className="w-full px-4 md:px-8 pt-2 pb-2 bg-white">
-      <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-[1fr_auto_1fr_auto_1fr] justify-items-center items-center relative gap-4 md:gap-0">
+      <div className="w-full mx-auto grid grid-cols-1 md:grid-cols-[1fr_auto_1fr_auto_1fr] justify-items-center items-center relative gap-4 md:gap-0">
         <HeroColumn 
           bgWord="FILM" 
           fgWord="FILM" 

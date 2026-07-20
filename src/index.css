@@ -33,3 +33,13 @@ body {
   font-family: var(--font-main);
   -webkit-font-smoothing: antialiased;
 }
+
+/* Hide scrollbars across the application */
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}

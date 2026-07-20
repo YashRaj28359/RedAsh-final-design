@@ -6,13 +6,14 @@ const HeroColumn = ({
   fgWord, 
   subtitle, 
   underlineClass, 
-  imageClass, 
+  imageClass,
+  wordClass = "", 
   subtitleClass,
   delay 
 }) => {
   return (
     <motion.div 
-      className="flex flex-col items-center justify-center flex-1 pt-0 pb-4 px-2 md:px-4 relative text-center"
+      className="flex flex-col items-center justify-center w-full flex-1 min-w-0 pt-0 pb-4 px-2 md:px-4 relative text-center"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.8, delay }}
@@ -21,7 +22,7 @@ const HeroColumn = ({
         {/* Removed Background light gray text as requested */}
         
         {/* Foreground image-fill text */}
-        <div className={`relative px-2 md:px-4 py-1 font-hero text-[65px] md:text-[70px] lg:text-[100px] font-bold z-[2] uppercase tracking-[6px] md:tracking-[8px] lg:tracking-[12px] ml-[6px] md:ml-[8px] lg:ml-[12px] leading-none bg-clip-text text-transparent bg-cover bg-center whitespace-nowrap ${imageClass}`}>
+        <div className={`relative px-2 md:px-4 py-1 font-hero text-[65px] md:text-[70px] lg:text-[100px] font-bold z-[2] uppercase tracking-[6px] md:tracking-[8px] lg:tracking-[12px] ml-[6px] md:ml-[8px] lg:ml-[12px] leading-none bg-clip-text text-transparent whitespace-nowrap ${imageClass} ${wordClass}`}>
           {fgWord}
         </div>
       </div>

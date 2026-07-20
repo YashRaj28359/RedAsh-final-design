@@ -82,12 +82,12 @@ export const videos = [
     videoUrl: "https://youtu.be/l4XYMZzh7Tc"
   },
   {
-    id: "3CsYDFm9MNA",
+    id: "EhiWSgbQnQU",
     title: "Feature Films",
     category: "Feature Films",
     categoryColor: "red",
-    thumbnail: "https://img.youtube.com/vi/3CsYDFm9MNA/hqdefault.jpg",
-    videoUrl: "https://youtu.be/3CsYDFm9MNA?si=ILc6ufIS2DjbdjBo"
+    thumbnail: "https://img.youtube.com/vi/EhiWSgbQnQU/hqdefault.jpg",
+    videoUrl: "https://youtu.be/EhiWSgbQnQU"
   },
   {
     id: "R7TQBIHyR9Y",

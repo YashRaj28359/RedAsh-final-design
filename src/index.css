@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@500;700&family=Poppins:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Libre+Baskerville:wght@400;700&family=Oswald:wght@500;700&family=Poppins:wght@400;600;700&display=swap');
 
 @import "tailwindcss";
 
@@ -11,6 +11,7 @@
   --font-main: "Poppins", sans-serif;
   --font-hero: "Bebas Neue", sans-serif;
   --font-subtitle: "Oswald", sans-serif;
+  --font-libre: "Libre Baskerville", serif;
 }
 
 @utility bg-film {

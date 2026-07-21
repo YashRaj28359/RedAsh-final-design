@@ -128,5 +128,69 @@ export const videos = [
     categoryColor: "blue",
     thumbnail: "https://img.youtube.com/vi/RvciiZb-k1U/hqdefault.jpg",
     videoUrl: "https://youtu.be/RvciiZb-k1U"
+  },
+  {
+    id: "-qHNIXVHT_4",
+    title: "Music Video",
+    category: "Music Video",
+    categoryColor: "red",
+    thumbnail: "https://img.youtube.com/vi/-qHNIXVHT_4/hqdefault.jpg",
+    videoUrl: "https://youtu.be/-qHNIXVHT_4"
+  },
+  {
+    id: "iuIaAuh4LCQ",
+    title: "Case Study Video",
+    category: "Case Study Video",
+    categoryColor: "blue",
+    thumbnail: "https://img.youtube.com/vi/iuIaAuh4LCQ/hqdefault.jpg",
+    videoUrl: "https://youtu.be/iuIaAuh4LCQ"
+  },
+  {
+    id: "3Sxhgtn4Wf0",
+    title: "Documentary Film",
+    category: "Documentary Film",
+    categoryColor: "red",
+    thumbnail: "https://img.youtube.com/vi/3Sxhgtn4Wf0/hqdefault.jpg",
+    videoUrl: "https://youtu.be/3Sxhgtn4Wf0"
+  },
+  {
+    id: "Gt9nQ494oVc",
+    title: "Corporate AV",
+    category: "Corporate AV",
+    categoryColor: "blue",
+    thumbnail: "https://img.youtube.com/vi/Gt9nQ494oVc/hqdefault.jpg",
+    videoUrl: "https://youtu.be/Gt9nQ494oVc"
+  },
+  {
+    id: "dLby1tfTwVI",
+    title: "Short Film",
+    category: "Short Film",
+    categoryColor: "red",
+    thumbnail: "https://img.youtube.com/vi/dLby1tfTwVI/hqdefault.jpg",
+    videoUrl: "https://youtu.be/dLby1tfTwVI"
+  },
+  {
+    id: "i3Js7EsalM0",
+    title: "Subject Matter Expert",
+    category: "Subject Matter Expert",
+    categoryColor: "blue",
+    thumbnail: "https://img.youtube.com/vi/i3Js7EsalM0/hqdefault.jpg",
+    videoUrl: "https://youtu.be/i3Js7EsalM0"
+  },
+  {
+    id: "orDnxgWvijU",
+    title: "AI Music Video",
+    category: "AI Music Video",
+    categoryColor: "red",
+    thumbnail: "https://img.youtube.com/vi/orDnxgWvijU/hqdefault.jpg",
+    videoUrl: "https://youtu.be/orDnxgWvijU"
+  },
+  {
+    id: "5kYeOAkpSWU",
+    title: "Brand Film",
+    category: "Brand Film",
+    categoryColor: "blue",
+    thumbnail: "https://img.youtube.com/vi/5kYeOAkpSWU/hqdefault.jpg",
+    videoUrl: "https://youtu.be/5kYeOAkpSWU"
   }
 ];

@@ -13,7 +13,7 @@ const HeroColumn = ({
 }) => {
   return (
     <motion.div 
-      className="flex flex-col items-center justify-center w-full flex-1 min-w-0 pt-0 pb-4 px-2 md:px-4 relative text-center"
+      className="flex flex-col items-center justify-center w-full flex-1 min-w-0 pt-0 pb-0 md:pb-4 px-2 md:px-4 relative text-center"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.8, delay }}

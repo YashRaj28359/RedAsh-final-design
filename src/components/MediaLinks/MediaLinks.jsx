@@ -1,24 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { LuNewspaper } from "react-icons/lu";
 import dnaImage from '../../assets/ashish-lal-dna.jpg';
 
 const MediaLinks = () => {
   const articles = [
-    {
-      id: 'toi',
-      source: 'Times of India',
-      title: 'Ashish Lal explores friendship and loss in The Codpaster',
-      description: 'Actor, filmmaker and entrepreneur Ashish Lal has completed shooting for The Codpaster, a Hindi web series being positioned as the world\'s first fiction drama set in the world of podcasting.',
-      url: 'https://timesofindia.indiatimes.com/entertainment/hindi/bollywood/news/ashish-lal-explores-friendship-and-loss-in-the-codpaster/articleshow/131854264.cms',
-      image: 'https://static.toiimg.com/thumb/msid-131854729,imgsize-212194,width-400,height-225,resizemode-4/ashishonline.jpg',
-      
-      // --- EASY IMAGE CONTROLS ---
-      zoom: 7,        // Zoom percentage (e.g. 10 = 10% zoom)
-      moveLeft: 0,     // Nudge image left
-      moveRight: 50,   // Nudge image right
-      moveUp: 0,       // Nudge image up
-      moveDown: 10,    // Nudge image down
-    },
     {
       id: 'dna',
       source: 'DNA',
@@ -33,6 +19,21 @@ const MediaLinks = () => {
       moveRight: 100,   
       moveUp: 0,       
       moveDown: 50,    
+    },
+    {
+      id: 'toi',
+      source: 'Times of India',
+      title: 'Ashish Lal explores friendship and loss in The Codpaster',
+      description: 'Actor, filmmaker and entrepreneur Ashish Lal has completed shooting for The Codpaster, a Hindi web series being positioned as the world\'s first fiction drama set in the world of podcasting.',
+      url: 'https://timesofindia.indiatimes.com/entertainment/hindi/bollywood/news/ashish-lal-explores-friendship-and-loss-in-the-codpaster/articleshow/131854264.cms',
+      image: 'https://static.toiimg.com/thumb/msid-131854729,imgsize-212194,width-400,height-225,resizemode-4/ashishonline.jpg',
+      
+      // --- EASY IMAGE CONTROLS ---
+      zoom: 7,        // Zoom percentage (e.g. 10 = 10% zoom)
+      moveLeft: 0,     // Nudge image left
+      moveRight: 50,   // Nudge image right
+      moveUp: 0,       // Nudge image up
+      moveDown: 10,    // Nudge image down
     },
     {
       id: 'mid-day',
@@ -66,7 +67,7 @@ const MediaLinks = () => {
   };
 
   return (
-    <section className="w-full px-4 md:px-8 pt-0 pb-16 bg-white">
+    <section className="w-full px-4 md:px-8 pt-4 md:pt-20 pb-16 bg-white">
       <style>
         {`
           @media (max-width: 1023px) and (orientation: landscape) {
@@ -76,20 +77,42 @@ const MediaLinks = () => {
           }
         `}
       </style>
-      <div className="max-w-6xl mx-auto flex flex-col items-center">
+      <div className="w-full md:w-[99%] xl:w-[97%] mx-auto flex flex-col items-center">
         
         {/* Header */}
         <motion.div 
-          className="text-center mb-12"
+          className="text-center mb-16 flex flex-col items-center w-full max-w-4xl mx-auto"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-subtitle font-bold text-brand-black tracking-[4px] md:tracking-[8px] uppercase mb-6">
+          {/* Top Line: EST - Icon - 2007 */}
+          <div className="flex items-center w-full mb-1 md:mb-2">
+            <div className="flex-1 h-[6px] border-t border-b border-[#000]"></div>
+            <div className="flex items-center px-4 md:px-8 gap-3 md:gap-6">
+              <span className="text-[#000] font-libre font-bold text-base md:text-xl tracking-[4px] md:tracking-[6px]">EST.</span>
+              <LuNewspaper className="w-9 h-9 text-[#000]" strokeWidth={1.5} />
+              <span className="text-[#000] font-libre font-bold text-base md:text-xl tracking-[4px] md:tracking-[6px]">2007</span>
+            </div>
+            <div className="flex-1 h-[6px] border-t border-b border-[#000]"></div>
+          </div>
+
+          {/* Main Heading */}
+          <h2 className="text-6xl md:text-8xl lg:text-[100px] font-hero text-[#6A6A6A] uppercase tracking-[6px] md:tracking-[16px] leading-none mb-1 md:mb-2 ml-1 md:ml-4">
             IN THE MEDIA
           </h2>
-          <div className="h-[3px] w-20 bg-brand-red mx-auto rounded-full"></div>
+
+          {/* Bottom Line: AS FEATURED IN LEADING PUBLICATIONS */}
+          <div className="flex items-center w-full mb-4 md:mb-6">
+            <div className="flex-1 border-t border-[#000]"></div>
+            <span className="text-[#000] font-libre font-bold text-xs md:text-base tracking-[3px] md:tracking-[6px] uppercase px-3 md:px-6 whitespace-nowrap">
+              AS FEATURED IN LEADING PUBLICATIONS
+            </span>
+            <div className="flex-1 border-t border-[#000]"></div>
+          </div>
+
+          <div className="h-[2px] w-24 bg-[#E20002] mx-auto"></div>
         </motion.div>
 
         {/* Articles Grid */}

@@ -3,29 +3,29 @@ import { motion } from 'framer-motion';
 
 const ContactForm = () => {
   return (
-    <section className="w-full px-4 md:px-8 pt-4 md:pt-10 pb-2 md:pb-0 bg-white">
-      <div className="w-full md:w-[99%] xl:w-[97%] mx-auto">
+    <section className="w-full px-4 md:px-8 pt-4 md:pt-10 pb-2 md:pb-0 bg-white relative z-10">
+      <div className="w-full md:w-[99%] xl:w-[97%] mx-auto py-8">
         
         {/* Form Container */}
-        <div className="w-full flex flex-col items-center">
+        <div className="soft-container mx-auto">
           
           {/* Header */}
           <motion.div 
-            className="text-center mb-12"
+            className="text-center mb-8 md:mb-10"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-2xl md:text-4xl lg:text-5xl font-subtitle font-bold text-brand-black tracking-[4px] md:tracking-[8px] uppercase mb-6">
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-subtitle font-bold text-[#6A6A6A] tracking-[4px] md:tracking-[6px] uppercase mb-4 [-webkit-text-stroke:1px_#6A6A6A] md:[-webkit-text-stroke:1.5px_#6A6A6A]">
               GET A FREE QUOTATION
             </h2>
-            <div className="h-[3px] w-20 bg-brand-red mx-auto rounded-full"></div>
+            <div className="h-[3px] w-20 bg-[#E20002] mx-auto rounded-full shadow-sm"></div>
           </motion.div>
 
           {/* Form */}
           <motion.form 
-            className="w-full mx-auto mb-4"
+            className="w-full mx-auto mb-6"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -34,69 +34,100 @@ const ContactForm = () => {
           >
             <div className="flex flex-col xl:flex-row gap-4 w-full items-stretch">
               
-              <input 
-                type="text" 
-                placeholder="Name" 
-                required
-                className="flex-1 bg-[#FAFAFA] hover:bg-gray-50 border border-gray-200 rounded-sm px-4 py-3 text-sm font-main text-brand-black focus:outline-none focus:border-brand-blue focus:bg-white focus:ring-1 focus:ring-brand-blue/10 transition-all duration-300 placeholder:text-gray-500"
-              />
+              <div className="soft-input-wrapper">
+                <svg className="soft-input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                </svg>
+                <input 
+                  type="text" 
+                  placeholder="Name" 
+                  required
+                  className="soft-input"
+                />
+              </div>
               
-              <input 
-                type="email" 
-                placeholder="Email" 
-                required
-                className="flex-1 bg-[#FAFAFA] hover:bg-gray-50 border border-gray-200 rounded-sm px-4 py-3 text-sm font-main text-brand-black focus:outline-none focus:border-brand-blue focus:bg-white focus:ring-1 focus:ring-brand-blue/10 transition-all duration-300 placeholder:text-gray-500"
-              />
+              <div className="soft-input-wrapper">
+                <svg className="soft-input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                </svg>
+                <input 
+                  type="email" 
+                  placeholder="Email" 
+                  required
+                  className="soft-input"
+                />
+              </div>
               
-              <input 
-                type="tel" 
-                placeholder="Phone Number" 
-                required
-                className="flex-1 bg-[#FAFAFA] hover:bg-gray-50 border border-gray-200 rounded-sm px-4 py-3 text-sm font-main text-brand-black focus:outline-none focus:border-brand-blue focus:bg-white focus:ring-1 focus:ring-brand-blue/10 transition-all duration-300 placeholder:text-gray-500"
-              />
+              <div className="soft-input-wrapper">
+                <svg className="soft-input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-2.896-1.596-5.48-4.18-7.076-7.076l1.293-.97c.362-.271.527-.733.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                </svg>
+                <input 
+                  type="tel" 
+                  placeholder="Phone Number" 
+                  required
+                  className="soft-input"
+                />
+              </div>
               
-              <input 
-                type="text" 
-                placeholder="Company" 
-                required
-                className="flex-1 bg-[#FAFAFA] hover:bg-gray-50 border border-gray-200 rounded-sm px-4 py-3 text-sm font-main text-brand-black focus:outline-none focus:border-brand-blue focus:bg-white focus:ring-1 focus:ring-brand-blue/10 transition-all duration-300 placeholder:text-gray-500"
-              />
+              <div className="soft-input-wrapper">
+                <svg className="soft-input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.118l-12.75 1.02a2.25 2.25 0 01-2.428-2.244v-4.244m17.05-1.732a2.25 2.25 0 00-.124-1.954l-3.23-5.385a2.25 2.25 0 00-1.92-1.073H9.72c-.8 0-1.536.42-1.92 1.073L4.57 12.464a2.25 2.25 0 00-.124 1.954m15.804 0c-.246.31-.607.5-1.01.5H5.334c-.403 0-.764-.19-1.01-.5m15.804 0C21.144 13.91 21.75 13.33 21.75 12.5a2.25 2.25 0 00-2.25-2.25h-15a2.25 2.25 0 00-2.25 2.25c0 .83.606 1.41 1.254 1.65" />
+                </svg>
+                <input 
+                  type="text" 
+                  placeholder="Company" 
+                  required
+                  className="soft-input"
+                />
+              </div>
               
-              <input 
-                type="text" 
-                placeholder="Your Requirement" 
-                required
-                className="flex-1 bg-[#FAFAFA] hover:bg-gray-50 border border-gray-200 rounded-sm px-4 py-3 text-sm font-main text-brand-black focus:outline-none focus:border-brand-blue focus:bg-white focus:ring-1 focus:ring-brand-blue/10 transition-all duration-300 placeholder:text-gray-500"
-              />
+              <div className="soft-input-wrapper">
+                <svg className="soft-input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 9.75a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 01.778-.332 48.294 48.294 0 005.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                </svg>
+                <input 
+                  type="text" 
+                  placeholder="Your Requirement" 
+                  required
+                  className="soft-input"
+                />
+              </div>
 
-              <button 
-                type="submit"
-                className="bg-[#E20002] hover:bg-[#c80002] text-white font-main font-bold py-3 px-6 rounded-sm text-sm uppercase transition-all duration-300 flex-1 whitespace-pre-wrap leading-tight shadow-sm hover:shadow-md"
-              >
-                Get a FREE{"\n"}Quotation
-              </button>
+              <div className="soft-input-wrapper !flex-none xl:!w-auto flex">
+                <button 
+                  type="submit"
+                  className="soft-button w-full xl:w-auto"
+                >
+                  <span className="text-xs uppercase tracking-wider">SUBMIT REQUEST</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                  </svg>
+                </button>
+              </div>
               
             </div>
           </motion.form>
 
           {/* Footer Text */}
           <motion.div 
-            className="w-full mx-auto flex flex-col justify-center items-center gap-3 mt-4 text-center"
+            className="w-full mx-auto flex flex-col justify-center items-center gap-2 mt-8 text-center"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <div className="flex flex-col xl:flex-row justify-center items-center gap-2 xl:gap-6">
-              <p className="font-main text-sm text-gray-700 font-medium">
+              <p className="font-main text-xs md:text-sm text-gray-500 font-medium">
                 Potential clients can fill this form or email us at <a href="mailto:info@redashfilms.com" className="font-bold text-[#E20002] hover:text-[#c80002] transition-colors">info@redashfilms.com</a>
               </p>
-              <p className="font-main text-sm text-gray-700 font-medium">
+              <p className="hidden xl:block font-main text-sm text-gray-300">|</p>
+              <p className="font-main text-xs md:text-sm text-gray-500 font-medium">
                 Actors, Film Crew Members & Vendors can email their profiles only at <a href="mailto:redash.films@gmail.com" className="font-bold text-[#E20002] hover:text-[#c80002] transition-colors">redash.films@gmail.com</a>
               </p>
             </div>
-            <p className="font-main text-sm text-gray-700 font-medium">
-              <span className="font-bold">RedAsh Office:</span> 1101, Peninsula Park, Fun Republic Lane, Andheri West, Mumbai, 400053 <a href="https://share.google/Pxp4Tva4m3IyfrKAd" target="_blank" rel="noopener noreferrer" className="font-bold text-[#E20002] hover:text-[#c80002] transition-colors hover:underline">(Google Location)</a>
+            <p className="font-main text-xs md:text-sm text-gray-500 font-medium mt-2">
+              <span className="font-bold text-gray-700">RedAsh Office:</span> 1101, Peninsula Park, Fun Republic Lane, Andheri West, Mumbai, 400053 <a href="https://share.google/Pxp4Tva4m3IyfrKAd" target="_blank" rel="noopener noreferrer" className="font-bold text-[#E20002] hover:text-[#c80002] transition-colors hover:underline">(Google Location)</a>
             </p>
           </motion.div>
           

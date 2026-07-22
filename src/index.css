@@ -44,3 +44,68 @@ body {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+/* Soft UI Styles */
+.soft-container {
+  background: white;
+  border-radius: 2rem;
+  box-shadow: 0 25px 60px -15px rgba(22, 114, 239, 0.15), 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+  padding: 3rem 2rem;
+  width: 100%;
+}
+
+.soft-input-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.soft-input {
+  width: 100%;
+  background: #F8F9FA;
+  border: 1px solid rgba(0, 0, 0, 0.04) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02), 0 2px 6px rgba(0, 0, 0, 0.02) !important;
+  border-radius: 0.75rem;
+  padding: 1.25rem 0.75rem 1.25rem 2.75rem;
+  color: var(--color-brand-black);
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+}
+
+.soft-input:focus {
+  background: white !important;
+  border-color: rgba(22, 114, 239, 0.3) !important;
+  box-shadow: 0 0 0 4px rgba(22, 114, 239, 0.1), inset 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+  outline: none;
+}
+
+.soft-input-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #888;
+  pointer-events: none;
+}
+
+.soft-button {
+  background: var(--color-brand-blue) !important;
+  box-shadow: 0 8px 20px rgba(22, 114, 239, 0.4), inset 0 2px 5px rgba(255, 255, 255, 0.3) !important;
+  border-radius: 0.75rem;
+  color: white;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.25rem 2.5rem;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.soft-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(22, 114, 239, 0.5), inset 0 2px 5px rgba(255, 255, 255, 0.4) !important;
+}

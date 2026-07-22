@@ -99,7 +99,7 @@ const MediaLinks = () => {
           </div>
 
           {/* Main Heading */}
-          <h2 className="text-6xl md:text-8xl lg:text-[100px] font-hero text-[#6A6A6A] uppercase tracking-[6px] md:tracking-[16px] leading-none mb-1 md:mb-2 ml-1 md:ml-4">
+          <h2 className="text-6xl md:text-8xl lg:text-[100px] font-hero text-black uppercase tracking-[6px] md:tracking-[16px] leading-none mb-1 md:mb-2 ml-1 md:ml-4">
             IN THE MEDIA
           </h2>
 

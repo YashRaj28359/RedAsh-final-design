@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
+import AgencyLanding from './pages/Agency/AgencyLanding';
 import { AnimatePresence } from 'framer-motion';
 
 function App() {
@@ -9,6 +10,7 @@ function App() {
       <AnimatePresence mode="wait">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/ad-agency" element={<AgencyLanding />} />
           {/* Add more routes here in the future as needed */}
         </Routes>
       </AnimatePresence>

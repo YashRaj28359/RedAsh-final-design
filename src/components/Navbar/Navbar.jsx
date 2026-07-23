@@ -58,7 +58,7 @@ const Navbar = () => {
       <div className="hidden md:flex gap-10 items-center">
         <Link to="/" className="font-main font-semibold text-[15px] uppercase tracking-wide text-brand-gray transition-colors duration-300">HOME</Link>
         <Link to="/entertainment" className="font-main font-semibold text-[15px] uppercase tracking-wide text-brand-red transition-colors duration-300">ENTERTAINMENT FILMS</Link>
-        <Link to="/agency" className="font-main font-semibold text-[15px] uppercase tracking-wide text-brand-blue transition-colors duration-300">AD AGENCY</Link>
+        <Link to="/ad-agency" className="font-main font-semibold text-[15px] uppercase tracking-wide text-brand-blue transition-colors duration-300">AD AGENCY</Link>
       </div>
 
       {/* Mobile Menu */}
@@ -73,7 +73,7 @@ const Navbar = () => {
           >
             <Link to="/" onClick={closeMenu} className="font-main font-semibold text-lg uppercase tracking-wide text-brand-gray transition-colors duration-300">HOME</Link>
             <Link to="/entertainment" onClick={closeMenu} className="font-main font-semibold text-lg uppercase tracking-wide text-brand-red transition-colors duration-300">ENTERTAINMENT FILMS</Link>
-            <Link to="/agency" onClick={closeMenu} className="font-main font-semibold text-lg uppercase tracking-wide text-brand-blue transition-colors duration-300">AD AGENCY</Link>
+            <Link to="/ad-agency" onClick={closeMenu} className="font-main font-semibold text-lg uppercase tracking-wide text-brand-blue transition-colors duration-300">AD AGENCY</Link>
           </motion.div>
         )}
       </AnimatePresence>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaLinkedinIn, FaYoutube, FaInstagram, FaFacebookF } from 'react-icons/fa';
 import logo from "../../../assets/Agency/Logo/RedAsh Ad Agency_Logo.png";
@@ -14,9 +14,18 @@ const navLinks = [
 
 const Navbar = () => {
   const [activeMenu, setActiveMenu] = useState('HOME');
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 px-4 py-2 flex items-center justify-between bg-transparent">
+    <nav className={`fixed top-0 left-0 w-full z-50 px-4 py-2 flex items-center justify-between transition-colors duration-300 ${isScrolled ? 'bg-white shadow-md' : 'bg-transparent'}`}>
       {/* Logo */}
       <div className="flex-shrink-0 z-20">
         <Link to="/ad-agency" className="block -ml-8 md:-ml-0">

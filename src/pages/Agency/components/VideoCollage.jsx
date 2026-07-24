@@ -2,21 +2,24 @@ import React, { useRef, useState } from 'react';
 import { FaPlay } from 'react-icons/fa';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const leftVideos = [
-  { id: 'b5hZr-8rSI4', label: 'Ad Films', rotation: '-3deg' }, 
-  { id: 'R_EAcTv-59o', label: 'Explainers', rotation: '2deg' },
-  { id: 'l4XYMZzh7Tc', label: 'AI', rotation: '-1deg' },
+  { id: 'b5hZr-8rSI4', label: 'TV ADS', rotation: '1deg', offsetX: '60px', scale: 1 }, 
+  { id: 'IUwZoT_-gt4', label: 'BRAND FILMS', rotation: '-9deg', offsetX: '160px', scale: 0.85 },
+  { id: 'RvciiZb-k1U', label: 'PODCASTS', rotation: '7deg', offsetX: '80px', scale: 1.05 },
 ];
 
 const rightVideos = [
-  { id: 'IUwZoT_-gt4', label: 'Brand Films', rotation: '3deg' },
-  { id: 'R7TQBIHyR9Y', label: 'L&D', rotation: '-2deg' },
-  { id: 'iuIaAuh4LCQ', label: 'Case Study', rotation: '1deg' },
+  { id: 'rqfTN_Fj1SA', label: 'DIGITAL ADS', rotation: '-7deg', offsetX: '-60px', scale: 0.9 },
+  { id: 'R_EAcTv-59o', label: 'ANIMATED EXPLAINERS', rotation: '-2deg', offsetX: '-150px', scale: 1.10 },
+  { id: 'l4XYMZzh7Tc', label: 'AI VIDEOS', rotation: '8deg', offsetX: '-30px', scale: 0.90 },
 ];
 
 const VideoCard = ({ video, className, onPlay }) => (
-  <div className={className} style={{ transform: `rotate(${video.rotation || '0deg'})` }}>
+  <div className={className} style={{ transform: `translateX(${video.offsetX || '0px'}) rotate(${video.rotation || '0deg'}) scale(${video.scale || 1})` }}>
     <div 
       onClick={onPlay}
       className="relative block w-full aspect-video rounded-lg overflow-hidden shadow-2xl transition-transform duration-500 hover:scale-105 hover:z-50 pointer-events-auto cursor-pointer group"
@@ -27,26 +30,26 @@ const VideoCard = ({ video, className, onPlay }) => (
         className="w-full h-full object-cover"
       />
       
-      {/* Hover Overlay: White Fade + Text + Play Button */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 flex flex-col justify-end">
+      {/* Permanent Overlay: Black Fade + Text */}
+      <div className="absolute inset-0 z-10 flex flex-col justify-end pointer-events-none">
         
-        {/* White fade from bottom */}
-        <div className="absolute inset-0 bg-gradient-to-t from-white via-white/40 to-transparent pointer-events-none" />
-        
-        {/* Play Button (Centered) */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-12 h-12 md:w-16 md:h-16 rounded-full border-[1.5px] border-white/90 flex items-center justify-center transition-transform hover:scale-110 shadow-lg">
-            <FaPlay className="text-white text-sm md:text-base ml-1" />
-          </div>
-        </div>
+        {/* Black fade from bottom */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
         {/* Category Text (Bottom) */}
         <div className="relative w-full flex justify-center pb-4 z-20">
-          <span className="text-brand-blue font-hero font-bold tracking-normal text-xl md:text-2xl uppercase">
+          <span className="text-brand-blue font-hero font-bold tracking-normal text-2xl md:text-3xl lg:text-4xl uppercase drop-shadow-md text-center px-2">
             {video.label}
           </span>
         </div>
 
+      </div>
+
+      {/* Hover Overlay: Play Button */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 flex items-center justify-center">
+        <div className="w-12 h-12 md:w-16 md:h-16 rounded-full border-[1.5px] border-white/90 flex items-center justify-center transition-transform hover:scale-110 shadow-lg">
+          <FaPlay className="text-white text-sm md:text-base ml-1" />
+        </div>
       </div>
     </div>
   </div>
@@ -80,6 +83,31 @@ const VideoCollage = () => {
         stagger: { amount: 0.6, from: 'random' }
       }
     );
+
+    // Scroll-based exit effect
+    gsap.to('.collage-column-left', {
+      x: -400,
+      opacity: 0,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 1,
+      }
+    });
+
+    gsap.to('.collage-column-right', {
+      x: 400,
+      opacity: 0,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 1,
+      }
+    });
   }, { scope: containerRef });
 
   return (
@@ -87,16 +115,20 @@ const VideoCollage = () => {
       <div ref={containerRef} className="absolute inset-0 w-full h-full pointer-events-none z-10 hidden md:block">
         
         {/* Left Column */}
-        <div className="absolute top-0 bottom-0 left-[5%] w-[18%] flex flex-col justify-center gap-10">
+        <div className="absolute top-0 bottom-0 left-[5%] w-[20%] flex flex-col justify-center gap-8 collage-column-left">
           {leftVideos.map((video, index) => (
-            <VideoCard key={`left-${index}`} video={video} className="collage-card-left" onPlay={() => setActiveVideo(video.id)} />
+            <div key={`left-${index}`} className="collage-card-left">
+              <VideoCard video={video} onPlay={() => setActiveVideo(video.id)} />
+            </div>
           ))}
         </div>
 
         {/* Right Column */}
-        <div className="absolute top-0 bottom-0 right-[5%] w-[18%] flex flex-col justify-center gap-10">
+        <div className="absolute top-0 bottom-0 right-[5%] w-[20%] flex flex-col justify-center gap-8 collage-column-right">
           {rightVideos.map((video, index) => (
-            <VideoCard key={`right-${index}`} video={video} className="collage-card-right" onPlay={() => setActiveVideo(video.id)} />
+            <div key={`right-${index}`} className="collage-card-right">
+              <VideoCard video={video} onPlay={() => setActiveVideo(video.id)} />
+            </div>
           ))}
         </div>
 

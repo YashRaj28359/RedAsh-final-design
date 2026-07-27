@@ -3,7 +3,6 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
 // Row 1
-import logo1 from '../../../assets/Logo - Clients/Copy of Amazon Prime Video logo.png';
 import logo2 from '../../../assets/Logo - Clients/Copy of LG logo.png';
 import logo3 from '../../../assets/Logo - Clients/Copy of Samsung logo.png';
 import logo4 from '../../../assets/Logo - Clients/Copy of GE logo.png';
@@ -15,6 +14,7 @@ import logo9 from '../../../assets/Logo - Clients/8206742b-baaa-43f8-b90f-11d438
 import logo10 from '../../../assets/Logo - Clients/Copy of UK Govt.png';
 import logo11 from '../../../assets/Logo - Clients/Copy of The Smart Cube.png';
 import logo12 from '../../../assets/Logo - Clients/Copy of Schlumberger.png';
+import logoGov from '../../../assets/Logo - Clients/govtofindia.jpg';
 
 // Row 2
 import logo13 from '../../../assets/Logo - Clients/Copy of Ek step.png';
@@ -30,10 +30,10 @@ import logo22 from '../../../assets/Logo - Clients/Screenshot 2026-07-23 160521.
 import logo23 from '../../../assets/Logo - Clients/logo.png';
 import logo24 from '../../../assets/Logo - Clients/Screenshot 2026-07-23 161202.png';
 
-const logosRow1 = [logo1, logo2, logo3, logo4, logo5, logo6, logo7, logo8, logo9, logo10, logo11, logo12];
+const logosRow1 = [logo2, logo3, logo4, logo5, logo6, logo7, logo8, logo9, logo10, logo11, logo12, logoGov];
 const logosRow2 = [logo13, logo14, logo15, logo16, logo17, logo18, logo19, logo20, logo21, logo22, logo23, logo24];
 
-const TrustedBy = () => {
+const TopGlobalClients = () => {
   const row1Ref = useRef(null);
   const row2Ref = useRef(null);
   
@@ -71,7 +71,7 @@ const TrustedBy = () => {
           <div className="hidden md:block flex-1 h-[2px] bg-gradient-to-r from-transparent via-gray-200 to-gray-300 relative">
             <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand-blue shadow-[0_0_8px_rgba(22,114,239,0.5)]"></div>
           </div>
-          <h2 className="text-3xl md:text-5xl lg:text-6xl font-hero font-bold tracking-wider text-brand-gray mx-6 uppercase whitespace-nowrap">TRUSTED BY</h2>
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-hero font-bold tracking-wider text-brand-gray mx-6 uppercase whitespace-nowrap">TOP GLOBAL <span className="text-brand-blue">CLIENTS</span></h2>
           <div className="hidden md:block flex-1 h-[2px] bg-gradient-to-l from-transparent via-gray-200 to-gray-300 relative">
             <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand-blue shadow-[0_0_8px_rgba(22,114,239,0.5)]"></div>
           </div>
@@ -108,4 +108,4 @@ const TrustedBy = () => {
   );
 };
 
-export default TrustedBy;
+export default TopGlobalClients;

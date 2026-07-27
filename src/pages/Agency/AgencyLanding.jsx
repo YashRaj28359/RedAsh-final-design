@@ -3,10 +3,15 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
+import ContactForm from '../../components/ContactForm/ContactForm';
 import VideoCollage from './components/VideoCollage';
-import TrustedBy from './components/TrustedBy';
+import TopGlobalClients from './components/TopGlobalClients';
 import CaseStudies from './components/CaseStudies';
 import Testimonials from './components/Testimonials';
+import WhatsRedHot from './components/WhatsRedHot';
+import OurWork from './components/OurWork';
+import EnterpriseFilms from './components/EnterpriseFilms';
+import Footer from '../../components/Footer/Footer';
 
 const AgencyLanding = () => {
   const containerRef = useRef(null);
@@ -47,11 +52,41 @@ const AgencyLanding = () => {
           <VideoCollage />
         </div>
         
-        <TrustedBy />
+        <ContactForm 
+          linkColorClass="text-brand-blue hover:text-blue-700" 
+          highlightColorClass="text-brand-blue"
+          headingClass="font-hero tracking-wider text-brand-gray"
+        />
+        
+        <TopGlobalClients />
         <CaseStudies />
         <Testimonials />
+        <WhatsRedHot />
+        <OurWork />
+        <EnterpriseFilms />
+        
+        {/* Bottom Quotation / Contact Form */}
+        <div id="quotation-section">
+          <ContactForm 
+            linkColorClass="text-brand-blue hover:text-blue-700" 
+            highlightColorClass="text-brand-blue"
+            headingClass="font-hero tracking-wider text-brand-gray"
+          />
+        </div>
 
       </main>
+
+      {/* Footer customized with Agency navigation links */}
+      <Footer 
+        links={[
+          { name: 'HOME', path: '/ad-agency', onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
+          { name: 'ABOUT', path: '/ad-agency' },
+          { name: 'FILMS', path: '/ad-agency' },
+          { name: 'BLOG', path: '/ad-agency' },
+          { name: 'MEDIA', path: '/ad-agency' },
+          { name: 'CONTACT', path: '/ad-agency' },
+        ]}
+      />
     </div>
   );
 };

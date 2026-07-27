@@ -1,7 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const ContactForm = () => {
+const ContactForm = ({ 
+  linkColorClass = "text-[#E20002] hover:text-[#c80002]", 
+  highlightColorClass = "text-[#E20002]",
+  headingClass = "font-subtitle text-[#6A6A6A] tracking-[4px] md:tracking-[6px] [-webkit-text-stroke:1px_#6A6A6A] md:[-webkit-text-stroke:1.5px_#6A6A6A]"
+}) => {
   return (
     <section className="w-full px-4 md:px-8 pt-4 md:pt-10 pb-2 md:pb-0 bg-white relative z-10">
       <div className="w-full md:w-[99%] xl:w-[97%] mx-auto py-8">
@@ -11,16 +15,21 @@ const ContactForm = () => {
           
           {/* Header */}
           <motion.div 
-            className="text-center mb-8 md:mb-10"
+            className="flex items-center justify-center mb-8 md:mb-12 relative w-full overflow-hidden"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-subtitle font-bold text-[#6A6A6A] tracking-[4px] md:tracking-[6px] uppercase mb-4 [-webkit-text-stroke:1px_#6A6A6A] md:[-webkit-text-stroke:1.5px_#6A6A6A]">
-              GET A FREE QUOTATION
+            <div className="hidden md:block flex-1 h-[2px] bg-gradient-to-r from-transparent via-gray-200 to-gray-300 relative">
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand-blue shadow-[0_0_8px_rgba(22,114,239,0.5)]"></div>
+            </div>
+            <h2 className={`text-3xl md:text-5xl lg:text-6xl font-bold uppercase mx-6 whitespace-nowrap ${headingClass}`}>
+              GET A FREE <span className={highlightColorClass}>QUOTATION</span>
             </h2>
-            <div className="h-[3px] w-20 bg-[#E20002] mx-auto rounded-full shadow-sm"></div>
+            <div className="hidden md:block flex-1 h-[2px] bg-gradient-to-l from-transparent via-gray-200 to-gray-300 relative">
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand-blue shadow-[0_0_8px_rgba(22,114,239,0.5)]"></div>
+            </div>
           </motion.div>
 
           {/* Form */}
@@ -119,15 +128,15 @@ const ContactForm = () => {
           >
             <div className="flex flex-col xl:flex-row justify-center items-center gap-2 xl:gap-6">
               <p className="font-main text-xs md:text-sm text-gray-500 font-medium">
-                Potential clients can fill this form or email us at <a href="mailto:info@redashfilms.com" className="font-bold text-[#E20002] hover:text-[#c80002] transition-colors">info@redashfilms.com</a>
+                Potential clients can fill this form or email us at <a href="mailto:info@redashfilms.com" className={`font-bold transition-colors ${linkColorClass}`}>info@redashfilms.com</a>
               </p>
               <p className="hidden xl:block font-main text-sm text-gray-300">|</p>
               <p className="font-main text-xs md:text-sm text-gray-500 font-medium">
-                Actors, Film Crew Members & Vendors can email their profiles only at <a href="mailto:redash.films@gmail.com" className="font-bold text-[#E20002] hover:text-[#c80002] transition-colors">redash.films@gmail.com</a>
+                Actors, Film Crew Members & Vendors can email their profiles only at <a href="mailto:redash.films@gmail.com" className={`font-bold transition-colors ${linkColorClass}`}>redash.films@gmail.com</a>
               </p>
             </div>
             <p className="font-main text-xs md:text-sm text-gray-500 font-medium mt-2">
-              <span className="font-bold text-gray-700">RedAsh Office:</span> 1101, Peninsula Park, Fun Republic Lane, Andheri West, Mumbai, 400053 <a href="https://share.google/Pxp4Tva4m3IyfrKAd" target="_blank" rel="noopener noreferrer" className="font-bold text-[#E20002] hover:text-[#c80002] transition-colors hover:underline">(Google Location)</a>
+              <span className="font-bold text-gray-700">RedAsh Office:</span> 1101, Peninsula Park, Fun Republic Lane, Andheri West, Mumbai, 400053 <a href="https://share.google/Pxp4Tva4m3IyfrKAd" target="_blank" rel="noopener noreferrer" className={`font-bold transition-colors hover:underline ${linkColorClass}`}>(Google Location)</a>
             </p>
           </motion.div>
           

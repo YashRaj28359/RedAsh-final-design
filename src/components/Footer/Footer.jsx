@@ -2,8 +2,16 @@ import React from 'react';
 import { FaLinkedin, FaYoutube, FaInstagram, FaFacebook } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
-const Footer = () => {
+const Footer = ({ links }) => {
   const currentYear = new Date().getFullYear(); // Or hardcode 2026 based on image
+
+  const defaultLinks = [
+    { name: 'HOME', path: '/', onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
+    { name: 'ENTERTAINMENT FILMS', path: '/entertainment-films' },
+    { name: 'AD AGENCY', path: '/ad-agency' }
+  ];
+
+  const displayLinks = links || defaultLinks;
 
   return (
     <footer className="bg-brand-gray text-white py-12 px-6 md:px-12 w-full mt-auto">
@@ -27,10 +35,17 @@ const Footer = () => {
           </div>
 
           {/* Navigation Links */}
-          <nav className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm md:text-base">
-            <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-brand-black transition-colors">HOME</Link>
-            <Link to="/entertainment-films" className="hover:text-brand-black transition-colors">ENTERTAINMENT FILMS</Link>
-            <Link to="/ad-agency" className="hover:text-brand-black transition-colors">AD AGENCY</Link>
+          <nav className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm md:text-base font-semibold tracking-wider">
+            {displayLinks.map(link => (
+              <Link 
+                key={link.name} 
+                to={link.path} 
+                onClick={link.onClick} 
+                className="hover:text-brand-black transition-colors"
+              >
+                {link.name}
+              </Link>
+            ))}
           </nav>
         </div>
 

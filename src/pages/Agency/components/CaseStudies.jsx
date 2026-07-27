@@ -17,7 +17,7 @@ const caseStudiesData = [
     year: "2023",
     tag: "Acquisition",
     tagColor: "bg-blue-600",
-    stat: "Acquired for $120M",
+    stat: "$120 Million",
     title: "Procurement & Business Consulting",
     clientType: "MNC",
     customers: "B2B",

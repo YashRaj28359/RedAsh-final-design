@@ -13,7 +13,16 @@ const Hero = () => {
         <div className="overflow-visible whitespace-nowrap opacity-80"><span className="block text-black">Since 2007.</span></div>
       </h1>
 
-      <button className="mt-12 relative group bg-transparent text-brand-blue font-main text-xs md:text-sm uppercase tracking-[0.2em] font-bold py-4 px-10 rounded-full pointer-events-auto transition-all duration-500 overflow-hidden border border-brand-blue/40 hover:border-brand-blue shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-xl hover:shadow-brand-blue/20">
+      <button 
+        onClick={() => {
+          const el = document.getElementById('enterprise-films');
+          if (el) {
+            const y = el.getBoundingClientRect().top + window.scrollY - 80;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+          }
+        }}
+        className="mt-12 relative group bg-transparent text-brand-blue font-main text-xs md:text-sm uppercase tracking-[0.2em] font-bold py-4 px-10 rounded-full pointer-events-auto transition-all duration-500 overflow-hidden border border-brand-blue/40 hover:border-brand-blue shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-xl hover:shadow-brand-blue/20"
+      >
         <span className="relative z-10 transition-colors duration-500 group-hover:text-white">Watch More Enterprise Films</span>
         <div className="absolute inset-0 bg-brand-blue w-full h-full -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] z-0" />
       </button>

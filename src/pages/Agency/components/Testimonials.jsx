@@ -8,7 +8,7 @@ const VideoTestimonial = ({ name, title, company, videoId, rotationClass = "" })
   return (
     <div className={`w-full bg-white rounded-3xl overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-gray-100 flex flex-col group h-full transition-all duration-300 hover:rotate-0 hover:scale-[1.02] z-10 hover:z-20 ${rotationClass}`}>
       {/* Thumbnail / Video Section */}
-      <div className="relative w-full aspect-video bg-gray-200 overflow-hidden">
+      <div className="relative w-full h-48 md:h-52 bg-gray-200 overflow-hidden">
         {isPlaying ? (
           <>
             <iframe 
@@ -48,7 +48,7 @@ const VideoTestimonial = ({ name, title, company, videoId, rotationClass = "" })
       </div>
       
       {/* Bottom Content Section */}
-      <div className="p-6 md:p-7 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 flex-grow bg-white">
+      <div className="p-5 md:p-6 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-2 flex-grow bg-white">
         <div>
           <h4 className="text-gray-900 font-bold text-lg">{name}</h4>
           <p className="text-gray-500 text-xs md:text-sm mt-0.5">{title}</p>
@@ -59,7 +59,7 @@ const VideoTestimonial = ({ name, title, company, videoId, rotationClass = "" })
   );
 };
 
-const TextTestimonial = ({ text, name, title, company, rating, avatar, rotationClass = "" }) => (
+const TextTestimonial = ({ text, name, title, company, avatar, rotationClass = "" }) => (
   <div className={`w-full bg-white rounded-3xl p-6 md:p-8 shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-gray-100 flex flex-col justify-between h-full transition-all duration-300 hover:rotate-0 hover:scale-[1.02] z-10 hover:z-20 ${rotationClass} group overflow-hidden relative`}>
     
     {/* Blue background sliding up from bottom */}
@@ -67,13 +67,7 @@ const TextTestimonial = ({ text, name, title, company, rating, avatar, rotationC
 
     <div className="relative z-10">
       <div className="flex justify-between items-start mb-6">
-        {/* Quote Icon */}
         <span className="text-6xl text-blue-400/40 group-hover:text-white/40 transition-colors duration-300 font-serif leading-none h-10 block">“</span>
-        {/* Rating Pill */}
-        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-white group-hover:bg-white/10 group-hover:border-white/20 border border-gray-100 rounded-full shadow-sm transition-colors duration-300">
-          <FaStar className="text-brand-blue group-hover:text-white transition-colors duration-300 text-xs" />
-          <span className="text-xs font-bold text-gray-700 group-hover:text-white transition-colors duration-300">{rating}/5</span>
-        </div>
       </div>
       <p className="text-gray-700 group-hover:text-white transition-colors duration-300 font-medium text-sm md:text-base leading-relaxed mb-8">
         {text}
@@ -134,7 +128,6 @@ const Testimonials = () => {
             name="Isabella Rodriguez"
             title="CEO & Co-founder"
             company="ABC Company"
-            rating="4.9"
             avatar="https://i.pravatar.cc/150?img=47"
             rotationClass="-rotate-1"
           />
@@ -145,7 +138,6 @@ const Testimonials = () => {
             name="Gabrielle Williams"
             title="CEO & Co-founder"
             company="ABC Company"
-            rating="4.8"
             avatar="https://i.pravatar.cc/150?img=5"
             rotationClass="rotate-2"
           />
@@ -154,7 +146,6 @@ const Testimonials = () => {
             name="Samantha Johnson"
             title="CEO & Co-founder"
             company="ABC Company"
-            rating="4.9"
             avatar="https://i.pravatar.cc/150?img=44"
             rotationClass="-rotate-2"
           />
@@ -163,7 +154,6 @@ const Testimonials = () => {
             name="Natalie Martinez"
             title="CEO & Co-founder"
             company="ABC Company"
-            rating="4.8"
             avatar="https://i.pravatar.cc/150?img=33"
             rotationClass="rotate-1"
           />

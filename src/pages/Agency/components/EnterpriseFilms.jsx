@@ -65,8 +65,8 @@ const EnterpriseFilms = () => {
 
           {/* Main Title */}
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-hero font-black tracking-widest mb-4 leading-none">
-            <span className="text-gray-800 uppercase">Enterprise</span>{' '}
-            <span className="text-[#1672ef] uppercase">Films</span>
+            <span className="text-gray-800 uppercase">watch our</span>{' '}
+            <span className="text-[#1672ef] uppercase">Enterprise Films</span>
           </h2>
 
           {/* Camera Icon Divider */}

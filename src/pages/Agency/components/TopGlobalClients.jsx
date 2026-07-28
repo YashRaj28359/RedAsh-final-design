@@ -33,14 +33,41 @@ import logo24 from '../../../assets/Logo - Clients/Screenshot 2026-07-23 161202.
 const logosRow1 = [logo2, logo3, logo4, logo5, logo6, logo7, logo8, logo9, logo10, logo11, logo12, logoGov];
 const logosRow2 = [logo13, logo14, logo15, logo16, logo17, logo18, logo19, logo20, logo21, logo22, logo23, logo24];
 
-const TopGlobalClients = () => {
+const TopGlobalClients = ({ customTitle, titleClass, layout = 'marquee' }) => {
   const row1Ref = useRef(null);
   const row2Ref = useRef(null);
   
   const tween1 = useRef(null);
   const tween2 = useRef(null);
+  const wallRefs = useRef([]);
+
+  const allLogos = layout === 'wall' 
+    ? [
+        logoGov, logo10, logo7, logo17, logo18, // Govt of India, UK Govt, UN, Gujarat, Bihar
+        logo2, logo3, logo4, logo5, logo6, logo8, logo9, logo11, logo12, 
+        logo13, logo14, logo15, logo16, logo19, logo20, logo21, logo22, logo23, logo24
+      ]
+    : [...logosRow1, ...logosRow2];
 
   useGSAP(() => {
+    if (layout === 'wall') {
+      wallRefs.current.forEach((el) => {
+        if (!el) return;
+        gsap.to(el, {
+          y: "random(-20, 20)",
+          x: "random(-15, 15)",
+          rotation: "random(-6, 6)",
+          scale: "random(0.9, 1.1)",
+          duration: "random(3, 6)",
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+          delay: "random(0, 2)"
+        });
+      });
+      return;
+    }
+    
     // Row 1 goes right (starts at -50% goes to 0%)
     tween1.current = gsap.fromTo(row1Ref.current, 
       { xPercent: -50 }, 
@@ -52,13 +79,15 @@ const TopGlobalClients = () => {
       { xPercent: 0 }, 
       { xPercent: -50, duration: 35, ease: "none", repeat: -1 }
     );
-  }, []);
+  }, [layout]);
 
   const handleMouseEnter = () => {
+    if (layout === 'wall') return;
     gsap.to([tween1.current, tween2.current], { timeScale: 0, duration: 1, ease: "power2.out" });
   };
 
   const handleMouseLeave = () => {
+    if (layout === 'wall') return;
     gsap.to([tween1.current, tween2.current], { timeScale: 1, duration: 1, ease: "power2.in" });
   };
 
@@ -67,42 +96,70 @@ const TopGlobalClients = () => {
       <div className="w-full max-w-[1600px] mx-auto px-4 lg:px-8">
         
         {/* Title */}
-        <div className="flex items-center justify-center mb-12 relative w-full px-4 overflow-hidden">
-          <div className="hidden md:block flex-1 h-[2px] bg-gradient-to-r from-transparent via-gray-200 to-gray-300 relative">
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand-blue shadow-[0_0_8px_rgba(22,114,239,0.5)]"></div>
+        {customTitle ? (
+          <div className={`mb-12 relative w-full px-4 text-center max-w-4xl mx-auto ${titleClass || ''}`}>
+            {customTitle}
           </div>
-          <h2 className="text-3xl md:text-5xl lg:text-6xl font-hero font-bold tracking-wider text-brand-gray mx-6 uppercase whitespace-nowrap">TOP GLOBAL <span className="text-brand-blue">CLIENTS</span></h2>
-          <div className="hidden md:block flex-1 h-[2px] bg-gradient-to-l from-transparent via-gray-200 to-gray-300 relative">
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand-blue shadow-[0_0_8px_rgba(22,114,239,0.5)]"></div>
+        ) : (
+          <div className="flex items-center justify-center mb-12 relative w-full px-4 overflow-hidden">
+            <div className="hidden md:block flex-1 h-[2px] bg-gradient-to-r from-transparent via-gray-200 to-gray-300 relative">
+              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand-blue shadow-[0_0_8px_rgba(22,114,239,0.5)]"></div>
+            </div>
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-hero font-bold tracking-wider text-brand-gray mx-6 uppercase whitespace-nowrap">TOP GLOBAL <span className="text-brand-blue">CLIENTS</span></h2>
+            <div className="hidden md:block flex-1 h-[2px] bg-gradient-to-l from-transparent via-gray-200 to-gray-300 relative">
+              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand-blue shadow-[0_0_8px_rgba(22,114,239,0.5)]"></div>
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* Logos Grid */}
-        <div 
-          className="flex flex-col border-y border-gray-200/60 w-full overflow-hidden"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          
-          {/* Row 1 */}
-          <div ref={row1Ref} className="flex w-max border-b border-gray-200/60">
-            {[...logosRow1, ...logosRow1].map((logo, index) => (
-              <div key={`row1-${index}`} className="flex-shrink-0 w-36 md:w-52 lg:w-64 flex items-center justify-center p-2 h-24 md:h-32 transition-transform duration-300 hover:scale-110">
-                <img src={logo} alt={`Client Logo`} className="max-w-[95%] max-h-[95%] object-contain" />
-              </div>
-            ))}
-          </div>
+        {/* Logos Container */}
+        {layout === 'wall' ? (
+          <>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6 py-8 px-4">
+              {allLogos.map((logo, index) => (
+                <div 
+                  key={`wall-${index}`} 
+                  ref={(el) => wallRefs.current[index] = el}
+                  className="relative flex items-center justify-center p-4 h-24 md:h-32 z-10 hover:z-50"
+                >
+                  <img 
+                    src={logo} 
+                    alt={`Client Logo`} 
+                    className="max-w-[95%] max-h-[95%] object-contain mix-blend-multiply transition-transform duration-300 hover:scale-[1.35] cursor-pointer" 
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="text-center w-full mt-8 pb-8 text-xl md:text-2xl lg:text-3xl font-light text-gray-700 leading-relaxed font-main">
+              ...and many more
+            </div>
+          </>
+        ) : (
+          <div 
+            className="flex flex-col border-y border-gray-200/60 w-full overflow-hidden"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
+            {/* Row 1 */}
+            <div ref={row1Ref} className="flex w-max border-b border-gray-200/60">
+              {[...logosRow1, ...logosRow1].map((logo, index) => (
+                <div key={`row1-${index}`} className="flex-shrink-0 w-36 md:w-52 lg:w-64 flex items-center justify-center p-2 h-24 md:h-32 transition-transform duration-300 hover:scale-110">
+                  <img src={logo} alt={`Client Logo`} className="max-w-[95%] max-h-[95%] object-contain" />
+                </div>
+              ))}
+            </div>
 
-          {/* Row 2 */}
-          <div ref={row2Ref} className="flex w-max">
-            {[...logosRow2, ...logosRow2].map((logo, index) => (
-              <div key={`row2-${index}`} className="flex-shrink-0 w-36 md:w-52 lg:w-64 flex items-center justify-center p-2 h-24 md:h-32 transition-transform duration-300 hover:scale-110">
-                <img src={logo} alt={`Client Logo`} className="max-w-[95%] max-h-[95%] object-contain" />
-              </div>
-            ))}
+            {/* Row 2 */}
+            <div ref={row2Ref} className="flex w-max">
+              {[...logosRow2, ...logosRow2].map((logo, index) => (
+                <div key={`row2-${index}`} className="flex-shrink-0 w-36 md:w-52 lg:w-64 flex items-center justify-center p-2 h-24 md:h-32 transition-transform duration-300 hover:scale-110">
+                  <img src={logo} alt={`Client Logo`} className="max-w-[95%] max-h-[95%] object-contain" />
+                </div>
+              ))}
+            </div>
           </div>
+        )}
 
-        </div>
       </div>
     </section>
   );

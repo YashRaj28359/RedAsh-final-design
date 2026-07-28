@@ -2,9 +2,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const ContactForm = ({ 
-  linkColorClass = "text-[#E20002] hover:text-[#c80002]", 
-  highlightColorClass = "text-[#E20002]",
-  headingClass = "font-subtitle text-[#6A6A6A] tracking-[4px] md:tracking-[6px] [-webkit-text-stroke:1px_#6A6A6A] md:[-webkit-text-stroke:1.5px_#6A6A6A]"
+  linkColorClass = "text-brand-red hover:text-blue-700", 
+  highlightColorClass = "text-brand-red",
+  headingClass = "font-subtitle text-[#6A6A6A] tracking-[4px] md:tracking-[6px] [-webkit-text-stroke:1px_#6A6A6A] md:[-webkit-text-stroke:1.5px_#6A6A6A]",
+  showFooter = true
 }) => {
   return (
     <section className="w-full px-4 md:px-8 pt-4 md:pt-10 pb-2 md:pb-0 bg-white relative z-10">
@@ -25,7 +26,7 @@ const ContactForm = ({
               <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand-blue shadow-[0_0_8px_rgba(22,114,239,0.5)]"></div>
             </div>
             <h2 className={`text-3xl md:text-5xl lg:text-6xl font-bold uppercase mx-6 whitespace-nowrap ${headingClass}`}>
-              GET A FREE <span className={highlightColorClass}>QUOTATION</span>
+              GET A FREE <span className={`${highlightColorClass} [-webkit-text-stroke:0px]`}>QUOTATION</span>
             </h2>
             <div className="hidden md:block flex-1 h-[2px] bg-gradient-to-l from-transparent via-gray-200 to-gray-300 relative">
               <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand-blue shadow-[0_0_8px_rgba(22,114,239,0.5)]"></div>
@@ -119,26 +120,28 @@ const ContactForm = ({
           </motion.form>
 
           {/* Footer Text */}
-          <motion.div 
-            className="w-full mx-auto flex flex-col justify-center items-center gap-2 mt-8 text-center"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <div className="flex flex-col xl:flex-row justify-center items-center gap-2 xl:gap-6">
-              <p className="font-main text-xs md:text-sm text-gray-500 font-medium">
-                Potential clients can fill this form or email us at <a href="mailto:info@redashfilms.com" className={`font-bold transition-colors ${linkColorClass}`}>info@redashfilms.com</a>
+          {showFooter && (
+            <motion.div 
+              className="w-full mx-auto flex flex-col justify-center items-center gap-2 mt-8 text-center"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <div className="flex flex-col xl:flex-row justify-center items-center gap-2 xl:gap-6">
+                <p className="font-main text-xs md:text-sm text-gray-500 font-medium">
+                  Potential clients can fill this form or email us at <a href="https://mail.google.com/mail/?view=cm&fs=1&to=info@redashfilms.com" target="_blank" rel="noopener noreferrer" className={`font-bold transition-colors ${linkColorClass}`}>info@redashfilms.com</a>
+                </p>
+                <p className="hidden xl:block font-main text-sm text-gray-300">|</p>
+                <p className="font-main text-xs md:text-sm text-gray-500 font-medium">
+                  Actors, Film Crew Members & Vendors can email their profiles only at <a href="https://mail.google.com/mail/?view=cm&fs=1&to=redash.films@gmail.com" target="_blank" rel="noopener noreferrer" className={`font-bold transition-colors ${linkColorClass}`}>redash.films@gmail.com</a>
+                </p>
+              </div>
+              <p className="font-main text-xs md:text-sm text-gray-500 font-medium mt-2">
+                <span className="font-bold text-gray-700">RedAsh Office:</span> 1101, Peninsula Park, Fun Republic Lane, Andheri West, Mumbai, 400053 <a href="https://share.google/Pxp4Tva4m3IyfrKAd" target="_blank" rel="noopener noreferrer" className={`font-bold transition-colors hover:underline ${linkColorClass}`}>(Google Location)</a>
               </p>
-              <p className="hidden xl:block font-main text-sm text-gray-300">|</p>
-              <p className="font-main text-xs md:text-sm text-gray-500 font-medium">
-                Actors, Film Crew Members & Vendors can email their profiles only at <a href="mailto:redash.films@gmail.com" className={`font-bold transition-colors ${linkColorClass}`}>redash.films@gmail.com</a>
-              </p>
-            </div>
-            <p className="font-main text-xs md:text-sm text-gray-500 font-medium mt-2">
-              <span className="font-bold text-gray-700">RedAsh Office:</span> 1101, Peninsula Park, Fun Republic Lane, Andheri West, Mumbai, 400053 <a href="https://share.google/Pxp4Tva4m3IyfrKAd" target="_blank" rel="noopener noreferrer" className={`font-bold transition-colors hover:underline ${linkColorClass}`}>(Google Location)</a>
-            </p>
-          </motion.div>
+            </motion.div>
+          )}
           
         </div>
       </div>

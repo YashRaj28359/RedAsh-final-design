@@ -6,9 +6,12 @@ const Footer = ({ links }) => {
   const currentYear = new Date().getFullYear(); // Or hardcode 2026 based on image
 
   const defaultLinks = [
-    { name: 'HOME', path: '/', onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
-    { name: 'ENTERTAINMENT FILMS', path: '/entertainment-films' },
-    { name: 'AD AGENCY', path: '/ad-agency' }
+    { name: 'HOME', path: '/ad-agency' },
+    { name: 'ABOUT', path: '/ad-agency/about' },
+    { name: 'FILMS', path: '/ad-agency#enterprise-films' },
+    { name: 'BLOG', path: '/ad-agency/blog' },
+    { name: 'MEDIA', path: '/ad-agency/media' },
+    { name: 'CONTACT', path: '/ad-agency/contact' }
   ];
 
   const displayLinks = links || defaultLinks;

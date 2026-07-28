@@ -1,57 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { LuNewspaper } from "react-icons/lu";
-import dnaImage from '../../assets/ashish-lal-dna.jpg';
+import mediaData from '../../data/media.json';
 
 const MediaLinks = () => {
-  const articles = [
-    {
-      id: 'dna',
-      source: 'DNA',
-      title: 'RedAsh Films led by IIT Delhi engineer Ashish Lal scales rapidly with 1600% growth over two years',
-      description: 'Mumbai-based production company RedAsh Films, founded and led by Ashish Lal, has witnessed rapid growth over the last two financial years.',
-      url: 'https://www.dnaindia.com/insights/report-redash-films-led-by-iit-delhi-engineer-ashish-lal-scales-rapidly-with-1600-growth-over-two-years-3211714',
-      image: dnaImage,
-      
-      // --- EASY IMAGE CONTROLS ---
-      zoom: 10,         
-      moveLeft: 0,     
-      moveRight: 100,   
-      moveUp: 0,       
-      moveDown: 50,    
-    },
-    {
-      id: 'toi',
-      source: 'Times of India',
-      title: 'Ashish Lal explores friendship and loss in The Codpaster',
-      description: 'Actor, filmmaker and entrepreneur Ashish Lal has completed shooting for The Codpaster, a Hindi web series being positioned as the world\'s first fiction drama set in the world of podcasting.',
-      url: 'https://timesofindia.indiatimes.com/entertainment/hindi/bollywood/news/ashish-lal-explores-friendship-and-loss-in-the-codpaster/articleshow/131854264.cms',
-      image: 'https://static.toiimg.com/thumb/msid-131854729,imgsize-212194,width-400,height-225,resizemode-4/ashishonline.jpg',
-      
-      // --- EASY IMAGE CONTROLS ---
-      zoom: 7,        // Zoom percentage (e.g. 10 = 10% zoom)
-      moveLeft: 0,     // Nudge image left
-      moveRight: 50,   // Nudge image right
-      moveUp: 0,       // Nudge image up
-      moveDown: 10,    // Nudge image down
-    },
-    {
-      id: 'mid-day',
-      source: 'Mid-day',
-      title: 'Ashish Lal, the IIT Delhi engineer-turned-actor, teams up with Surbhi Jyoti and Upendra Limaye',
-      description: 'Ashish Lal’s journey into acting has not followed the usual industry route. An engineer from the IIT Delhi, he could have chosen a more predictable professional path, but cinema and performance gradually became the stronger calling.',
-      url: 'https://www.mid-day.com/buzzfeed/article/ashish-lal-the-iit-delhi-engineer-turned-actor-teams-up-with-surbhi-jyoti-and-upendra-limaye-9809',
-      image: 'https://images.mid-day.com/images/images/2026/may/f336_d.jpg',
-
-      // --- EASY IMAGE CONTROLS ---
-      zoom: 5,         
-      moveLeft: 0,     
-      moveRight: 0,   
-      moveUp: 0,       
-      moveDown: 0,    
-    }
-  ];
-
+  const articles = mediaData.slice(0, 3);
   // Helper to dynamically calculate CSS Object Position and Scale from user controls
   const getImageStyles = (article) => {
     const x = 50 + (article.moveLeft || 0) - (article.moveRight || 0);
@@ -143,9 +96,7 @@ const MediaLinks = () => {
 
               {/* Content */}
               <div className="p-6 flex flex-col flex-1">
-                <span className="inline-block px-3 py-1 bg-gray-100 text-brand-black text-xs font-bold uppercase tracking-wider rounded-full self-start mb-4">
-                  {article.source}
-                </span>
+
                 
                 <h3 className="font-main font-bold text-lg md:text-xl text-brand-black leading-snug mb-3 group-hover:text-brand-red transition-colors">
                   {article.title}

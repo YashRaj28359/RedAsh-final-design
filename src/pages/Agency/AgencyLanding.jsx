@@ -1,7 +1,11 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Lenis from 'lenis';
 import Navbar from './components/Navbar';
+
+gsap.registerPlugin(ScrollTrigger);
 import Hero from './components/Hero';
 import ContactForm from '../../components/ContactForm/ContactForm';
 import VideoCollage from './components/VideoCollage';
@@ -24,6 +28,31 @@ const AgencyLanding = () => {
       { opacity: 1, duration: 1, ease: 'power2.out' }
     );
   }, { scope: containerRef });
+
+  // Initialize Lenis for smooth scrolling
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 2,
+    });
+
+    lenis.on('scroll', ScrollTrigger.update);
+
+    const updateLenis = (time) => {
+      lenis.raf(time * 1000);
+    };
+
+    gsap.ticker.add(updateLenis);
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      gsap.ticker.remove(updateLenis);
+      lenis.destroy();
+    };
+  }, []);
 
   return (
     <div 
@@ -77,16 +106,7 @@ const AgencyLanding = () => {
       </main>
 
       {/* Footer customized with Agency navigation links */}
-      <Footer 
-        links={[
-          { name: 'HOME', path: '/ad-agency', onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
-          { name: 'ABOUT', path: '/ad-agency' },
-          { name: 'FILMS', path: '/ad-agency' },
-          { name: 'BLOG', path: '/ad-agency' },
-          { name: 'MEDIA', path: '/ad-agency' },
-          { name: 'CONTACT', path: '/ad-agency' },
-        ]}
-      />
+      <Footer />
     </div>
   );
 };

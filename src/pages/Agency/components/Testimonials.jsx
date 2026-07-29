@@ -6,9 +6,9 @@ const VideoTestimonial = ({ name, title, company, videoId, rotationClass = "" })
   const thumbUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
 
   return (
-    <div className={`w-full bg-white rounded-3xl overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-gray-100 flex flex-col group h-full transition-all duration-300 hover:rotate-0 hover:scale-[1.02] z-10 hover:z-20 ${rotationClass}`}>
+    <div className={`w-full bg-white rounded-3xl overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-gray-100 flex flex-col group h-full transition-all duration-300 hover:rotate-0 hover:scale-[1.02] z-10 hover:z-20 ${rotationClass} [@media(max-height:600px)_and_(orientation:landscape)]:rounded-xl`}>
       {/* Thumbnail / Video Section */}
-      <div className="relative w-full h-48 md:h-52 bg-gray-200 overflow-hidden">
+      <div className="relative w-full h-48 md:h-52 bg-gray-200 overflow-hidden [@media(max-height:600px)_and_(orientation:landscape)]:h-24">
         {isPlaying ? (
           <>
             <iframe 
@@ -48,11 +48,11 @@ const VideoTestimonial = ({ name, title, company, videoId, rotationClass = "" })
       </div>
       
       {/* Bottom Content Section */}
-      <div className="p-5 md:p-6 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-2 flex-grow bg-white">
+      <div className="p-5 md:p-6 flex flex-col xl:flex-row justify-between items-start xl:items-center gap-2 flex-grow bg-white [@media(max-height:600px)_and_(orientation:landscape)]:p-2 [@media(max-height:600px)_and_(orientation:landscape)]:gap-1">
         <div>
-          <h4 className="text-gray-900 font-bold text-lg">{name}</h4>
-          <p className="text-gray-500 text-xs md:text-sm mt-0.5">{title}</p>
-          <p className="text-brand-blue text-sm font-semibold mt-0.5">{company}</p>
+          <h4 className="text-gray-900 font-bold text-lg [@media(max-height:600px)_and_(orientation:landscape)]:text-[11px]">{name}</h4>
+          <p className="text-gray-500 text-xs md:text-sm mt-0.5 [@media(max-height:600px)_and_(orientation:landscape)]:text-[9px] [@media(max-height:600px)_and_(orientation:landscape)]:mt-0">{title}</p>
+          <p className="text-brand-blue text-sm font-semibold mt-0.5 [@media(max-height:600px)_and_(orientation:landscape)]:text-[9px] [@media(max-height:600px)_and_(orientation:landscape)]:mt-0">{company}</p>
         </div>
       </div>
     </div>
@@ -60,26 +60,26 @@ const VideoTestimonial = ({ name, title, company, videoId, rotationClass = "" })
 };
 
 const TextTestimonial = ({ text, name, title, company, avatar, rotationClass = "" }) => (
-  <div className={`w-full bg-white rounded-3xl p-6 md:p-8 shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-gray-100 flex flex-col justify-between h-full transition-all duration-300 hover:rotate-0 hover:scale-[1.02] z-10 hover:z-20 ${rotationClass} group overflow-hidden relative`}>
+  <div className={`w-full bg-white rounded-3xl p-6 md:p-8 shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-gray-100 flex flex-col justify-between h-full transition-all duration-300 hover:rotate-0 hover:scale-[1.02] z-10 hover:z-20 ${rotationClass} group overflow-hidden relative [@media(max-height:600px)_and_(orientation:landscape)]:p-3 [@media(max-height:600px)_and_(orientation:landscape)]:rounded-xl`}>
     
     {/* Blue background sliding up from bottom */}
     <div className="absolute inset-0 bg-brand-blue translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] z-0"></div>
 
     <div className="relative z-10">
-      <div className="flex justify-between items-start mb-6">
-        <span className="text-6xl text-blue-400/40 group-hover:text-white/40 transition-colors duration-300 font-serif leading-none h-10 block">“</span>
+      <div className="flex justify-between items-start mb-6 [@media(max-height:600px)_and_(orientation:landscape)]:mb-1">
+        <span className="text-6xl text-blue-400/40 group-hover:text-white/40 transition-colors duration-300 font-serif leading-none h-10 block [@media(max-height:600px)_and_(orientation:landscape)]:text-2xl [@media(max-height:600px)_and_(orientation:landscape)]:h-4">“</span>
       </div>
-      <p className="text-gray-700 group-hover:text-white transition-colors duration-300 font-medium text-sm md:text-base leading-relaxed mb-8">
+      <p className="text-gray-700 group-hover:text-white transition-colors duration-300 font-medium text-sm md:text-base leading-relaxed mb-8 [@media(max-height:600px)_and_(orientation:landscape)]:text-[9px] [@media(max-height:600px)_and_(orientation:landscape)]:leading-tight [@media(max-height:600px)_and_(orientation:landscape)]:mb-2">
         {text}
       </p>
     </div>
     
-    <div className="flex items-center gap-4 mt-auto relative z-10">
-      <img src={avatar} alt={name} className="w-12 h-12 rounded-full object-cover shadow-sm group-hover:shadow-md transition-all duration-300" />
+    <div className="flex items-center gap-4 mt-auto relative z-10 [@media(max-height:600px)_and_(orientation:landscape)]:gap-2">
+      <img src={avatar} alt={name} className="w-12 h-12 rounded-full object-cover shadow-sm group-hover:shadow-md transition-all duration-300 [@media(max-height:600px)_and_(orientation:landscape)]:w-6 [@media(max-height:600px)_and_(orientation:landscape)]:h-6" />
       <div>
-        <h4 className="font-bold text-gray-900 group-hover:text-white transition-colors duration-300 text-sm md:text-base">{name}</h4>
-        <p className="text-gray-500 group-hover:text-white/80 transition-colors duration-300 text-xs mt-0.5">{title}</p>
-        <p className="text-brand-blue group-hover:text-white transition-colors duration-300 text-xs font-semibold mt-0.5">{company}</p>
+        <h4 className="font-bold text-gray-900 group-hover:text-white transition-colors duration-300 text-sm md:text-base [@media(max-height:600px)_and_(orientation:landscape)]:text-[10px]">{name}</h4>
+        <p className="text-gray-500 group-hover:text-white/80 transition-colors duration-300 text-xs mt-0.5 [@media(max-height:600px)_and_(orientation:landscape)]:text-[8px] [@media(max-height:600px)_and_(orientation:landscape)]:mt-0">{title}</p>
+        <p className="text-brand-blue group-hover:text-white transition-colors duration-300 text-xs font-semibold mt-0.5 [@media(max-height:600px)_and_(orientation:landscape)]:text-[9px] [@media(max-height:600px)_and_(orientation:landscape)]:mt-0">{company}</p>
       </div>
     </div>
   </div>
@@ -106,7 +106,7 @@ const Testimonials = () => {
         </div>
 
         {/* Grid Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12 [@media(max-height:600px)_and_(orientation:landscape)]:grid-cols-3 [@media(max-height:600px)_and_(orientation:landscape)]:gap-4">
           
           {/* Row 1 */}
           <VideoTestimonial 

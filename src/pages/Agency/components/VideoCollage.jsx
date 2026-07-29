@@ -126,7 +126,7 @@ const VideoCollage = () => {
       <div ref={containerRef} className="absolute inset-0 w-full h-full pointer-events-none z-10 hidden md:block">
         
         {/* Left Column */}
-        <div className="absolute top-0 bottom-0 left-[5%] w-[20%] flex flex-col justify-center gap-8 collage-column-left">
+        <div className="absolute top-0 bottom-0 left-[5%] [@media(max-height:600px)_and_(orientation:landscape)]:left-[2%] w-[20%] [@media(max-height:600px)_and_(orientation:landscape)]:w-[14%] flex flex-col justify-center gap-8 [@media(max-height:600px)_and_(orientation:landscape)]:gap-4 collage-column-left">
           {leftVideos.map((video, index) => (
             <div key={`left-${index}`} className="collage-card-left">
               <VideoCard video={video} onPlay={() => setActiveVideo(video.id)} />
@@ -135,7 +135,7 @@ const VideoCollage = () => {
         </div>
 
         {/* Right Column */}
-        <div className="absolute top-0 bottom-0 right-[5%] w-[20%] flex flex-col justify-center gap-8 collage-column-right">
+        <div className="absolute top-0 bottom-0 right-[5%] [@media(max-height:600px)_and_(orientation:landscape)]:right-[2%] w-[20%] [@media(max-height:600px)_and_(orientation:landscape)]:w-[14%] flex flex-col justify-center gap-8 [@media(max-height:600px)_and_(orientation:landscape)]:gap-4 collage-column-right">
           {rightVideos.map((video, index) => (
             <div key={`right-${index}`} className="collage-card-right">
               <VideoCard video={video} onPlay={() => setActiveVideo(video.id)} />

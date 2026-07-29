@@ -81,11 +81,13 @@ const AgencyLanding = () => {
           <VideoCollage />
         </div>
         
-        <ContactForm 
-          linkColorClass="text-brand-blue hover:text-blue-700" 
-          highlightColorClass="text-brand-blue"
-          headingClass="font-hero tracking-wider text-brand-gray"
-        />
+        <div className="mt-32 sm:mt-48 md:mt-0">
+          <ContactForm 
+            linkColorClass="text-brand-blue hover:text-blue-700" 
+            highlightColorClass="text-brand-blue"
+            headingClass="font-hero tracking-wider text-brand-gray"
+          />
+        </div>
         
         <TopGlobalClients />
         <CaseStudies />

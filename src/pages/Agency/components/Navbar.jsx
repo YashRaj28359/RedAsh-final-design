@@ -84,7 +84,7 @@ const Navbar = () => {
               alt="RedAsh Agency" 
               className={`w-auto object-contain transition-all duration-300 hover:scale-105 ${
                 isInVideoSection ? 'h-8 sm:h-10 md:h-12' : 'h-12 sm:h-16 md:h-[88px]'
-              }`}
+              } [@media(max-height:600px)_and_(orientation:landscape)]:!h-8`}
               onError={(e) => {
                 e.target.style.display = 'none';
                 e.target.parentElement.innerHTML = '<span class="text-2xl font-bold font-hero tracking-widest text-brand-red">R<br/>REDASH</span>';
@@ -149,27 +149,29 @@ const Navbar = () => {
     <AnimatePresence>
       {isMobileMenuOpen && (
         <motion.div
-          className="fixed top-[64px] sm:top-[80px] left-0 w-full bg-white flex flex-col items-center py-8 gap-6 shadow-xl lg:hidden overflow-hidden origin-top z-40"
+          className="fixed top-[64px] sm:top-[80px] [@media(max-height:600px)_and_(orientation:landscape)]:top-[48px] left-0 w-full bg-white flex flex-col items-center py-8 [@media(max-height:600px)_and_(orientation:landscape)]:py-4 shadow-xl lg:hidden overflow-hidden origin-top z-40"
           initial={{ opacity: 0, scaleY: 0 }}
           animate={{ opacity: 1, scaleY: 1 }}
           exit={{ opacity: 0, scaleY: 0 }}
           transition={{ duration: 0.3 }}
         >
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              to={link.path}
-              onClick={() => {
-                setActiveMenu(link.name);
-                setIsMobileMenuOpen(false);
-              }}
-              className={`font-main font-semibold text-lg uppercase tracking-wide transition-colors duration-300 ${
-                activeMenu === link.name ? 'text-brand-blue' : 'text-gray-800 hover:text-brand-blue'
-              }`}
-            >
-              {link.name}
-            </Link>
-          ))}
+          <div className="grid grid-cols-3 gap-y-6 gap-x-2 w-full px-2 text-center">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                to={link.path}
+                onClick={() => {
+                  setActiveMenu(link.name);
+                  setIsMobileMenuOpen(false);
+                }}
+                className={`font-main font-semibold text-[13px] sm:text-base uppercase tracking-wide transition-colors duration-300 ${
+                  activeMenu === link.name ? 'text-brand-blue' : 'text-gray-800 hover:text-brand-blue'
+                }`}
+              >
+                {link.name}
+              </Link>
+            ))}
+          </div>
           
           <div className="flex items-center gap-6 mt-4 text-gray-800 text-xl">
             <a href="https://www.linkedin.com/company/redashfilms/" target="_blank" rel="noreferrer" className="hover:text-brand-blue transition-colors"><FaLinkedinIn /></a>

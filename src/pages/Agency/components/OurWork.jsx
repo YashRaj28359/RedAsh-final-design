@@ -167,17 +167,17 @@ const OurWork = () => {
         >
 
           {/* Grid Container for Text Boxes */}
-          <div className="relative z-10 w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="relative z-10 w-full grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 [@media(max-height:600px)_and_(orientation:landscape)]:grid-cols-3 [@media(max-height:600px)_and_(orientation:landscape)]:gap-2">
             
             {workData.map((item, index) => (
               <div 
                 key={index} 
-                className="w-full relative overflow-hidden bg-white/70 backdrop-blur-2xl rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group flex flex-col justify-center items-center text-center min-h-[100px] px-6 py-5 hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(22,114,239,0.6)]"
+                className="w-full relative overflow-hidden bg-white/70 backdrop-blur-2xl rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group flex flex-col justify-center items-center text-center min-h-[80px] md:min-h-[100px] px-2 sm:px-6 py-4 md:py-5 hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(22,114,239,0.6)] [@media(max-height:600px)_and_(orientation:landscape)]:min-h-[50px] [@media(max-height:600px)_and_(orientation:landscape)]:py-2"
               >
                 {/* Blue background sliding up from bottom */}
                 <div className="absolute inset-0 bg-brand-blue translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] z-0"></div>
 
-                <h4 className="relative z-10 text-lg md:text-xl font-main font-bold text-gray-900 leading-snug group-hover:text-white transition-colors duration-300 capitalize">
+                <h4 className="relative z-10 text-sm sm:text-lg md:text-xl font-main font-bold text-gray-900 leading-snug group-hover:text-white transition-colors duration-300 capitalize [@media(max-height:600px)_and_(orientation:landscape)]:text-[10px] [@media(max-height:600px)_and_(orientation:landscape)]:leading-tight">
                   {item.title}
                 </h4>
               </div>

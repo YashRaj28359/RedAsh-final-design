@@ -129,12 +129,12 @@ const CaseStudies = () => {
         </div>
 
         {/* Grid Container */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 lg:gap-16 w-full mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 lg:gap-16 w-full mb-12 [@media(max-height:600px)_and_(orientation:landscape)]:grid-cols-3 [@media(max-height:600px)_and_(orientation:landscape)]:gap-4">
           {caseStudiesData.map((study) => (
-            <div key={study.id} className="bg-white rounded-[2rem] p-4 shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col group relative border border-gray-100">
+            <div key={study.id} className="bg-white rounded-[2rem] p-4 shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col group relative border border-gray-100 [@media(max-height:600px)_and_(orientation:landscape)]:p-2 [@media(max-height:600px)_and_(orientation:landscape)]:rounded-xl">
               
               {/* Image Area */}
-              <div className="relative w-full h-48 md:h-56 rounded-3xl overflow-hidden mb-6 bg-gray-100">
+              <div className="relative w-full h-48 md:h-56 rounded-3xl overflow-hidden mb-6 bg-gray-100 [@media(max-height:600px)_and_(orientation:landscape)]:h-24 [@media(max-height:600px)_and_(orientation:landscape)]:mb-2 [@media(max-height:600px)_and_(orientation:landscape)]:rounded-xl">
                 
                 <img 
                   src={study.image} 
@@ -143,17 +143,17 @@ const CaseStudies = () => {
                 />
                 
                 {/* Top Tag pill (overlapping top edge slightly) */}
-                <div className={`absolute top-0 left-1/2 -translate-x-1/2 px-8 py-1.5 rounded-b-2xl ${study.tagColor} text-white font-bold text-xs shadow-md z-10 whitespace-nowrap`}>
+                <div className={`absolute top-0 left-1/2 -translate-x-1/2 px-8 py-1.5 rounded-b-2xl ${study.tagColor} text-white font-bold text-xs shadow-md z-10 whitespace-nowrap [@media(max-height:600px)_and_(orientation:landscape)]:px-3 [@media(max-height:600px)_and_(orientation:landscape)]:py-0.5 [@media(max-height:600px)_and_(orientation:landscape)]:text-[8px] [@media(max-height:600px)_and_(orientation:landscape)]:rounded-b-lg`}>
                   {study.tag}
                 </div>
 
                 {/* Right Icon Badge */}
-                <div className="absolute top-1/2 right-0 -translate-y-1/2 bg-white p-3 md:p-3.5 rounded-l-2xl shadow-lg z-10 text-brand-blue flex items-center justify-center">
-                  <study.Icon size={20} className={`${study.tagColor.replace('bg-', 'text-')}`} />
+                <div className="absolute top-1/2 right-0 -translate-y-1/2 bg-white p-3 md:p-3.5 rounded-l-2xl shadow-lg z-10 text-brand-blue flex items-center justify-center [@media(max-height:600px)_and_(orientation:landscape)]:p-1.5 [@media(max-height:600px)_and_(orientation:landscape)]:rounded-l-lg [&>svg]:w-5 [&>svg]:h-5 [@media(max-height:600px)_and_(orientation:landscape)]:[&>svg]:w-3 [@media(max-height:600px)_and_(orientation:landscape)]:[&>svg]:h-3">
+                  <study.Icon className={`${study.tagColor.replace('bg-', 'text-')}`} />
                 </div>
 
                 {/* Bottom Stat pill */}
-                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-white px-6 py-2 rounded-full font-bold text-gray-900 text-xs shadow-lg whitespace-nowrap z-10">
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-white px-6 py-2 rounded-full font-bold text-gray-900 text-xs shadow-lg whitespace-nowrap z-10 [@media(max-height:600px)_and_(orientation:landscape)]:bottom-1 [@media(max-height:600px)_and_(orientation:landscape)]:px-2 [@media(max-height:600px)_and_(orientation:landscape)]:py-0.5 [@media(max-height:600px)_and_(orientation:landscape)]:text-[8px]">
                   {study.stat}
                 </div>
                 
@@ -163,12 +163,12 @@ const CaseStudies = () => {
 
               {/* Content Area */}
               <div className="flex flex-col items-center justify-center flex-grow px-2 text-center mt-2">
-                <h3 className="text-lg font-bold text-gray-900 mb-2 leading-tight">
+                <h3 className="text-lg font-bold text-gray-900 mb-2 leading-tight [@media(max-height:600px)_and_(orientation:landscape)]:text-[11px] [@media(max-height:600px)_and_(orientation:landscape)]:mb-1">
                   {study.title}
                 </h3>
                 
-                <div className="flex items-center justify-center gap-2 text-xs text-gray-900 font-bold mb-6">
-                  <div className="w-6 h-6 rounded-full bg-gray-900 text-white flex items-center justify-center text-[10px]">
+                <div className="flex items-center justify-center gap-2 text-xs text-gray-900 font-bold mb-6 [@media(max-height:600px)_and_(orientation:landscape)]:text-[9px] [@media(max-height:600px)_and_(orientation:landscape)]:mb-2">
+                  <div className="w-6 h-6 rounded-full bg-gray-900 text-white flex items-center justify-center text-[10px] [@media(max-height:600px)_and_(orientation:landscape)]:w-4 [@media(max-height:600px)_and_(orientation:landscape)]:h-4 [@media(max-height:600px)_and_(orientation:landscape)]:text-[8px]">
                     <FaBuilding size={10} />
                   </div>
                   {study.clientType}

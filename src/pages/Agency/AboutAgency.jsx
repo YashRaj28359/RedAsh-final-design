@@ -233,7 +233,7 @@ const AboutAgency = () => {
               >
                 WELCOME
               </motion.div>
-              <div className="self-start text-[12vw] md:text-[8rem] -mt-2 md:-mt-4 ml-0 md:ml-12 whitespace-nowrap flex">
+              <div className="self-start text-[12vw] md:text-[8rem] mt-2 md:-mt-4 ml-0 md:ml-12 whitespace-nowrap flex">
                 <motion.div 
                   variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } } }}
                   className="text-brand-gray mr-4 md:mr-8"
@@ -249,7 +249,7 @@ const AboutAgency = () => {
               </div>
               <motion.div 
                 variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } } }}
-                className="self-start text-brand-blue text-[13vw] md:text-[9rem] -mt-2 md:-mt-4 -ml-2 md:-ml-4"
+                className="self-start text-brand-blue text-[13vw] md:text-[9rem] mt-2 md:-mt-4 -ml-2 md:-ml-4"
               >
                 AGENCY<span className="text-[10vw] md:text-[8.5rem]">!</span>
               </motion.div>
@@ -286,14 +286,14 @@ const AboutAgency = () => {
         />
 
         {/* Content Section 1 - Image Left, Text Right */}
-        <section className="py-24 px-6 md:px-12 bg-white relative">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <section className="py-24 px-6 md:px-12 bg-white relative [@media(max-height:600px)_and_(orientation:landscape)]:py-6">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center [@media(max-height:600px)_and_(orientation:landscape)]:grid-cols-2 [@media(max-height:600px)_and_(orientation:landscape)]:gap-6">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8 }}
-              className="lg:col-span-7 relative h-[300px] sm:h-[400px] lg:h-[450px] xl:h-[500px] w-full"
+              className="lg:col-span-7 relative h-[300px] sm:h-[400px] lg:h-[450px] xl:h-[500px] w-full [@media(max-height:600px)_and_(orientation:landscape)]:col-span-1 [@media(max-height:600px)_and_(orientation:landscape)]:h-[240px]"
             >
               <div 
                 className="relative w-full h-full rounded-3xl overflow-hidden shadow-2xl z-10 bg-black group"
@@ -317,7 +317,7 @@ const AboutAgency = () => {
                 ))}
                 
                 {/* Manual Navigation Controls */}
-                <div className="absolute inset-0 flex items-center justify-between px-4 z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute inset-0 flex items-center justify-between px-4 z-20 pointer-events-none opacity-100 md:opacity-0 md:group-hover:opacity-100 [@media(max-height:600px)_and_(orientation:landscape)]:opacity-100 transition-opacity duration-300">
                   <button 
                     onClick={prevImage}
                     className="pointer-events-auto bg-black/60 hover:bg-black text-white p-2 rounded-full backdrop-blur-sm transition-all shadow-xl hover:scale-110"
@@ -339,25 +339,25 @@ const AboutAgency = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8 }}
-              className="lg:col-span-5 flex flex-col justify-center relative py-8 md:py-12"
+              className="lg:col-span-5 flex flex-col justify-center relative py-8 md:py-12 [@media(max-height:600px)_and_(orientation:landscape)]:col-span-1 [@media(max-height:600px)_and_(orientation:landscape)]:py-2"
             >
               {/* Decorative Accent */}
               <div className="absolute top-1/4 bottom-1/4 left-0 w-1.5 md:w-2  from-brand-red via-purple-500 to-brand-blue rounded-full" />
               
-              <div className="space-y-8 pl-6 md:pl-10">
-                <h2 className="text-4xl md:text-5xl lg:text-6xl font-hero tracking-tight text-brand-black leading-tight">
+              <div className="space-y-8 pl-6 md:pl-10 [@media(max-height:600px)_and_(orientation:landscape)]:space-y-3 [@media(max-height:600px)_and_(orientation:landscape)]:pl-4">
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-hero tracking-tight text-brand-black leading-tight [@media(max-height:600px)_and_(orientation:landscape)]:text-2xl">
                   A Catalyst for <br />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-red to-brand-blue">
                     Exponential
                   </span> Growth
                 </h2>
                 
-                <div className="w-20 h-1 bg-gray-200 rounded-full"></div>
+                <div className="w-20 h-1 bg-gray-200 rounded-full [@media(max-height:600px)_and_(orientation:landscape)]:h-0.5 [@media(max-height:600px)_and_(orientation:landscape)]:w-10"></div>
                 
-                <p className="text-xl md:text-2xl text-gray-600 leading-relaxed font-light">
+                <p className="text-xl md:text-2xl text-gray-600 leading-relaxed font-light [@media(max-height:600px)_and_(orientation:landscape)]:text-xs [@media(max-height:600px)_and_(orientation:landscape)]:leading-snug">
                   Throughout the years in the industry, RedAsh Films has been a catalyst for exponential growth, thanks to our <span className="font-semibold text-brand-black">bespoke and imaginative strategies</span>. 
                 </p>
-                <p className="text-xl md:text-2xl text-gray-600 leading-relaxed font-light">
+                <p className="text-xl md:text-2xl text-gray-600 leading-relaxed font-light [@media(max-height:600px)_and_(orientation:landscape)]:text-xs [@media(max-height:600px)_and_(orientation:landscape)]:leading-snug">
                   Our mission is to continue empowering organizations to reach their <span className="font-semibold text-brand-blue">full potential</span>.
                 </p>
               </div>

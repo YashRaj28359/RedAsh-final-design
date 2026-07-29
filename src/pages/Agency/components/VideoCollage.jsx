@@ -1,8 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { FaPlay } from 'react-icons/fa';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { motion, AnimatePresence } from 'framer-motion';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,11 +19,11 @@ const rightVideos = [
   { id: 'l4XYMZzh7Tc', label: 'AI VIDEOS', rotation: '8deg', offsetX: '-30px', scale: 0.90 },
 ];
 
-const VideoCard = ({ video, className, onPlay }) => (
-  <div className={className} style={{ transform: `translateX(${video.offsetX || '0px'}) rotate(${video.rotation || '0deg'}) scale(${video.scale || 1})` }}>
+const VideoCard = ({ video, className, onPlay, isMobile }) => (
+  <div className={className} style={isMobile ? {} : { transform: `translateX(${video.offsetX || '0px'}) rotate(${video.rotation || '0deg'}) scale(${video.scale || 1})` }}>
     <div 
       onClick={onPlay}
-      className="relative block w-full aspect-video rounded-lg overflow-hidden shadow-2xl transition-transform duration-500 hover:scale-105 hover:z-50 pointer-events-auto cursor-pointer group"
+      className={`relative block w-full aspect-video rounded-lg overflow-hidden shadow-2xl transition-transform duration-500 hover:scale-105 hover:z-50 pointer-events-auto cursor-pointer group ${isMobile ? 'border border-white/20' : ''}`}
     >
       <img 
         src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`} 
@@ -37,8 +38,8 @@ const VideoCard = ({ video, className, onPlay }) => (
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
         {/* Category Text (Bottom) */}
-        <div className="relative w-full flex justify-center pb-4 z-20">
-          <span className="text-brand-blue font-hero font-bold tracking-normal text-2xl md:text-3xl lg:text-4xl uppercase drop-shadow-md text-center px-2">
+        <div className="relative w-full flex justify-center pb-2 md:pb-4 z-20">
+          <span className="text-brand-blue font-hero font-bold tracking-normal text-[10px] sm:text-xs md:text-3xl lg:text-4xl uppercase drop-shadow-md text-center px-1">
             {video.label}
           </span>
         </div>
@@ -47,8 +48,8 @@ const VideoCard = ({ video, className, onPlay }) => (
 
       {/* Hover Overlay: Play Button */}
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 flex items-center justify-center">
-        <div className="w-12 h-12 md:w-16 md:h-16 rounded-full border-[1.5px] border-white/90 flex items-center justify-center transition-transform hover:scale-110 shadow-lg">
-          <FaPlay className="text-white text-sm md:text-base ml-1" />
+        <div className="w-8 h-8 md:w-16 md:h-16 rounded-full border-[1.5px] border-white/90 flex items-center justify-center transition-transform hover:scale-110 shadow-lg">
+          <FaPlay className="text-white text-[10px] md:text-base ml-1" />
         </div>
       </div>
     </div>
@@ -58,6 +59,15 @@ const VideoCard = ({ video, className, onPlay }) => (
 const VideoCollage = () => {
   const containerRef = useRef(null);
   const [activeVideo, setActiveVideo] = useState(null);
+  const [mobileIndex, setMobileIndex] = useState(0);
+
+  // Cycle mobile videos every 4 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMobileIndex((prev) => (prev + 1) % 3);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   useGSAP(() => {
     // Left side slides in from left
@@ -112,6 +122,7 @@ const VideoCollage = () => {
 
   return (
     <>
+      {/* Desktop Layout */}
       <div ref={containerRef} className="absolute inset-0 w-full h-full pointer-events-none z-10 hidden md:block">
         
         {/* Left Column */}
@@ -132,6 +143,39 @@ const VideoCollage = () => {
           ))}
         </div>
 
+      </div>
+
+      {/* Mobile Layout */}
+      <div className="absolute top-[18%] sm:top-[20%] left-0 w-full px-4 md:hidden z-20 pointer-events-none flex justify-center gap-3">
+        <div className="w-1/2 max-w-[200px] relative aspect-video">
+          <AnimatePresence mode="wait">
+            <motion.div 
+              key={`mobile-left-${mobileIndex}`}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.4 }}
+              className="absolute inset-0"
+            >
+              <VideoCard video={leftVideos[mobileIndex]} onPlay={() => setActiveVideo(leftVideos[mobileIndex].id)} isMobile />
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        <div className="w-1/2 max-w-[200px] relative aspect-video">
+          <AnimatePresence mode="wait">
+            <motion.div 
+              key={`mobile-right-${mobileIndex}`}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.4 }}
+              className="absolute inset-0"
+            >
+              <VideoCard video={rightVideos[mobileIndex]} onPlay={() => setActiveVideo(rightVideos[mobileIndex].id)} isMobile />
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
 
       {/* Video Modal */}

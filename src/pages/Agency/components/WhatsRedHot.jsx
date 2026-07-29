@@ -12,44 +12,31 @@ import image6 from '../../../assets/RedHot section/image6.png';
 const updatesData = [
   {
     id: 1,
-    pill: "FEATURED",
-    title: "India’s Fastest-Growing Production House",
-    desc: "RedAsh has emerged as one of India's fastest-growing production houses, with premium web shows, feature films and microdramas.",
+    pill: "MEDIA FEATURED",
+    title: "REDASH GROWS EXPONENTIALLY",
+    desc: "RedAsh has emerged as one of India's fastest-growing production houses and ad agencies",
     sourceLabel: "FEATURED IN",
-    links: [
-      { text: "TIMES OF INDIA", url: "https://timesofindia.indiatimes.com/entertainment/hindi/bollywood/news/ashish-lal-explores-friendship-and-loss-in-the-codpaster/articleshow/131854264.cms" },
-      { text: "DNA", url: "https://www.dnaindia.com/insights/report-redash-films-led-by-iit-delhi-engineer-ashish-lal-scales-rapidly-with-1600-growth-over-two-years-3211714" },
-      { text: "MID-DAY", url: "https://www.mid-day.com/buzzfeed/article/ashish-lal-the-iit-delhi-engineer-turned-actor-teams-up-with-surbhi-jyoti-and-upendra-limaye-9809" }
+    links: [  
+      { text: "DNA", url: "https://www.dnaindia.com/insights/report-redash-films-led-by-iit-delhi-engineer-ashish-lal-scales-rapidly-with-1600-growth-over-two-years-3211714" }
+      
     ],
     image: image1,
     imageLeft: true
   },
   {
     id: 2,
-    pill: "MILESTONE",
+    pill: "FUNDING",
     title: <>Driving <span className="text-blue-600">$12M – $125M</span><br/>In Client Funding</>,
     desc: "Our ad and video campaigns have played a significant role in helping our clients secure major investment rounds and fuel their growth.",
-    sourceLabel: "SOURCE",
+    sourceLabel: "Mention",
     links: [
-      { text: "LINKEDIN", url: "https://www.linkedin.com/company/94827924/" }
+      { text: "LINKEDIN", url: "https://www.linkedin.com/posts/ashishlalreal_redashfilms-fy2023abr24-gratitude-activity-7180844012902248449-Pusz/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAADZgaUBjOsNCJyT8TTYQTmZbp30gD5h4DA" }
     ],
     image: image2,
     imageLeft: false
   },
   {
     id: 3,
-    pill: "MEDIA FEATURE",
-    title: "RedAsh Featured in DNA India on 1600% Growth Journey",
-    desc: "A feature by DNA India on our incredible 1600% growth journey and how we're redefining the creative production landscape.",
-    sourceLabel: "FEATURED IN",
-    links: [
-      { text: "DNA INDIA", url: "https://www.dnaindia.com/insights/report-redash-films-led-by-iit-delhi-engineer-ashish-lal-scales-rapidly-with-1600-growth-over-two-years-3211714" }
-    ],
-    image: image3,
-    imageLeft: true
-  },
-  {
-    id: 4,
     pill: "MEDIA FEATURE",
     title: <>RedAsh Teams Up With Top Talent – <span className="text-blue-600">Mid-day</span> Feature</>,
     desc: "Featured in Mid-day for our creative collaborations with top talent and innovative storytelling that connects with millions.",
@@ -58,28 +45,16 @@ const updatesData = [
       { text: "MID-DAY", url: "https://www.mid-day.com/buzzfeed/article/ashish-lal-the-iit-delhi-engineer-turned-actor-teams-up-with-surbhi-jyoti-and-upendra-limaye-9809" }
     ],
     image: image4,
-    imageLeft: false
-  },
-  {
-    id: 5,
-    pill: "NEW RELEASE",
-    title: "New Web Series Now Streaming",
-    desc: "Our latest web series is now streaming across platforms. New stories. New emotions. Same RedAsh passion.",
-    sourceLabel: "SOURCE",
-    links: [
-      { text: "REDASH FILMS", url: "#" }
-    ],
-    image: image5,
     imageLeft: true
   },
   {
-    id: 6,
-    pill: "ACHIEVEMENT",
-    title: "Awards, Wins & Milestones",
-    desc: "From winning big at award shows to creating impact-driven campaigns, here's a look at our recent milestones.",
-    sourceLabel: "SOURCE",
+    id: 4,
+    pill: "INSIGHTS",
+    title: "RedAsh brings disruptive insights into ad campaigns, digital marketing, brand-based microdrama shows, and more.",
+    desc: "READ MORE ",
+    sourceLabel: "BLOG",
     links: [
-      { text: "REDASH FILMS", url: "#" }
+      { text: "READ MORE", url: "/ad-agency/blog" }
     ],
     image: image6,
     imageLeft: false
@@ -183,7 +158,7 @@ const WhatsRedHot = () => {
                   </div>
                   <div className="flex flex-wrap items-center gap-6 md:gap-8 text-sm md:text-base font-bold text-gray-900 uppercase tracking-wider">
                     {update.links.map((link, i) => (
-                      <a key={i} href={link.url} className="flex items-center gap-2 hover:text-blue-600 transition-colors">
+                      <a key={i} href={link.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-blue-600 transition-colors">
                         {link.text} <FaArrowRight className="text-blue-600" />
                       </a>
                     ))}
@@ -196,18 +171,7 @@ const WhatsRedHot = () => {
           ))}
         </div>
 
-        {/* View All Button */}
-        <motion.div 
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          viewport={{ once: false, amount: 0.2 }}
-          className="flex justify-center mt-12"
-        >
-          <button className="flex items-center gap-3 border border-blue-600 text-blue-600 font-bold text-sm px-8 py-3 rounded-full hover:bg-blue-600 hover:text-white transition-colors shadow-sm uppercase tracking-wide">
-            VIEW ALL UPDATES <FaArrowRight />
-          </button>
-        </motion.div>
+      
 
       </div>
     </section>

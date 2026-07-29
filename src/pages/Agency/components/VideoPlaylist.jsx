@@ -40,12 +40,17 @@ const ThumbnailImage = ({ video, isLarge }) => {
 const VideoPlaylist = ({ videos, category }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isHoveringButton, setIsHoveringButton] = useState(false);
   const carouselRef = useRef(null);
 
   const scrollCarousel = (direction) => {
     if (carouselRef.current) {
       const scrollAmount = 350; 
-      carouselRef.current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
+      if (direction === 'up' || direction === 'down') {
+        carouselRef.current.scrollBy({ top: direction === 'up' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
+      } else {
+        carouselRef.current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
+      }
     }
   };
 
@@ -75,6 +80,7 @@ const VideoPlaylist = ({ videos, category }) => {
                 {/* Netflix style Vignette & Gradients */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#08080C] via-[#08080C]/40 to-transparent"></div>
                 <div className="absolute inset-0 bg-gradient-to-r from-[#08080C]/80 via-transparent to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-white/50 to-transparent mix-blend-overlay"></div>
                 <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.8)]"></div>
               </motion.div>
             )}
@@ -101,72 +107,64 @@ const VideoPlaylist = ({ videos, category }) => {
 
           {/* Content Overlays */}
           {!isPlaying && (
-            <div className="absolute inset-0 flex flex-col justify-between z-20 pointer-events-none pb-6 md:pb-12 pt-12 md:pt-20">
-              
-              {/* Top Section: Huge Category & Small Video Title */}
-              <div className="w-full flex flex-col items-center px-4">
-                <motion.h2 
-                  key={`cat-${category}`}
-                  initial={{ y: -20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-hero font-extrabold text-brand-blue tracking-widest uppercase drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] text-center leading-none"
-                >
-                  {category}
-                </motion.h2>
+            <div className="absolute inset-0 flex flex-row justify-between z-20 pointer-events-none">
+                
+              {/* Full-width Dark Gradient at Bottom */}
+              <div className="absolute bottom-0 left-0 right-0 h-[40%] md:h-1/2 bg-gradient-to-t from-black/90 via-black/50 to-transparent pointer-events-none z-0"></div>
 
-                <motion.h1 
-                  key={`title-${activeVideo.id}`}
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.1, duration: 0.6 }}
-                  className="mt-4 md:mt-6 text-lg md:text-xl lg:text-2xl font-main font-semibold text-gray-200 text-center tracking-wide drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] max-w-4xl"
-                >
-                  {activeVideo.title}
-                </motion.h1>
-              </div>
+              {/* Left-Aligned Hero Content */}
+              <div className="flex-1 flex flex-col justify-end px-6 md:px-12 pt-10 md:pt-16 pb-8 md:pb-12 pointer-events-auto relative z-10">
 
-              {/* Center Section: Play Button */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-30">
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.3 }}
-                  className="pointer-events-auto"
-                >
-                  <button
-                    onClick={() => setIsPlaying(true)}
-                    className="flex items-center gap-3 bg-white text-black px-10 py-4 md:py-5 rounded-full font-bold text-xl hover:bg-brand-blue hover:text-white hover:scale-105 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.5)] group/playbtn"
+                {/* Bottom Left Content */}
+                <div className="flex flex-col items-start gap-2 md:gap-4 mt-auto relative z-10">
+                  
+                  {/* Video Title */}
+                  <motion.h1 
+                    key={`title-${activeVideo.id}`}
+                    initial={{ x: -20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.2, duration: 0.6 }}
+                    className="text-base md:text-lg lg:text-xl font-main font-bold text-white tracking-wide drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)] leading-tight text-left max-w-2xl"
                   >
-                    <FiPlay className="text-2xl md:text-3xl fill-current" /> Watch Now
-                  </button>
-                </motion.div>
+                    {activeVideo.title}
+                  </motion.h1>
+
+                  {/* Category Title */}
+                  <h3 className="text-3xl md:text-5xl lg:text-6xl xl:text-8xl font-hero font-extrabold text-brand-blue tracking-widest uppercase drop-shadow-[0_0_25px_currentColor]">
+                    {category}
+                  </h3>
+                </div>
+
               </div>
 
-              {/* Netflix-style Episode Carousel */}
-              <div className="w-full pointer-events-auto relative mt-auto px-4 md:px-12 group/carousel">
+              {/* Right Side Vertical Carousel */}
+              <div className="w-72 md:w-96 lg:w-[420px] xl:w-[480px] h-full pointer-events-auto relative group/carousel flex flex-col items-center justify-center py-4 pr-4 md:pr-8 pl-4">
                 <style>{`
                   .hide-scrollbar::-webkit-scrollbar {
                     display: none;
                   }
                 `}</style>
-                
-                <button 
-                  onClick={() => scrollCarousel('left')}
-                  className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-40 bg-black/80 hover:bg-white hover:text-black text-white p-2 md:p-3 rounded-full opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 shadow-xl border border-white/20"
-                >
-                  <FiChevronLeft size={24} />
-                </button>
-                
-                <button 
-                  onClick={() => scrollCarousel('right')}
-                  className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-40 bg-black/80 hover:bg-white hover:text-black text-white p-2 md:p-3 rounded-full opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 shadow-xl border border-white/20"
-                >
-                  <FiChevronRight size={24} />
-                </button>
+                {/* Centered Scroll Arrows */}
+                <div className="absolute inset-y-0 right-4 md:right-8 w-28 md:w-40 lg:w-48 xl:w-56 pointer-events-none flex flex-col justify-between items-center py-4 z-40">
+                  <button 
+                    onClick={() => scrollCarousel('up')}
+                    className="pointer-events-auto bg-black/80 hover:bg-white hover:text-black text-white p-2 md:p-3 rounded-full opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 shadow-xl border border-white/20"
+                  >
+                    <FiChevronLeft className="rotate-90" size={24} />
+                  </button>
+                  
+                  <button 
+                    onClick={() => scrollCarousel('down')}
+                    className="pointer-events-auto bg-black/80 hover:bg-white hover:text-black text-white p-2 md:p-3 rounded-full opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 shadow-xl border border-white/20"
+                  >
+                    <FiChevronRight className="rotate-90" size={24} />
+                  </button>
+                </div>
 
                 <div 
                   ref={carouselRef}
-                  className="flex gap-3 md:gap-4 overflow-x-auto pb-4 pt-2 snap-x snap-mandatory hide-scrollbar relative" 
+                  data-lenis-prevent="true"
+                  className={`flex flex-col gap-3 md:gap-4 px-4 py-8 h-full snap-y snap-mandatory hide-scrollbar relative w-full items-end pointer-events-none overscroll-contain ${isHoveringButton ? 'overflow-y-hidden' : 'overflow-y-auto'}`} 
                   style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                 >
                   {videos.map((video, index) => {
@@ -174,17 +172,42 @@ const VideoPlaylist = ({ videos, category }) => {
                       const episodeNumber = String(index + 1).padStart(2, '0');
                       
                       return (
-                        <button
-                          key={video.id + index}
-                          onClick={() => {
-                            setActiveIndex(index);
-                            setIsPlaying(false);
-                          }}
-                          className={`relative flex-shrink-0 w-40 md:w-56 lg:w-64 xl:w-72 aspect-video rounded-md overflow-hidden snap-start transition-all duration-500 cursor-pointer ${
-                            isActive ? 'ring-2 ring-white scale-100 opacity-100 z-10' : 'scale-95 opacity-50 hover:scale-100 hover:opacity-100'
-                          }`}
-                        >
-                          <ThumbnailImage video={video} isLarge={false} />
+                        <div key={video.id + index} className="flex items-center justify-end w-full snap-start group gap-3 md:gap-4">
+                          
+                          <AnimatePresence>
+                            {isActive && (
+                              <motion.div
+                                initial={{ opacity: 0, x: 20, scale: 0.8 }}
+                                animate={{ opacity: 1, x: 0, scale: 1 }}
+                                exit={{ opacity: 0, x: 20, scale: 0.8 }}
+                                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                                className="z-50 whitespace-nowrap flex-shrink-0 pointer-events-auto"
+                              >
+                                <button
+                                  onMouseEnter={() => setIsHoveringButton(true)}
+                                  onMouseLeave={() => setIsHoveringButton(false)}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setIsPlaying(true);
+                                  }}
+                                  className="flex items-center gap-2 bg-white text-black px-3 py-1.5 md:px-5 md:py-2.5 rounded-full font-bold text-sm md:text-base hover:bg-brand-blue hover:text-white hover:scale-105 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.5)] group/playbtn"
+                                >
+                                  <FiPlay className="text-lg md:text-xl fill-current" /> Watch Now
+                                </button>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+
+                          <button
+                            onClick={() => {
+                              setActiveIndex(index);
+                              setIsPlaying(false);
+                            }}
+                            className={`relative flex-shrink-0 w-28 md:w-40 lg:w-48 xl:w-56 aspect-video rounded-md overflow-hidden transition-all duration-500 cursor-pointer border-2 pointer-events-auto ${
+                              isActive ? 'border-white scale-100 opacity-100 z-10' : 'border-transparent scale-95 opacity-50 hover:scale-100 hover:opacity-100'
+                            }`}
+                          >
+                            <ThumbnailImage video={video} isLarge={false} />
                           {/* Darken unselected */}
                           {!isActive && (
                             <div className="absolute inset-0 bg-black/40"></div>
@@ -196,7 +219,8 @@ const VideoPlaylist = ({ videos, category }) => {
                               {episodeNumber}
                             </span>
                           </div>
-                        </button>
+                          </button>
+                        </div>
                       );
                   })}
                 </div>

@@ -9,21 +9,21 @@ const processData = [
     id: '01',
     icon: <FaFlag size={20} className="text-brand-blue" />,
     title: 'Understand',
-    subtitle: 'Marketing Problem',
+    subtitle: ' BUSINESS CHALLENGE',
     desc: 'We dive deep into your business, audience and market to identify the real problem.'
   },
   {
     id: '02',
     icon: <FaChartBar size={20} className="text-brand-blue" />,
     title: 'Design',
-    subtitle: 'The Solution',
+    subtitle: 'GROWTH STRATEGY',
     desc: 'We craft a tailored strategy, creative plan and media approach that aligns with your goals.'
   },
   {
     id: '03',
     icon: <FaRocket size={20} className="text-brand-blue" />,
-    title: 'Execute & Scale',
-    subtitle: 'The Plan',
+    title: 'Deliver ',
+    subtitle: 'THE RESULTS',
     desc: 'From production to performance, we execute, optimize and scale for maximum impact.'
   }
 ];
@@ -165,48 +165,21 @@ const OurWork = () => {
           viewport={{ once: false, amount: 0.1 }}
           className="flex-1 relative"
         >
-          
-          {/* Colorful Glowing Blobs Behind Glass */}
-          <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none rounded-[40px]">
-             {/* Dynamic mapped blobs aligned roughly with the rows */}
-             <div className="absolute left-[-5%] top-[0%] w-[40%] h-[30%] bg-purple-300 rounded-full opacity-60 blur-[100px]" />
-             <div className="absolute left-[-5%] top-[30%] w-[40%] h-[30%] bg-blue-300 rounded-full opacity-50 blur-[100px]" />
-             <div className="absolute left-[-5%] top-[60%] w-[40%] h-[30%] bg-pink-300 rounded-full opacity-50 blur-[100px]" />
-             <div className="absolute left-[-5%] top-[80%] w-[40%] h-[30%] bg-orange-300 rounded-full opacity-50 blur-[100px]" />
-             
-             {/* Right ambient glows */}
-             <div className="absolute right-[-5%] top-[10%] w-[30%] h-[40%] bg-pink-200 rounded-full opacity-30 blur-[120px]" />
-             <div className="absolute right-[-5%] bottom-[10%] w-[30%] h-[40%] bg-blue-200 rounded-full opacity-30 blur-[120px]" />
-          </div>
 
-          {/* Frosted Glass Panel */}
-          <div className="relative z-10 w-full bg-white/70 backdrop-blur-2xl border border-white rounded-[24px] shadow-[0_8px_40px_rgb(0,0,0,0.04)] overflow-hidden flex flex-col">
+          {/* Grid Container for Text Boxes */}
+          <div className="relative z-10 w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             
             {workData.map((item, index) => (
               <div 
                 key={index} 
-                className={`w-full flex flex-col md:flex-row items-center min-h-[96px] py-6 px-6 md:px-12 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:bg-white/60 group ${index !== workData.length - 1 ? 'border-b border-gray-200/50' : ''}`}
+                className="w-full relative overflow-hidden bg-white/70 backdrop-blur-2xl rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group flex flex-col justify-center items-center text-center min-h-[100px] px-6 py-5 hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(22,114,239,0.6)]"
               >
-                
-                {/* Number */}
-                <div className="text-3xl md:text-4xl font-sans font-thin text-gray-800 w-20 mb-4 md:mb-0 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110 group-hover:text-brand-blue origin-left">
-                  {item.id}
-                </div>
+                {/* Blue background sliding up from bottom */}
+                <div className="absolute inset-0 bg-brand-blue translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] z-0"></div>
 
-                {/* Content */}
-                <div className="flex-1 flex flex-col justify-center items-center text-center w-full min-h-[48px]">
-                  <h4 className="text-lg md:text-xl font-main font-bold text-gray-900 leading-tight transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-125 group-hover:text-brand-blue">
-                    {item.title}
-                  </h4>
-                </div>
-
-                {/* Plus Button */}
-                <div className="mt-4 md:mt-0 md:ml-8 flex-shrink-0">
-                  <button className="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center text-gray-400 group-hover:border-brand-blue group-hover:text-brand-blue group-hover:shadow-lg group-hover:shadow-brand-blue/10 transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]">
-                    <FiPlus size={20} className="transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:rotate-45" />
-                  </button>
-                </div>
-
+                <h4 className="relative z-10 text-lg md:text-xl font-main font-bold text-gray-900 leading-snug group-hover:text-white transition-colors duration-300 capitalize">
+                  {item.title}
+                </h4>
               </div>
             ))}
             

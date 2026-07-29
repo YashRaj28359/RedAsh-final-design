@@ -28,9 +28,9 @@ const Contact = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-5xl md:text-7xl font-hero text-brand-black uppercase tracking-wider mb-6"
+              className="text-5xl md:text-7xl font-hero font-black uppercase tracking-wide mb-8"
             >
-              Contact <span className="text-brand-blue">Us</span>
+              <span className="text-brand-black">CONTACT</span> <span className="text-brand-blue">US</span>
             </motion.h1>
           </div>
 

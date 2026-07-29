@@ -23,10 +23,12 @@ const BlogList = () => {
           transition={{ duration: 0.8 }}
           className="max-w-3xl mx-auto relative z-10"
         >
-          <h1 className="text-5xl md:text-7xl font-hero font-black tracking-wide mb-8">
-            <span className="text-brand-red">Red</span>
-            <span className="text-brand-gray">Ash</span>{' '}
-            <span className="text-brand-blue">Blog</span>
+          <h1 className="text-5xl md:text-7xl font-hero font-black tracking-wide mb-8 uppercase">
+            <span className="text-brand-black">BLOG</span>
+            <span className="ext-brand-gray mx-2">-</span>
+            <span className="text-brand-red">RED</span>
+            <span className="text-brand-gray">ASH </span>
+            <span className='text-brand-blue'>AD AGENCY</span>
           </h1>
 
           <p className="text-gray-600 text-lg md:text-xl font-main mb-12">

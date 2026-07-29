@@ -2,14 +2,20 @@ import React, { useRef, useState, useEffect } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import Navbar from './components/Navbar';
 import TopGlobalClients from './components/TopGlobalClients';
 import ContactForm from '../../components/ContactForm/ContactForm';
 import Footer from '../../components/Footer/Footer';
 
 // Images for About section
-import pic1 from '../../assets/About/Pictures/Pictures/Copy of 0D2A9269 copy.JPG';
-import pic2 from '../../assets/About/Pictures/Pictures/Copy of 7K7A8144__01__01.jpg';
+import pic1 from '../../assets/About/Pictures/01.JPG';
+import pic2 from '../../assets/About/Pictures/02.jpg';
+import pic3 from '../../assets/About/Pictures/03.jpg';
+import pic4 from '../../assets/About/Pictures/04.JPG';
+import pic5 from '../../assets/About/Pictures/05.JPG';
+import pic6 from '../../assets/About/Pictures/06.JPG';
+import pic7 from '../../assets/About/Pictures/07.jpg';
 
 // Placeholder for images from Google Drive
 const PlaceholderImage = ({ text, className }) => (
@@ -139,14 +145,24 @@ const ConnectorLines = () => {
 const AboutAgency = () => {
   const containerRef = useRef(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const aboutImages = [pic1, pic2];
+  const [isHovered, setIsHovered] = useState(false);
+  const aboutImages = [pic1, pic2, pic3, pic4, pic5, pic6, pic7];
 
   useEffect(() => {
+    if (isHovered) return;
     const interval = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % aboutImages.length);
     }, 4000);
     return () => clearInterval(interval);
-  }, []);
+  }, [isHovered]);
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + aboutImages.length) % aboutImages.length);
+  };
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % aboutImages.length);
+  };
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -191,8 +207,8 @@ const AboutAgency = () => {
             >
               <h1 className="font-hero text-5xl md:text-7xl lg:text-8xl tracking-tighter text-brand-black mb-6">
                 About <span className="relative whitespace-nowrap">
-                  <span className="text-brand-red">Red</span>
-                  <span className="text-gray-500">Ash</span>
+                  <span className="text-brand-blue">US</span>
+                  
                   <span className="absolute bottom-2 left-0 w-full h-3 -z-10 rounded-sm"></span>
                 </span>
               </h1>
@@ -239,7 +255,7 @@ const AboutAgency = () => {
               </motion.div>
               <motion.div 
                 variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } } }}
-                className="self-end text-brand-black text-[10vw] md:text-[7rem] -mt-2 md:-mt-4 mr-0 md:mr-8"
+                className="self-end text-brand-black text-[10vw] md:text-[7rem] mt-4 md:mt-8 lg:mt-4 mr-0 md:mr-8"
               >
                 FOUNDED IN
               </motion.div>
@@ -271,27 +287,50 @@ const AboutAgency = () => {
 
         {/* Content Section 1 - Image Left, Text Right */}
         <section className="py-24 px-6 md:px-12 bg-white relative">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8 }}
-              className="relative h-[400px] lg:h-[600px] w-full"
+              className="lg:col-span-7 relative h-[300px] sm:h-[400px] lg:h-[450px] xl:h-[500px] w-full"
             >
-              <div className="relative w-full h-full rounded-3xl overflow-hidden shadow-2xl z-10 bg-white">
-                <AnimatePresence>
+              <div 
+                className="relative w-full h-full rounded-3xl overflow-hidden shadow-2xl z-10 bg-black group"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+              >
+                {aboutImages.map((imgSrc, index) => (
                   <motion.img 
-                    key={currentImageIndex}
-                    initial={{ opacity: 0, scale: 1.05 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 1, ease: "easeInOut" }}
-                    src={aboutImages[currentImageIndex]} 
-                    alt={`RedAsh Team ${currentImageIndex + 1}`} 
+                    key={index}
+                    initial={false}
+                    animate={{ 
+                      opacity: index === currentImageIndex ? 1 : 0,
+                      scale: index === currentImageIndex ? 1 : 1.05,
+                      zIndex: index === currentImageIndex ? 10 : 0
+                    }}
+                    transition={{ duration: 1.5, ease: "easeInOut" }}
+                    src={imgSrc} 
+                    alt={`RedAsh Team ${index + 1}`} 
                     className="absolute inset-0 w-full h-full object-cover" 
                   />
-                </AnimatePresence>
+                ))}
+                
+                {/* Manual Navigation Controls */}
+                <div className="absolute inset-0 flex items-center justify-between px-4 z-20 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <button 
+                    onClick={prevImage}
+                    className="pointer-events-auto bg-black/60 hover:bg-black text-white p-2 rounded-full backdrop-blur-sm transition-all shadow-xl hover:scale-110"
+                  >
+                    <FiChevronLeft size={24} />
+                  </button>
+                  <button 
+                    onClick={nextImage}
+                    className="pointer-events-auto bg-black/60 hover:bg-black text-white p-2 rounded-full backdrop-blur-sm transition-all shadow-xl hover:scale-110"
+                  >
+                    <FiChevronRight size={24} />
+                  </button>
+                </div>
               </div>
             </motion.div>
 
@@ -300,7 +339,7 @@ const AboutAgency = () => {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8 }}
-              className="lg:h-[600px] flex flex-col justify-center relative py-8 md:py-12"
+              className="lg:col-span-5 flex flex-col justify-center relative py-8 md:py-12"
             >
               {/* Decorative Accent */}
               <div className="absolute top-1/4 bottom-1/4 left-0 w-1.5 md:w-2  from-brand-red via-purple-500 to-brand-blue rounded-full" />

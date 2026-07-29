@@ -28,10 +28,10 @@ import logo20 from '../../../assets/Logo - Clients/cropped-Sigmoid_logo_3x.png';
 import logo21 from '../../../assets/Logo - Clients/Screenshot 2026-07-23 160357.png';
 import logo22 from '../../../assets/Logo - Clients/Screenshot 2026-07-23 160521.png';
 import logo23 from '../../../assets/Logo - Clients/logo.png';
-import logo24 from '../../../assets/Logo - Clients/Screenshot 2026-07-23 161202.png';
+import logoSavvy from '../../../assets/Logo - Clients/dspzr.png';
 
 const logosRow1 = [logo2, logo3, logo4, logo5, logo6, logo7, logo8, logo9, logo10, logo11, logo12, logoGov];
-const logosRow2 = [logo13, logo14, logo15, logo16, logo17, logo18, logo19, logo20, logo21, logo22, logo23, logo24];
+const logosRow2 = [logo13, logo14, logo15, logo16, logo17, logo18, logo19, logo20, logo21, logo22, logo23, logoSavvy];
 
 const TopGlobalClients = ({ customTitle, titleClass, layout = 'marquee' }) => {
   const row1Ref = useRef(null);
@@ -45,7 +45,7 @@ const TopGlobalClients = ({ customTitle, titleClass, layout = 'marquee' }) => {
     ? [
         logoGov, logo10, logo7, logo17, logo18, // Govt of India, UK Govt, UN, Gujarat, Bihar
         logo2, logo3, logo4, logo5, logo6, logo8, logo9, logo11, logo12, 
-        logo13, logo14, logo15, logo16, logo19, logo20, logo21, logo22, logo23, logo24
+        logo13, logo14, logo15, logo16, logo19, logo20, logo21, logo22, logo23, logoSavvy
       ]
     : [...logosRow1, ...logosRow2];
 

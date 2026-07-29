@@ -124,38 +124,12 @@ const Testimonials = () => {
             rotationClass="rotate-1"
           />
           <TextTestimonial 
-            text="This is a random text testimonial. The service was absolutely fantastic and exceeded our expectations in every way! We could not have asked for a better partner."
-            name="Isabella Rodriguez"
-            title="CEO & Co-founder"
-            company="ABC Company"
-            avatar="https://i.pravatar.cc/150?img=47"
+            text="More video testimonials coming soon…"
+            name="XYZ"
+            title="XYZ"
+            company="XYZ"
+            avatar="https://placehold.co/150x150/1672ef/1672ef.png"
             rotationClass="-rotate-1"
-          />
-
-          {/* Row 2 */}
-          <TextTestimonial 
-            text="Creative geniuses who listen, understand, and craft captivating visuals – an agency that truly understands our needs."
-            name="Gabrielle Williams"
-            title="CEO & Co-founder"
-            company="ABC Company"
-            avatar="https://i.pravatar.cc/150?img=5"
-            rotationClass="rotate-2"
-          />
-          <TextTestimonial 
-            text="Exceeded our expectations with innovative designs that brought our vision to life – a truly remarkable creative agency."
-            name="Samantha Johnson"
-            title="CEO & Co-founder"
-            company="ABC Company"
-            avatar="https://i.pravatar.cc/150?img=44"
-            rotationClass="-rotate-2"
-          />
-          <TextTestimonial 
-            text="From concept to execution, their creativity knows no bounds – a game-changer for our brand's success."
-            name="Natalie Martinez"
-            title="CEO & Co-founder"
-            company="ABC Company"
-            avatar="https://i.pravatar.cc/150?img=33"
-            rotationClass="rotate-1"
           />
         </div>
       </div>

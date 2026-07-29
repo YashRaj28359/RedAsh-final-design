@@ -10,14 +10,14 @@ import VideoPlaylist from './VideoPlaylist';
 import { enterpriseVideos } from '../../../data/enterpriseVideos';
 
 const enterpriseCategories = [
-  { name: "TV/Digital Ads", icon: <FiTv className="text-3xl text-brand-blue" /> },
-  { name: "Podcast", icon: <FiMic className="text-3xl text-brand-blue" /> },
-  { name: "Corporate AVs", icon: <FiBriefcase className="text-3xl text-brand-blue" /> },
-  { name: "Animated Explainers", icon: <FiMonitor className="text-3xl text-brand-blue" /> },
-  { name: "L&D Training Films", icon: <FiBookOpen className="text-3xl text-brand-blue" /> },
-  { name: "AI Videos", icon: <FiCpu className="text-3xl text-brand-blue" /> },
-  { name: "Short Films", icon: <FiFilm className="text-3xl text-brand-blue" /> },
-  { name: "Any Creative Films", icon: <FaLightbulb className="text-3xl text-brand-blue" /> }
+  { name: "AD FILMS", icon: <FiTv className="text-3xl text-brand-blue" /> },
+  { name: "PODCASTS", icon: <FiMic className="text-3xl text-brand-blue" /> },
+  { name: "BRAND FILMS", icon: <FiBriefcase className="text-3xl text-brand-blue" /> },
+  { name: "ANIMATED EXPLAINERS", icon: <FiMonitor className="text-3xl text-brand-blue" /> },
+  { name: "L&D TRAINING FILMS", icon: <FiBookOpen className="text-3xl text-brand-blue" /> },
+  { name: "AI VIDEOS", icon: <FiCpu className="text-3xl text-brand-blue" /> },
+  { name: "SHORT FILMS", icon: <FiFilm className="text-3xl text-brand-blue" /> },
+  { name: "ANY CREATIVE FILMS", icon: <FaLightbulb className="text-3xl text-brand-blue" /> }
 ];
 
 const EnterpriseFilms = () => {
@@ -26,8 +26,7 @@ const EnterpriseFilms = () => {
   const scrollToSection = (category) => {
     const element = sectionRefs.current[category];
     if (element) {
-      const y = element.getBoundingClientRect().top + window.scrollY - 100;
-      window.scrollTo({ top: y, behavior: 'smooth' });
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
 
@@ -85,7 +84,7 @@ const EnterpriseFilms = () => {
           {/* Description Text */}
           <div className="max-w-4xl mx-auto px-4">
             <p className="font-subtitle text-gray-600 text-sm md:text-base lg:text-lg leading-relaxed mb-3">
-              <strong className="text-brand-blue">RedAsh Films</strong>, an 18-year-old Mumbai-based Ad Agency cum Film Production House, was founded in 2007 by <a href="https://www.linkedin.com/in/ashishlalreal/" target="_blank" rel="noopener noreferrer" className="text-brand-blue font-semibold hover:underline">Ashish Lal</a>, an <strong>IIT Delhi engineer</strong>.
+              <strong className="text-brand-blue">RedAsh Films</strong>, a Mumbai-based reputed Ad Agency and Film Production House, was founded in 2007 by <a href="https://www.linkedin.com/in/ashishlalreal/" target="_blank" rel="noopener noreferrer" className="text-brand-blue font-semibold hover:underline">Ashish Lal</a>, an <strong>IIT Delhi engineer</strong>.
             </p>
             <p className="font-subtitle text-gray-600 text-base md:text-xl lg:text-2xl leading-relaxed mb-6 flex flex-wrap justify-center items-center gap-2">
               We have produced <span className="font-cursive text-brand-blue text-3xl md:text-4xl lg:text-5xl px-2 -rotate-2 transform translate-y-1">thousands</span> of <strong>Enterprise Films</strong> across a wide range of categories.

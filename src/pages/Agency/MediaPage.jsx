@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Footer from '../../components/Footer/Footer';
+import ContactForm from '../../components/ContactForm/ContactForm';
 import mediaData from '../../data/media.json';
 import { LuNewspaper } from "react-icons/lu";
 
@@ -29,9 +30,9 @@ const MediaPage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-5xl md:text-7xl font-hero text-brand-black uppercase tracking-wider mb-6"
+              className="text-5xl md:text-7xl font-hero font-black uppercase tracking-wide mb-8"
             >
-              Our <span className="text-brand-blue">Press</span>
+              <span className="text-brand-blue">MEDIA</span> <span className="text-brand-black">COVERAGE</span>
             </motion.h1>
             
             <motion.p 
@@ -98,6 +99,11 @@ const MediaPage = () => {
         </div>
       </main>
 
+      <ContactForm 
+        headingClass="font-subtitle text-brand-blue tracking-[4px] md:tracking-[6px] [-webkit-text-stroke:1px_#1672EF] md:[-webkit-text-stroke:1.5px_#1672EF]"
+        highlightColorClass="text-brand-blue"
+        linkColorClass="text-brand-blue hover:text-blue-700"
+      />
       <Footer />
     </div>
   );

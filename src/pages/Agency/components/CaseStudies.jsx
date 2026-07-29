@@ -98,7 +98,7 @@ const caseStudiesData = [
     customers: "B2C",
     domain: "Entertainment",
     type: "Start-up",
-    image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=800&auto=format&fit=crop", // Phone charts
+    image: "https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?q=80&w=800&auto=format&fit=crop", // Entertainment/Streaming
     Icon: FaBullseye
   }
 ];

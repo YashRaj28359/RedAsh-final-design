@@ -41,7 +41,7 @@ const MediaPage = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-gray-600 text-lg max-w-2xl mx-auto"
             >
-              Here are some of the chosen news articles on RedAsh Films
+              Featured news articles on RedAsh
             </motion.p>
           </div>
 

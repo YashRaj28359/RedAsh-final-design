@@ -53,14 +53,14 @@ const MediaLinks = () => {
 
           {/* Main Heading */}
           <h2 className="text-6xl md:text-8xl lg:text-[100px] font-hero text-black uppercase tracking-[6px] md:tracking-[16px] leading-none mb-1 md:mb-2 ml-1 md:ml-4">
-            IN THE MEDIA
+            MEDIA COVERAGE
           </h2>
 
           {/* Bottom Line: AS FEATURED IN LEADING PUBLICATIONS */}
           <div className="flex items-center w-full mb-4 md:mb-6">
             <div className="flex-1 border-t border-[#000]"></div>
             <span className="text-[#000] font-libre font-bold text-xs md:text-base tracking-[3px] md:tracking-[6px] uppercase px-3 md:px-6 whitespace-nowrap">
-              AS FEATURED IN LEADING PUBLICATIONS
+              Featured news articles on RedAsh
             </span>
             <div className="flex-1 border-t border-[#000]"></div>
           </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { FaFire, FaArrowRight } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 import image1 from '../../../assets/RedHot section/Image 1.png';
 import image2 from '../../../assets/RedHot section/image2.png';
@@ -160,9 +161,15 @@ const WhatsRedHot = () => {
                   </div>
                   <div className="flex flex-wrap items-center gap-6 md:gap-8 text-sm md:text-base font-bold text-gray-900 uppercase tracking-wider [@media(max-height:600px)_and_(orientation:landscape)]:text-[10px] [@media(max-height:600px)_and_(orientation:landscape)]:gap-4">
                     {update.links.map((link, i) => (
-                      <a key={i} href={link.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-blue-600 transition-colors">
-                        {link.text} <FaArrowRight className="text-blue-600" />
-                      </a>
+                      update.pill === "INSIGHTS" ? (
+                        <Link key={i} to={link.url} className="flex items-center gap-2 hover:text-blue-600 transition-colors">
+                          {link.text} <FaArrowRight className="text-blue-600" />
+                        </Link>
+                      ) : (
+                        <a key={i} href={link.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-blue-600 transition-colors">
+                          {link.text} <FaArrowRight className="text-blue-600" />
+                        </a>
+                      )
                     ))}
                   </div>
                 </motion.div>

@@ -357,11 +357,11 @@ export const enterpriseVideos = [
     videoUrl: "https://youtu.be/wOtswfySrqY"
   },
   {
-    id: "3Sxhgtn4Wf0",
-    title: "UN - United Nations",
+    id: "Lcp8pLH7U2k",
+    title: "Startups and Society - Beware of Entrepreneurship!!",
     category: "ANY CREATIVE FILMS",
-    thumbnail: "https://img.youtube.com/vi/3Sxhgtn4Wf0/hqdefault.jpg",
-    videoUrl: "https://youtu.be/3Sxhgtn4Wf0"
+    thumbnail: "https://img.youtube.com/vi/Lcp8pLH7U2k/hqdefault.jpg",
+    videoUrl: "https://youtu.be/Lcp8pLH7U2k"
   },
   {
     id: "7OdKK_TIijM",
@@ -371,11 +371,11 @@ export const enterpriseVideos = [
     videoUrl: "https://youtu.be/7OdKK_TIijM"
   },
   {
-    id: "Lcp8pLH7U2k",
-    title: "Startups and Society - Beware of Entrepreneurship!!",
+    id: "3Sxhgtn4Wf0",
+    title: "UN - United Nations",
     category: "ANY CREATIVE FILMS",
-    thumbnail: "https://img.youtube.com/vi/Lcp8pLH7U2k/hqdefault.jpg",
-    videoUrl: "https://youtu.be/Lcp8pLH7U2k"
+    thumbnail: "https://img.youtube.com/vi/3Sxhgtn4Wf0/hqdefault.jpg",
+    videoUrl: "https://youtu.be/3Sxhgtn4Wf0"
   },
   {
     id: "vAEL6Y_aqzU",

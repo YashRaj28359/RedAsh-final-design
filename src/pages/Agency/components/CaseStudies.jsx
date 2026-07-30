@@ -9,6 +9,9 @@ import {
   FaBuilding,
   FaArrowRight
 } from 'react-icons/fa';
+import imgWellness from '../../../assets/Casestudies/Wellness.png';
+import imgPharmacy from '../../../assets/Casestudies/Pharmacy.png';
+import imgMobileOTT from '../../../assets/Casestudies/Mobile OTT.png';
 
 const caseStudiesData = [
   {
@@ -36,7 +39,7 @@ const caseStudiesData = [
     title: "Learning Solutions",
     clientType: "Start-Up",
     customers: "B2B",
-    domain: "Learning Solutions",
+    domain: "SAAS",
     type: "Start-Up",
     image: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=800&auto=format&fit=crop", // Books/Learning
     Icon: FaMoneyBillWave
@@ -62,13 +65,13 @@ const caseStudiesData = [
     year: "2023",
     tag: "Wellness",
     tagColor: "bg-teal-500",
-    stat: "+3.2x Website Visits (6M)",
-    title: "Holistic Wellness Programs",
+    stat: "+3.2x Website Visits (8M)",
+    title: "Spiritual Wellness Programs",
     clientType: "Trust",
     customers: "B2C",
     domain: "Wellness",
     type: "Trust",
-    image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=800&auto=format&fit=crop", // Hospital
+    image: imgWellness, // Wellness
     Icon: FaChartLine
   },
   {
@@ -77,13 +80,13 @@ const caseStudiesData = [
     year: "2023",
     tag: "Retail Pharmacy",
     tagColor: "bg-orange-500",
-    stat: "+350% retention",
+    stat: "+350% Retention",
     title: "L&D Training Growth",
     clientType: "Franchise Brand",
     customers: "B2C",
-    domain: "Medicines",
+    domain: "Retail",
     type: "Brand",
-    image: "https://images.unsplash.com/photo-1629198688000-71f23e745b6e?q=80&w=800&auto=format&fit=crop", // Cosmetics
+    image: imgPharmacy, // Pharmacy
     Icon: FaRocket
   },
   {
@@ -98,7 +101,7 @@ const caseStudiesData = [
     customers: "B2C",
     domain: "Entertainment",
     type: "Start-up",
-    image: "https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?q=80&w=800&auto=format&fit=crop", // Entertainment/Streaming
+    image: imgMobileOTT, // Mobile OTT
     Icon: FaBullseye
   }
 ];

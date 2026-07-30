@@ -144,7 +144,7 @@ const OurWork = () => {
 
         {/* Main large heading */}
         <h2 className="font-hero flex flex-col items-center leading-[0.85] tracking-normal uppercase mt-2">
-          <span className="text-5xl md:text-7xl lg:text-[5.5rem] font-black text-[#111111]">Social Media</span>
+          <span className="text-5xl md:text-7xl lg:text-[5.5rem] font-black text-brand-blue">Social Media</span>
           <span className="text-5xl md:text-7xl lg:text-[5.5rem] font-black text-gray-400">Management</span>
         </h2>
 

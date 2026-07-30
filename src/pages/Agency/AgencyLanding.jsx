@@ -14,7 +14,7 @@ import CaseStudies from './components/CaseStudies';
 import Testimonials from './components/Testimonials';
 import WhatsRedHot from './components/WhatsRedHot';
 import OurWork from './components/OurWork';
-import EnterpriseFilms from './components/EnterpriseFilms';
+
 import Footer from '../../components/Footer/Footer';
 
 const AgencyLanding = () => {
@@ -94,7 +94,7 @@ const AgencyLanding = () => {
         <Testimonials />
         <WhatsRedHot />
         <OurWork />
-        <EnterpriseFilms />
+
         
         {/* Bottom Quotation / Contact Form */}
         <div id="quotation-section">

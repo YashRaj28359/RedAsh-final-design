@@ -1,6 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col items-center justify-center text-center z-30 pointer-events-none w-full relative mt-[35vh] md:mt-0 [@media(max-height:600px)_and_(orientation:landscape)]:mt-4">
       
@@ -15,11 +17,7 @@ const Hero = () => {
 
       <button 
         onClick={() => {
-          const el = document.getElementById('enterprise-films');
-          if (el) {
-            const y = el.getBoundingClientRect().top + window.scrollY - 80;
-            window.scrollTo({ top: y, behavior: 'smooth' });
-          }
+          navigate('/ad-agency/films');
         }}
         className="mt-12 md:mt-6 relative group bg-transparent text-brand-blue font-main text-xs md:text-sm uppercase tracking-[0.2em] font-bold py-4 px-10 rounded-full pointer-events-auto transition-all duration-500 overflow-hidden border border-brand-blue/40 hover:border-brand-blue shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-xl hover:shadow-brand-blue/20 [@media(max-height:600px)_and_(orientation:landscape)]:mt-2 [@media(max-height:600px)_and_(orientation:landscape)]:py-2 [@media(max-height:600px)_and_(orientation:landscape)]:px-6"
       >

@@ -8,19 +8,21 @@ import image3 from '../../../assets/RedHot section/image3.png';
 import image4 from '../../../assets/RedHot section/image4.png';
 import image5 from '../../../assets/RedHot section/image5.png';
 import image6 from '../../../assets/RedHot section/image6.png';
+import imgFunding from '../../../assets/RedHot section/Funding.png';
+import imgInsight from '../../../assets/RedHot section/Insight.png';
 
 const updatesData = [
   {
     id: 1,
     pill: "MEDIA FEATURED",
-    title: "REDASH GROWS EXPONENTIALLY",
+    title: <>REDASH GROWS <span className="text-blue-600">EXPONENTIALLY</span></>,
     desc: "RedAsh has emerged as one of India's fastest-growing production houses and ad agencies",
     sourceLabel: "FEATURED IN",
     links: [  
       { text: "DNA", url: "https://www.dnaindia.com/insights/report-redash-films-led-by-iit-delhi-engineer-ashish-lal-scales-rapidly-with-1600-growth-over-two-years-3211714" }
       
     ],
-    image: image1,
+    image: image2,
     imageLeft: true
   },
   {
@@ -32,12 +34,12 @@ const updatesData = [
     links: [
       { text: "LINKEDIN", url: "https://www.linkedin.com/posts/ashishlalreal_redashfilms-fy2023abr24-gratitude-activity-7180844012902248449-Pusz/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAADZgaUBjOsNCJyT8TTYQTmZbp30gD5h4DA" }
     ],
-    image: image2,
+    image: imgFunding,
     imageLeft: false
   },
   {
     id: 3,
-    pill: "MEDIA FEATURE",
+    pill: "MEDIA COVERAGE",
     title: <>RedAsh Teams Up With Top Talent – <span className="text-blue-600">Mid-day</span> Feature</>,
     desc: "Featured in Mid-day for our creative collaborations with top talent and innovative storytelling that connects with millions.",
     sourceLabel: "FEATURED IN",
@@ -50,13 +52,13 @@ const updatesData = [
   {
     id: 4,
     pill: "INSIGHTS",
-    title: "RedAsh brings disruptive insights into ad campaigns, digital marketing, brand-based microdrama shows, and more.",
-    desc: "READ MORE ",
-    sourceLabel: "BLOG",
+    title: <>REDASH BRINGS DISRUPTIVE <span className="text-blue-600">INSIGHTS</span></>,
+    desc: "Delve deep into understanding the science behind ad campaigns, digital marketing, brand-based microdrama shows, and more.",
+    sourceLabel: "",
     links: [
       { text: "READ MORE", url: "/ad-agency/blog" }
     ],
-    image: image6,
+    image: imgInsight,
     imageLeft: false
   }
 ];

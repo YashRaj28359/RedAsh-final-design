@@ -44,12 +44,12 @@
     "title": "In a tell-all interview, filmmaker and entrepreneur Ashish Lal shared his road to success without external support.",
     "description": "In a tell-all interview, filmmaker and entrepreneur Ashish Lal shared his road to success without external support.",
     "url": "https://techbullion.com/in-a-tell-all-interview-filmmaker-and-entrepreneur-ashish-lal-shared-his-road-to-success-without-external-support/",
-    "image": "/media/ashish-lal-dna.jpg",
-    "zoom": 10,
+    "image": "/media/card4.jpeg",
+    "zoom": 0,
     "moveLeft": 0,
-    "moveRight": 100,
+    "moveRight": 0,
     "moveUp": 0,
-    "moveDown": 50
+    "moveDown": 0
   },
   {
     "id": "media-5",
@@ -62,7 +62,7 @@
     "moveLeft": 0,
     "moveRight": 0,
     "moveUp": 0,
-    "moveDown": 40
+    "moveDown": 50
   },
   {
     "id": "media-6",
@@ -75,6 +75,6 @@
     "moveLeft": 0,
     "moveRight": 0,
     "moveUp": 0,
-    "moveDown": 40
+    "moveDown": 50
   }
 ]

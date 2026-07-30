@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 const navLinks = [
   { name: 'HOME', path: '/ad-agency' },
   { name: 'ABOUT', path: '/ad-agency/about' },
-  { name: 'FILMS', path: '/ad-agency#enterprise-films' },
+  { name: 'FILMS', path: '/ad-agency/films' },
   { name: 'BLOG', path: '/ad-agency/blog' },
   { name: 'MEDIA', path: '/ad-agency/media' },
   { name: 'CONTACT', path: '/ad-agency/contact' },
@@ -20,12 +20,25 @@ const Navbar = () => {
     if (location.pathname.includes('/blog')) return 'BLOG';
     if (location.pathname.includes('/media')) return 'MEDIA';
     if (location.pathname.includes('/contact')) return 'CONTACT';
-    if (location.hash === '#enterprise-films') return 'FILMS';
+    if (location.pathname.includes('/films')) return 'FILMS';
     return 'HOME';
   });
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isInVideoSection, setIsInVideoSection] = useState(false);
+  const [isHoveringTop, setIsHoveringTop] = useState(false);
+  const [isVideoActive, setIsVideoActive] = useState(false);
+
+  useEffect(() => {
+    const handleVideoStart = () => setIsVideoActive(true);
+    const handleVideoStop = () => setIsVideoActive(false);
+    window.addEventListener('videoPlaybackStarted', handleVideoStart);
+    window.addEventListener('videoPlaybackStopped', handleVideoStop);
+    return () => {
+      window.removeEventListener('videoPlaybackStarted', handleVideoStart);
+      window.removeEventListener('videoPlaybackStopped', handleVideoStop);
+    };
+  }, []);
 
   useEffect(() => {
     if (location.pathname.includes('/about')) {
@@ -36,7 +49,7 @@ const Navbar = () => {
       setActiveMenu('MEDIA');
     } else if (location.pathname.includes('/contact')) {
       setActiveMenu('CONTACT');
-    } else if (location.hash === '#enterprise-films') {
+    } else if (location.pathname.includes('/films')) {
       setActiveMenu('FILMS');
     } else {
       setActiveMenu('HOME');
@@ -47,7 +60,7 @@ const Navbar = () => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
 
-      const videoSection = document.getElementById('enterprise-films');
+      const videoSection = document.getElementById('enterprise-video-playlists');
       const quotationSection = document.getElementById('quotation-section');
       
       let inVideo = false;
@@ -75,8 +88,16 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 w-full z-50 px-4 py-2 flex items-center justify-between transition-colors duration-300 ${isScrolled ? 'bg-white shadow-md' : 'bg-transparent'}`}>
-        {/* Logo */}
+      <div 
+        className="fixed top-0 left-0 w-full z-50 pointer-events-none"
+        onMouseEnter={() => !isVideoActive && setIsHoveringTop(true)}
+        onMouseLeave={() => setIsHoveringTop(false)}
+      >
+        {/* Invisible hit area to trigger hover when navbar is hidden. Right side is cut off so it doesn't trigger when closing video */}
+        <div className={`absolute top-0 left-0 w-[calc(100%-120px)] h-8 ${isVideoActive ? 'pointer-events-none' : 'pointer-events-auto'}`}></div>
+        
+        <nav className={`w-full px-4 py-2 flex items-center justify-between transition-all duration-500 relative ${isScrolled ? 'bg-white shadow-md' : 'bg-transparent'} ${(isInVideoSection || isVideoActive) && !isHoveringTop ? 'translate-y-0 md:-translate-y-[120%]' : 'translate-y-0'} ${isVideoActive ? 'pointer-events-none md:pointer-events-none' : 'pointer-events-auto'}`}>
+          {/* Logo */}
         <div className="flex-shrink-0 z-20">
           <Link to="/ad-agency" className="block">
             <img 
@@ -141,9 +162,10 @@ const Navbar = () => {
             animate={isMobileMenuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
             transition={{ duration: 0.3 }}
           />
-        </button>
-      </div>
-    </nav>
+          </button>
+        </div>
+      </nav>
+    </div>
 
     {/* Mobile Menu */}
     <AnimatePresence>

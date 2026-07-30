@@ -89,14 +89,14 @@ const Navbar = () => {
   return (
     <>
       <div 
-        className="fixed top-0 left-0 w-full z-50 pointer-events-none"
-        onMouseEnter={() => !isVideoActive && setIsHoveringTop(true)}
+        className="fixed top-0 left-0 w-full z-[100] pointer-events-none"
+        onMouseEnter={() => setIsHoveringTop(true)}
         onMouseLeave={() => setIsHoveringTop(false)}
       >
         {/* Invisible hit area to trigger hover when navbar is hidden. Right side is cut off so it doesn't trigger when closing video */}
-        <div className={`absolute top-0 left-0 w-[calc(100%-120px)] h-8 ${isVideoActive ? 'pointer-events-none' : 'pointer-events-auto'}`}></div>
+        <div className="absolute top-0 left-0 w-[calc(100%-120px)] h-8 pointer-events-auto"></div>
         
-        <nav className={`w-full px-4 py-2 flex items-center justify-between transition-all duration-500 relative ${isScrolled ? 'bg-white shadow-md' : 'bg-transparent'} ${(isInVideoSection || isVideoActive) && !isHoveringTop ? 'translate-y-0 md:-translate-y-[120%]' : 'translate-y-0'} ${isVideoActive ? 'pointer-events-none md:pointer-events-none' : 'pointer-events-auto'}`}>
+        <nav className={`w-full px-4 py-2 flex items-center justify-between transition-all duration-500 relative ${isScrolled ? 'bg-white shadow-md' : 'bg-transparent'} ${(isInVideoSection || isVideoActive) && !isHoveringTop ? 'translate-y-0 md:-translate-y-[120%]' : 'translate-y-0'} pointer-events-auto`}>
           {/* Logo */}
         <div className="flex-shrink-0 z-20">
           <Link to="/ad-agency" className="block">

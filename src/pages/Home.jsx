@@ -24,7 +24,11 @@ const Home = () => {
         <ContactForm />
         <MediaLinks />
       </main>
-      <Footer />
+      <Footer links={[
+        { name: 'HOME', path: '/' },
+        { name: 'ENTERTAINMENT FILMS', path: '/entertainment' },
+        { name: 'AD AGENCY', path: '/ad-agency' }
+      ]} />
     </motion.div>
   );
 };

@@ -100,7 +100,7 @@ const MediaPage = () => {
       </main>
 
       <ContactForm 
-        headingClass="font-subtitle text-brand-blue tracking-[4px] md:tracking-[6px] [-webkit-text-stroke:1px_#1672EF] md:[-webkit-text-stroke:1.5px_#1672EF]"
+        headingClass="font-hero text-[#5A5A5A] tracking-wider md:tracking-[4px]"
         highlightColorClass="text-brand-blue"
         linkColorClass="text-brand-blue hover:text-blue-700"
       />

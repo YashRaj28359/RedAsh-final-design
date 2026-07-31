@@ -8,7 +8,7 @@ const Footer = ({ links }) => {
   const defaultLinks = [
     { name: 'HOME', path: '/ad-agency' },
     { name: 'ABOUT', path: '/ad-agency/about' },
-    { name: 'FILMS', path: '/ad-agency#enterprise-films' },
+    { name: 'FILMS', path: '/ad-agency/films' },
     { name: 'BLOG', path: '/ad-agency/blog' },
     { name: 'MEDIA', path: '/ad-agency/media' },
     { name: 'CONTACT', path: '/ad-agency/contact' }

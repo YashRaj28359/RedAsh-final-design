@@ -53,7 +53,7 @@ const MediaLinks = () => {
 
           {/* Main Heading */}
           <h2 className="text-6xl md:text-8xl lg:text-[100px] font-hero text-black uppercase tracking-[6px] md:tracking-[16px] leading-none mb-1 md:mb-2 ml-1 md:ml-4">
-            MEDIA COVERAGE
+            IN THE MEDIA
           </h2>
 
           {/* Bottom Line: AS FEATURED IN LEADING PUBLICATIONS */}
@@ -84,7 +84,7 @@ const MediaLinks = () => {
             >
               
               {/* Image Header */}
-              <div className="w-full h-48 bg-gray-50 overflow-hidden relative">
+              <div className="w-full aspect-[4/3] bg-gray-50 overflow-hidden relative">
                 <img 
                   src={article.image} 
                   alt={article.source} 

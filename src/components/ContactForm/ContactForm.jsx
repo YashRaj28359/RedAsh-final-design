@@ -25,7 +25,7 @@ const ContactForm = ({
             <div className="hidden md:block flex-1 h-[2px] bg-gradient-to-r from-transparent via-gray-200 to-gray-300 relative">
               <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand-blue shadow-[0_0_8px_rgba(22,114,239,0.5)]"></div>
             </div>
-            <h2 className={`text-3xl md:text-5xl lg:text-6xl font-bold uppercase mx-6 whitespace-nowrap ${headingClass}`}>
+            <h2 className={`text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold uppercase mx-2 md:mx-6 whitespace-normal md:whitespace-nowrap text-center leading-tight ${headingClass}`}>
               GET A FREE <span className={`${highlightColorClass} [-webkit-text-stroke:0px]`}>QUOTATION</span>
             </h2>
             <div className="hidden md:block flex-1 h-[2px] bg-gradient-to-l from-transparent via-gray-200 to-gray-300 relative">

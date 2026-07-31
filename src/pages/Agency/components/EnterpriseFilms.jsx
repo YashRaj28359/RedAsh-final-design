@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { 
   FiTv, FiMic, FiBriefcase, FiMonitor, 
   FiBookOpen, FiCpu, FiFilm,  
@@ -83,8 +84,11 @@ const EnterpriseFilms = () => {
 
           {/* Description Text */}
           <div className="max-w-4xl mx-auto px-4">
-            <p className="font-subtitle text-gray-600 text-sm md:text-base lg:text-lg leading-relaxed mb-3">
-              <strong className="text-brand-blue">RedAsh Films</strong> is a leading Mumbai-based Advertising Agency and Film Production House founded in 2007 by <a href="https://www.linkedin.com/in/ashishlalreal/" target="_blank" rel="noopener noreferrer" className="text-brand-blue font-semibold hover:underline">Ashish Lal</a>, an <strong>IIT Delhi engineer</strong>.
+            <p className="font-main text-gray-600 text-sm md:text-base lg:text-lg leading-relaxed mb-3">
+              <Link to="/" className="hover:opacity-80 transition-opacity"><strong><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-blue">Ad Agency</span></strong></Link> understands business challenges, designs growth strategies, and brings them to life through enterprise films, creative campaigns and digital content.
+            </p>
+            <p className="font-main text-gray-600 text-sm md:text-base lg:text-lg leading-relaxed mb-3">
+              <strong className="text-brand-blue">RedAsh</strong> was founded in 2007 by <a href="https://www.linkedin.com/in/ashishlalreal/" target="_blank" rel="noopener noreferrer" className="text-brand-blue font-semibold hover:underline">Ashish Lal</a>, an <strong>IIT Delhi engineer</strong>. It has two divisions: <br /> Enterprise (<Link to="/" className="text-brand-blue hover:underline font-bold">RedAsh Ad Agency</Link>) and Entertainment (<strong className="text-brand-blue">RedAsh Films</strong>).
             </p>
             <p className="font-subtitle text-gray-600 text-base md:text-xl lg:text-2xl leading-relaxed mb-6 flex flex-wrap justify-center items-center gap-2">
               We have produced <span className="font-cursive text-brand-blue text-3xl md:text-4xl lg:text-5xl px-2 -rotate-2 transform translate-y-1">thousands</span> of <strong>Enterprise Films</strong> across a wide range of categories.

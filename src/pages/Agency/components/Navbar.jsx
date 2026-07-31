@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 const navLinks = [
   { name: 'HOME', path: '/ad-agency' },
   { name: 'ABOUT', path: '/ad-agency/about' },
-  { name: 'FILMS', path: '/ad-agency/films' },
+  { name: 'ENTERPRISE FILMS', path: '/ad-agency/films' },
   { name: 'BLOG', path: '/ad-agency/blog' },
   { name: 'MEDIA', path: '/ad-agency/media' },
   { name: 'CONTACT', path: '/ad-agency/contact' },
@@ -20,7 +20,7 @@ const Navbar = () => {
     if (location.pathname.includes('/blog')) return 'BLOG';
     if (location.pathname.includes('/media')) return 'MEDIA';
     if (location.pathname.includes('/contact')) return 'CONTACT';
-    if (location.pathname.includes('/films')) return 'FILMS';
+    if (location.pathname.includes('/films')) return 'ENTERPRISE FILMS';
     return 'HOME';
   });
   const [isScrolled, setIsScrolled] = useState(false);
@@ -50,7 +50,7 @@ const Navbar = () => {
     } else if (location.pathname.includes('/contact')) {
       setActiveMenu('CONTACT');
     } else if (location.pathname.includes('/films')) {
-      setActiveMenu('FILMS');
+      setActiveMenu('ENTERPRISE FILMS');
     } else {
       setActiveMenu('HOME');
     }

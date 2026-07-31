@@ -31,13 +31,7 @@ export const enterpriseVideos = [
     thumbnail: "https://img.youtube.com/vi/LYptDr6XjyQ/hqdefault.jpg",
     videoUrl: "https://youtu.be/LYptDr6XjyQ"
   },
-  {
-    id: "1v2BrTFQwcg",
-    title: "The Science Behind Prakash Yoga of Brahmavidya",
-    category: "AD FILMS",
-    thumbnail: "https://img.youtube.com/vi/1v2BrTFQwcg/hqdefault.jpg",
-    videoUrl: "https://youtu.be/1v2BrTFQwcg"
-  },
+
   {
     id: "stl1y2zulHU",
     title: "Center Fresh - Animation Ad (Hidden Link - Do not Share - Only as Showreel)",
@@ -52,27 +46,7 @@ export const enterpriseVideos = [
     thumbnail: "https://img.youtube.com/vi/5utN5lSycG0/hqdefault.jpg",
     videoUrl: "https://youtu.be/5utN5lSycG0"
   },
-  {
-    id: "pIv7FFKm318",
-    title: "Official Theatrical Trailer: WITH LOVE, DELHI!",
-    category: "AD FILMS",
-    thumbnail: "https://img.youtube.com/vi/pIv7FFKm318/hqdefault.jpg",
-    videoUrl: "https://youtu.be/pIv7FFKm318"
-  },
-  {
-    id: "cH2-EgFQFQc",
-    title: "Trailer | RedAsh Films' \"No More #MeToo\" | Inspired by True Events | English Captions",
-    category: "AD FILMS",
-    thumbnail: "https://img.youtube.com/vi/cH2-EgFQFQc/hqdefault.jpg",
-    videoUrl: "https://youtu.be/cH2-EgFQFQc"
-  },
-  {
-    id: "C3zDA0phHSs",
-    title: "Trailer | RedAsh Films' Romantic Movie | \"Main Tumhare Bachche ki Maa Banne Waali Hoon\"",
-    category: "AD FILMS",
-    thumbnail: "https://img.youtube.com/vi/C3zDA0phHSs/hqdefault.jpg",
-    videoUrl: "https://youtu.be/C3zDA0phHSs"
-  },
+
   {
     id: "akK8WuKNsDU",
     title: "From IIT-IIM to a Spiritual Guru | Guru Jayant Divekar ji | The RedAsh Show with @AshishLalReal",

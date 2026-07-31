@@ -143,7 +143,7 @@ const VideoPlaylist = ({ videos, category }) => {
     height: '100%',
     width: '100%',
     playerVars: {
-      autoplay: 1,
+      autoplay: 0,
       rel: 0,
       controls: 1,
       modestbranding: 1
@@ -199,39 +199,12 @@ const VideoPlaylist = ({ videos, category }) => {
             {isMobile && (
               <YouTube
                 videoId={activeVideo.id}
-                opts={{
-                  ...ytOpts,
-                  playerVars: {
-                    ...ytOpts.playerVars,
-                    autoplay: isPlaying ? 1 : 0
-                  }
-                }}
+                opts={ytOpts}
                 className="w-full h-full absolute inset-0"
                 iframeClassName="w-full h-full border-0 absolute inset-0"
                 onReady={onPlayerReady}
                 onStateChange={onPlayerStateChange}
               />
-            )}
-            {/* Custom Mobile Thumbnail to prevent black screen while loading */}
-            {!isPlaying && (
-              <div 
-                className="absolute inset-0 w-full h-full z-10 cursor-pointer"
-                onClick={handlePlayVideo}
-              >
-                <ThumbnailImage video={activeVideo} isLarge={true} />
-                <div className="absolute inset-0 flex items-center justify-center group">
-                  <svg 
-                    height="48px" 
-                    version="1.1" 
-                    viewBox="0 0 68 48" 
-                    width="68px" 
-                    className="transition-transform duration-200 ease-in-out group-hover:scale-105"
-                  >
-                    <path d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z" fill="#212121" fillOpacity="0.8" className="group-hover:fill-[#FF0000] transition-colors duration-200"></path>
-                    <path d="M 45,24 27,14 27,34" fill="#fff"></path>
-                  </svg>
-                </div>
-              </div>
             )}
           </div>
 
@@ -268,7 +241,6 @@ const VideoPlaylist = ({ videos, category }) => {
                         key={video.id + index}
                         onClick={() => {
                           setActiveIndex(index);
-                          setIsPlaying(true);
                         }}
                         className={`flex items-center gap-3 px-4 py-3 border-b border-gray-100 cursor-pointer transition-colors ${isActive ? 'bg-gray-50' : 'bg-white hover:bg-gray-50'}`}
                       >
@@ -276,11 +248,6 @@ const VideoPlaylist = ({ videos, category }) => {
                         <div className="relative w-28 sm:w-32 aspect-video flex-shrink-0 bg-gray-200 rounded overflow-hidden">
                           <ThumbnailImage video={video} isLarge={false} />
                           {!isActive && <div className="absolute inset-0 bg-white/30"></div>}
-                          {isActive && (
-                            <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                              <FiPlay className="text-white fill-current" />
-                            </div>
-                          )}
                         </div>
                         
                         {/* Info */}
@@ -310,13 +277,7 @@ const VideoPlaylist = ({ videos, category }) => {
             {!isMobile && (
               <YouTube
                 videoId={activeVideo.id}
-                opts={{
-                  ...ytOpts,
-                  playerVars: {
-                    ...ytOpts.playerVars,
-                    autoplay: isPlaying ? 1 : 0
-                  }
-                }}
+                opts={ytOpts}
                 className="w-full h-full absolute inset-0"
                 iframeClassName="w-full h-full border-0 absolute inset-0"
                 onReady={onPlayerReady}
@@ -343,7 +304,6 @@ const VideoPlaylist = ({ videos, category }) => {
                     key={video.id + index}
                     onClick={() => {
                       setActiveIndex(index);
-                      setIsPlaying(true);
                     }}
                     className={`flex items-center gap-4 p-3 rounded-2xl cursor-pointer transition-all duration-300 ${isActive ? 'bg-[#F0F5FF]' : 'bg-white hover:bg-gray-50'}`}
                   >
@@ -351,12 +311,6 @@ const VideoPlaylist = ({ videos, category }) => {
                     <div className="relative w-28 md:w-32 lg:w-36 aspect-video flex-shrink-0 bg-gray-200 rounded-xl overflow-hidden border border-gray-100 shadow-sm group-hover:shadow-md transition-all">
                       <ThumbnailImage video={video} isLarge={false} />
                       <div className="absolute inset-0 bg-white/10"></div>
-                      {/* Small Play Icon */}
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-8 h-8 rounded-full bg-[#1672EF] shadow-md flex items-center justify-center">
-                          <FiPlay className="text-white ml-0.5 fill-current text-sm" />
-                        </div>
-                      </div>
                     </div>
                     
                     {/* Info */}

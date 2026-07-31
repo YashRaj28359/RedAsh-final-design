@@ -3,6 +3,7 @@ import { FiPlus } from 'react-icons/fi';
 import { MdClose } from 'react-icons/md';
 import { FaLayerGroup, FaFlag, FaChartBar, FaRocket } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const processData = [
   {
@@ -38,6 +39,7 @@ const workData = [
 ];
 
 const OurWork = () => {
+  const navigate = useNavigate();
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
   return (
@@ -145,7 +147,7 @@ const OurWork = () => {
         {/* Main large heading */}
         <h2 className="font-hero flex flex-col items-center leading-[0.85] tracking-normal uppercase mt-2">
           <span className="text-5xl md:text-7xl lg:text-[5.5rem] font-black text-brand-blue">Social Media</span>
-          <span className="text-5xl md:text-7xl lg:text-[5.5rem] font-black text-gray-400">Management</span>
+          <span className="text-5xl md:text-7xl lg:text-[5.5rem] font-black text-[#6A6A6A]">Management</span>
         </h2>
 
         {/* Bottom line */}
@@ -187,6 +189,19 @@ const OurWork = () => {
 
         </motion.div>
 
+      </div>
+
+      {/* Button Section */}
+      <div className="w-full flex justify-center mt-12 md:mt-16 relative z-30">
+        <button 
+          onClick={() => {
+            navigate('/ad-agency/films');
+          }}
+          className="mt-12 md:mt-6 relative group bg-transparent text-brand-blue font-main text-xs md:text-sm uppercase tracking-[0.2em] font-bold py-4 px-10 rounded-full pointer-events-auto transition-all duration-500 overflow-hidden border border-brand-blue/40 hover:border-brand-blue shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-xl hover:shadow-brand-blue/20 [@media(max-height:600px)_and_(orientation:landscape)]:mt-2 [@media(max-height:600px)_and_(orientation:landscape)]:py-2 [@media(max-height:600px)_and_(orientation:landscape)]:px-6"
+        >
+          <span className="relative z-10 transition-colors duration-500 group-hover:text-white">Watch Sample Enterprise Films</span>
+          <div className="absolute inset-0 bg-brand-blue w-full h-full -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] z-0" />
+        </button>
       </div>
     </section>
   );

@@ -26,7 +26,7 @@ const EnterpriseFilms = () => {
   const scrollToSection = (category) => {
     const element = sectionRefs.current[category];
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
@@ -141,7 +141,7 @@ const EnterpriseFilms = () => {
       </div> {/* Close the constrained max-w wrapper */}
 
       {/* Dynamic Video Sections (Edge to Edge) */}
-      <div id="enterprise-video-playlists" className="flex flex-col w-full bg-white relative z-10 gap-24 md:gap-40 snap-y snap-mandatory">
+      <div id="enterprise-video-playlists" className="flex flex-col w-full bg-white relative z-10 gap-0 snap-y snap-mandatory">
         {enterpriseCategories.map((cat) => {
           const categoryVideos = enterpriseVideos.filter(v => v.category === cat.name);
           if (categoryVideos.length === 0) return null;
@@ -154,7 +154,7 @@ const EnterpriseFilms = () => {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true, margin: "0px" }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="w-full snap-start scroll-mt-0"
+              className="w-full snap-start scroll-mt-[100px] md:scroll-mt-[30px]"
             >
               {/* Video Playlist Component */}
               <VideoPlaylist videos={categoryVideos} category={cat.name} />

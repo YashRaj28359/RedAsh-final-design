@@ -4,7 +4,7 @@ import { LuNewspaper } from "react-icons/lu";
 import mediaData from '../../data/media.json';
 
 const MediaLinks = () => {
-  const articles = mediaData.slice(0, 6);
+  const articles = mediaData.slice(0, 3);
   // Helper to dynamically calculate CSS Object Position and Scale from user controls
   const getImageStyles = (article) => {
     const x = 50 + (article.moveLeft || 0) - (article.moveRight || 0);

@@ -60,7 +60,7 @@ const MediaPage = () => {
               >
                 
                 {/* Image Header */}
-                <div className="w-full aspect-video bg-gray-50 overflow-hidden relative">
+                <div className="w-full aspect-[4/3] bg-gray-50 overflow-hidden relative">
                   {article.image && (
                     <img 
                       src={article.image} 

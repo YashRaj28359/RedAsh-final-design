@@ -34,10 +34,10 @@ const ServicesInfo = () => {
             
             {/* Title */}
             <div className={`flex flex-col relative lg:absolute transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] items-start z-20 ${expanded === 'films' ? 'lg:left-10 lg:top-10 lg:translate-x-0 lg:translate-y-0 lg:items-start' : 'lg:left-1/2 lg:top-[110px] lg:-translate-x-1/2 lg:-translate-y-1/2 lg:items-center lg:group-hover:left-10 lg:group-hover:top-10 lg:group-hover:translate-x-0 lg:group-hover:translate-y-0 lg:group-hover:items-start'}`}>
-              <h2 className={`text-6xl md:text-[80px] font-hero text-brand-red uppercase leading-[0.9] tracking-wide mb-2 transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] text-left whitespace-nowrap ${expanded === 'films' ? 'lg:text-left' : 'lg:text-center lg:group-hover:text-left'}`}>
-                FILMS
+              <h2 className={`text-3xl md:text-[50px] xl:text-[60px] font-hero text-brand-red uppercase leading-[0.9] tracking-wide mb-2 transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] text-left whitespace-normal sm:whitespace-nowrap ${expanded === 'films' ? 'lg:text-left' : 'lg:text-center lg:group-hover:text-left'}`}>
+                ENTERTAINMENT <span className="text-brand-gray">DIVISION</span>
               </h2>
-              <div className="w-12 h-[2px] bg-brand-red transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)]"></div>
+              <div className="w-12 h-[2px] bg-brand-red transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] mt-2"></div>
             </div>
             
             {/* Super Smooth Expandable Grid Wrapper */}
@@ -45,7 +45,7 @@ const ServicesInfo = () => {
               <div className={`overflow-hidden flex flex-col transition-all duration-200 ease-[cubic-bezier(0.4,0,0.2,1)] lg:pt-[130px] lg:pb-10 ${expanded === 'films' ? 'opacity-100 translate-y-0 duration-700 delay-[300ms]' : 'opacity-0 translate-y-4 lg:group-hover:opacity-100 lg:group-hover:translate-y-0 lg:group-hover:duration-700 lg:group-hover:delay-[300ms]'}`}>
                 
                 <p className="text-sm md:text-base font-main text-brand-gray mt-6 lg:mt-0">
-                  Contact us at <a href="mailto:info@redashfilms.com" className="text-brand-red hover:underline transition-colors" onClick={(e) => e.stopPropagation()}>info@redashfilms.com</a> to produce entertainment films such as
+                  Contact us at <a href="mailto:info@redashfilms.com" className="text-brand-red hover:underline transition-colors" onClick={(e) => e.stopPropagation()}>info@redashfilms.com</a> for end-to-end <span className="text-brand-red">film production</span> services and entertainment films, including
                 </p>
                 
                 {/* Two Column List layout */}
@@ -105,10 +105,10 @@ const ServicesInfo = () => {
             
             {/* Title */}
             <div className={`flex flex-col relative lg:absolute transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] items-start z-20 ${expanded === 'agency' ? 'lg:left-10 lg:top-10 lg:translate-x-0 lg:translate-y-0 lg:items-start' : 'lg:left-1/2 lg:top-[110px] lg:-translate-x-1/2 lg:-translate-y-1/2 lg:items-center lg:group-hover:left-10 lg:group-hover:top-10 lg:group-hover:translate-x-0 lg:group-hover:translate-y-0 lg:group-hover:items-start'}`}>
-              <h2 className={`text-6xl md:text-[80px] font-hero text-brand-blue uppercase leading-[0.9] tracking-wide mb-2 transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] text-left whitespace-nowrap ${expanded === 'agency' ? 'lg:text-left' : 'lg:text-center lg:group-hover:text-left'}`}>
-                AGENCY
+              <h2 className={`text-3xl md:text-[50px] xl:text-[60px] font-hero text-brand-blue uppercase leading-[0.9] tracking-wide mb-2 transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] text-left whitespace-normal sm:whitespace-nowrap ${expanded === 'agency' ? 'lg:text-left' : 'lg:text-center lg:group-hover:text-left'}`}>
+                ENTERPRISE <span className="text-brand-gray">DIVISION</span>
               </h2>
-              <div className="w-12 h-[2px] bg-brand-blue transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)]"></div>
+              <div className="w-12 h-[2px] bg-brand-blue transition-all duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] mt-2"></div>
             </div>
             
             {/* Super Smooth Expandable Grid Wrapper */}
@@ -116,7 +116,7 @@ const ServicesInfo = () => {
               <div className={`overflow-hidden flex flex-col transition-all duration-200 ease-[cubic-bezier(0.4,0,0.2,1)] lg:pt-[130px] lg:pb-10 ${expanded === 'agency' ? 'opacity-100 translate-y-0 duration-700 delay-[300ms]' : 'opacity-0 translate-y-4 lg:group-hover:opacity-100 lg:group-hover:translate-y-0 lg:group-hover:duration-700 lg:group-hover:delay-[300ms]'}`}>
                 
                 <p className="text-sm md:text-base font-main text-brand-gray mt-6 lg:mt-0 pr-4 lg:pr-0">
-                  Contact us at <a href="mailto:info@redashfilms.com" className="text-brand-blue hover:underline transition-colors" onClick={(e) => e.stopPropagation()}>info@redashfilms.com</a> for end-to-end ad campaign design and execution, including
+                  Contact us at <a href="mailto:info@redashfilms.com" className="text-brand-blue hover:underline transition-colors" onClick={(e) => e.stopPropagation()}>info@redashfilms.com</a> for strategic <span className="text-brand-blue">ad agency</span> services and enterprise films, including
                 </p>
                 
                 {/* Two Column List layout */}

@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 const ContactForm = ({ 
   linkColorClass = "text-brand-red hover:text-blue-700", 
   highlightColorClass = "text-brand-red",
-  headingClass = "font-subtitle text-[#6A6A6A] tracking-[4px] md:tracking-[6px] [-webkit-text-stroke:1px_#6A6A6A] md:[-webkit-text-stroke:1.5px_#6A6A6A]",
+  headingClass = "font-subtitle text-[#6A6A6A] tracking-[4px] md:tracking-[6px] [-webkit-text-stroke:1px_currentColor] md:[-webkit-text-stroke:1.5px_currentColor]",
   showFooter = true
 }) => {
   return (
@@ -26,7 +26,7 @@ const ContactForm = ({
               <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand-blue shadow-[0_0_8px_rgba(22,114,239,0.5)]"></div>
             </div>
             <h2 className={`text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold uppercase mx-2 md:mx-6 whitespace-normal md:whitespace-nowrap text-center leading-tight ${headingClass}`}>
-              GET A FREE <span className={`${highlightColorClass} [-webkit-text-stroke:0px]`}>QUOTATION</span>
+              GET A FREE <span className={highlightColorClass}>QUOTATION</span>
             </h2>
             <div className="hidden md:block flex-1 h-[2px] bg-gradient-to-l from-transparent via-gray-200 to-gray-300 relative">
               <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand-blue shadow-[0_0_8px_rgba(22,114,239,0.5)]"></div>

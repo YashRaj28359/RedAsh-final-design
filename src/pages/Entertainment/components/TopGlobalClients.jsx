@@ -2,15 +2,15 @@ import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import amazonImg from '../../../assets/Films/clientlogos/Copy of Amazon Prime Video logo.png';
+import amazonImg from '../../../assets/Films/ClientLogos/Copy of Amazon Prime Video logo.png';
 
 gsap.registerPlugin(ScrollTrigger);
-import jioImg from '../../../assets/Films/clientlogos/JioStar.png';
-import pocketImg from '../../../assets/Films/clientlogos/Pocket films.png';
-import redChilliesImg from '../../../assets/Films/clientlogos/Red_Chillies_Entertainment_logo_1.jpg';
-import starPlusImg from '../../../assets/Films/clientlogos/Star_plus_29.webp';
-import kukuTvImg from '../../../assets/Films/clientlogos/kuku-tv-logo-1763732193670.webp';
-import tangyTvImg from '../../../assets/Films/clientlogos/tangy tv.jpg';
+import jioImg from '../../../assets/Films/ClientLogos/JioStar.png';
+import pocketImg from '../../../assets/Films/ClientLogos/Pocket films.png';
+import redChilliesImg from '../../../assets/Films/ClientLogos/Red_Chillies_Entertainment_logo_1.jpg';
+import starPlusImg from '../../../assets/Films/ClientLogos/Star_plus_29.webp';
+import kukuTvImg from '../../../assets/Films/ClientLogos/kuku-tv-logo-1763732193670.webp';
+import tangyTvImg from '../../../assets/Films/ClientLogos/tangy tv.jpg';
 
 const clients = [
   { img: jioImg, alt: 'Jio Star', rotate: 'rotate-[-10deg]', pos: 'md:top-[-10%] md:-left-[10%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },

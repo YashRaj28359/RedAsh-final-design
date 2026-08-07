@@ -5,7 +5,7 @@ import VideoGrid from '../components/VideoGrid/VideoGrid';
 import ServicesInfo from '../components/ServicesInfo/ServicesInfo';
 import ContactForm from '../components/ContactForm/ContactForm';
 import MediaLinks from '../components/MediaLinks/MediaLinks';
-import Footer from '../components/Footer/Footer';
+import HomeFooter from '../components/Footer/HomeFooter';
 import { motion } from 'framer-motion';
 
 const Home = () => {
@@ -24,11 +24,7 @@ const Home = () => {
         <ContactForm />
         <MediaLinks />
       </main>
-      <Footer links={[
-        { name: 'HOME', path: '/' },
-        { name: 'ENTERTAINMENT FILMS', path: '/entertainment' },
-        { name: 'AD AGENCY', path: '/ad-agency' }
-      ]} />
+      <HomeFooter />
     </motion.div>
   );
 };

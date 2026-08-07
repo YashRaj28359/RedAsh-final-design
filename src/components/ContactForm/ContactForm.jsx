@@ -5,7 +5,11 @@ const ContactForm = ({
   linkColorClass = "text-brand-red hover:text-blue-700", 
   highlightColorClass = "text-brand-red",
   headingClass = "font-subtitle text-[#6A6A6A] tracking-[4px] md:tracking-[6px] [-webkit-text-stroke:1px_currentColor] md:[-webkit-text-stroke:1.5px_currentColor]",
-  showFooter = true
+  showFooter = true,
+  titlePrefix = "GET A FREE",
+  titleHighlight = "QUOTATION",
+  input4Placeholder = "Your Requirement",
+  clientText = "Potential clients"
 }) => {
   return (
     <section className="w-full px-4 md:px-8 pt-4 md:pt-10 pb-2 md:pb-0 bg-white relative z-10">
@@ -26,7 +30,7 @@ const ContactForm = ({
               <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand-blue shadow-[0_0_8px_rgba(22,114,239,0.5)]"></div>
             </div>
             <h2 className={`text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold uppercase mx-2 md:mx-6 whitespace-normal md:whitespace-nowrap text-center leading-tight ${headingClass}`}>
-              GET A FREE <span className={highlightColorClass}>QUOTATION</span>
+              {titlePrefix} <span className={highlightColorClass}>{titleHighlight}</span>
             </h2>
             <div className="hidden md:block flex-1 h-[2px] bg-gradient-to-l from-transparent via-gray-200 to-gray-300 relative">
               <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand-blue shadow-[0_0_8px_rgba(22,114,239,0.5)]"></div>
@@ -98,7 +102,7 @@ const ContactForm = ({
                 </svg>
                 <input 
                   type="text" 
-                  placeholder="Your Requirement" 
+                  placeholder={input4Placeholder} 
                   required
                   className="soft-input"
                 />
@@ -130,7 +134,7 @@ const ContactForm = ({
             >
               <div className="flex flex-col xl:flex-row justify-center items-center gap-2 xl:gap-6">
                 <p className="font-main text-xs md:text-sm text-gray-500 font-medium">
-                  Potential clients can fill this form or email us at <a href="https://mail.google.com/mail/?view=cm&fs=1&to=info@redashfilms.com" target="_blank" rel="noopener noreferrer" className={`font-bold transition-colors ${linkColorClass}`}>info@redashfilms.com</a>
+                  {clientText} can fill this form or email us at <a href="https://mail.google.com/mail/?view=cm&fs=1&to=info@redashfilms.com" target="_blank" rel="noopener noreferrer" className={`font-bold transition-colors ${linkColorClass}`}>info@redashfilms.com</a>
                 </p>
                 <p className="hidden xl:block font-main text-sm text-gray-300">|</p>
                 <p className="font-main text-xs md:text-sm text-gray-500 font-medium">

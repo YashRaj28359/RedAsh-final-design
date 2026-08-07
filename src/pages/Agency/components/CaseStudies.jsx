@@ -9,9 +9,9 @@ import {
   FaBuilding,
   FaArrowRight
 } from 'react-icons/fa';
-import imgWellness from '../../../assets/Casestudies/Wellness.png';
-import imgPharmacy from '../../../assets/Casestudies/Pharmacy.png';
-import imgMobileOTT from '../../../assets/Casestudies/Mobile OTT.png';
+import imgWellness from '../../../assets/Agency/Casestudies/Wellness.png';
+import imgPharmacy from '../../../assets/Agency/Casestudies/Pharmacy.png';
+import imgMobileOTT from '../../../assets/Agency/Casestudies/Mobile OTT.png';
 
 const caseStudiesData = [
   {

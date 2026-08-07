@@ -6,16 +6,16 @@ import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import Navbar from './components/Navbar';
 import TopGlobalClients from './components/TopGlobalClients';
 import ContactForm from '../../components/ContactForm/ContactForm';
-import Footer from '../../components/Footer/Footer';
+import AgencyFooter from './components/AgencyFooter';
 
 // Images for About section
-import pic1 from '../../assets/About/Pictures/01.JPG';
-import pic2 from '../../assets/About/Pictures/02.jpg';
-import pic3 from '../../assets/About/Pictures/03.jpg';
-import pic4 from '../../assets/About/Pictures/04.JPG';
-import pic5 from '../../assets/About/Pictures/05.JPG';
-import pic6 from '../../assets/About/Pictures/06.JPG';
-import pic7 from '../../assets/About/Pictures/07.jpg';
+import pic1 from '../../assets/Agency/About/Pictures/01.JPG';
+import pic2 from '../../assets/Agency/About/Pictures/02.jpg';
+import pic3 from '../../assets/Agency/About/Pictures/03.jpg';
+import pic4 from '../../assets/Agency/About/Pictures/04.JPG';
+import pic5 from '../../assets/Agency/About/Pictures/05.JPG';
+import pic6 from '../../assets/Agency/About/Pictures/06.JPG';
+import pic7 from '../../assets/Agency/About/Pictures/07.jpg';
 
 // Placeholder for images from Google Drive
 const PlaceholderImage = ({ text, className }) => (
@@ -399,8 +399,7 @@ const AboutAgency = () => {
 
       </main>
 
-      {/* Footer customized with Agency navigation links and exact social order requested */}
-      <Footer />
+      <AgencyFooter />
     </div>
   );
 };

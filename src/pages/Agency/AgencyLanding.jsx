@@ -15,7 +15,7 @@ import Testimonials from './components/Testimonials';
 import WhatsRedHot from './components/WhatsRedHot';
 import OurWork from './components/OurWork';
 
-import Footer from '../../components/Footer/Footer';
+import AgencyFooter from './components/AgencyFooter';
 
 const AgencyLanding = () => {
   const containerRef = useRef(null);
@@ -107,8 +107,7 @@ const AgencyLanding = () => {
 
       </main>
 
-      {/* Footer customized with Agency navigation links */}
-      <Footer />
+      <AgencyFooter />
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from './components/Navbar';
-import Footer from '../../components/Footer/Footer';
+import AgencyFooter from './components/AgencyFooter';
 import ContactForm from '../../components/ContactForm/ContactForm';
 import { FaMapMarkerAlt, FaEnvelope } from 'react-icons/fa';
 
@@ -110,7 +110,7 @@ const Contact = () => {
         </div>
       </main>
 
-      <Footer />
+      <AgencyFooter />
     </div>
   );
 };

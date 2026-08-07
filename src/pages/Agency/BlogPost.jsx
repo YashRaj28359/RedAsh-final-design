@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import Navbar from './components/Navbar';
-import Footer from '../../components/Footer/Footer';
+import AgencyFooter from './components/AgencyFooter';
 import blogsData from '../../data/blogs.json';
 
 const BlogPost = () => {
@@ -163,7 +163,7 @@ const BlogPost = () => {
 
       </section>
 
-      <Footer />
+      <AgencyFooter />
     </div>
   );
 };

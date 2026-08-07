@@ -9,6 +9,8 @@ import BlogPost from './pages/Agency/BlogPost';
 import MediaPage from './pages/Agency/MediaPage';
 import Contact from './pages/Agency/Contact';
 import AgencyFilms from './pages/Agency/AgencyFilms';
+import EntertainmentLanding from './pages/Entertainment/EntertainmentLanding';
+import EntertainmentFilms from './pages/Entertainment/EntertainmentFilms';
 import { AnimatePresence } from 'framer-motion';
 
 function AnimatedRoutes() {
@@ -23,6 +25,8 @@ function AnimatedRoutes() {
       <Route path="/ad-agency/media" element={<MediaPage />} />
       <Route path="/ad-agency/contact" element={<Contact />} />
       <Route path="/ad-agency/films" element={<AgencyFilms />} />
+      <Route path="/entertainment" element={<EntertainmentLanding />} />
+      <Route path="/entertainment/films" element={<EntertainmentFilms />} />
     </Routes>
   );
 }

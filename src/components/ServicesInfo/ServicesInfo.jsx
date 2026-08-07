@@ -66,10 +66,8 @@ const ServicesInfo = () => {
 
                 {/* Bottom Anchored Button */}
                 <div className="pt-6 pb-2 mt-auto w-full flex justify-start">
-                  <a 
-                    href="https://films.redash.in" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
+                  <Link 
+                    to="/entertainment" 
                     className="inline-block"
                     onClick={(e) => e.stopPropagation()}
                   >
@@ -77,7 +75,7 @@ const ServicesInfo = () => {
                       Click Here 
                       <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                     </button>
-                  </a>
+                  </Link>
                 </div>
 
               </div>

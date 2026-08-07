@@ -8,7 +8,7 @@ const Footer = ({ links }) => {
   const defaultLinks = [
     { name: 'HOME', path: '/ad-agency' },
     { name: 'ABOUT', path: '/ad-agency/about' },
-    { name: 'FILMS', path: '/ad-agency/films' },
+    { name: 'ENTERPRISE FILMS', path: '/ad-agency/films' },
     { name: 'BLOG', path: '/ad-agency/blog' },
     { name: 'MEDIA', path: '/ad-agency/media' },
     { name: 'CONTACT', path: '/ad-agency/contact' }
@@ -17,7 +17,7 @@ const Footer = ({ links }) => {
   const displayLinks = links || defaultLinks;
 
   return (
-    <footer className="bg-brand-gray text-white py-12 px-6 md:px-12 w-full mt-auto">
+    <footer className="bg-brand-gray text-white py-12 px-6 md:px-12 w-full mt-auto relative z-50">
       <div className="max-w-7xl mx-auto flex flex-col justify-between h-full min-h-[90px]">
         {/* Top Section */}
         <div className="flex flex-col md:flex-row justify-between items-center w-full gap-8 md:gap-0 mb-8 md:mb-12">

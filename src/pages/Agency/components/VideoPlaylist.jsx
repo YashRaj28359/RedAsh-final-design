@@ -4,8 +4,9 @@ import { FiPlay, FiX, FiChevronLeft, FiChevronRight, FiChevronDown, FiTv, FiMic,
 import { FaLightbulb } from 'react-icons/fa';
 import YouTube from 'react-youtube';
 
-const getCategoryIcon = (category) => {
-  const iconClass = "w-10 h-10 md:w-12 md:h-12 text-[#1672EF]";
+const getCategoryIcon = (category, theme = 'blue') => {
+  const iconColorClass = theme === 'red' ? 'text-brand-red' : 'text-[#1672EF]';
+  const iconClass = `w-10 h-10 md:w-12 md:h-12 ${iconColorClass}`;
   switch (category?.toUpperCase()) {
     case "AD FILMS": return <FiTv className={iconClass} />;
     case "PODCASTS": return <FiMic className={iconClass} />;
@@ -15,6 +16,11 @@ const getCategoryIcon = (category) => {
     case "AI VIDEOS": return <FiCpu className={iconClass} />;
     case "SHORT FILMS": return <FiFilm className={iconClass} />;
     case "ANY CREATIVE FILMS": return <FaLightbulb className={iconClass} />;
+    case "MICRODRAMA SHOWS": return <FiTv className={iconClass} />;
+    case "FEATURE FILMS": return <FiFilm className={iconClass} />;
+    case "WEB/TV SERIES": return <FiTv className={iconClass} />;
+    case "MUSIC VIDEOS": return <FiMic className={iconClass} />;
+    case "DOCUMENTARY FILMS": return <FiBookOpen className={iconClass} />;
     default: return <FiVideo className={iconClass} />;
   }
 };
@@ -68,7 +74,7 @@ const ThumbnailImage = ({ video, isLarge }) => {
   );
 };
 
-const VideoPlaylist = ({ videos, category }) => {
+const VideoPlaylist = ({ videos, category, theme = 'blue' }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isVideoPaused, setIsVideoPaused] = useState(false);
@@ -171,10 +177,10 @@ const VideoPlaylist = ({ videos, category }) => {
       {/* Category Heading (Desktop) */}
       <div className={`${!isMobile ? 'flex' : 'hidden'} flex-col items-start w-full mb-6 px-2`}>
         <div className="flex items-center gap-4 mb-2">
-          <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-[#F0F5FF] flex items-center justify-center text-[#1672EF] flex-shrink-0">
-            {getCategoryIcon(category)}
+          <div className={`w-16 h-16 lg:w-20 lg:h-20 rounded-full flex items-center justify-center flex-shrink-0 ${theme === 'red' ? 'bg-[#FEF2F2] text-brand-red' : 'bg-[#F0F5FF] text-[#1672EF]'}`}>
+            {getCategoryIcon(category, theme)}
           </div>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-hero font-extrabold text-[#1672EF] tracking-widest uppercase">{category}</h2>
+          <h2 className={`text-4xl md:text-5xl lg:text-6xl font-hero font-extrabold tracking-widest uppercase ${theme === 'red' ? 'text-brand-red' : 'text-[#1672EF]'}`}>{category}</h2>
         </div>
         <p className="text-[#6A6A6A] font-medium text-sm md:text-base ml-2">{getCategorySubtitle(category)}</p>
       </div>
@@ -182,10 +188,10 @@ const VideoPlaylist = ({ videos, category }) => {
       {/* Category Heading (Mobile) */}
       <div className={`${isMobile ? 'flex' : 'hidden'} flex-col items-center justify-center w-full mb-4 px-2 text-center`}>
         <div className="flex flex-col items-center gap-2 mb-2">
-          <div className="w-12 h-12 rounded-full bg-[#F0F5FF] flex items-center justify-center text-[#1672EF]">
-            {getCategoryIcon(category)}
+          <div className={`w-12 h-12 rounded-full flex items-center justify-center ${theme === 'red' ? 'bg-[#FEF2F2] text-brand-red' : 'bg-[#F0F5FF] text-[#1672EF]'}`}>
+            {getCategoryIcon(category, theme)}
           </div>
-          <h2 className="text-2xl sm:text-3xl font-hero font-extrabold text-[#1672EF] tracking-widest uppercase text-center">{category}</h2>
+          <h2 className={`text-2xl sm:text-3xl font-hero font-extrabold tracking-widest uppercase text-center ${theme === 'red' ? 'text-brand-red' : 'text-[#1672EF]'}`}>{category}</h2>
         </div>
         <p className="text-[#6A6A6A] font-medium text-xs sm:text-sm text-center">{getCategorySubtitle(category)}</p>
       </div>
@@ -214,7 +220,7 @@ const VideoPlaylist = ({ videos, category }) => {
               onClick={() => setIsMobilePlaylistOpen(!isMobilePlaylistOpen)}
               className="w-full py-4 border-b border-gray-200 flex justify-center items-center bg-white shadow-sm relative z-10 hover:bg-gray-50 transition-colors"
             >
-                  <div className="flex items-center gap-2 text-brand-blue font-bold text-base uppercase">
+                  <div className={`flex items-center gap-2 font-bold text-base uppercase ${theme === 'red' ? 'text-brand-red' : 'text-brand-blue'}`}>
                     <span>View more {category}</span>
                     <motion.div
                       animate={{ rotate: isMobilePlaylistOpen ? 180 : 0 }}
@@ -252,7 +258,7 @@ const VideoPlaylist = ({ videos, category }) => {
                         
                         {/* Info */}
                         <div className="flex-1 min-w-0">
-                          <h4 className={`text-sm sm:text-base font-semibold truncate ${isActive ? 'text-[#003366]' : 'text-gray-700'}`}>
+                          <h4 className={`text-sm sm:text-base font-semibold truncate ${isActive ? (theme === 'red' ? 'text-red-900' : 'text-[#003366]') : 'text-gray-700'}`}>
                             {video.title}
                           </h4>
                         </div>
@@ -305,7 +311,7 @@ const VideoPlaylist = ({ videos, category }) => {
                     onClick={() => {
                       setActiveIndex(index);
                     }}
-                    className={`flex items-center gap-4 p-3 rounded-2xl cursor-pointer transition-all duration-300 ${isActive ? 'bg-[#F0F5FF]' : 'bg-white hover:bg-gray-50'}`}
+                    className={`flex items-center gap-4 p-3 rounded-2xl cursor-pointer transition-all duration-300 ${isActive ? (theme === 'red' ? 'bg-[#FEF2F2]' : 'bg-[#F0F5FF]') : 'bg-white hover:bg-gray-50'}`}
                   >
                     {/* Thumbnail */}
                     <div className="relative w-28 md:w-32 lg:w-36 aspect-video flex-shrink-0 bg-gray-200 rounded-xl overflow-hidden border border-gray-100 shadow-sm group-hover:shadow-md transition-all">
@@ -321,7 +327,7 @@ const VideoPlaylist = ({ videos, category }) => {
                         </h4>
                         <p className="text-xs text-gray-600 mt-1">{category}</p>
                       </div>
-                      <div className={`text-xs md:text-sm font-bold whitespace-nowrap ${isActive ? 'text-[#1672EF]' : 'text-gray-500'}`}>
+                      <div className={`text-xs md:text-sm font-bold whitespace-nowrap ${isActive ? (theme === 'red' ? 'text-brand-red' : 'text-[#1672EF]') : 'text-gray-500'}`}>
                         {isActive ? 'Playing' : ''}
                       </div>
                     </div>

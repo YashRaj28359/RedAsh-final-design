@@ -3,14 +3,14 @@ import { FaFire, FaArrowRight } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
-import image1 from '../../../assets/RedHot section/Image 1.png';
-import image2 from '../../../assets/RedHot section/image2.png';
-import image3 from '../../../assets/RedHot section/image3.png';
-import image4 from '../../../assets/RedHot section/image4.png';
-import image5 from '../../../assets/RedHot section/image5.png';
-import image6 from '../../../assets/RedHot section/image6.png';
-import imgFunding from '../../../assets/RedHot section/Funding.png';
-import imgInsight from '../../../assets/RedHot section/Insight.png';
+import image1 from '../../../assets/Agency/RedHot section/Image 1.png';
+import image2 from '../../../assets/Agency/RedHot section/image2.png';
+import image3 from '../../../assets/Agency/RedHot section/image3.png';
+import image4 from '../../../assets/Agency/RedHot section/image4.png';
+import image5 from '../../../assets/Agency/RedHot section/image5.png';
+import image6 from '../../../assets/Agency/RedHot section/image6.png';
+import imgFunding from '../../../assets/Agency/RedHot section/Funding.png';
+import imgInsight from '../../../assets/Agency/RedHot section/Insight.png';
 
 const updatesData = [
   {

@@ -1,4 +1,4 @@
-import microDramaImg from '../assets/Filmthumbnails/Micro drama.png';
+import microDramaImg from '../assets/Agency/Filmthumbnails/Micro drama.png';
 
 export const videos = [
   {

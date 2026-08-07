@@ -3,32 +3,32 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
 // Row 1
-import logo2 from '../../../assets/Logo - Clients/Copy of LG logo.png';
-import logo3 from '../../../assets/Logo - Clients/Copy of Samsung logo.png';
-import logo4 from '../../../assets/Logo - Clients/Copy of GE logo.png';
-import logo5 from '../../../assets/Logo - Clients/Copy of Mahindra.png';
-import logo6 from '../../../assets/Logo - Clients/Copy of bajaj finserv logo.png';
-import logo7 from '../../../assets/Logo - Clients/Copy of United Nations.png';
-import logo8 from '../../../assets/Logo - Clients/Copy of Castrol logo.png';
-import logo9 from '../../../assets/Logo - Clients/8206742b-baaa-43f8-b90f-11d438ff9de1.jpg';
-import logo10 from '../../../assets/Logo - Clients/Copy of UK Govt.png';
-import logo11 from '../../../assets/Logo - Clients/Copy of The Smart Cube.png';
-import logo12 from '../../../assets/Logo - Clients/Copy of Schlumberger.png';
-import logoGov from '../../../assets/Logo - Clients/govtofindia.jpg';
+import logo2 from '../../../assets/Agency/Logo - Clients/Copy of LG logo.png';
+import logo3 from '../../../assets/Agency/Logo - Clients/Copy of Samsung logo.png';
+import logo4 from '../../../assets/Agency/Logo - Clients/Copy of GE logo.png';
+import logo5 from '../../../assets/Agency/Logo - Clients/Copy of Mahindra.png';
+import logo6 from '../../../assets/Agency/Logo - Clients/Copy of bajaj finserv logo.png';
+import logo7 from '../../../assets/Agency/Logo - Clients/Copy of United Nations.png';
+import logo8 from '../../../assets/Agency/Logo - Clients/Copy of Castrol logo.png';
+import logo9 from '../../../assets/Agency/Logo - Clients/8206742b-baaa-43f8-b90f-11d438ff9de1.jpg';
+import logo10 from '../../../assets/Agency/Logo - Clients/Copy of UK Govt.png';
+import logo11 from '../../../assets/Agency/Logo - Clients/Copy of The Smart Cube.png';
+import logo12 from '../../../assets/Agency/Logo - Clients/Copy of Schlumberger.png';
+import logoGov from '../../../assets/Agency/Logo - Clients/govtofindia.jpg';
 
 // Row 2
-import logo13 from '../../../assets/Logo - Clients/Copy of Ek step.png';
-import logo14 from '../../../assets/Logo - Clients/Copy of Wellness forever.png';
-import logo15 from '../../../assets/Logo - Clients/Screenshot 2026-07-23 155630.png';
-import logo16 from '../../../assets/Logo - Clients/Copy of FD Shots.png';
-import logo17 from '../../../assets/Logo - Clients/Copy of Government of Gujrat logo.png';
-import logo18 from '../../../assets/Logo - Clients/bihar-logo-red.png';
-import logo19 from '../../../assets/Logo - Clients/cropped-agnisys-logo-1-2.png';
-import logo20 from '../../../assets/Logo - Clients/cropped-Sigmoid_logo_3x.png';
-import logo21 from '../../../assets/Logo - Clients/Screenshot 2026-07-23 160357.png';
-import logo22 from '../../../assets/Logo - Clients/Screenshot 2026-07-23 160521.png';
-import logo23 from '../../../assets/Logo - Clients/logo.png';
-import logoSavvy from '../../../assets/Logo - Clients/dspzr.png';
+import logo13 from '../../../assets/Agency/Logo - Clients/Copy of Ek step.png';
+import logo14 from '../../../assets/Agency/Logo - Clients/Copy of Wellness forever.png';
+import logo15 from '../../../assets/Agency/Logo - Clients/Screenshot 2026-07-23 155630.png';
+import logo16 from '../../../assets/Agency/Logo - Clients/Copy of FD Shots.png';
+import logo17 from '../../../assets/Agency/Logo - Clients/Copy of Government of Gujrat logo.png';
+import logo18 from '../../../assets/Agency/Logo - Clients/bihar-logo-red.png';
+import logo19 from '../../../assets/Agency/Logo - Clients/cropped-agnisys-logo-1-2.png';
+import logo20 from '../../../assets/Agency/Logo - Clients/cropped-Sigmoid_logo_3x.png';
+import logo21 from '../../../assets/Agency/Logo - Clients/Screenshot 2026-07-23 160357.png';
+import logo22 from '../../../assets/Agency/Logo - Clients/Screenshot 2026-07-23 160521.png';
+import logo23 from '../../../assets/Agency/Logo - Clients/logo.png';
+import logoSavvy from '../../../assets/Agency/Logo - Clients/dspzr.png';
 
 const logosRow1 = [logo2, logo3, logo4, logo5, logo6, logo7, logo8, logo9, logo10, logo11, logo12, logoGov];
 const logosRow2 = [logo13, logo14, logo15, logo16, logo17, logo18, logo19, logo20, logo21, logo22, logo23, logoSavvy];

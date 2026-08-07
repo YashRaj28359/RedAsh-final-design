@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from './components/Navbar';
-import Footer from '../../components/Footer/Footer';
+import AgencyFooter from './components/AgencyFooter';
 import ContactForm from '../../components/ContactForm/ContactForm';
 import mediaData from '../../data/media.json';
 import { LuNewspaper } from "react-icons/lu";
@@ -104,7 +104,7 @@ const MediaPage = () => {
         highlightColorClass="text-brand-blue"
         linkColorClass="text-brand-blue hover:text-blue-700"
       />
-      <Footer />
+      <AgencyFooter />
     </div>
   );
 };

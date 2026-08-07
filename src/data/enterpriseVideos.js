@@ -1,5 +1,5 @@
-import lgtvcBg from '../assets/enterpriseFilms/lgtvc_bg.png';
-import sigmoidBg from '../assets/Logo - Clients/cropped-Sigmoid_logo_3x.png';
+import lgtvcBg from '../assets/Agency/enterpriseFilms/lgtvc_bg.png';
+import sigmoidBg from '../assets/Agency/Logo - Clients/cropped-Sigmoid_logo_3x.png';
 
 export const enterpriseVideos = [
   {

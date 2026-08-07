@@ -4,7 +4,7 @@ import { useGSAP } from '@gsap/react';
 import Navbar from './components/Navbar';
 import EnterpriseFilms from './components/EnterpriseFilms';
 import ContactForm from '../../components/ContactForm/ContactForm';
-import Footer from '../../components/Footer/Footer';
+import AgencyFooter from './components/AgencyFooter';
 
 const AgencyFilms = () => {
   const containerRef = useRef(null);
@@ -44,7 +44,7 @@ const AgencyFilms = () => {
 
       </main>
 
-      <Footer />
+      <AgencyFooter />
     </div>
   );
 };

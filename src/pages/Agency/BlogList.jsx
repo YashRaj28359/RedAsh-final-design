@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Footer from '../../components/Footer/Footer';
+import AgencyFooter from './components/AgencyFooter';
 import blogsData from '../../data/blogs.json';
 
 const BlogList = () => {
@@ -92,7 +92,7 @@ const BlogList = () => {
         </div>
       </section>
 
-      <Footer />
+      <AgencyFooter />
     </div>
   );
 };

@@ -288,7 +288,7 @@ const FilmCollage = ({ onVideoToggle }) => {
                     
                     {/* Title */}
                     <div className="flex flex-col translate-y-1.5">
-                      <h3 className="text-2xl sm:text-3xl font-bold font-hero tracking-wider uppercase leading-tight text-white drop-shadow-sm">
+                      <h3 className="text-2xl sm:text-3xl font-bold font-hero tracking-wider uppercase leading-[0.85] text-white drop-shadow-sm">
                         {film.title.split(' ').map((word, i) => (
                           <React.Fragment key={i}>
                             <span className={i === 0 ? "text-brand-red group-hover:text-white transition-colors duration-300" : "group-hover:text-brand-red transition-colors duration-300"}>

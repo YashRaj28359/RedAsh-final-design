@@ -11,15 +11,19 @@ import redChilliesImg from '../../../assets/Films/ClientLogos/Red_Chillies_Enter
 import starPlusImg from '../../../assets/Films/ClientLogos/Star_plus_29.webp';
 import kukuTvImg from '../../../assets/Films/ClientLogos/kuku-tv-logo-1763732193670.webp';
 import tangyTvImg from '../../../assets/Films/ClientLogos/tangy tv.jpg';
+import secondLastImg from '../../../assets/Films/ClientLogos/2ndlast.png';
+import lastImg from '../../../assets/Films/ClientLogos/Last.png';
 
 const clients = [
-  { img: jioImg, alt: 'Jio Star', rotate: 'rotate-[-10deg]', pos: 'md:top-[-10%] md:-left-[10%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
-  { img: starPlusImg, alt: 'Star Plus', rotate: 'rotate-[8deg]', pos: 'md:top-[35%] md:-left-[2%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
-  { img: redChilliesImg, alt: 'Red Chillies', rotate: 'rotate-[-5deg]', pos: 'md:-bottom-[5%] md:left-[18%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
-  { img: kukuTvImg, alt: 'Kuku TV', rotate: 'rotate-[12deg]', pos: 'md:-bottom-[25%] md:left-[42%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
-  { img: amazonImg, alt: 'Amazon Prime', rotate: 'rotate-[-8deg]', pos: 'md:-bottom-[5%] md:right-[18%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
-  { img: tangyTvImg, alt: 'Tangy TV', rotate: 'rotate-[5deg]', pos: 'md:top-[35%] md:-right-[2%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
-  { img: pocketImg, alt: 'Pocket Films', rotate: 'rotate-[-12deg]', pos: 'md:top-[-10%] md:-right-[10%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
+  { img: jioImg, alt: 'Jio Star', rotate: 'rotate-[-12deg]', pos: 'md:-top-[10%] md:-left-[18%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
+  { img: starPlusImg, alt: 'Star Plus', rotate: 'rotate-[-5deg]', pos: 'md:top-[20%] md:-left-[7%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
+  { img: redChilliesImg, alt: 'Red Chillies', rotate: 'rotate-[5deg]', pos: 'md:top-[50%] md:left-[8%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
+  { img: kukuTvImg, alt: 'Kuku TV', rotate: 'rotate-[12deg]', pos: 'md:top-[75%] md:left-[23%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
+  { img: amazonImg, alt: 'Amazon Prime Video', rotate: 'rotate-[-10deg]', pos: 'md:top-[85%] md:left-[43%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
+  { img: tangyTvImg, alt: 'Tangy TV', rotate: 'rotate-[5deg]', pos: 'md:top-[75%] md:right-[23%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
+  { img: pocketImg, alt: 'Pocket Films', rotate: 'rotate-[-8deg]', pos: 'md:top-[50%] md:right-[8%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
+  { img: secondLastImg, alt: 'Vertical TV', rotate: 'rotate-[10deg]', pos: 'md:top-[20%] md:-right-[7%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
+  { img: lastImg, alt: 'Alright TV', rotate: 'rotate-[-15deg]', pos: 'md:-top-[10%] md:-right-[18%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
 ];
 
 const TopGlobalClients = () => {
@@ -53,16 +57,15 @@ const TopGlobalClients = () => {
 
     // 2. Logos fly in as you continue scrolling down
     desktopLogosRef.current.forEach((logo, i) => {
-      let startX = 0;
-      let startY = 0;
-      
-      if (i < 3) startX = -800; 
-      else if (i > 3) startX = 800; 
-      
-      if (i === 0 || i === 6) startY = -800; 
-      else startY = 800; 
+      if (!logo) return;
 
-      const startTime = i === 0 ? 0.5 : "<0.2";
+      let startX = 0;
+      let startY = 800; // all fly up from bottom
+      
+      if (i < 4) startX = -600; 
+      else if (i > 4) startX = 600; 
+
+      const startTime = 0.5 + (i * 0.05); // slight stagger
       
       // Fade in quickly
       tl.fromTo(logo,
@@ -105,7 +108,7 @@ const TopGlobalClients = () => {
   }, { scope: containerRef });
 
   return (
-    <section ref={containerRef} className="w-full py-20 md:py-32 bg-white relative overflow-hidden flex flex-col items-center justify-center">
+    <section ref={containerRef} className="w-full py-20 md:py-32 bg-white relative z-20 flex flex-col items-center justify-center">
       
       {/* Central Container */}
       <div className="relative z-10 text-center max-w-5xl mx-auto px-4 flex flex-col items-center justify-center min-h-[40vh] md:min-h-[60vh] w-full">
@@ -134,20 +137,20 @@ const TopGlobalClients = () => {
             
             {/* Invisible Spacer to preserve perfect center alignment */}
             <div className="relative opacity-0 pointer-events-none select-none" aria-hidden="true">
-              TOP GLOBAL <br />
-              CLIENTS
+              ENTERTAINMENT <br />
+              PARTNERS
             </div>
 
             {/* Echo 1 */}
             <div className="absolute inset-0 top-1 left-1 md:top-2 md:left-2 text-transparent [-webkit-text-stroke:1px_#6A6A6A] md:[-webkit-text-stroke:2px_#6A6A6A] z-10 opacity-70 select-none pointer-events-none" aria-hidden="true">
-              TOP GLOBAL <br />
-              <span className="[-webkit-text-stroke:1px_#E20002] md:[-webkit-text-stroke:2px_#E20002]">CLIENTS</span>
+              <span className="[-webkit-text-stroke:1px_#E20002] md:[-webkit-text-stroke:2px_#E20002]">ENTERTAINMENT</span> <br />
+              PARTNERS
             </div>
 
             {/* Echo 2 */}
             <div className="absolute inset-0 top-2 left-2 md:top-4 md:left-4 text-transparent [-webkit-text-stroke:1px_#6A6A6A] md:[-webkit-text-stroke:2px_#6A6A6A] z-0 opacity-40 select-none pointer-events-none" aria-hidden="true">
-              TOP GLOBAL <br />
-              <span className="[-webkit-text-stroke:1px_#E20002] md:[-webkit-text-stroke:2px_#E20002]">CLIENTS</span>
+              <span className="[-webkit-text-stroke:1px_#E20002] md:[-webkit-text-stroke:2px_#E20002]">ENTERTAINMENT</span> <br />
+              PARTNERS
             </div>
 
           </div>

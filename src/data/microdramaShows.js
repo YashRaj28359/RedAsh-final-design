@@ -24,26 +24,27 @@ import m23 from '../assets/Films/Poster/Micro drama Movie posters/23.webp';
 import m24 from '../assets/Films/Poster/Micro drama Movie posters/24.webp';
 import m25 from '../assets/Films/Poster/Micro drama Movie posters/25.webp';
 import m26 from '../assets/Films/Poster/Micro drama Movie posters/26.webp';
+import card3 from '../assets/Films/Cards/Card3.png';
 
 export const microdramaShows = [
-  { id: "01", title: "Billionaire on Plane", url: "https://premium.kukutv.app/show/billionaire-on-plane", image: m1, objectPos: 'object-top' },
-  { id: "02", title: "ALRIGHT TV: Race Against Time", url: "https://www.instagram.com/reels/DVjKK5YSD3G/", image: m2 },
+  { id: "01", title: "Billionaire on Plane", url: "https://premium.kukutv.app/show/billionaire-on-plane", image: card3, objectPos: 'object-top' },
+  { id: "02", title: "ALRIGHT TV: Race Against Time", url: "https://www.instagram.com/reels/DVjKK5YSD3G/", image: m2, scaleClass: 'scale-110', hoverScaleClass: 'group-hover:scale-125' },
   { id: "03", title: "MARCH'26: Baazigar Baaz", url: "https://premium.kukutv.app/show/baazigaar-baaz", image: m3 },
-  { id: "04", title: "RED CHILLIES: Blue Drum Honeymoon", url: null, image: m4 },
-  { id: "05", title: "Baap Beta aur Billion", url: "https://premium.kukutv.app/watch/secret-boss-mera-baap?episode=episode-2-2213", image: m5 },
-  { id: "06", title: "TANGY TV: Udta Hua Hidden Billionaire/The Crorepati Sweeper Wala", url: null, image: m6 },
+  { id: "04", title: "RED CHILLIES: Blue Drum Honeymoon", url: null, image: m4, objectPos: 'object-bottom' },
+  { id: "05", title: "Baap Beta aur Billion", url: "https://premium.kukutv.app/show/secret-boss-mera-baap", image: m5 },
+  { id: "06", title: "TANGY TV: Udta Hua Hidden Billionaire/The Crorepati Sweeper Wala", url: null, image: m6, objectPos: 'object-top' },
   { id: "07", title: "AUGUST'25: Billionaire Ki Wapasi", url: "https://premium.kukutv.app/show/billionaire-ki-waapsi", image: m7 },
-  { id: "08", title: "Dacait Aur Devi", url: null, image: m8 },
+  { id: "08", title: "Dacait Aur Devi", url: null, image: m8, objectPos: 'object-top' },
   { id: "09", title: "KUKU TV: JUNE'25: Billionaire by Surprise/Mrs by Mistake", url: "http://premium.kukutv.app/show/mrs-by-mistake", image: m9 },
   { id: "10", title: "The Royal Treatment", url: null, image: m10 },
   { id: "11", title: "Jobless Ghar Jamai/Scandalous Ghar Jamai", url: "https://premium.kukutv.app/show/jobless-ghar-jamai-16", image: m11 },
-  { id: "12", title: "The Road Rager", url: null, image: m12 },
-  { id: "13", title: "DECEMBER'25: Ek Mehenga Divorce", url: "https://premium.kukutv.app/watch/ek-mehenga-divorce?episode=trailer", image: m13 },
-  { id: "14", title: "VERTICAL TV: NOVEMBER 2025: The Good Sisters", url: null, image: m14 },
+  { id: "12", title: "The Road Rager", url: null, image: m12, objectPos: 'object-bottom' },
+  { id: "13", title: "DECEMBER'25: Ek Mehenga Divorce", url: "https://premium.kukutv.app/show/ek-mehenga-divorce", image: m13 },
+  { id: "14", title: "VERTICAL TV: NOVEMBER 2025: The Good Sisters", url: null, image: m14,objectPos: 'object-bottom' },
   { id: "15", title: "The Little Pool Master", url: "https://premium.kukutv.app/show/the-little-pool-master", image: m15 },
   { id: "16", title: "Hum Fir Mile", url: null, image: m16 },
   { id: "17", title: "Fake girlfriend", url: "https://premium.kukutv.app/show/fake-girlfriend", image: m17 },
-  { id: "18", title: "StoRIZZ (Kuku's Another Platform): Loop Lafda Landing", url: null, image: m18 },
+  { id: "18", title: "StoRIZZ (Kuku's Another Platform): Loop Lafda Landing", url: null, image: m18,objectPos: 'object-bottom' },
   { id: "19", title: "Death Notification", url: "https://premium.kukutv.app/show/death-notification", image: m19 },
   { id: "20", title: "Aakhri Diya/Ek Anjana Rishta", url: "https://premium.kukutv.app/show/ek-anjana-rishta", image: m20 },
   { id: "21", title: "Metro Wala Panga", url: "https://premium.kukutv.app/show/metro-wala-panga", image: m21 },

@@ -28,9 +28,9 @@ const projects = [
   },
   {
     id: "04",
-    title: "I AM\nYOUR VOICE",
+    title: "CASTING\nOUCH",
     image: p4,
-    url: 'https://www.imdb.com/title/tt12195860/'
+    url: null
   },
   {
     id: "05",
@@ -50,25 +50,14 @@ const HorizontalCard = ({ project }) => {
   return (
     <div className="relative w-full aspect-video rounded-md overflow-hidden group cursor-pointer bg-black">
       {/* Background Image */}
-      <img src={project.image} alt={project.title} className="absolute inset-0 w-full h-full object-cover object-center opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
-      
-      {/* Gradient Overlay for Text */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/30"></div>
+      <img src={project.image} alt={project.title} className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-all duration-500" />
       
       {/* Number top left */}
       <div className="absolute top-3 left-4 text-white font-bold text-xs sm:text-sm drop-shadow-md">
         {project.id}
       </div>
 
-      {/* Bottom Title */}
-      <div className="absolute bottom-4 left-4 right-4 sm:bottom-5 sm:left-6 sm:right-6">
-        <h3 className="text-white font-hero font-bold text-lg sm:text-xl md:text-2xl xl:text-3xl leading-[1.1] tracking-wide uppercase drop-shadow-md whitespace-pre-line" style={{ textShadow: '2px 2px 5px rgba(0,0,0,0.9)' }}>
-          {project.title}
-        </h3>
-        {/* Red underline */}
-        <div className="w-8 sm:w-12 lg:w-16 h-[2px] sm:h-[3px] bg-brand-red mt-2 sm:mt-3 transition-all duration-300 group-hover:w-20"></div>
-      </div>
-
+      {/* Title removed per user request */}
       {/* Link Overlay */}
       {project.url && (
         <a href={project.url} target="_blank" rel="noopener noreferrer" className="absolute inset-0 z-20">
@@ -81,7 +70,7 @@ const HorizontalCard = ({ project }) => {
 
 const SelectedEntertainmentProjects = () => {
   return (
-    <section className="w-full py-16 lg:py-24 bg-[#f9f9f9] relative flex flex-col items-center">
+    <section className="w-full pt-16 lg:pt-24 pb-4 lg:pb-8 bg-[#f9f9f9] relative flex flex-col items-center">
       
       {/* Section Header */}
       <div className="text-center mb-10 lg:mb-14 px-4">

@@ -8,7 +8,7 @@ import img1 from '../../../assets/Films/celebs/Ashish - IMG_9131.jpg';
 import img2 from '../../../assets/Films/celebs/Surbhi jyoti.png';
 import img3 from '../../../assets/Films/celebs/Updendra limaye.png';
 import img4 from '../../../assets/Films/celebs/Vidya Malavade.png';
-import img5 from '../../../assets/Films/celebs/Zakir Hussain.png';
+import img5 from '../../../assets/Films/celebs/Zakir_New.jpg';
 import img6 from '../../../assets/Films/celebs/Navni Parihar.png';
 import img7 from '../../../assets/Films/celebs/durgesh kumar.jpg';
 import img8 from '../../../assets/Films/celebs/Pariva Pranati.png';

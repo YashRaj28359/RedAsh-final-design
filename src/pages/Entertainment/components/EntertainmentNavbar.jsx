@@ -63,12 +63,12 @@ const EntertainmentNavbar = () => {
                 to={link.path}
                 onClick={() => setActiveMenu(link.name)}
                 className={`relative font-main font-bold text-[12px] xl:text-[13px] tracking-[0.15em] transition-colors duration-300 ${
-                  activeMenu === link.name ? 'text-black' : 'text-gray-600 hover:text-black'
+                  activeMenu === link.name ? 'text-red-600' : 'text-black hover:text-red-600'
                 }`}
               >
                 {link.name}
                 {activeMenu === link.name && (
-                  <span className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-6 h-[2px] bg-red-600" />
+                  <span className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-red-600" />
                 )}
               </Link>
             ))}
@@ -128,7 +128,7 @@ const EntertainmentNavbar = () => {
                     setIsMobileMenuOpen(false);
                   }}
                   className={`font-main font-bold text-lg uppercase tracking-wider transition-colors duration-300 ${
-                    activeMenu === link.name ? 'text-black' : 'text-gray-600 hover:text-black'
+                    activeMenu === link.name ? 'text-red-600' : 'text-black hover:text-red-600'
                   }`}
                 >
                   {link.name}

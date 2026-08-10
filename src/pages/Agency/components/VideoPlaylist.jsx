@@ -98,6 +98,11 @@ const VideoPlaylist = ({ videos, category, theme = 'blue' }) => {
   }, []);
 
   useEffect(() => {
+    setIsPlaying(false);
+    setIsVideoPaused(false);
+  }, [activeIndex]);
+
+  useEffect(() => {
     const handleStopOtherVideos = (e) => {
       if (e.detail && e.detail.category !== category) {
         setIsPlaying(false);
@@ -201,16 +206,30 @@ const VideoPlaylist = ({ videos, category, theme = 'blue' }) => {
         {/* --- MOBILE VIEW --- */}
         <div className={`${isMobile ? 'block' : 'hidden'} w-full bg-white pb-8`}>
           {/* Main Video Section */}
-          <div className="w-full aspect-video bg-black relative">
+          <div className="w-full aspect-video bg-black relative group">
             {isMobile && (
-              <YouTube
-                videoId={activeVideo.id}
-                opts={ytOpts}
-                className="w-full h-full absolute inset-0"
-                iframeClassName="w-full h-full border-0 absolute inset-0"
-                onReady={onPlayerReady}
-                onStateChange={onPlayerStateChange}
-              />
+              <>
+                <YouTube
+                  videoId={activeVideo.id}
+                  opts={ytOpts}
+                  className="w-full h-full absolute inset-0"
+                  iframeClassName="w-full h-full border-0 absolute inset-0"
+                  onReady={onPlayerReady}
+                  onStateChange={onPlayerStateChange}
+                />
+                {!isPlaying && (
+                  <div 
+                    className="absolute inset-0 z-10 cursor-pointer flex items-center justify-center bg-black"
+                    onClick={handlePlayVideo}
+                  >
+                    <ThumbnailImage video={activeVideo} isLarge={true} />
+                    <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors"></div>
+                    <div className="absolute w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center shadow-[0_4px_20px_rgba(220,38,38,0.5)] transform group-hover:scale-110 transition-transform duration-300">
+                      <FiPlay className="text-white text-2xl ml-1" />
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </div>
 
@@ -279,16 +298,30 @@ const VideoPlaylist = ({ videos, category, theme = 'blue' }) => {
         <div className={`${!isMobile ? 'flex' : 'hidden'} relative w-full h-full bg-white lg:rounded-[2rem] flex-row p-4 lg:p-8 gap-6`}>
           
           {/* Main Video Section (Left) */}
-          <div className="relative w-[65%] lg:w-[70%] h-full rounded-2xl overflow-hidden bg-black shadow-lg flex-shrink-0">
+          <div className="relative w-[65%] lg:w-[70%] h-full rounded-2xl overflow-hidden bg-black shadow-lg flex-shrink-0 group">
             {!isMobile && (
-              <YouTube
-                videoId={activeVideo.id}
-                opts={ytOpts}
-                className="w-full h-full absolute inset-0"
-                iframeClassName="w-full h-full border-0 absolute inset-0"
-                onReady={onPlayerReady}
-                onStateChange={onPlayerStateChange}
-              />
+              <>
+                <YouTube
+                  videoId={activeVideo.id}
+                  opts={ytOpts}
+                  className="w-full h-full absolute inset-0"
+                  iframeClassName="w-full h-full border-0 absolute inset-0"
+                  onReady={onPlayerReady}
+                  onStateChange={onPlayerStateChange}
+                />
+                {!isPlaying && (
+                  <div 
+                    className="absolute inset-0 z-10 cursor-pointer flex items-center justify-center bg-black"
+                    onClick={handlePlayVideo}
+                  >
+                    <ThumbnailImage video={activeVideo} isLarge={true} />
+                    <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors"></div>
+                    <div className="absolute w-16 h-16 md:w-20 md:h-20 bg-red-600 rounded-xl flex items-center justify-center shadow-[0_4px_20px_rgba(220,38,38,0.5)] transform group-hover:scale-110 transition-transform duration-300">
+                      <FiPlay className="text-white text-3xl md:text-4xl ml-1" />
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </div>
 

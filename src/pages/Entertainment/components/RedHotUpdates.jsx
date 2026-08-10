@@ -10,10 +10,14 @@ import p3 from '../../../assets/Films/Poster/3. Copy of Final Poster_No More MeT
 import p4 from '../../../assets/Films/Poster/4. Copy of IAYV_Horizontal Poster.webp';
 import p5 from '../../../assets/Films/Poster/5. Corona is a Conspiracy.webp';
 import p6 from '../../../assets/Films/Poster/6. Hum Azaad Hain.webp';
-const codpasterImg = 'https://images.unsplash.com/photo-1589903308904-1010c2294adc?q=80&w=800&auto=format&fit=crop';
-const aiShowImg = 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=800&auto=format&fit=crop';
+import card2Img from '../../../assets/Films/Cards/Card2.jpg';
+import aiShowPoster from '../../../assets/Films/Cards/AI_Show_Poster.png';
+import dailySoapPoster from '../../../assets/Films/Cards/Daily_Soap_Poster.png';
+
+const codpasterImg = card2Img;
+const aiShowImg = aiShowPoster;
 const castingOuchImg = 'https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?q=80&w=800&auto=format&fit=crop';
-const dailySoapImg = 'https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=800&auto=format&fit=crop';
+const dailySoapImg = dailySoapPoster;
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -54,7 +58,7 @@ const updates = [
   {
     id: "04",
     title: "CASTING OUCH",
-    subtitle: "Shooting our 8-episode sitcom web series Casting Ouch in September 2026.",
+    subtitle: "Producing our sitcom web series Casting Ouch.",
     image: castingOuchImg,
     style: { zIndex: 30, width: '340px', height: '420px', transform: 'rotate(4deg)' },
     foldCorner: 'bottom-right',

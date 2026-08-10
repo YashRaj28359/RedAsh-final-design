@@ -1,4 +1,6 @@
 // Note: Please update the videoUrl/id to the actual YouTube IDs when available.
+import noMoreMeTooThumb from '../assets/Films/Poster/3. Copy of Final Poster_No More MeToo.webp';
+
 export const entertainmentVideos = [
   // Feature Films
   {
@@ -24,7 +26,7 @@ export const entertainmentVideos = [
     title: "No More #MeToo",
     category: "Short Films",
     categoryColor: "red",
-    thumbnail: "https://img.youtube.com/vi/5AGZjsdfOio/hqdefault.jpg",
+    thumbnail: noMoreMeTooThumb,
     videoUrl: "https://youtu.be/5AGZjsdfOio"
   },
   {

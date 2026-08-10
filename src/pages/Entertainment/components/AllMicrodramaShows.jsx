@@ -8,25 +8,18 @@ import { microdramaShows } from '../../../data/microdramaShows';
 
 const VerticalCard = ({ project, cardRef }) => {
   return (
-    <div ref={cardRef} className="relative w-full aspect-[2/3] rounded-md overflow-hidden group cursor-pointer bg-gray-900 shadow-lg border border-gray-200 hover:shadow-2xl transition-all duration-300">
+    <div ref={cardRef} className="relative w-full aspect-[2/3] rounded-md overflow-hidden group cursor-pointer bg-black shadow-lg border border-gray-800 hover:shadow-2xl transition-all duration-300">
       {/* Background Image Placeholder */}
       {project.image ? (
-        <img src={project.image} alt={project.title} className={`absolute inset-0 w-full h-full object-cover ${project.objectPos || 'object-center'} opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500`} />
+        <img src={project.image} alt={project.title} className={`absolute inset-0 w-full h-full object-cover ${project.objectPos || 'object-center'} ${project.scaleClass || 'scale-100'} ${project.hoverScaleClass || 'group-hover:scale-105'} transition-transform duration-500`} />
       ) : (
-        <div className="absolute inset-0 w-full h-full bg-gray-800 flex items-center justify-center opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500">
+        <div className="w-full aspect-[3/4] bg-gray-800 flex items-center justify-center group-hover:scale-105 transition-all duration-500">
            <span className="text-gray-500 text-[10px] md:text-xs uppercase tracking-widest font-bold text-center px-2">Poster Placeholder</span>
         </div>
       )}
       
-      {/* Gradient Overlay for Text */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-
-      {/* Bottom Title Only */}
-      <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-5 sm:right-5">
-        <h3 className="text-white font-hero font-bold text-sm sm:text-base md:text-lg xl:text-xl leading-[1.1] tracking-wide uppercase drop-shadow-lg whitespace-pre-line" style={{ textShadow: '2px 2px 6px rgba(0,0,0,0.9)' }}>
-          {project.title}
-        </h3>
-      </div>
+      
+      {/* Titles removed per user request */}
 
       {/* Link Overlay */}
       {project.url && (
@@ -63,21 +56,9 @@ const AllMicrodramaShows = () => {
   }, { scope: containerRef });
 
   return (
-    <section ref={containerRef} className="w-full py-16 lg:py-24 bg-[#f9f9f9] relative flex flex-col items-center">
+    <section ref={containerRef} className="w-full pt-2 pb-16 lg:pb-24 bg-[#f9f9f9] relative flex flex-col items-center">
       
-      {/* Section Header */}
-      <div className="text-center mb-10 lg:mb-14 px-4">
-        
-        <h2 className="text-3xl md:text-5xl lg:text-6xl font-hero font-black text-black uppercase tracking-wider flex flex-col md:flex-row items-center justify-center gap-2">
-          <span>All Microdrama</span>
-          <span className="text-brand-red">Shows</span>
-        </h2>
-        <div className="flex items-center justify-center mt-5">
-           <div className="h-[1px] w-12 bg-gray-300"></div>
-           <div className="h-[2px] w-8 bg-brand-red mx-3 rounded-full"></div>
-           <div className="h-[1px] w-12 bg-gray-300"></div>
-        </div>
-      </div>
+      {/* Section Header removed per user request */}
 
       {/* Grid of 26 Cards */}
       <div className="w-full px-1 sm:px-2 lg:px-4 max-w-[1920px]">

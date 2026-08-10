@@ -110,12 +110,33 @@ const HangingCardsCarousel = () => {
                   href={show.url || "#"} 
                   target={show.url ? "_blank" : undefined}
                   rel="noopener noreferrer"
-                  onClick={(e) => {
-                    if (!show.url) {
-                      e.preventDefault();
-                    }
-                  }}
                   className={`group relative flex flex-col items-center cursor-pointer transition-all duration-[1000ms] ease-in-out ${isActive ? 'scale-110 md:scale-125 z-40' : 'scale-100 hover:scale-105 z-10'}`}
+                  onPointerDown={(e) => {
+                    if (e.button !== 0 && e.pointerType === 'mouse') return;
+                    e.currentTarget.setPointerCapture(e.pointerId);
+                    e.currentTarget.dataset.downX = e.clientX;
+                    e.currentTarget.dataset.downY = e.clientY;
+                  }}
+                  onPointerUp={(e) => {
+                    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+                      e.currentTarget.releasePointerCapture(e.pointerId);
+                    }
+                    if (!e.currentTarget.dataset.downX) return;
+                    const downX = parseFloat(e.currentTarget.dataset.downX);
+                    const downY = parseFloat(e.currentTarget.dataset.downY);
+                    const dist = Math.sqrt(Math.pow(e.clientX - downX, 2) + Math.pow(e.clientY - downY, 2));
+                    
+                    if (dist < 10) {
+                      if (show.url) {
+                        window.open(show.url, "_blank");
+                      }
+                    }
+                    e.currentTarget.dataset.downX = '';
+                    e.currentTarget.dataset.downY = '';
+                  }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                  }}
                 >
                   {/* The "Clip" holding the card */}
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 w-4 h-6 bg-brand-red rounded-t-sm shadow-sm z-20 flex flex-col items-center">
@@ -126,15 +147,15 @@ const HangingCardsCarousel = () => {
                   <div className="absolute -top-10 left-1/2 w-[1px] h-8 bg-gray-300 z-0"></div>
 
                   {/* The Card */}
-                  <div className={`w-[180px] sm:w-[220px] md:w-[260px] rounded-xl sm:rounded-2xl shadow-[0_15px_35px_rgba(0,0,0,0.1)] p-3 sm:p-4 border flex flex-col overflow-hidden transition-colors duration-[1000ms] ${isActive ? 'bg-brand-red border-brand-red' : 'bg-white border-gray-100'}`}>
+                  <div className={`w-[180px] sm:w-[220px] md:w-[260px] rounded-xl sm:rounded-2xl shadow-[0_15px_35px_rgba(0,0,0,0.1)] flex flex-col overflow-hidden transition-shadow duration-[1000ms] ${isActive ? 'shadow-2xl' : ''}`}>
                     
                     {/* Image container */}
-                    <div className="w-full aspect-[4/5] bg-gray-100 rounded-lg sm:rounded-xl overflow-hidden relative shadow-inner">
+                    <div className="w-full aspect-[2/3] bg-gray-100 overflow-hidden relative shadow-inner">
                       {show.image ? (
                         <img 
                           src={show.image} 
                           alt={show.title} 
-                          className={`w-full h-full object-cover ${show.objectPos || 'object-center'} group-hover:scale-110 transition-transform duration-700`}
+                          className={`w-full h-full object-cover ${show.objectPos || 'object-center'} ${show.scaleClass || 'scale-100'} ${show.hoverScaleClass || 'group-hover:scale-110'} transition-transform duration-700`}
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-gray-800 text-white text-xs text-center p-2">
@@ -143,15 +164,7 @@ const HangingCardsCarousel = () => {
                       )}
                     </div>
                     
-                    {/* Text content */}
-                    <div className="mt-4 flex flex-col items-center text-center px-1">
-                      <h3 className={`font-bold text-sm md:text-base leading-tight line-clamp-2 min-h-[2.5rem] transition-colors duration-[1000ms] ${isActive ? 'text-white' : 'text-gray-900'}`}>
-                        {show.title}
-                      </h3>
-                      <p className={`text-[10px] sm:text-xs mt-2 transition-colors duration-[1000ms] ${isActive ? 'text-red-100' : 'text-gray-500'}`}>
-                        Watch on {show.url && show.url.includes('kukutv') ? 'Kuku FM' : 'RedAsh'}
-                      </p>
-                    </div>
+
 
                   </div>
                 </a>

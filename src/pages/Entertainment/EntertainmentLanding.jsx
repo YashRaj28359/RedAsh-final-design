@@ -12,7 +12,6 @@ import RedHotUpdates from './components/RedHotUpdates';
 import SelectedEntertainmentProjects from './components/SelectedEntertainmentProjects';
 import AllMicrodramaShows from './components/AllMicrodramaShows';
 import EntertainmentFooter from './components/EntertainmentFooter';
-import bgImage from '../../assets/Films/BG.jpg';
 
 const SplitText = ({ text, className }) => (
   <span className={`inline-block ${className || ''}`}>
@@ -68,21 +67,8 @@ const EntertainmentLanding = () => {
   return (
     <div 
       ref={containerRef}
-      className="relative min-h-screen w-full bg-[#f4f4f4] text-black font-main overflow-x-hidden font-smoothing-antialiased flex flex-col"
+      className="relative min-h-screen w-full bg-white text-black font-main overflow-x-hidden font-smoothing-antialiased flex flex-col"
     >
-      {/* Background Image */}
-      <div 
-        className="fixed inset-0 z-0 pointer-events-none"
-        style={{
-          backgroundImage: `url(${bgImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          opacity: 1
-        }}
-      />
-      
-      {/* Subtle vignette for depth */}
-      <div className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-white/10 to-black/20 mix-blend-multiply" />
 
       <EntertainmentNavbar />
       
@@ -93,14 +79,14 @@ const EntertainmentLanding = () => {
           <div className="flex flex-col gap-6 lg:gap-8">
             {/* Main Headline */}
             <h1 className="text-[50px] sm:text-[65px] lg:text-[75px] xl:text-[90px] font-hero font-bold leading-[0.85] tracking-normal uppercase text-black">
-              <SplitText text="SUBSTANCE" className="text-brand-red transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#E20002]" /><br/>
+              <SplitText text="SUBSTANCE" className="text-brand-gray transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#6B7280]" /><br/>
               <SplitText text="MEETS" /><br/>
-              <SplitText text="MASS " className="text-brand-red transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#E20002]" /><br />
-              <SplitText text="APPEAL" className="text-brand-red transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#E20002]" /> <SplitText text=" AT " /><br />
-              <span className="text-brand-red block">
-                <SplitText text="RED" />
-                <SplitText text="ASH " className="text-brand-gray" />
-                <SplitText text="FILMS" className="transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#E20002]" />
+              <SplitText text="MASS " className="text-brand-gray transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#6B7280]" /><br />
+              <SplitText text="APPEAL" className="text-brand-gray transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#6B7280]" /> <SplitText text=" AT " /><br />
+              <span className="block">
+                <SplitText text="RED" className="text-brand-red transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#E20002]" />
+                <SplitText text="ASH " className="text-brand-gray transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#6B7280]" />
+                <SplitText text="FILMS" className="text-brand-red transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#E20002]" />
               </span>
             </h1>
             

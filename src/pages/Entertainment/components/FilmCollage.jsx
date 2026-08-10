@@ -6,6 +6,7 @@ import card1Img from "../../../assets/Films/Cards/Card1.jpg";
 import card2Img from "../../../assets/Films/Cards/Card2.jpg";
 import card3Img from "../../../assets/Films/Cards/Card3.png";
 import { Link } from 'react-router-dom';
+import { FiArrowRight } from 'react-icons/fi';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -16,7 +17,7 @@ const films = [
     subtitle: "LARGER THAN LIFE.",
     link: "https://youtu.be/pIv7FFKm318",
     image: card1Img,
-    style: { top: '5%', left: '0%', zIndex: 10, width: '300px', height: '420px', transform: 'rotate(-4deg)' },
+    style: { top: '5%', left: '6%', zIndex: 10, width: '250px', height: '350px', transform: 'rotate(0deg)' },
     foldCorner: 'top-left',
     tape: { top: '-12px', left: '45%', rotation: '-15deg', width: '110px' }
   },
@@ -26,7 +27,7 @@ const films = [
     subtitle: "EPISODES THAT\nKEEP YOU HOOKED.",
     link: "https://timesofindia.indiatimes.com/entertainment/hindi/bollywood/news/ashish-lal-explores-friendship-and-loss-in-the-codpaster/articleshow/131854264.cms",
     image: card2Img,
-    style: { top: '6%', left: '36%', zIndex: 20, width: '390px', height: '300px', transform: 'rotate(7deg)' },
+    style: { top: '6%', left: '36%', zIndex: 20, width: '500px', height: '300px', transform: 'rotate(0deg)' },
     foldCorner: 'bottom-right',
     tape: { top: '-12px', left: '75%', rotation: '18deg', width: '90px' }
   },
@@ -36,7 +37,7 @@ const films = [
     subtitle: "SHORT STORIES.\nBIG IMPACT.",
     link: "https://kukutv.app/show/billionaire-on-plane",
     image: card3Img,
-    style: { top: '5%', left: '80%', zIndex: 15, width: '310px', height: '430px', transform: 'rotate(-5deg)' },
+    style: { top: '5%', left: '94%', zIndex: 15, width: '280px', height: '380px', transform: 'rotate(0deg)' },
     foldCorner: 'top-right',
     tape: { top: '-12px', left: '20%', rotation: '-38deg', width: '100px' }
   },
@@ -46,17 +47,27 @@ const films = [
     subtitle: "MORE EXPERIMENTS.\nMORE PERSPECTIVES.",
     link: "https://www.youtube.com/watch?v=5AGZjsdfOio",
     image: "https://img.youtube.com/vi/5AGZjsdfOio/hqdefault.jpg",
-    style: { top: '59%', left: '8%', zIndex: 25, width: '380px', height: '240px', transform: 'rotate(8deg)' },
+    style: { top: '50%', left: '4%', zIndex: 25, width: '380px', height: '240px', transform: 'rotate(0deg)' },
     foldCorner: 'bottom-left',
     tape: { top: '-12px', left: '25%', rotation: '2deg', width: '130px' }
   },
   {
     id: "05",
+    title: "AI FILMS",
+    subtitle: "THE FUTURE OF\nSTORYTELLING.",
+    link: "https://youtube.com/shorts/AKAxDl0W9jU",
+    image: "https://img.youtube.com/vi/AKAxDl0W9jU/hqdefault.jpg",
+    style: { top: '44%', left: '47%', zIndex: 40, width: '280px', height: '400px', transform: 'rotate(0deg)' },
+    foldCorner: 'top-left',
+    tape: { top: '-12px', left: '45%', rotation: '-15deg', width: '110px' }
+  },
+  {
+    id: "06",
     title: "MUSIC VIDEOS",
     subtitle: "VISUALS THAT\nAMPLIFY SOUND.",
     link: "https://youtu.be/6Q0mdzO9A4A",
     image: "https://img.youtube.com/vi/6Q0mdzO9A4A/hqdefault.jpg",
-    style: { top: '60%', left: '60%', zIndex: 30, width: '450px', height: '250px', transform: 'rotate(-3deg)' },
+    style: { top: '51%', left: '79%', zIndex: 30, width: '450px', height: '250px', transform: 'rotate(0deg)' },
     foldCorner: 'top-right',
     tape: { top: '-12px', left: '80%', rotation: '42deg', width: '110px' }
   }
@@ -112,8 +123,8 @@ const FilmCollage = ({ onVideoToggle }) => {
     gsap.fromTo('.film-card-1', { y: -1500, opacity: 0 }, { y: 0, opacity: 1, duration: 1.8, delay: 0.5, ease: 'expo.out' });
     // 3rd card from right edge
     gsap.fromTo('.film-card-2', { x: 1500, opacity: 0 }, { x: 0, opacity: 1, duration: 1.8, delay: 0.5, ease: 'expo.out' });
-    // 4th and 5th card from bottom edge
-    gsap.fromTo('.film-card-3, .film-card-4', { y: 1500, opacity: 0 }, { y: 0, opacity: 1, duration: 1.8, delay: 0.5, ease: 'expo.out' });
+    // 4th, 5th, and 6th card from bottom edge
+    gsap.fromTo('.film-card-3, .film-card-4, .film-card-5', { y: 1500, opacity: 0 }, { y: 0, opacity: 1, duration: 1.8, delay: 0.5, ease: 'expo.out' });
 
     // Scroll parallax scatter and blur effect
     const tl = gsap.timeline({
@@ -126,11 +137,12 @@ const FilmCollage = ({ onVideoToggle }) => {
     });
 
     // Animate them outwards (relative to their positions) and blur them
-    tl.to('.film-card-0', { x: -800, y: -400, rotation: -25, filter: 'blur(20px)', opacity: 0 }, 0)
-      .to('.film-card-1', { y: -800, rotation: 15, filter: 'blur(20px)', opacity: 0 }, 0)
-      .to('.film-card-2', { x: 800, y: -200, rotation: 35, filter: 'blur(20px)', opacity: 0 }, 0)
-      .to('.film-card-3', { x: -600, y: 800, rotation: -20, filter: 'blur(20px)', opacity: 0 }, 0)
-      .to('.film-card-4', { x: 800, y: 800, rotation: 40, filter: 'blur(20px)', opacity: 0 }, 0);
+    tl.to('.film-card-0', { x: -800, y: -400, filter: 'blur(20px)', opacity: 0 }, 0)
+      .to('.film-card-1', { y: -800, filter: 'blur(20px)', opacity: 0 }, 0)
+      .to('.film-card-2', { x: 800, y: -200, filter: 'blur(20px)', opacity: 0 }, 0)
+      .to('.film-card-3', { x: -600, y: 800, filter: 'blur(20px)', opacity: 0 }, 0)
+      .to('.film-card-4', { y: 900, filter: 'blur(20px)', opacity: 0 }, 0)
+      .to('.film-card-5', { x: 800, y: 800, filter: 'blur(20px)', opacity: 0 }, 0);
 
   }, { scope: containerRef });
 
@@ -143,6 +155,9 @@ const FilmCollage = ({ onVideoToggle }) => {
   const getEmbedUrl = (url) => {
     if (url.includes('youtu.be/')) {
       const id = url.split('youtu.be/')[1].split('?')[0];
+      return `https://www.youtube.com/embed/${id}?autoplay=1`;
+    } else if (url.includes('youtube.com/shorts/')) {
+      const id = url.split('youtube.com/shorts/')[1].split('?')[0];
       return `https://www.youtube.com/embed/${id}?autoplay=1`;
     } else if (url.includes('youtube.com/watch')) {
       try {
@@ -264,19 +279,25 @@ const FilmCollage = ({ onVideoToggle }) => {
                   {/* Edge highlights */}
                   <div className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-transparent via-white/5 to-black/10 mix-blend-overlay z-0" />
 
-                  {/* Content Box (Aligned inside the image border) */}
-                  <div className="absolute inset-[12px] sm:inset-[16px] p-4 flex flex-col justify-end z-20">
-                    <div className="flex gap-4 items-baseline">
-                      <div className="flex flex-col">
-                        <h3 className="text-3xl md:text-4xl font-bold font-hero tracking-wider uppercase leading-tight text-white group-hover:text-brand-red transition-colors duration-300 drop-shadow-sm">
-                          {film.title.split(' ').map((word, i) => (
-                            <React.Fragment key={i}>
-                              {i === 0 ? <span className="text-brand-red">{word}</span> : word}
-                              {i !== film.title.split(' ').length - 1 && ' '}
-                            </React.Fragment>
-                          ))}
-                        </h3>
-                      </div>
+                  {/* Bottom Left Content Box (Number + Title) */}
+                  <div className="absolute inset-[12px] sm:inset-[16px] p-4 sm:p-6 flex flex-row items-end justify-start z-20 pointer-events-none gap-3 sm:gap-4">
+                    {/* Number */}
+                    <span className="text-white/90 font-hero text-[50px] sm:text-[60px] leading-[0.8] font-bold tracking-normal drop-shadow-md group-hover:text-brand-red transition-colors duration-300">
+                      {film.id}
+                    </span>
+                    
+                    {/* Title */}
+                    <div className="flex flex-col translate-y-1.5">
+                      <h3 className="text-2xl sm:text-3xl font-bold font-hero tracking-wider uppercase leading-tight text-white drop-shadow-sm">
+                        {film.title.split(' ').map((word, i) => (
+                          <React.Fragment key={i}>
+                            <span className={i === 0 ? "text-brand-red group-hover:text-white transition-colors duration-300" : "group-hover:text-brand-red transition-colors duration-300"}>
+                              {word}
+                            </span>
+                            {i !== film.title.split(' ').length - 1 && <br />}
+                          </React.Fragment>
+                        ))}
+                      </h3>
                     </div>
                   </div>
                   

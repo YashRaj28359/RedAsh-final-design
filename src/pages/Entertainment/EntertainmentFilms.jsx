@@ -36,10 +36,10 @@ const EntertainmentFilms = () => {
         {/* Bottom Quotation / Contact Form */}
         <div id="quotation-section" className="bg-gray-50 mt-16">
           <ContactForm 
-            titlePrefix="INVEST IN OUR"
+            titlePrefix="INVEST IN OR SPONSOR OUR"
             titleHighlight="PROJECTS"
             input4Placeholder="Investment Queries"
-            clientText="Potential Investors"
+            clientText="Potential investors/sponsors"
             headingClass="font-subtitle text-[#6A6A6A] tracking-[2px] md:tracking-[4px]"
             highlightColorClass="text-brand-red"
             linkColorClass="text-brand-red hover:text-red-700"

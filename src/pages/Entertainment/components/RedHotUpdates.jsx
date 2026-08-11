@@ -11,8 +11,8 @@ import p4 from '../../../assets/Films/Poster/4. Copy of IAYV_Horizontal Poster.w
 import p5 from '../../../assets/Films/Poster/5. Corona is a Conspiracy.webp';
 import p6 from '../../../assets/Films/Poster/6. Hum Azaad Hain.webp';
 import card2Img from '../../../assets/Films/Cards/Card2.jpg';
-import aiShowPoster from '../../../assets/Films/Cards/AI_Show_Poster.png';
-import dailySoapPoster from '../../../assets/Films/Cards/Daily_Soap_Poster.png';
+import aiShowPoster from '../../../assets/Films/Cards/RedHot/Ai Show.png';
+import dailySoapPoster from '../../../assets/Films/Cards/RedHot/Daily soap.png';
 
 const codpasterImg = card2Img;
 const aiShowImg = aiShowPoster;
@@ -184,7 +184,7 @@ const RedHotUpdates = () => {
         </div>
 
         <p className="mt-12 text-gray-600 font-main text-lg md:text-xl max-w-2xl mx-auto font-medium">
-          Catch up on the latest updates, shoots, and productions happening right now at the studio.
+          Catch up on the latest updates, shoots, productions, and milestones from RedAsh Films.
         </p>
       </div>
 

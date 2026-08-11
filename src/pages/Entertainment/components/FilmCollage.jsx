@@ -5,6 +5,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import card1Img from "../../../assets/Films/Cards/Card1.jpg";
 import card2Img from "../../../assets/Films/Cards/Card2.jpg";
 import card3Img from "../../../assets/Films/Cards/Card3.png";
+import card5Img from "../../../assets/Films/Cards/Card5.png";
+import card6Img from "../../../assets/Films/Cards/Card6.png";
 import { Link } from 'react-router-dom';
 import { FiArrowRight } from 'react-icons/fi';
 
@@ -37,7 +39,7 @@ const films = [
     subtitle: "SHORT STORIES.\nBIG IMPACT.",
     link: "https://kukutv.app/show/billionaire-on-plane",
     image: card3Img,
-    style: { top: '5%', left: '94%', zIndex: 15, width: '280px', height: '380px', transform: 'rotate(0deg)' },
+    style: { top: '3%', left: '94%', zIndex: 15, width: '280px', height: '380px', transform: 'rotate(0deg)' },
     foldCorner: 'top-right',
     tape: { top: '-12px', left: '20%', rotation: '-38deg', width: '100px' }
   },
@@ -56,8 +58,8 @@ const films = [
     title: "AI FILMS",
     subtitle: "THE FUTURE OF\nSTORYTELLING.",
     link: "https://youtube.com/shorts/AKAxDl0W9jU",
-    image: "https://img.youtube.com/vi/AKAxDl0W9jU/hqdefault.jpg",
-    style: { top: '44%', left: '47%', zIndex: 40, width: '280px', height: '400px', transform: 'rotate(0deg)' },
+    image: card5Img,
+    style: { top: '44%', left: '47%', zIndex: 40, width: '280px', height: '290px', transform: 'rotate(0deg)' },
     foldCorner: 'top-left',
     tape: { top: '-12px', left: '45%', rotation: '-15deg', width: '110px' }
   },
@@ -66,8 +68,8 @@ const films = [
     title: "MUSIC VIDEOS",
     subtitle: "VISUALS THAT\nAMPLIFY SOUND.",
     link: "https://youtu.be/6Q0mdzO9A4A",
-    image: "https://img.youtube.com/vi/6Q0mdzO9A4A/hqdefault.jpg",
-    style: { top: '51%', left: '79%', zIndex: 30, width: '450px', height: '250px', transform: 'rotate(0deg)' },
+    image: card6Img,
+    style: { top: '49%', left: '79%', zIndex: 30, width: '450px', height: '250px', transform: 'rotate(0deg)' },
     foldCorner: 'top-right',
     tape: { top: '-12px', left: '80%', rotation: '42deg', width: '110px' }
   }

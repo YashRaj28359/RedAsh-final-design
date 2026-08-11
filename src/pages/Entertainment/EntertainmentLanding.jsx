@@ -116,10 +116,10 @@ const EntertainmentLanding = () => {
 
       {/* Contact Form Section */}
       <ContactForm 
-        titlePrefix="INVEST IN OUR"
+        titlePrefix="INVEST IN OR SPONSOR OUR"
         titleHighlight="PROJECTS"
         input4Placeholder="Investment Queries"
-        clientText="Potential investors"
+        clientText="Potential investors/sponsors"
       />
 
       {/* Celebrities Section */}
@@ -137,12 +137,12 @@ const EntertainmentLanding = () => {
       {/* All Microdrama Shows Section */}
       <AllMicrodramaShows />
 
-      {/* Invest In Our Projects Form */}
+      {/* Invest In Or Sponsor Our Projects Form */}
       <ContactForm 
-        titlePrefix="INVEST IN OUR"
+        titlePrefix="INVEST IN OR SPONSOR OUR"
         titleHighlight="PROJECTS"
         input4Placeholder="Investment Queries"
-        clientText="Potential Investors"
+        clientText="Potential investors/sponsors"
         headingClass="font-subtitle text-[#6A6A6A] tracking-[2px] md:tracking-[4px]"
         highlightColorClass="text-brand-red"
       />

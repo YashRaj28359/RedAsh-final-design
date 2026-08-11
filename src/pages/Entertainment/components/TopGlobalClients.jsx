@@ -124,7 +124,7 @@ const TopGlobalClients = () => {
               {/* Inner wrapper handles hover states independent of GSAP */}
               <div className={`transition-transform duration-500 hover:scale-110 hover:-rotate-0 ${client.rotate}`}>
                 <div className={`bg-white p-4 shadow-[0px_15px_40px_rgba(0,0,0,0.12)] border-2 border-gray-100 flex items-center justify-center overflow-hidden group ${client.size} ${client.shape}`}>
-                  <img src={client.img} alt={client.alt} className="w-full h-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-500 scale-90" />
+                  <img src={client.img} alt={client.alt} className="w-full h-full object-contain transition-all duration-500 scale-90 group-hover:scale-105" />
                 </div>
               </div>
             </div>
@@ -166,7 +166,7 @@ const TopGlobalClients = () => {
             ref={(el) => (mobileLogosRef.current[idx] = el)}
             className={`bg-white p-4 shadow-lg border border-gray-100 flex items-center justify-center aspect-square ${client.shape} ${idx === clients.length - 1 && clients.length % 2 !== 0 ? 'col-span-2 mx-auto w-2/3' : ''}`}
           >
-            <img src={client.img} alt={client.alt} className="w-full h-full object-contain filter grayscale hover:grayscale-0 transition-all duration-300" />
+            <img src={client.img} alt={client.alt} className="w-full h-full object-contain transition-transform duration-300 hover:scale-110" />
           </div>
         ))}
       </div>

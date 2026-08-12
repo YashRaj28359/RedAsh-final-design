@@ -9,7 +9,8 @@ const ContactForm = ({
   titlePrefix = "GET A FREE",
   titleHighlight = "QUOTATION",
   input4Placeholder = "Your Requirement",
-  clientText = "Potential clients"
+  clientText = "Potential clients",
+  buttonTheme = "blue"
 }) => {
   return (
     <section className="w-full px-4 md:px-8 pt-4 md:pt-10 pb-2 md:pb-0 bg-white relative z-10">
@@ -111,7 +112,7 @@ const ContactForm = ({
               <div className="soft-input-wrapper !flex-none xl:!w-auto flex">
                 <button 
                   type="submit"
-                  className="soft-button w-full xl:w-auto"
+                  className={`soft-button ${buttonTheme === 'red' ? 'soft-button-red' : ''} w-full xl:w-auto`}
                 >
                   <span className="text-xs uppercase tracking-wider">SUBMIT REQUEST</span>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">

@@ -120,6 +120,7 @@ const EntertainmentLanding = () => {
         titleHighlight="PROJECTS"
         input4Placeholder="Investment Queries"
         clientText="Potential investors/sponsors"
+        buttonTheme="red"
       />
 
       {/* Celebrities Section */}
@@ -145,6 +146,7 @@ const EntertainmentLanding = () => {
         clientText="Potential investors/sponsors"
         headingClass="font-subtitle text-[#6A6A6A] tracking-[2px] md:tracking-[4px]"
         highlightColorClass="text-brand-red"
+        buttonTheme="red"
       />
 
       {/* Footer Section */}

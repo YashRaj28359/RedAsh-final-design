@@ -110,3 +110,12 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 12px 25px rgba(22, 114, 239, 0.5), inset 0 2px 5px rgba(255, 255, 255, 0.4) !important;
 }
+
+.soft-button-red {
+  background: var(--color-brand-red) !important;
+  box-shadow: 0 8px 20px rgba(226, 0, 2, 0.4), inset 0 2px 5px rgba(255, 255, 255, 0.3) !important;
+}
+
+.soft-button-red:hover {
+  box-shadow: 0 12px 25px rgba(226, 0, 2, 0.5), inset 0 2px 5px rgba(255, 255, 255, 0.4) !important;
+}

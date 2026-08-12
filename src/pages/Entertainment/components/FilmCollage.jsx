@@ -39,7 +39,7 @@ const films = [
     subtitle: "SHORT STORIES.\nBIG IMPACT.",
     link: "https://kukutv.app/show/billionaire-on-plane",
     image: card3Img,
-    style: { top: '3%', left: '94%', zIndex: 15, width: '280px', height: '380px', transform: 'rotate(0deg)' },
+    style: { top: '4%', left: '94%', zIndex: 15, width: '280px', height: '380px', transform: 'rotate(0deg)' },
     foldCorner: 'top-right',
     tape: { top: '-12px', left: '20%', rotation: '-38deg', width: '100px' }
   },
@@ -49,7 +49,7 @@ const films = [
     subtitle: "MORE EXPERIMENTS.\nMORE PERSPECTIVES.",
     link: "https://www.youtube.com/watch?v=5AGZjsdfOio",
     image: "https://img.youtube.com/vi/5AGZjsdfOio/hqdefault.jpg",
-    style: { top: '50%', left: '4%', zIndex: 25, width: '380px', height: '240px', transform: 'rotate(0deg)' },
+    style: { top: '50%', left: '4%', zIndex: 25, width: '380px', height: '280px', transform: 'rotate(0deg)' },
     foldCorner: 'bottom-left',
     tape: { top: '-12px', left: '25%', rotation: '2deg', width: '130px' }
   },
@@ -59,7 +59,7 @@ const films = [
     subtitle: "THE FUTURE OF\nSTORYTELLING.",
     link: "https://youtube.com/shorts/AKAxDl0W9jU",
     image: card5Img,
-    style: { top: '44%', left: '47%', zIndex: 40, width: '280px', height: '290px', transform: 'rotate(0deg)' },
+    style: { top: '44%', left: '47%', zIndex: 40, width: '280px', height: '380px', transform: 'rotate(0deg)' },
     foldCorner: 'top-left',
     tape: { top: '-12px', left: '45%', rotation: '-15deg', width: '110px' }
   },
@@ -69,7 +69,7 @@ const films = [
     subtitle: "VISUALS THAT\nAMPLIFY SOUND.",
     link: "https://youtu.be/6Q0mdzO9A4A",
     image: card6Img,
-    style: { top: '49%', left: '79%', zIndex: 30, width: '450px', height: '250px', transform: 'rotate(0deg)' },
+    style: { top: '56%', left: '79%', zIndex: 30, width: '450px', height: '250px', transform: 'rotate(0deg)' },
     foldCorner: 'top-right',
     tape: { top: '-12px', left: '80%', rotation: '42deg', width: '110px' }
   }

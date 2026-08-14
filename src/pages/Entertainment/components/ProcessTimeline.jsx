@@ -12,7 +12,7 @@ const steps = [
 
 const ProcessTimeline = () => {
   return (
-    <div className="w-full max-w-[1400px] mx-auto pt-8 pb-16 md:pt-12 md:pb-24 px-4 overflow-hidden mt-4 md:mt-6">
+    <div className="w-full max-w-[1400px] mx-auto pt-4 pb-8 md:pt-6 md:pb-12 px-4 overflow-hidden mt-2 md:mt-4">
       {/* Top Left Text */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
@@ -39,10 +39,10 @@ const ProcessTimeline = () => {
               transition={{ duration: 0.6, delay: index * 0.15 }}
               className="flex flex-col items-center relative z-10 w-full md:w-auto my-6 md:my-0"
             >
-              <div className="flex items-center gap-1 md:gap-3 mb-4">
-                <span className="text-[3.5rem] md:text-[4.5rem] font-hero text-brand-red leading-none">{step.id}</span>
-                <div className="w-[4.5rem] h-[4.5rem] md:w-24 md:h-24 rounded-full border border-gray-200 bg-gray-50 flex items-center justify-center shadow-sm">
-                   <step.icon className="w-8 h-8 md:w-10 md:h-10 text-neutral-800" strokeWidth={1.5} />
+              <div className="flex items-center gap-1 md:gap-3 mb-3 md:mb-4">
+                <span className="text-5xl md:text-[4rem] font-hero text-brand-red leading-none">{step.id}</span>
+                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border border-gray-200 bg-gray-50 flex items-center justify-center shadow-sm">
+                   <step.icon className="w-6 h-6 md:w-8 md:h-8 text-neutral-800" strokeWidth={1.5} />
                 </div>
               </div>
               <h3 className="text-sm md:text-base font-bold tracking-wider text-neutral-900 mt-2">{step.title}</h3>
@@ -75,7 +75,7 @@ const ProcessTimeline = () => {
       </div>
 
       {/* Bottom Section */}
-      <div className="w-full mt-16 md:mt-20 flex flex-col-reverse md:flex-row justify-between items-end relative pl-5 md:pl-8 pr-5 md:pr-8">
+      <div className="w-full mt-10 md:mt-12 flex flex-col-reverse md:flex-row justify-between items-end relative pl-5 md:pl-8 pr-5 md:pr-8">
         {/* Red Snake Line (Bottom Right) */}
         <div className="hidden md:block absolute right-0 top-[-5rem] bottom-2 w-[2px] bg-brand-red rounded-full"></div>
 
@@ -95,6 +95,13 @@ const ProcessTimeline = () => {
           <div style={{ marginLeft: '-48px' }}>
             <a 
               href="#films" 
+              onClick={(e) => {
+                e.preventDefault();
+                const target = document.getElementById('films');
+                if (target) {
+                  target.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
               className="relative group bg-transparent text-brand-red font-main text-xs md:text-sm uppercase tracking-[0.2em] font-bold py-4 px-10 rounded-full transition-all duration-500 overflow-hidden border border-brand-red/40 hover:border-brand-red shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-xl hover:shadow-brand-red/20 w-max inline-block cursor-pointer"
             >
               <span className="relative z-10 transition-colors duration-500 group-hover:text-white">WATCH ENTERTAINMENT FILMS</span>

@@ -39,29 +39,29 @@ const EntertainmentFilms = () => {
     <div className="relative min-h-screen w-full bg-white text-black font-main overflow-x-hidden">
       <EntertainmentNavbar />
       
-      <main className="relative z-10 w-full flex flex-col pt-28 md:pt-32 px-6 md:px-12 lg:px-24">
+      <main className="relative z-10 w-full flex flex-col pt-24 md:pt-28 px-6 md:px-12 lg:px-24">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="w-full max-w-[1000px] mx-auto text-center flex flex-col gap-6 md:gap-8"
+          className="w-full max-w-[1000px] mx-auto text-center flex flex-col gap-4 md:gap-5"
         >
           {/* Eyebrow Heading */}
           <div className="inline-flex items-center justify-center gap-4">
              <div className="h-[2px] w-8 md:w-12 bg-brand-red hidden sm:block"></div>
-             <p className="text-xs md:text-sm font-bold text-neutral-500 tracking-[0.15em] uppercase">
+             <p className="text-[10px] md:text-xs font-bold text-neutral-500 tracking-[0.15em] uppercase">
                <span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> began as an IIT Delhi engineer’s venture in 2007
              </p>
              <div className="h-[2px] w-8 md:w-12 bg-brand-red hidden sm:block"></div>
           </div>
 
           {/* Main Statement */}
-          <p className="text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] font-light text-neutral-800 leading-tight md:leading-snug tracking-tight">
+          <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-light text-neutral-800 leading-tight md:leading-snug tracking-tight">
             Its entertainment division, <Link to="/entertainment" className="hover:opacity-75 transition-opacity duration-300"><strong className="font-bold cursor-pointer"><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-black">Films</span></strong></Link>, creates movies, web series, microdramas, television shows, AI films, music videos, and emerging formats.
           </p>
           
           {/* Sub Statement */}
-          <p className="text-base md:text-lg text-neutral-500 font-medium">
+          <p className="text-sm md:text-base text-neutral-500 font-medium">
             Its enterprise division is <Link to="/ad-agency" className="hover:opacity-75 transition-opacity duration-300"><strong className="font-bold cursor-pointer"><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-blue">Ad Agency</span></strong></Link>.
           </p>
         </motion.div>

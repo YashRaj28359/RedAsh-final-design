@@ -117,7 +117,7 @@ const CombinedEntertainmentGrid = () => {
   };
 
   return (
-    <section ref={containerRef} className="w-full pt-16 md:pt-24 pb-16 lg:pb-24 bg-white relative flex flex-col items-center">
+    <section id="films" ref={containerRef} className="w-full pt-16 md:pt-24 pb-16 lg:pb-24 bg-white relative flex flex-col items-center">
       
       {/* Heading */}
       <div className="w-full flex flex-col items-center justify-center text-center mb-12 md:mb-20 px-4 mt-6 select-none">
@@ -190,7 +190,9 @@ const CombinedEntertainmentGrid = () => {
                   <img 
                     src={item.image} 
                     alt={item.title} 
-                    className={`absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105
+                    className={`absolute inset-0 w-full h-full object-cover transition-transform duration-500 
+                      ${item.scaleClass || ''} 
+                      ${item.hoverScaleClass || 'group-hover:scale-105'}
                       ${item.objectPos || 'object-center'}
                     `} 
                   />

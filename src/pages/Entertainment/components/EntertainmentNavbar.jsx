@@ -22,8 +22,8 @@ const EntertainmentNavbar = () => {
   useEffect(() => {
     if (location.pathname.includes('/about')) setActiveMenu('ABOUT');
     else if (location.pathname.includes('/films')) setActiveMenu('ENTERTAINMENT FILMS');
-    else if (location.pathname.includes('/work')) setActiveMenu('WORK');
-    else if (location.pathname.includes('/insights')) setActiveMenu('INSIGHTS');
+    else if (location.pathname.includes('/blog')) setActiveMenu('BLOG');
+    else if (location.pathname.includes('/media')) setActiveMenu('MEDIA');
     else if (location.pathname.includes('/contact')) setActiveMenu('CONTACT');
     else setActiveMenu('HOME');
   }, [location.pathname]);

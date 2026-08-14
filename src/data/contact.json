@@ -1,0 +1,18 @@
+{
+  "office": {
+    "title": "RedAsh, 1101, Peninsula Park",
+    "description": "Fun Republic Lane, Near Yash Raj Studios, Andheri West, Mumbai 400053",
+    "mapUrl": "https://www.google.com/maps/place/RedAsh+Films/@19.1366832,72.8329931,17z/data=!3m1!4b1!4m6!3m5!1s0x3be7b752374bccbf:0xe74df382b4d4195e!8m2!3d19.1366832!4d72.835568!16s%2Fg%2F11s0jgskcs?entry=tts&g_ep=EgoyMDI0MDUyMi4wKgBIAVAD"
+  },
+  "emails": [
+    {
+      "email": "info@redashfilms.com",
+      "description": "For Potential Clients - email or fill the form below"
+    },
+    {
+      "email": "redash.films@gmail.com",
+      "description": "For Actors, Film Crew Members & Vendors - only email"
+    }
+  ],
+  "mapEmbedUrl": "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15079.294689408078!2d72.835568!3d19.1366832!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7b752374bccbf%3A0xe74df382b4d4195e!2sRedAsh%20Films!5e0!3m2!1sen!2sin!4v1716382000000!5m2!1sen!2sin"
+}

@@ -12,6 +12,10 @@ import AgencyFilms from './pages/Agency/AgencyFilms';
 import EntertainmentLanding from './pages/Entertainment/EntertainmentLanding';
 import EntertainmentFilms from './pages/Entertainment/EntertainmentFilms';
 import AboutEntertainment from './pages/Entertainment/AboutEntertainment';
+import EntertainmentBlogs from './pages/Entertainment/EntertainmentBlogs';
+import EntertainmentBlogPost from './pages/Entertainment/EntertainmentBlogPost';
+import EntertainmentMedia from './pages/Entertainment/EntertainmentMedia';
+import EntertainmentContact from './pages/Entertainment/EntertainmentContact';
 import { AnimatePresence } from 'framer-motion';
 
 function AnimatedRoutes() {
@@ -29,6 +33,10 @@ function AnimatedRoutes() {
       <Route path="/entertainment" element={<EntertainmentLanding />} />
       <Route path="/entertainment/about" element={<AboutEntertainment />} />
       <Route path="/entertainment/films" element={<EntertainmentFilms />} />
+      <Route path="/entertainment/blog" element={<EntertainmentBlogs />} />
+      <Route path="/entertainment/blog/:slug" element={<EntertainmentBlogPost />} />
+      <Route path="/entertainment/media" element={<EntertainmentMedia />} />
+      <Route path="/entertainment/contact" element={<EntertainmentContact />} />
     </Routes>
   );
 }

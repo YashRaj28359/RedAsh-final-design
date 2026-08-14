@@ -56,12 +56,12 @@ const AllMicrodramaShows = () => {
   }, { scope: containerRef });
 
   return (
-    <section ref={containerRef} className="w-full pt-2 pb-16 lg:pb-24 bg-[#f9f9f9] relative flex flex-col items-center">
+    <section ref={containerRef} className="w-full pt-2 pb-16 lg:pb-24 bg-white relative flex flex-col items-center">
       
       {/* Section Header removed per user request */}
 
       {/* Grid of 26 Cards */}
-      <div className="w-full px-1 sm:px-2 lg:px-4 max-w-[1920px]">
+      <div className="w-full px-8 max-w-[1920px]">
         {/* 6 columns layout as requested */}
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 md:gap-3 lg:gap-4 w-full">
           {microdramaShows.map((project, idx) => (

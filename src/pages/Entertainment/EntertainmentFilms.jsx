@@ -1,52 +1,85 @@
-import React, { useRef, useEffect } from 'react';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
+import React, { useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import Lenis from 'lenis';
 import EntertainmentNavbar from './components/EntertainmentNavbar';
-import EntertainmentFilmsList from './components/EntertainmentFilmsList';
-import ContactForm from '../../components/ContactForm/ContactForm';
 import EntertainmentFooter from './components/EntertainmentFooter';
+import ProcessTimeline from './components/ProcessTimeline';
+import TalentShowcase from './components/TalentShowcase';
+import CombinedEntertainmentGrid from './components/CombinedEntertainmentGrid';
+import ContactForm from '../../components/ContactForm/ContactForm';
 
 const EntertainmentFilms = () => {
-  const containerRef = useRef(null);
-
-  useGSAP(() => {
-    // Fade in page smoothly
-    gsap.fromTo(
-      containerRef.current,
-      { opacity: 0 },
-      { opacity: 1, duration: 1, ease: 'power2.out' }
-    );
-  }, { scope: containerRef });
-
   useEffect(() => {
+    // Scroll to top when component mounts
     window.scrollTo(0, 0);
+
+    // Initialize Lenis for smooth scrolling
+    const lenis = new Lenis({
+      lerp: 0.08, // Slightly faster physics to feel less sluggish
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 2,
+    });
+
+    let animationFrameId;
+    function raf(time) {
+      lenis.raf(time);
+      animationFrameId = requestAnimationFrame(raf);
+    }
+    animationFrameId = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      lenis.destroy();
+    };
   }, []);
 
   return (
-    <div 
-      ref={containerRef}
-      className="relative min-h-screen w-full bg-white text-black font-main overflow-x-hidden font-smoothing-antialiased"
-    >
+    <div className="relative min-h-screen w-full bg-white text-black font-main overflow-x-hidden">
       <EntertainmentNavbar />
       
-      <main className="relative z-10 w-full flex flex-col pt-24">
-        
-        <EntertainmentFilmsList />
-        
-        {/* Bottom Quotation / Contact Form */}
-        <div id="quotation-section" className="bg-gray-50 mt-16">
-          <ContactForm 
-            titlePrefix="INVEST IN OR SPONSOR OUR"
-            titleHighlight="PROJECTS"
-            input4Placeholder="Investment Queries"
-            clientText="Potential investors/sponsors"
-            headingClass="font-subtitle text-[#6A6A6A] tracking-[2px] md:tracking-[4px]"
-            highlightColorClass="text-brand-red"
-            linkColorClass="text-brand-red hover:text-red-700"
-          />
-        </div>
+      <main className="relative z-10 w-full flex flex-col pt-28 md:pt-32 px-6 md:px-12 lg:px-24">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="w-full max-w-[1000px] mx-auto text-center flex flex-col gap-6 md:gap-8"
+        >
+          {/* Eyebrow Heading */}
+          <div className="inline-flex items-center justify-center gap-4">
+             <div className="h-[2px] w-8 md:w-12 bg-brand-red hidden sm:block"></div>
+             <p className="text-xs md:text-sm font-bold text-neutral-500 tracking-[0.15em] uppercase">
+               <span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> began as an IIT Delhi engineer’s venture in 2007
+             </p>
+             <div className="h-[2px] w-8 md:w-12 bg-brand-red hidden sm:block"></div>
+          </div>
 
+          {/* Main Statement */}
+          <p className="text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] font-light text-neutral-800 leading-tight md:leading-snug tracking-tight">
+            Its entertainment division, <Link to="/entertainment" className="hover:opacity-75 transition-opacity duration-300"><strong className="font-bold cursor-pointer"><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-black">Films</span></strong></Link>, creates movies, web series, microdramas, television shows, AI films, music videos, and emerging formats.
+          </p>
+          
+          {/* Sub Statement */}
+          <p className="text-base md:text-lg text-neutral-500 font-medium">
+            Its enterprise division is <Link to="/ad-agency" className="hover:opacity-75 transition-opacity duration-300"><strong className="font-bold cursor-pointer"><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-blue">Ad Agency</span></strong></Link>.
+          </p>
+        </motion.div>
+
+        <ProcessTimeline />
       </main>
+
+      <TalentShowcase />
+      <CombinedEntertainmentGrid />
+
+      {/* Invest In Or Sponsor Our Projects Form */}
+      <ContactForm 
+        titlePrefix="INVEST IN OR SPONSOR OUR"
+        titleHighlight="PROJECTS"
+        input4Placeholder="Investment Queries"
+        clientText="Potential investors/sponsors"
+        buttonTheme="red"
+      />
 
       <EntertainmentFooter />
     </div>

@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -65,8 +66,22 @@ const AllMicrodramaShows = () => {
         {/* 6 columns layout as requested */}
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 md:gap-3 lg:gap-4 w-full">
           {microdramaShows.map((project, idx) => (
-            <VerticalCard key={project.id} project={project} cardRef={(el) => (cardsRef.current[idx] = el)} />
+            <div 
+              key={project.id} 
+              className={idx === 24 ? "col-start-1 md:col-start-2 lg:col-start-3" : ""}
+            >
+              <VerticalCard project={project} cardRef={(el) => (cardsRef.current[idx] = el)} />
+            </div>
           ))}
+        </div>
+
+        {/* Watch Entertainment Films Button */}
+        <div className="w-full flex justify-center mt-12 md:mt-16">
+          <Link to="/entertainment/films" className="inline-block">
+            <button className="bg-[#E20002] hover:bg-[#cc0000] transition-colors text-white font-bold py-3 md:py-4 px-8 md:px-12 rounded-md text-sm md:text-lg uppercase flex items-center shadow-md tracking-wider">
+              WATCH ENTERTAINMENT FILMS
+            </button>
+          </Link>
         </div>
       </div>
       

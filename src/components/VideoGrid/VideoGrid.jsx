@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import VideoCard from '../VideoCard/VideoCard';
 import { videos } from '../../data/videoData';
 import { motion } from 'framer-motion';
@@ -30,42 +31,47 @@ const VideoGrid = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  let displayVideos = videos.map(v => ({ ...v, uniqueId: v.id }));
-  
-  // Repeat videos until we have a multiple of 6 AND at least 24 videos (4 rows)
-  while (displayVideos.length < 24 || displayVideos.length % 6 !== 0) {
-    const index = displayVideos.length % videos.length;
-    const v = videos[index];
-    displayVideos.push({ ...v, uniqueId: `${v.id}-pad-${displayVideos.length}` });
-  }
+  const displayVideos = videos.map(v => ({ ...v, uniqueId: v.id }));
 
   return (
     <>
-    <section className="w-full px-4 md:px-8 pb-0 bg-white">
+    <section className="w-full px-4 md:px-8 pb-10 bg-white">
       <style>
         {`
           @media (max-width: 1023px) and (orientation: landscape) {
-            .mobile-landscape-grid {
-              grid-template-columns: repeat(4, 22.75%) !important;
-              column-gap: 3% !important;
+            .mobile-landscape-item {
+              width: 22.75% !important;
             }
           }
         `}
       </style>
       <div className="w-full mx-auto">
         <motion.div 
-          className="grid grid-cols-[repeat(2,46%)] md:grid-cols-[repeat(6,14%)] xl:grid-cols-[repeat(6,12%)] mobile-landscape-grid justify-center gap-x-[8%] md:gap-x-[3%] xl:gap-x-[5%] gap-y-4 w-full"
+          className="flex flex-wrap justify-center gap-x-[8%] md:gap-x-[3%] xl:gap-x-[5%] gap-y-4 w-full"
           variants={containerVariants}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
         >
           {displayVideos.map((video) => (
-            <motion.div key={video.uniqueId} variants={itemVariants}>
+            <motion.div 
+              key={video.uniqueId} 
+              variants={itemVariants}
+              className="w-[46%] md:w-[14%] xl:w-[12%] mobile-landscape-item"
+            >
               <VideoCard video={video} onClick={() => setSelectedVideo(video)} />
             </motion.div>
           ))}
         </motion.div>
+
+        {/* Watch Entertainment Films Button */}
+        <div className="w-full flex justify-center mt-12 md:mt-16">
+          <Link to="/entertainment">
+            <button className="bg-[#E20002] hover:bg-[#cc0000] transition-colors text-white font-bold py-3 md:py-4 px-8 md:px-12 rounded-md text-sm md:text-lg uppercase flex items-center shadow-md tracking-wider">
+              WATCH ENTERTAINMENT FILMS
+            </button>
+          </Link>
+        </div>
       </div>
     </section>
 

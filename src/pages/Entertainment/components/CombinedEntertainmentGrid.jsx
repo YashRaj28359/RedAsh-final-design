@@ -30,12 +30,33 @@ const horizontalProjects = [
   { id: "h5", title: "I AM YOUR VOICE", image: p4, url: 'https://youtu.be/BqGm3m3jyhI?si=K2jGDdZAKaOPKXnl', isHorizontal: true },
   { id: "h6", title: "CORONA IS A CONSPIRACY", image: p5, url: 'https://youtu.be/6NusataOZyU?si=xoLP93n-qeuhEqK6', isHorizontal: true },
   { id: "h7", title: "HUM AZAAD HAIN", image: p6, url: 'https://youtu.be/-qHNIXVHT_4?si=rjrWz4zDIGye9Zhw', isHorizontal: true },
-  { id: "h8", title: "MUSIC VIDEOS", image: card6Img, url: 'https://youtu.be/6Q0mdzO9A4A?si=w_dZFv_p8FszDoDL', scaleImage: true, isHorizontal: true },
+  { id: "h8", title: "MUSIC VIDEOS", image: card6Img, url: 'https://youtu.be/6Q0mdzO9A4A?si=w_dZFv_p8FszDoDL', isHorizontal: true, containImage: true },
   { id: "h9", title: "100 SHORT FILMS", image: p9, url: 'https://youtu.be/Rz0El0ooOwM?si=1TkAE07Ek8dbJm1w', isHorizontal: true },
 ];
 
 // The 26 Vertical Posters
-const verticalProjects = microdramaShows.map(item => ({ ...item, isHorizontal: false }));
+const verticalProjects = microdramaShows.map((item, index) => {
+  let newUrl = item.url;
+  
+  // Update url for kukutv links, except the second video (index 1)
+  if (newUrl && newUrl.includes('kukutv.app') && index !== 1) {
+    // Replace '/show/' with '/watch/' as per the example format
+    newUrl = newUrl.replace('/show/', '/watch/');
+    
+    // Append '?episode=trailer'
+    if (!newUrl.includes('?')) {
+      newUrl += '?episode=trailer';
+    } else if (!newUrl.includes('episode=trailer')) {
+      newUrl += '&episode=trailer';
+    }
+  }
+
+  return { 
+    ...item, 
+    url: newUrl, 
+    isHorizontal: false 
+  };
+});
 
 const CombinedEntertainmentGrid = () => {
   const containerRef = useRef(null);
@@ -190,7 +211,8 @@ const CombinedEntertainmentGrid = () => {
                   <img 
                     src={item.image} 
                     alt={item.title} 
-                    className={`absolute inset-0 w-full h-full object-cover transition-transform duration-500 
+                    className={`absolute inset-0 w-full h-full transition-transform duration-500 
+                      ${item.containImage ? 'object-contain' : 'object-cover'}
                       ${item.scaleClass || ''} 
                       ${item.hoverScaleClass || 'group-hover:scale-105'}
                       ${item.objectPos || 'object-center'}

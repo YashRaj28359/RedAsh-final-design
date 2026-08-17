@@ -5,7 +5,7 @@ import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import Lenis from 'lenis';
 import EntertainmentNavbar from './components/EntertainmentNavbar';
 import EntertainmentFooter from './components/EntertainmentFooter';
-import blogsData from '../../data/blogs.json';
+import blogsData from '../../data/entertainmentBlogs.json';
 
 const EntertainmentBlogPost = () => {
   const { slug } = useParams();
@@ -53,35 +53,38 @@ const EntertainmentBlogPost = () => {
   // Get 4 suggested blogs (excluding the current one)
   const suggestedBlogs = blogsData.filter(b => b.id !== blog.id).slice(0, 4);
 
-  const renderSuggestedBlogs = () => (
-    <>
-      <h3 className="text-2xl font-hero font-bold tracking-widest text-neutral-900 mb-8 uppercase flex items-center gap-3">
-        <span className="w-8 h-[2px] bg-brand-red block"></span>
-        Suggested Reads
-      </h3>
-      <div className="flex flex-col gap-6">
-        {suggestedBlogs.map((suggested) => (
-          <Link key={suggested.id} to={`/entertainment/blog/${suggested.slug}`} className="group flex gap-4 items-start bg-neutral-50 p-3 rounded-xl hover:shadow-lg hover:bg-white border border-transparent transition-all duration-300">
-            <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-neutral-200">
-              {suggested.imageUrl ? (
-                <img src={suggested.imageUrl} alt={suggested.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <span className="text-[10px] text-neutral-400 font-bold text-center">NO IMG</span>
-                </div>
-              )}
-            </div>
-            <div className="flex flex-col flex-1">
-              <span className="text-[10px] font-bold tracking-widest uppercase text-brand-red mb-1">
-                {new Date(suggested.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-              </span>
-              <h4 className="font-bold text-neutral-900 text-sm leading-snug group-hover:text-brand-red transition-colors line-clamp-3" dangerouslySetInnerHTML={{ __html: suggested.title }} />
-            </div>
-          </Link>
-        ))}
-      </div>
-    </>
-  );
+  const renderSuggestedBlogs = () => {
+    if (suggestedBlogs.length === 0) return null;
+    return (
+      <>
+        <h3 className="text-2xl font-hero font-bold tracking-widest text-neutral-900 mb-8 uppercase flex items-center gap-3">
+          <span className="w-8 h-[2px] bg-brand-red block"></span>
+          Suggested Reads
+        </h3>
+        <div className="flex flex-col gap-6">
+          {suggestedBlogs.map((suggested) => (
+            <Link key={suggested.id} to={`/entertainment/blog/${suggested.slug}`} className="group flex gap-4 items-start bg-neutral-50 p-3 rounded-xl hover:shadow-lg hover:bg-white border border-transparent transition-all duration-300">
+              <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-neutral-200">
+                {suggested.imageUrl ? (
+                  <img src={suggested.imageUrl} alt={suggested.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="text-[10px] text-neutral-400 font-bold text-center">NO IMG</span>
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-col flex-1">
+                <span className="text-[10px] font-bold tracking-widest uppercase text-brand-red mb-1">
+                  {new Date(suggested.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                </span>
+                <h4 className="font-bold text-neutral-900 text-sm leading-snug group-hover:text-brand-red transition-colors line-clamp-3" dangerouslySetInnerHTML={{ __html: suggested.title }} />
+              </div>
+            </Link>
+          ))}
+        </div>
+      </>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-white flex flex-col font-main overflow-x-hidden">
@@ -164,21 +167,23 @@ const EntertainmentBlogPost = () => {
         <div className="clear-both"></div>
 
         {/* Next / Previous Navigation */}
-        <div className="mt-16 pt-8 border-t border-neutral-200 flex flex-col sm:flex-row justify-between gap-4">
-          {prevBlog ? (
-            <Link to={`/entertainment/blog/${prevBlog.slug}`} className="flex-1 group flex flex-col items-start bg-neutral-50 p-4 rounded-xl hover:bg-brand-red hover:text-white transition-colors duration-300">
-              <span className="text-[10px] font-bold tracking-widest uppercase text-neutral-500 group-hover:text-red-200 mb-2 flex items-center gap-1"><FiArrowLeft /> Previous Article</span>
-              <span className="font-bold text-sm md:text-base leading-snug line-clamp-2" dangerouslySetInnerHTML={{ __html: prevBlog.title }} />
-            </Link>
-          ) : <div className="flex-1"></div>}
+        {(prevBlog || nextBlog) && (
+          <div className="mt-16 pt-8 border-t border-neutral-200 flex flex-col sm:flex-row justify-between gap-4">
+            {prevBlog ? (
+              <Link to={`/entertainment/blog/${prevBlog.slug}`} className="flex-1 group flex flex-col items-start bg-neutral-50 p-4 rounded-xl hover:bg-brand-red hover:text-white transition-colors duration-300">
+                <span className="text-[10px] font-bold tracking-widest uppercase text-neutral-500 group-hover:text-red-200 mb-2 flex items-center gap-1"><FiArrowLeft /> Previous Article</span>
+                <span className="font-bold text-sm md:text-base leading-snug line-clamp-2" dangerouslySetInnerHTML={{ __html: prevBlog.title }} />
+              </Link>
+            ) : <div className="flex-1"></div>}
 
-          {nextBlog ? (
-            <Link to={`/entertainment/blog/${nextBlog.slug}`} className="flex-1 group flex flex-col items-end text-right bg-neutral-50 p-4 rounded-xl hover:bg-brand-red hover:text-white transition-colors duration-300">
-              <span className="text-[10px] font-bold tracking-widest uppercase text-neutral-500 group-hover:text-red-200 mb-2 flex items-center gap-1">Next Article <FiArrowRight /></span>
-              <span className="font-bold text-sm md:text-base leading-snug line-clamp-2" dangerouslySetInnerHTML={{ __html: nextBlog.title }} />
-            </Link>
-          ) : <div className="flex-1"></div>}
-        </div>
+            {nextBlog ? (
+              <Link to={`/entertainment/blog/${nextBlog.slug}`} className="flex-1 group flex flex-col items-end text-right bg-neutral-50 p-4 rounded-xl hover:bg-brand-red hover:text-white transition-colors duration-300">
+                <span className="text-[10px] font-bold tracking-widest uppercase text-neutral-500 group-hover:text-red-200 mb-2 flex items-center gap-1">Next Article <FiArrowRight /></span>
+                <span className="font-bold text-sm md:text-base leading-snug line-clamp-2" dangerouslySetInnerHTML={{ __html: nextBlog.title }} />
+              </Link>
+            ) : <div className="flex-1"></div>}
+          </div>
+        )}
 
         {/* Sidebar for Mobile/Tablet (Renders below everything) */}
         <aside className="block lg:hidden w-full mt-16 pt-8 border-t border-neutral-200">

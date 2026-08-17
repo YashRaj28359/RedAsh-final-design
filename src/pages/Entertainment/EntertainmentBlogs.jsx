@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Lenis from 'lenis';
 import EntertainmentNavbar from './components/EntertainmentNavbar';
 import EntertainmentFooter from './components/EntertainmentFooter';
-import blogsData from '../../data/blogs.json';
+import blogsData from '../../data/entertainmentBlogs.json';
 
 const EntertainmentBlogs = () => {
   useEffect(() => {
@@ -58,7 +58,8 @@ const EntertainmentBlogs = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-lg md:text-xl text-neutral-600 font-medium max-w-3xl mx-auto"
             >
-              Read our blogs full of useful insights on the creative and strategic aspects of marketing and film production.
+              Creative and industry insights from the world of movies, web series, TV serials, microdramas, AI filmmaking, music videos and new-age entertainment.
+
             </motion.p>
           </div>
         </div>
@@ -67,7 +68,7 @@ const EntertainmentBlogs = () => {
         <div className="w-full py-16 md:py-24 bg-white">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1920px]">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
-              {blogsData.filter(blog => blog.slug === 'the-art-of-microdrama-short-form-storytelling').map((blog, index) => (
+              {blogsData.map((blog, index) => (
                 <motion.div
                   key={blog.id}
                   initial={{ opacity: 0, y: 30 }}

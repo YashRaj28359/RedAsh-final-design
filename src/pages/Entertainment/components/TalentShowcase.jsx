@@ -27,7 +27,7 @@ const artists = [
   { id: 9, name: 'Tom Alter', image: imgTom, imdb: 'https://www.imdb.com/name/nm0022758/?utm_source=chatgpt.com&ref_=ext_shr_lnk' },
   { id: 10, name: 'Seema Biswas', image: imgSeema, imdb: 'https://www.imdb.com/name/nm0084443/?utm_source=chatgpt.com&ref_=ext_shr_lnk' },
   { id: 11, name: 'Kiran Kumar', image: imgKiran, imdb: 'https://www.imdb.com/name/nm0474820/?utm_source=chatgpt.com&ref_=ext_shr_lnk' },
-  { id: 12, name: 'Nibedita Paal', image: imgNibedita, imdb: 'https://www.imdb.com/name/nm11163593/' },
+  { id: 12, name: 'Nibeditaa Paal', image: imgNibedita, imdb: 'https://www.imdb.com/name/nm11163593/' },
   { id: 13, name: 'Piyush Sahdev', image: imgPiyush, imdb: 'https://www.imdb.com/name/nm9824657/?ref_=ext_shr_lnk' },
 ];
 

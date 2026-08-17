@@ -49,20 +49,20 @@ const EntertainmentFilms = () => {
           {/* Eyebrow Heading */}
           <div className="inline-flex items-center justify-center gap-4">
              <div className="h-[2px] w-8 md:w-12 bg-brand-red hidden sm:block"></div>
-             <p className="text-[10px] md:text-xs font-bold text-neutral-500 tracking-[0.15em] uppercase">
-               <span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> began as an IIT Delhi engineer’s venture in 2007
+             <p className="text-sm md:text-base lg:text-lg font-bold text-neutral-800 tracking-[0.1em] uppercase">
+               <Link to="/" className="hover:opacity-75 transition-opacity duration-300"><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span></Link> began as an <a href="https://www.linkedin.com/in/ashishlalreal" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red transition-colors duration-300 border-b border-transparent hover:border-brand-red cursor-pointer">IIT Delhi engineer’s venture</a> in 2007
              </p>
              <div className="h-[2px] w-8 md:w-12 bg-brand-red hidden sm:block"></div>
           </div>
 
           {/* Main Statement */}
           <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-light text-neutral-800 leading-tight md:leading-snug tracking-tight">
-            Its entertainment division, <Link to="/entertainment" className="hover:opacity-75 transition-opacity duration-300"><strong className="font-bold cursor-pointer"><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-black">Films</span></strong></Link>, creates movies, web series, microdramas, television shows, AI films, music videos, and emerging formats.
+            Its entertainment division, <Link to="/entertainment" className="hover:opacity-75 transition-opacity duration-300"><strong className="font-bold cursor-pointer"><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-neutral-800">Films</span></strong></Link>, creates movies, web series, microdramas, television shows, AI films, music videos, and emerging formats.
           </p>
           
           {/* Sub Statement */}
           <p className="text-sm md:text-base text-neutral-500 font-medium">
-            Its enterprise division is <Link to="/ad-agency" className="hover:opacity-75 transition-opacity duration-300"><strong className="font-bold cursor-pointer"><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-blue">Ad Agency</span></strong></Link>.
+            Its enterprise division is <Link to="/ad-agency" target="_blank" rel="noopener noreferrer" className="hover:opacity-75 transition-opacity duration-300"><strong className="font-bold cursor-pointer"><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-blue">Ad Agency</span></strong></Link>.
           </p>
         </motion.div>
 

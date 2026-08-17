@@ -38,23 +38,15 @@ const EntertainmentContact = () => {
       <main className="flex-grow pt-32 pb-0 relative z-10">
         
         {/* Header Section */}
-        <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12 mb-16 md:mb-24">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12 mb-16 md:mb-24 text-center">
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="text-5xl md:text-7xl lg:text-8xl font-hero font-black uppercase tracking-[8px] md:tracking-[12px] text-neutral-950 mb-6 leading-none"
           >
-            LET'S <span className="text-brand-red block md:inline">CREATE.</span>
+            GET IN <span className="text-brand-red block md:inline">TOUCH</span>
           </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-lg md:text-xl text-neutral-500 max-w-2xl"
-          >
-            Whether you have a script, a vision, or just a spark of an idea, we want to hear from you. Let's bring it to life.
-          </motion.p>
         </div>
 
         {/* Contact Info Bento Grid */}
@@ -123,6 +115,7 @@ const EntertainmentContact = () => {
             headingClass="font-subtitle text-[#6A6A6A] tracking-[2px] md:tracking-[4px]"
             highlightColorClass="text-brand-red"
             buttonTheme="red"
+            customFooterText="Potential Clients, Investors, and Sponsors can email or fill the form below"
           />
         </div>
 

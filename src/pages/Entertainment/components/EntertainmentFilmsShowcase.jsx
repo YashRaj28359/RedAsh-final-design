@@ -22,8 +22,8 @@ const projects = [
   { id: "05", title: "I AM YOUR VOICE", image: p4, url: 'https://youtu.be/BqGm3m3jyhI?si=K2jGDdZAKaOPKXnl' },
   { id: "06", title: "CORONA IS A CONSPIRACY", image: p5, url: 'https://youtu.be/6NusataOZyU?si=xoLP93n-qeuhEqK6' },
   { id: "07", title: "HUM AZAAD HAIN", image: p6, url: 'https://youtu.be/-qHNIXVHT_4?si=rjrWz4zDIGye9Zhw' },
-  { id: "08", title: "MUSIC VIDEOS", image: card6Img, url: 'https://youtu.be/6Q0mdzO9A4A?si=w_dZFv_p8FszDoDL', scaleImage: true },
-  { id: "09", title: "100 SHORT FILMS EMERGING LEADERS", image: p9, url: 'https://youtu.be/Rz0El0ooOwM?si=1TkAE07Ek8dbJm1w' }
+  { id: "08", title: "MUSIC VIDEOS", image: card6Img, url: 'https://youtu.be/6Q0mdzO9A4A?si=w_dZFv_p8FszDoDL', containImage: true },
+  { id: "09", title: "100 SHORT FILMS EMERGING LEADERS", image: p9, url: 'https://youtu.be/Rz0El0ooOwM?si=1TkAE07Ek8dbJm1w', customStyle: { objectPosition: '50% 10%' } }
 ];
 
 const EntertainmentFilmsShowcase = () => {
@@ -153,7 +153,7 @@ const ProjectThumbnail = ({ project, onClick, isHorizontal }) => (
     <img 
       src={project.image} 
       alt={project.title} 
-      className={`w-full h-full object-cover transition-transform duration-700 ${project.scaleImage ? 'scale-[1.35] group-hover:scale-[1.45]' : 'group-hover:scale-110'}`} 
+      className={`w-full h-full ${project.containImage ? 'object-contain' : 'object-cover'} transition-transform duration-700 ${project.scaleImage ? 'scale-[1.35] group-hover:scale-[1.45]' : 'group-hover:scale-110'}`} 
       loading="lazy"
     />
     

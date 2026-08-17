@@ -237,7 +237,7 @@ const AboutEntertainment = () => {
           </div>
         </section>
 
-        {/* CTA Typography Section (Mapped from Reference) */}
+        {/* CTA Typography Section (Re-ordered logical flow based on feedback) */}
         <section className="w-full bg-white py-32 lg:py-48 flex flex-col items-center justify-center relative overflow-hidden">
           
           {/* Background Ghost Text */}
@@ -249,6 +249,19 @@ const AboutEntertainment = () => {
 
           <div className="relative z-10 flex flex-col items-start max-w-5xl mx-auto px-6 w-full">
             
+            {/* 1. As we expand... */}
+            <motion.div 
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, amount: 0.5 }}
+              className="mb-6 md:mb-8 max-w-5xl"
+            >
+              <p className="text-lg sm:text-xl md:text-2xl font-bold text-neutral-800 uppercase tracking-widest leading-relaxed">
+                <ScrollText text="As we expand our slate of films, web series, microdrama shows, television serials, and other new formats," />
+              </p>
+            </motion.div>
+
+            {/* 2. WE WELCOME */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -256,46 +269,35 @@ const AboutEntertainment = () => {
               className="flex items-end mb-2 md:mb-4"
             >
               <h4 className="text-red-600 font-bold uppercase tracking-[0.3em] text-xl md:text-3xl lg:text-4xl">
-                WELCOME
+                WE WELCOME
               </h4>
             </motion.div>
 
+            {/* 3. investors */}
             <h2 className="font-serif text-[3.5rem] sm:text-[5rem] md:text-[7rem] lg:text-[8rem] leading-[0.8] tracking-tighter text-black -ml-1 md:-ml-2">
               <ScrollText text="investors" />
             </h2>
 
-            <motion.div 
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true, amount: 0.5 }}
-              className="my-6 md:my-8 pl-1 md:pl-4 max-w-lg md:max-w-2xl"
-            >
-              <p className="text-xs sm:text-sm md:text-base font-bold text-neutral-800 uppercase tracking-widest leading-relaxed">
-                <ScrollText text="As we expand our slate of films, web series, microdrama shows, television serials, and other new formats," />
-              </p>
-            </motion.div>
-
+            {/* 4. & sponsors */}
             <motion.div 
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, amount: 0.5 }}
-              className="flex flex-col sm:flex-row sm:items-end gap-2 sm:gap-6 pl-4 sm:pl-16 md:pl-24 lg:pl-32"
+              className="flex flex-col sm:flex-row sm:items-end gap-2 sm:gap-6 pl-4 sm:pl-16 md:pl-24 lg:pl-32 mt-6 md:mt-10"
             >
               <h2 className="font-serif text-[3.5rem] sm:text-[4.5rem] md:text-[6rem] lg:text-[7rem] leading-[0.8] tracking-tighter text-black">
                 <ScrollText text="& sponsors" />
               </h2>
-              <h4 className="text-red-600 font-bold uppercase tracking-[0.3em] text-lg md:text-2xl lg:text-3xl mb-1 md:mb-3 whitespace-nowrap">
-                TO JOIN US
-              </h4>
             </motion.div>
 
+            {/* 5. who want to be part... */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.5 }}
-              className="mt-8 md:mt-12 text-center w-full"
+              className="mt-6 md:mt-8 pl-4 sm:pl-16 md:pl-24 lg:pl-32"
             >
-              <p className="text-base md:text-xl font-medium text-neutral-800 max-w-2xl mx-auto">
+              <p className="text-lg sm:text-xl md:text-2xl font-medium text-neutral-800 max-w-4xl leading-relaxed">
                 <ScrollText text="who want to be part of compelling entertainment with strong commercial potential." />
               </p>
             </motion.div>

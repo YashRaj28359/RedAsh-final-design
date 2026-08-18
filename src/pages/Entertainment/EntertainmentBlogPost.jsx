@@ -41,8 +41,44 @@ const EntertainmentBlogPost = () => {
     const currentIndex = blogsData.findIndex(b => b.slug === slug);
     if (currentIndex !== -1) {
       setBlog(blogsData[currentIndex]);
-      setNextBlog(currentIndex > 0 ? blogsData[currentIndex - 1] : null);
-      setPrevBlog(currentIndex < blogsData.length - 1 ? blogsData[currentIndex + 1] : null);
+      
+      const newBlogSlugs = [
+        'the-art-of-microdrama-short-form-storytelling-2026',
+        'different-stages-of-post-production-their-importance',
+        'behind-the-scenes-the-creative-process-of-video-production'
+      ];
+
+      let prev = null;
+      let next = null;
+
+      if (newBlogSlugs.includes(slug)) {
+        if (slug === newBlogSlugs[0]) {
+          prev = null;
+          next = blogsData.find(b => b.slug === newBlogSlugs[1]);
+        } else if (slug === newBlogSlugs[1]) {
+          prev = blogsData.find(b => b.slug === newBlogSlugs[0]);
+          next = blogsData.find(b => b.slug === newBlogSlugs[2]);
+        } else if (slug === newBlogSlugs[2]) {
+          prev = blogsData.find(b => b.slug === newBlogSlugs[1]);
+          next = null;
+        }
+      } else {
+        // Normal blogs (skip the new isolated ones)
+        let pIndex = currentIndex + 1;
+        while (pIndex < blogsData.length && newBlogSlugs.includes(blogsData[pIndex].slug)) {
+          pIndex++;
+        }
+        prev = pIndex < blogsData.length ? blogsData[pIndex] : null;
+
+        let nIndex = currentIndex - 1;
+        while (nIndex >= 0 && newBlogSlugs.includes(blogsData[nIndex].slug)) {
+          nIndex--;
+        }
+        next = nIndex >= 0 ? blogsData[nIndex] : null;
+      }
+
+      setPrevBlog(prev);
+      setNextBlog(next);
     } else {
       navigate('/entertainment/blog');
     }
@@ -85,6 +121,14 @@ const EntertainmentBlogPost = () => {
       </>
     );
   };
+
+  // Define the isolated new blog slugs
+  const newBlogSlugs = [
+    'the-art-of-microdrama-short-form-storytelling-2026',
+    'different-stages-of-post-production-their-importance',
+    'behind-the-scenes-the-creative-process-of-video-production'
+  ];
+  const isNewBlog = newBlogSlugs.includes(slug);
 
   return (
     <div className="min-h-screen bg-white flex flex-col font-main overflow-x-hidden">
@@ -167,23 +211,35 @@ const EntertainmentBlogPost = () => {
         <div className="clear-both"></div>
 
         {/* Next / Previous Navigation */}
-        {(prevBlog || nextBlog) && (
-          <div className="mt-16 pt-8 border-t border-neutral-200 flex flex-col sm:flex-row justify-between gap-4">
-            {prevBlog ? (
-              <Link to={`/entertainment/blog/${prevBlog.slug}`} className="flex-1 group flex flex-col items-start bg-neutral-50 p-4 rounded-xl hover:bg-brand-red hover:text-white transition-colors duration-300">
-                <span className="text-[10px] font-bold tracking-widest uppercase text-neutral-500 group-hover:text-red-200 mb-2 flex items-center gap-1"><FiArrowLeft /> Previous Article</span>
-                <span className="font-bold text-sm md:text-base leading-snug line-clamp-2" dangerouslySetInnerHTML={{ __html: prevBlog.title }} />
-              </Link>
-            ) : <div className="flex-1"></div>}
+        <div className="mt-16 pt-8 border-t border-neutral-200 flex flex-col sm:flex-row justify-between gap-4">
+          {prevBlog ? (
+            <Link to={`/entertainment/blog/${prevBlog.slug}`} className="flex-1 group flex flex-col items-start bg-neutral-50 p-4 rounded-xl hover:bg-brand-red hover:text-white transition-colors duration-300">
+              <span className="text-[10px] font-bold tracking-widest uppercase text-neutral-500 group-hover:text-red-200 mb-2 flex items-center gap-1"><FiArrowLeft /> Previous Article</span>
+              <span className="font-bold text-sm md:text-base leading-snug line-clamp-2" dangerouslySetInnerHTML={{ __html: prevBlog.title }} />
+            </Link>
+          ) : (
+            isNewBlog ? (
+              <div className="flex-1 flex flex-col items-start bg-neutral-50 p-4 rounded-xl opacity-50 cursor-not-allowed">
+                <span className="text-[10px] font-bold tracking-widest uppercase text-neutral-500 mb-2 flex items-center gap-1"><FiArrowLeft /> Previous Article</span>
+                <span className="font-bold text-sm md:text-base text-neutral-400 leading-snug">No previous article</span>
+              </div>
+            ) : <div className="flex-1"></div>
+          )}
 
-            {nextBlog ? (
-              <Link to={`/entertainment/blog/${nextBlog.slug}`} className="flex-1 group flex flex-col items-end text-right bg-neutral-50 p-4 rounded-xl hover:bg-brand-red hover:text-white transition-colors duration-300">
-                <span className="text-[10px] font-bold tracking-widest uppercase text-neutral-500 group-hover:text-red-200 mb-2 flex items-center gap-1">Next Article <FiArrowRight /></span>
-                <span className="font-bold text-sm md:text-base leading-snug line-clamp-2" dangerouslySetInnerHTML={{ __html: nextBlog.title }} />
-              </Link>
-            ) : <div className="flex-1"></div>}
-          </div>
-        )}
+          {nextBlog ? (
+            <Link to={`/entertainment/blog/${nextBlog.slug}`} className="flex-1 group flex flex-col items-end text-right bg-neutral-50 p-4 rounded-xl hover:bg-brand-red hover:text-white transition-colors duration-300">
+              <span className="text-[10px] font-bold tracking-widest uppercase text-neutral-500 group-hover:text-red-200 mb-2 flex items-center gap-1">Next Article <FiArrowRight /></span>
+              <span className="font-bold text-sm md:text-base leading-snug line-clamp-2" dangerouslySetInnerHTML={{ __html: nextBlog.title }} />
+            </Link>
+          ) : (
+            isNewBlog ? (
+              <div className="flex-1 flex flex-col items-end text-right bg-neutral-50 p-4 rounded-xl opacity-50 cursor-not-allowed">
+                <span className="text-[10px] font-bold tracking-widest uppercase text-neutral-500 mb-2 flex items-center gap-1">Next Article <FiArrowRight /></span>
+                <span className="font-bold text-sm md:text-base text-neutral-400 leading-snug">No next article</span>
+              </div>
+            ) : <div className="flex-1"></div>
+          )}
+        </div>
 
         {/* Sidebar for Mobile/Tablet (Renders below everything) */}
         <aside className="block lg:hidden w-full mt-16 pt-8 border-t border-neutral-200">

@@ -64,13 +64,22 @@ const VideoGrid = () => {
           ))}
         </motion.div>
 
-        {/* Watch Entertainment Films Button */}
-        <div className="w-full flex justify-center mt-12 md:mt-16">
-          <Link to="/entertainment">
-            <button className="bg-[#E20002] hover:bg-[#cc0000] transition-colors text-white font-bold py-3 md:py-4 px-8 md:px-12 rounded-md text-sm md:text-lg uppercase flex items-center shadow-md tracking-wider">
-              WATCH ENTERTAINMENT FILMS
-            </button>
-          </Link>
+        {/* Division Navigation Buttons */}
+        <div className="w-full md:w-[99%] xl:w-[97%] mx-auto mt-12 md:mt-16 flex flex-col lg:flex-row gap-6 md:gap-8">
+          <div className="flex-1 flex justify-center lg:justify-center">
+            <Link to="/entertainment">
+              <button className="bg-[#E20002] hover:bg-[#cc0000] transition-colors text-white font-bold py-3 md:py-4 px-8 md:px-12 rounded-md text-sm md:text-lg uppercase flex items-center justify-center shadow-md tracking-wider w-full sm:w-[380px] md:w-[450px] lg:w-[480px] whitespace-nowrap">
+                GO TO REDASH ENTERTAINMENT FILMS
+              </button>
+            </Link>
+          </div>
+          <div className="flex-1 flex justify-center lg:justify-center">
+            <Link to="/ad-agency">
+              <button className="bg-brand-blue hover:bg-[#0f4a9b] transition-colors text-white font-bold py-3 md:py-4 px-8 md:px-12 rounded-md text-sm md:text-lg uppercase flex items-center justify-center shadow-md tracking-wider w-full sm:w-[380px] md:w-[450px] lg:w-[480px] whitespace-nowrap">
+                GO TO REDASH AD AGENCY
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
     </section>

@@ -57,7 +57,7 @@ const EntertainmentFilms = () => {
 
           {/* Main Statement */}
           <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-light text-neutral-800 leading-tight md:leading-snug tracking-tight">
-            Its entertainment division, <Link to="/entertainment" className="hover:opacity-75 transition-opacity duration-300"><strong className="font-bold cursor-pointer"><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-neutral-800">Films</span></strong></Link>, creates movies, web series, microdramas, television shows, AI films, music videos, and emerging formats.
+            Its entertainment division, <Link to="/entertainment" className="hover:opacity-75 transition-opacity duration-300"><strong className="font-bold cursor-pointer"><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-red">Films</span></strong></Link>, creates movies, web series, microdramas, television shows, AI films, music videos, and emerging formats.
           </p>
           
           {/* Sub Statement */}

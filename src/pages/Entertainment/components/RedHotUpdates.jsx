@@ -198,10 +198,10 @@ const RedHotUpdates = () => {
       <div ref={containerRef} className="relative w-full py-16 overflow-hidden lg:overflow-visible flex items-center justify-center">
         
         {/* Rows Container */}
-        <div className="flex flex-col gap-0 lg:gap-12 w-full items-center justify-center max-w-[1920px]">
+        <div className="flex flex-col gap-8 lg:gap-12 w-full items-center justify-center max-w-[1920px]">
           
           {/* Row 1 */}
-          <div className="flex flex-row items-center justify-center gap-8 lg:gap-12 w-full overflow-x-auto lg:overflow-visible pt-6 pb-12 lg:py-0 px-8 lg:px-0 snap-x snap-mandatory lg:snap-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div className="flex flex-col landscape:flex-row sm:flex-row lg:flex-row items-center justify-center gap-8 lg:gap-12 w-full pt-6 pb-6 lg:py-0 px-8 lg:px-0">
             {updates.slice(0, 2).map((update, index) => {
               const fold = getFoldConfig(update.foldCorner);
               return (
@@ -301,7 +301,7 @@ const RedHotUpdates = () => {
           </div>
 
           {/* Row 2 */}
-          <div className="flex flex-row items-center justify-center gap-8 lg:gap-12 w-full overflow-x-auto lg:overflow-visible pt-6 pb-12 lg:py-0 px-8 lg:px-0 snap-x snap-mandatory lg:snap-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div className="flex flex-col landscape:flex-row sm:flex-row lg:flex-row items-center justify-center gap-8 lg:gap-12 w-full pt-6 pb-12 lg:py-0 px-8 lg:px-0">
             {updates.slice(2, 4).map((update, index) => {
               const fold = getFoldConfig(update.foldCorner);
               return (

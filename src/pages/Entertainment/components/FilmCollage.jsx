@@ -20,6 +20,10 @@ const films = [
     link: "https://youtu.be/pIv7FFKm318",
     image: card1Img,
     style: { top: '5%', left: '6%', zIndex: 10, width: '250px', height: '350px', transform: 'rotate(0deg)' },
+    // 📱 MOBILE CONTROLS: Tweak top and left values below to move this specific card on mobile view
+    mobileStyle: { top: '5%', left: '-50%' },
+    // 🌄 LANDSCAPE CONTROLS: Tweak these for mobile horizontal view specifically
+    landscapeStyle: { top: '-80%', left: '-150%', width: '300px', height: '450px' },
     foldCorner: 'top-left',
     tape: { top: '-12px', left: '45%', rotation: '-15deg', width: '110px' }
   },
@@ -30,6 +34,10 @@ const films = [
     link: "https://timesofindia.indiatimes.com/entertainment/hindi/bollywood/news/ashish-lal-explores-friendship-and-loss-in-the-codpaster/articleshow/131854264.cms",
     image: card2Img,
     style: { top: '6%', left: '36%', zIndex: 20, width: '500px', height: '300px', transform: 'rotate(0deg)' },
+    // 📱 MOBILE CONTROLS: Tweak top and left values below to move this specific card on mobile view
+    mobileStyle: { top: '6%', left: '10%' },
+    // 🌄 LANDSCAPE CONTROLS: Tweak these for mobile horizontal view specifically
+    landscapeStyle: { top: '-75%', left: '-65%', width: '600px', height: '400px' },
     foldCorner: 'bottom-right',
     tape: { top: '-12px', left: '75%', rotation: '18deg', width: '90px' }
   },
@@ -40,6 +48,10 @@ const films = [
     link: "https://kukutv.app/show/billionaire-on-plane",
     image: card3Img,
     style: { top: '4%', left: '94%', zIndex: 15, width: '280px', height: '380px', transform: 'rotate(0deg)' },
+    // 📱 MOBILE CONTROLS: Tweak top and left values below to move this specific card on mobile view
+    mobileStyle: { top: '4%', left: '125%' },
+    // 🌄 LANDSCAPE CONTROLS: Tweak these for mobile horizontal view specifically
+    landscapeStyle: { top: '-80%', left: '90%', width: '300px', height: '450px' },
     foldCorner: 'top-right',
     tape: { top: '-12px', left: '20%', rotation: '-38deg', width: '100px' }
   },
@@ -50,6 +62,10 @@ const films = [
     link: "https://www.youtube.com/watch?v=5AGZjsdfOio",
     image: "https://img.youtube.com/vi/5AGZjsdfOio/hqdefault.jpg",
     style: { top: '50%', left: '4%', zIndex: 25, width: '380px', height: '280px', transform: 'rotate(0deg)' },
+    // 📱 MOBILE CONTROLS: Tweak top and left values below to move this specific card on mobile view
+    mobileStyle: { top: '50%', left: '-52%' },
+    // 🌄 LANDSCAPE CONTROLS: Tweak these for mobile horizontal view specifically
+    landscapeStyle: { top: '-25%', left: '-150%', width: '450px', height: '330px' },
     foldCorner: 'bottom-left',
     tape: { top: '-12px', left: '25%', rotation: '2deg', width: '130px' }
   },
@@ -60,6 +76,10 @@ const films = [
     link: "https://youtube.com/shorts/AKAxDl0W9jU",
     image: card5Img,
     style: { top: '44%', left: '47%', zIndex: 40, width: '280px', height: '380px', transform: 'rotate(0deg)' },
+    // 📱 MOBILE CONTROLS: Tweak top and left values below to move this specific card on mobile view
+    mobileStyle: { top: '44%', left: '30%' },
+    // 🌄 LANDSCAPE CONTROLS: Tweak these for mobile horizontal view specifically
+    landscapeStyle: { top: '-24%', left: '-38%', width: '350px', height: '400px' },
     foldCorner: 'top-left',
     tape: { top: '-12px', left: '45%', rotation: '-15deg', width: '110px' }
   },
@@ -70,6 +90,10 @@ const films = [
     link: "https://youtu.be/6Q0mdzO9A4A",
     image: card6Img,
     style: { top: '56%', left: '79%', zIndex: 30, width: '450px', height: '250px', transform: 'rotate(0deg)' },
+    // 📱 MOBILE CONTROLS: Tweak top and left values below to move this specific card on mobile view
+    mobileStyle: { top: '56%', left: '89%' },
+    // 🌄 LANDSCAPE CONTROLS: Tweak these for mobile horizontal view specifically
+    landscapeStyle: { top: '-20%', left: '57%', width: '550px', height: '350px' },
     foldCorner: 'top-right',
     tape: { top: '-12px', left: '80%', rotation: '42deg', width: '110px' }
   }
@@ -116,6 +140,18 @@ const getFoldConfig = (corner) => {
 const FilmCollage = ({ onVideoToggle }) => {
   const [activeVideo, setActiveVideo] = useState(null);
   const containerRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isLandscape, setIsLandscape] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+      setIsLandscape(window.matchMedia("(orientation: landscape)").matches);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useGSAP(() => {
     // Initial entrance animations
@@ -128,24 +164,28 @@ const FilmCollage = ({ onVideoToggle }) => {
     // 4th, 5th, and 6th card from bottom edge
     gsap.fromTo('.film-card-3, .film-card-4, .film-card-5', { y: 1500, opacity: 0 }, { y: 0, opacity: 1, duration: 1.8, delay: 0.5, ease: 'expo.out' });
 
-    // Scroll parallax scatter and blur effect
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: 1,
-      }
+    // Scroll parallax scatter and blur effect (Desktop only)
+    let mm = gsap.matchMedia();
+    mm.add("(min-width: 1024px)", () => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1,
+        }
+      });
+
+      // Animate them outwards (relative to their positions) and blur them
+      tl.to('.film-card-0', { x: -800, y: -400, filter: 'blur(20px)', opacity: 0 }, 0)
+        .to('.film-card-1', { x: -600, y: -600, filter: 'blur(20px)', opacity: 0 }, 0)
+        .to('.film-card-2', { x: 800, y: -400, filter: 'blur(20px)', opacity: 0 }, 0)
+        .to('.film-card-3', { x: -800, y: 400, filter: 'blur(20px)', opacity: 0 }, 0)
+        .to('.film-card-4', { x: 0, y: 800, filter: 'blur(20px)', opacity: 0 }, 0)
+        .to('.film-card-5', { x: 800, y: 400, filter: 'blur(20px)', opacity: 0 }, 0);
     });
 
-    // Animate them outwards (relative to their positions) and blur them
-    tl.to('.film-card-0', { x: -800, y: -400, filter: 'blur(20px)', opacity: 0 }, 0)
-      .to('.film-card-1', { y: -800, filter: 'blur(20px)', opacity: 0 }, 0)
-      .to('.film-card-2', { x: 800, y: -200, filter: 'blur(20px)', opacity: 0 }, 0)
-      .to('.film-card-3', { x: -600, y: 800, filter: 'blur(20px)', opacity: 0 }, 0)
-      .to('.film-card-4', { y: 900, filter: 'blur(20px)', opacity: 0 }, 0)
-      .to('.film-card-5', { x: 800, y: 800, filter: 'blur(20px)', opacity: 0 }, 0);
-
+    return () => mm.revert();
   }, { scope: containerRef });
 
   useEffect(() => {
@@ -172,21 +212,30 @@ const FilmCollage = ({ onVideoToggle }) => {
   };
 
   return (
-    <div ref={containerRef} className="relative w-full h-full min-h-[500px] md:min-h-[700px] lg:min-h-[850px] overflow-hidden lg:overflow-visible flex items-center justify-center lg:justify-start">
-      <div className="relative w-[900px] h-[850px] scale-[0.4] sm:scale-50 md:scale-75 lg:scale-[0.6] xl:scale-[0.75] 2xl:scale-[0.9] origin-center lg:origin-left transition-transform duration-500">
+    <div ref={containerRef} className="relative w-full h-full lg:min-h-[850px] overflow-hidden landscape:overflow-visible lg:overflow-visible flex items-start lg:items-center justify-center lg:justify-start z-50">
+      <div className="relative w-[900px] h-[850px] scale-[0.35] sm:scale-[0.45] md:scale-75 lg:scale-[0.6] xl:scale-[0.75] 2xl:scale-[0.9] landscape:scale-[0.3] md:landscape:scale-[0.35] lg:landscape:scale-[0.6] xl:landscape:scale-[0.75] origin-top lg:origin-left landscape:origin-center lg:landscape:origin-left transition-transform duration-500 mt-4 lg:mt-0 -ml-12 lg:ml-0 landscape:ml-0 lg:landscape:ml-0">
         {films.map((film, index) => {
           const fold = getFoldConfig(film.foldCorner);
+          
+          let currentStyle = film.style;
+          if (isMobile) {
+            if (isLandscape && film.landscapeStyle) {
+              currentStyle = { ...film.style, ...film.mobileStyle, ...film.landscapeStyle };
+            } else if (film.mobileStyle) {
+              currentStyle = { ...film.style, ...film.mobileStyle };
+            }
+          }
           
           return (
             <div 
               key={film.id}
               className={`film-card-${index} absolute`}
               style={{
-                top: film.style.top,
-                left: film.style.left,
-                zIndex: film.style.zIndex,
-                width: film.style.width,
-                height: film.style.height
+                top: currentStyle.top,
+                left: currentStyle.left,
+                zIndex: currentStyle.zIndex,
+                width: currentStyle.width,
+                height: currentStyle.height
               }}
             >
               <a 

@@ -75,15 +75,18 @@ const EntertainmentLanding = () => {
       <main className="relative z-10 w-full flex-grow flex flex-col lg:flex-row pt-[80px] lg:pt-[100px]">
         
         {/* Left Column: Typography & Info */}
-        <div className={`w-full lg:w-[40%] xl:w-[35%] flex flex-col justify-start pt-8 lg:pt-12 px-6 sm:px-8 lg:pl-10 xl:pl-12 py-12 lg:py-0 relative z-20 transition-opacity duration-300 ${isVideoOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+        <div className={`w-full lg:w-[40%] xl:w-[35%] flex flex-col justify-start pt-0 lg:pt-12 px-6 sm:px-8 lg:pl-10 xl:pl-12 pb-4 lg:py-0 relative z-20 transition-opacity duration-300 ${isVideoOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
           <div className="flex flex-col gap-6 lg:gap-8">
             {/* Main Headline */}
             <h1 className="text-[50px] sm:text-[65px] lg:text-[75px] xl:text-[90px] font-hero font-bold leading-[0.85] tracking-normal uppercase text-black">
-              <SplitText text="SUBSTANCE" className="text-brand-gray transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#6B7280]" /><br/>
-              <SplitText text="MEETS" /><br/>
-              <SplitText text="MASS " className="text-brand-gray transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#6B7280]" /><br />
-              <SplitText text="APPEAL" className="text-brand-gray transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#6B7280]" /> <SplitText text=" AT " /><br />
+              <span className="block"><SplitText text="SUBSTANCE" className="text-brand-gray transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#6B7280]" /></span>
+              <span className="block"><SplitText text="MEETS" /></span>
+              <span className="block"><SplitText text="MASS " className="text-brand-gray transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#6B7280]" /></span>
               <span className="block">
+                <span className="mr-3 lg:mr-4"><SplitText text="APPEAL" className="text-brand-gray transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#6B7280]" /></span>
+                <span className="text-[40px] sm:text-[50px] lg:text-[60px] xl:text-[70px]"><SplitText text=" AT " /></span>
+              </span>
+              <span className="block mt-1 lg:mt-2">
                 <SplitText text="RED" className="text-brand-red transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#E20002]" />
                 <SplitText text="ASH " className="text-brand-gray transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#6B7280]" />
                 <SplitText text="FILMS" className="text-brand-red transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#E20002]" />
@@ -93,23 +96,34 @@ const EntertainmentLanding = () => {
             {/* Subtext */}
            
 
-            {/* CTA Link */}
+            {/* CTA Link (Desktop) */}
             <Link 
               to="/entertainment/films" 
-              className="hero-btn mt-4 relative group bg-transparent text-brand-red font-main text-xs md:text-sm uppercase tracking-[0.2em] font-bold py-4 px-10 rounded-full transition-all duration-500 overflow-hidden border border-brand-red/40 hover:border-brand-red shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-xl hover:shadow-brand-red/20 w-max inline-block"
+              className="hero-btn mt-4 relative group bg-transparent text-brand-red font-main text-xs md:text-sm uppercase tracking-[0.2em] font-bold py-4 px-10 rounded-full transition-all duration-500 overflow-hidden border border-brand-red/40 hover:border-brand-red shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-xl hover:shadow-brand-red/20 w-max hidden lg:inline-block"
             >
               <span className="relative z-10 transition-colors duration-500 group-hover:text-white">Watch More Entertainment Films</span>
               <div className="absolute inset-0 bg-brand-red w-full h-full -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] z-0" />
             </Link>
           </div>
-
-
           
         </div>
 
         {/* Right Column: Film Collage */}
-        <div className="w-full lg:w-[60%] xl:w-[65%] relative flex items-center justify-center min-h-[600px] lg:min-h-[800px] z-10 lg:-ml-12 xl:-ml-20 lg:-mt-12 xl:-mt-16">
-          <FilmCollage onVideoToggle={setIsVideoOpen} />
+        <div className="w-full lg:w-[60%] xl:w-[65%] relative landscape:absolute lg:landscape:relative landscape:top-0 landscape:right-0 landscape:w-[50%] lg:landscape:w-[60%] flex items-start lg:items-center justify-center h-[320px] sm:h-[400px] md:h-[650px] lg:h-auto lg:min-h-[800px] z-10 lg:-ml-12 xl:-ml-20 -mt-2 lg:-mt-12 xl:-mt-16 pointer-events-none lg:pointer-events-auto">
+          <div className="pointer-events-auto w-full h-full flex justify-center items-center">
+            <FilmCollage onVideoToggle={setIsVideoOpen} />
+          </div>
+        </div>
+
+        {/* CTA Link (Mobile - Below Collage) */}
+        <div className={`w-full flex justify-center pb-12 lg:hidden relative z-20 transition-opacity duration-300 ${isVideoOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+          <Link 
+            to="/entertainment/films" 
+            className="hero-btn relative group bg-transparent text-brand-red font-main text-xs uppercase tracking-[0.2em] font-bold py-4 px-8 sm:px-10 rounded-full transition-all duration-500 overflow-hidden border border-brand-red/40 hover:border-brand-red shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-xl hover:shadow-brand-red/20 w-max inline-block text-center"
+          >
+            <span className="relative z-10 transition-colors duration-500 group-hover:text-white">Watch More Entertainment Films</span>
+            <div className="absolute inset-0 bg-brand-red w-full h-full -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] z-0" />
+          </Link>
         </div>
 
       </main>

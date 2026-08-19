@@ -39,14 +39,14 @@ const EntertainmentNavbar = () => {
   return (
     <>
       <div className="fixed top-0 left-0 w-full z-[100] pointer-events-none">
-        <nav className={`w-full px-8 py-4 flex items-center justify-between transition-all duration-500 relative ${isScrolled ? 'bg-[#f4f4f4] shadow-md' : 'bg-transparent'} pointer-events-auto`}>
+        <nav className={`w-full px-8 py-4 landscape:py-2 lg:landscape:py-4 flex items-center justify-between transition-all duration-500 relative ${isScrolled ? 'bg-[#f4f4f4] shadow-md' : 'bg-transparent'} pointer-events-auto`}>
           {/* Logo */}
           <div className="flex-shrink-0 z-20">
             <Link to="/entertainment" className="block">
               <img 
                 src={logo} 
                 alt="RedAsh Films" 
-                className="h-12 sm:h-16 md:h-[60px] w-auto object-contain transition-all duration-300 hover:scale-105"
+                className="h-12 sm:h-16 md:h-[60px] landscape:h-8 lg:landscape:h-[60px] w-auto object-contain transition-all duration-300 hover:scale-105"
                 onError={(e) => {
                   e.target.style.display = 'none';
                   e.target.parentElement.innerHTML = '<span class="text-2xl font-bold font-hero tracking-widest text-red-600">R<br/>REDASH<br/>FILMS</span>';
@@ -112,7 +112,7 @@ const EntertainmentNavbar = () => {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            className="fixed top-[80px] left-0 w-full bg-[#f4f4f4] flex flex-col items-center py-8 shadow-xl lg:hidden overflow-hidden origin-top z-40 pointer-events-auto"
+            className="fixed top-[80px] landscape:top-[48px] lg:landscape:top-[80px] left-0 w-full bg-[#f4f4f4] flex flex-col items-center py-8 shadow-xl lg:hidden overflow-hidden origin-top z-40 pointer-events-auto"
             initial={{ opacity: 0, scaleY: 0 }}
             animate={{ opacity: 1, scaleY: 1 }}
             exit={{ opacity: 0, scaleY: 0 }}

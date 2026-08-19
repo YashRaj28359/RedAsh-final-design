@@ -33,78 +33,85 @@ const TopGlobalClients = () => {
   const mobileLogosRef = useRef([]);
 
   useGSAP(() => {
-    // Desktop Timeline tied to scroll position (scrub)
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top 85%',
-        end: 'bottom 95%',
-        scrub: 1, // Smooth scrubbing taking 1 second to catch up
-      }
-    });
+    let mm = gsap.matchMedia();
 
-    // 1. Text fades in fast, then unblurs slowly across the entire scroll
-    tl.fromTo(textRef.current,
-      { opacity: 0, scale: 0.8 },
-      { opacity: 1, scale: 1, duration: 1.5, ease: 'power2.out' },
-      0 
-    );
-    tl.fromTo(textRef.current,
-      { filter: 'blur(20px)' },
-      { filter: 'blur(0px)', duration: 4, ease: 'power2.out' },
-      0 
-    );
+    // Desktop Animation
+    mm.add("(min-width: 768px)", () => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top 85%',
+          end: 'bottom 95%',
+          scrub: 1,
+        }
+      });
 
-    // 2. Logos fly in as you continue scrolling down
-    desktopLogosRef.current.forEach((logo, i) => {
-      if (!logo) return;
-
-      let startX = 0;
-      let startY = 800; // all fly up from bottom
-      
-      if (i < 4) startX = -600; 
-      else if (i > 4) startX = 600; 
-
-      const startTime = 0.5 + (i * 0.05); // slight stagger
-      
-      // Fade in quickly
-      tl.fromTo(logo,
-        { opacity: 0 },
-        { opacity: 1, duration: 0.8, ease: 'power2.out' },
-        startTime
+      tl.fromTo(textRef.current,
+        { opacity: 0, scale: 0.8 },
+        { opacity: 1, scale: 1, duration: 1.5, ease: 'power2.out' },
+        0 
       );
-      
-      // Fly in and unblur slowly
-      tl.fromTo(logo,
-        { filter: 'blur(20px)', x: startX, y: startY, scale: 0.2 },
-        { filter: 'blur(0px)', x: 0, y: 0, scale: 1, duration: 3, ease: 'power3.out' },
-        "<" // start exactly with the fade in
+      tl.fromTo(textRef.current,
+        { filter: 'blur(20px)' },
+        { filter: 'blur(0px)', duration: 4, ease: 'power2.out' },
+        0 
+      );
+
+      desktopLogosRef.current.forEach((logo, i) => {
+        if (!logo) return;
+        let startX = 0;
+        let startY = 800;
+        if (i < 4) startX = -600; 
+        else if (i > 4) startX = 600; 
+
+        const startTime = 0.5 + (i * 0.05);
+        
+        tl.fromTo(logo,
+          { opacity: 0 },
+          { opacity: 1, duration: 0.8, ease: 'power2.out' },
+          startTime
+        );
+        tl.fromTo(logo,
+          { filter: 'blur(20px)', x: startX, y: startY, scale: 0.2 },
+          { filter: 'blur(0px)', x: 0, y: 0, scale: 1, duration: 3, ease: 'power3.out' },
+          "<"
+        );
+      });
+    });
+
+    // Mobile Animation (Much faster, unblurs instantly)
+    mm.add("(max-width: 767px)", () => {
+      const tlMobile = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top 85%',
+          end: 'top 40%', // Finishes much earlier on scroll
+          scrub: 1,
+        }
+      });
+
+      tlMobile.fromTo(textRef.current,
+        { opacity: 0, filter: 'blur(10px)', scale: 0.9 },
+        { opacity: 1, filter: 'blur(0px)', scale: 1, duration: 0.5, ease: 'power2.out' },
+        0 
+      );
+
+      tlMobile.fromTo(mobileLogosRef.current,
+        { opacity: 0, filter: 'blur(5px)', y: 30, scale: 0.9 },
+        {
+          opacity: 1,
+          filter: 'blur(0px)',
+          y: 0,
+          scale: 1,
+          duration: 0.5,
+          stagger: 0.05,
+          ease: 'power2.out',
+        },
+        0.2 // slight delay after text
       );
     });
 
-    // Mobile Timeline (scrubbed)
-    const tlMobile = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top 85%',
-        end: 'bottom 95%',
-        scrub: 1,
-      }
-    });
-
-    tlMobile.fromTo(mobileLogosRef.current,
-      { opacity: 0, filter: 'blur(20px)', y: 100, scale: 0.5 },
-      {
-        opacity: 1,
-        filter: 'blur(0px)',
-        y: 0,
-        scale: 1,
-        duration: 2,
-        stagger: 0.5,
-        ease: 'power2.out',
-      }
-    );
-
+    return () => mm.revert();
   }, { scope: containerRef });
 
   return (
@@ -164,7 +171,7 @@ const TopGlobalClients = () => {
           <div 
             key={idx}
             ref={(el) => (mobileLogosRef.current[idx] = el)}
-            className={`bg-white p-4 shadow-lg border border-gray-100 flex items-center justify-center aspect-square ${client.shape} ${idx === clients.length - 1 && clients.length % 2 !== 0 ? 'col-span-2 mx-auto w-2/3' : ''}`}
+            className={`bg-white p-4 shadow-lg border border-gray-100 flex items-center justify-center aspect-square overflow-hidden ${client.shape} ${idx === clients.length - 1 && clients.length % 2 !== 0 ? 'col-span-2 mx-auto w-2/3' : ''}`}
           >
             <img src={client.img} alt={client.alt} className="w-full h-full object-contain transition-transform duration-300 hover:scale-110" />
           </div>

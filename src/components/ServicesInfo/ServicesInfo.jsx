@@ -13,8 +13,25 @@ const ServicesInfo = () => {
 
   return (
     <section className="w-full px-4 md:px-8 pt-12 pb-4 md:pb-12 bg-white overflow-hidden">
+      <style>
+        {`
+          .mobile-portrait-button { display: none !important; }
+          @media (max-width: 1023px) and (orientation: portrait) {
+            .mobile-portrait-button { display: flex !important; }
+          }
+        `}
+      </style>
       <div className="w-full md:w-[99%] xl:w-[97%] mx-auto flex flex-col lg:flex-row items-stretch lg:items-start gap-6 md:gap-8">
         
+        {/* Mobile Portrait Red Button */}
+        <div className="w-full justify-center mobile-portrait-button">
+          <Link to="/entertainment" className="w-full flex justify-center">
+            <button className="bg-[#E20002] hover:bg-[#cc0000] transition-colors text-white font-bold py-3 px-8 rounded-md text-sm uppercase flex items-center justify-center shadow-md tracking-wider w-full sm:w-[380px]">
+              GO TO REDASH ENTERTAINMENT FILMS
+            </button>
+          </Link>
+        </div>
+
         {/* Red Card - Entertainment Films */}
         <motion.div 
           onClick={() => handleCardClick('films')}
@@ -83,6 +100,15 @@ const ServicesInfo = () => {
             
           </div>
         </motion.div>
+
+        {/* Mobile Portrait Blue Button */}
+        <div className="w-full justify-center mobile-portrait-button mt-4">
+          <Link to="/ad-agency" className="w-full flex justify-center">
+            <button className="bg-brand-blue hover:bg-[#0f4a9b] transition-colors text-white font-bold py-3 px-8 rounded-md text-sm uppercase flex items-center justify-center shadow-md tracking-wider w-full sm:w-[380px]">
+              GO TO REDASH AD AGENCY
+            </button>
+          </Link>
+        </div>
 
         {/* Blue Card - Enterprise Films */}
         <motion.div 

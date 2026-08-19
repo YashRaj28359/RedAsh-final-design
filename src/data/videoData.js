@@ -1,4 +1,5 @@
 import microDramaImg from '../assets/Agency/Filmthumbnails/Micro drama.png';
+import webSeriesImg from '../assets/Films/Cards/Card2.jpg';
 
 export const videos = [
   {
@@ -18,12 +19,12 @@ export const videos = [
     videoUrl: "https://youtu.be/b5hZr-8rSI4"
   },
   {
-    id: "kukufm",
-    title: "Microdrama Show",
-    category: "Microdrama Show",
+    id: "web-series",
+    title: "Web Series",
+    category: "Web Series",
     categoryColor: "red",
-    thumbnail: microDramaImg,
-    videoUrl: "https://kukutv.app/show/billionaire-on-plane"
+    thumbnail: webSeriesImg,
+    videoUrl: "https://timesofindia.indiatimes.com/entertainment/hindi/bollywood/news/ashish-lal-explores-friendship-and-loss-in-the-codpaster/articleshow/131854264.cms"
   },
   {
     id: "rqfTN_Fj1SA",
@@ -34,12 +35,12 @@ export const videos = [
     videoUrl: "https://youtu.be/rqfTN_Fj1SA"
   },
   {
-    id: "5AGZjsdfOio",
-    title: "Short Films",
-    category: "Short Films",
+    id: "kukufm",
+    title: "Microdrama Show",
+    category: "Microdrama Show",
     categoryColor: "red",
-    thumbnail: "https://img.youtube.com/vi/5AGZjsdfOio/hqdefault.jpg",
-    videoUrl: "https://youtu.be/5AGZjsdfOio"
+    thumbnail: microDramaImg,
+    videoUrl: "https://kukutv.app/show/billionaire-on-plane"
   },
   {
     id: "IUwZoT_-gt4",
@@ -50,12 +51,12 @@ export const videos = [
     videoUrl: "https://youtu.be/IUwZoT_-gt4"
   },
   {
-    id: "6Q0mdzO9A4A",
-    title: "Music Videos",
-    category: "Music Videos",
+    id: "5AGZjsdfOio",
+    title: "Short Films",
+    category: "Short Films",
     categoryColor: "red",
-    thumbnail: "https://img.youtube.com/vi/6Q0mdzO9A4A/hqdefault.jpg",
-    videoUrl: "https://youtu.be/6Q0mdzO9A4A"
+    thumbnail: "https://img.youtube.com/vi/5AGZjsdfOio/hqdefault.jpg",
+    videoUrl: "https://youtu.be/5AGZjsdfOio"
   },
   {
     id: "R_EAcTv-59o",
@@ -66,12 +67,12 @@ export const videos = [
     videoUrl: "https://youtu.be/R_EAcTv-59o"
   },
   {
-    id: "AKAxDl0W9jU",
-    title: "AI Fiction Films",
-    category: "AI Fiction Films",
+    id: "6Q0mdzO9A4A",
+    title: "Music Videos",
+    category: "Music Videos",
     categoryColor: "red",
-    thumbnail: "https://img.youtube.com/vi/AKAxDl0W9jU/hqdefault.jpg",
-    videoUrl: "https://youtube.com/shorts/AKAxDl0W9jU"
+    thumbnail: "https://img.youtube.com/vi/6Q0mdzO9A4A/hqdefault.jpg",
+    videoUrl: "https://youtu.be/6Q0mdzO9A4A"
   },
   {
     id: "l4XYMZzh7Tc",
@@ -82,12 +83,12 @@ export const videos = [
     videoUrl: "https://youtu.be/l4XYMZzh7Tc"
   },
   {
-    id: "EhiWSgbQnQU",
-    title: "Feature Films",
-    category: "Feature Films",
+    id: "AKAxDl0W9jU",
+    title: "AI Fiction Films",
+    category: "AI Fiction Films",
     categoryColor: "red",
-    thumbnail: "https://img.youtube.com/vi/EhiWSgbQnQU/hqdefault.jpg",
-    videoUrl: "https://youtu.be/EhiWSgbQnQU"
+    thumbnail: "https://img.youtube.com/vi/AKAxDl0W9jU/hqdefault.jpg",
+    videoUrl: "https://youtube.com/shorts/AKAxDl0W9jU"
   },
   {
     id: "R7TQBIHyR9Y",
@@ -98,12 +99,12 @@ export const videos = [
     videoUrl: "https://youtu.be/R7TQBIHyR9Y"
   },
   {
-    id: "Rz0El0ooOwM",
-    title: "Digital Series",
-    category: "Digital Series",
+    id: "EhiWSgbQnQU",
+    title: "Feature Films",
+    category: "Feature Films",
     categoryColor: "red",
-    thumbnail: "https://img.youtube.com/vi/Rz0El0ooOwM/hqdefault.jpg",
-    videoUrl: "https://youtu.be/Rz0El0ooOwM"
+    thumbnail: "https://img.youtube.com/vi/EhiWSgbQnQU/hqdefault.jpg",
+    videoUrl: "https://youtu.be/EhiWSgbQnQU"
   },
   {
     id: "bK9ZC1nsoLo",
@@ -114,12 +115,12 @@ export const videos = [
     videoUrl: "https://youtu.be/bK9ZC1nsoLo"
   },
   {
-    id: "BqGm3m3jyhI",
-    title: "Short Films",
-    category: "Short Films",
+    id: "Rz0El0ooOwM",
+    title: "Digital Series",
+    category: "Digital Series",
     categoryColor: "red",
-    thumbnail: "https://img.youtube.com/vi/BqGm3m3jyhI/hqdefault.jpg",
-    videoUrl: "https://youtu.be/BqGm3m3jyhI"
+    thumbnail: "https://img.youtube.com/vi/Rz0El0ooOwM/hqdefault.jpg",
+    videoUrl: "https://youtu.be/Rz0El0ooOwM"
   },
   {
     id: "RvciiZb-k1U",
@@ -130,12 +131,12 @@ export const videos = [
     videoUrl: "https://youtu.be/RvciiZb-k1U"
   },
   {
-    id: "-qHNIXVHT_4",
-    title: "Music Video",
-    category: "Music Video",
+    id: "BqGm3m3jyhI",
+    title: "Short Films",
+    category: "Short Films",
     categoryColor: "red",
-    thumbnail: "https://img.youtube.com/vi/-qHNIXVHT_4/hqdefault.jpg",
-    videoUrl: "https://youtu.be/-qHNIXVHT_4"
+    thumbnail: "https://img.youtube.com/vi/BqGm3m3jyhI/hqdefault.jpg",
+    videoUrl: "https://youtu.be/BqGm3m3jyhI"
   },
   {
     id: "iuIaAuh4LCQ",
@@ -146,12 +147,12 @@ export const videos = [
     videoUrl: "https://youtu.be/iuIaAuh4LCQ"
   },
   {
-    id: "3Sxhgtn4Wf0",
-    title: "Documentary Film",
-    category: "Documentary Film",
+    id: "-qHNIXVHT_4",
+    title: "Music Video",
+    category: "Music Video",
     categoryColor: "red",
-    thumbnail: "https://img.youtube.com/vi/3Sxhgtn4Wf0/hqdefault.jpg",
-    videoUrl: "https://youtu.be/3Sxhgtn4Wf0"
+    thumbnail: "https://img.youtube.com/vi/-qHNIXVHT_4/hqdefault.jpg",
+    videoUrl: "https://youtu.be/-qHNIXVHT_4"
   },
   {
     id: "Gt9nQ494oVc",
@@ -162,12 +163,12 @@ export const videos = [
     videoUrl: "https://youtu.be/Gt9nQ494oVc"
   },
   {
-    id: "dLby1tfTwVI",
-    title: "Short Film",
-    category: "Short Film",
+    id: "3Sxhgtn4Wf0",
+    title: "Documentary Film",
+    category: "Documentary Film",
     categoryColor: "red",
-    thumbnail: "https://img.youtube.com/vi/dLby1tfTwVI/hqdefault.jpg",
-    videoUrl: "https://youtu.be/dLby1tfTwVI"
+    thumbnail: "https://img.youtube.com/vi/3Sxhgtn4Wf0/hqdefault.jpg",
+    videoUrl: "https://youtu.be/3Sxhgtn4Wf0"
   },
   {
     id: "i3Js7EsalM0",

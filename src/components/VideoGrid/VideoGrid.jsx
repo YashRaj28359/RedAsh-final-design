@@ -42,6 +42,29 @@ const VideoGrid = () => {
             .mobile-landscape-item {
               width: 22.75% !important;
             }
+            .mobile-landscape-buttons {
+              flex-direction: row !important;
+              gap: 12px !important;
+              width: 100% !important;
+            }
+            .mobile-landscape-wrapper {
+              flex: 1 1 0% !important;
+              min-width: 0 !important;
+            }
+            .mobile-landscape-btn {
+              white-space: normal !important;
+              text-align: center !important;
+              padding-left: 0.5rem !important;
+              padding-right: 0.5rem !important;
+              font-size: 0.8rem !important;
+              line-height: 1.2 !important;
+              width: 100% !important;
+            }
+          }
+          @media (max-width: 1023px) and (orientation: portrait) {
+            .hide-on-mobile-portrait {
+              display: none !important;
+            }
           }
         `}
       </style>
@@ -65,17 +88,17 @@ const VideoGrid = () => {
         </motion.div>
 
         {/* Division Navigation Buttons */}
-        <div className="w-full md:w-[99%] xl:w-[97%] mx-auto mt-12 md:mt-16 flex flex-col lg:flex-row gap-6 md:gap-8">
-          <div className="flex-1 flex justify-center lg:justify-center">
-            <Link to="/entertainment">
-              <button className="bg-[#E20002] hover:bg-[#cc0000] transition-colors text-white font-bold py-3 md:py-4 px-8 md:px-12 rounded-md text-sm md:text-lg uppercase flex items-center justify-center shadow-md tracking-wider w-full sm:w-[380px] md:w-[450px] lg:w-[480px] whitespace-nowrap">
+        <div className="w-full md:w-[99%] xl:w-[97%] mx-auto mt-12 md:mt-16 flex flex-col lg:flex-row gap-6 md:gap-8 mobile-landscape-buttons hide-on-mobile-portrait">
+          <div className="flex-1 flex justify-center lg:justify-center mobile-landscape-wrapper">
+            <Link to="/entertainment" className="w-full flex justify-center">
+              <button className="bg-[#E20002] hover:bg-[#cc0000] transition-colors text-white font-bold py-3 md:py-4 px-8 md:px-12 rounded-md text-sm md:text-lg uppercase flex items-center justify-center shadow-md tracking-wider w-full sm:w-[380px] md:w-[450px] lg:w-[480px] whitespace-nowrap mobile-landscape-btn">
                 GO TO REDASH ENTERTAINMENT FILMS
               </button>
             </Link>
           </div>
-          <div className="flex-1 flex justify-center lg:justify-center">
-            <Link to="/ad-agency">
-              <button className="bg-brand-blue hover:bg-[#0f4a9b] transition-colors text-white font-bold py-3 md:py-4 px-8 md:px-12 rounded-md text-sm md:text-lg uppercase flex items-center justify-center shadow-md tracking-wider w-full sm:w-[380px] md:w-[450px] lg:w-[480px] whitespace-nowrap">
+          <div className="flex-1 flex justify-center lg:justify-center mobile-landscape-wrapper">
+            <Link to="/ad-agency" className="w-full flex justify-center">
+              <button className="bg-brand-blue hover:bg-[#0f4a9b] transition-colors text-white font-bold py-3 md:py-4 px-8 md:px-12 rounded-md text-sm md:text-lg uppercase flex items-center justify-center shadow-md tracking-wider w-full sm:w-[380px] md:w-[450px] lg:w-[480px] whitespace-nowrap mobile-landscape-btn">
                 GO TO REDASH AD AGENCY
               </button>
             </Link>

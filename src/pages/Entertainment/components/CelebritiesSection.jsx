@@ -95,38 +95,38 @@ const CelebritiesSection = () => {
       </div>
 
       {/* Accordion Gallery Container */}
-      <div className="w-full max-w-[1920px] mx-auto px-2 md:px-8 mb-8 md:mb-12">
-        <div className="flex w-full h-[400px] md:h-[500px] lg:h-[600px] gap-1 md:gap-2">
+      <div className="w-full max-w-[1920px] mx-auto px-0 md:px-8 mb-8 md:mb-12">
+        <div className="flex w-full h-[350px] md:h-[500px] lg:h-[600px] gap-2 md:gap-2 overflow-x-auto md:overflow-hidden snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] px-4 md:px-0">
           {celebs.map((celeb, index) => (
             <div 
               key={index} 
-              className="celeb-card group relative flex-1 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] hover:flex-[5] md:hover:flex-[6] cursor-pointer overflow-hidden rounded-md bg-[#1a1a1a]"
+              className="celeb-card group relative flex-none w-[75vw] sm:w-[50vw] md:w-auto md:flex-1 snap-center transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] md:hover:flex-[6] cursor-pointer overflow-hidden rounded-md bg-[#1a1a1a]"
             >
               <img 
                 src={celeb.img} 
                 alt={celeb.name} 
-                className="absolute inset-0 w-full h-full object-cover object-top grayscale opacity-60 transition-all duration-700 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105"
+                className="absolute inset-0 w-full h-full object-cover object-top grayscale-0 opacity-100 md:grayscale md:opacity-60 transition-all duration-700 md:group-hover:grayscale-0 md:group-hover:opacity-100 md:group-hover:scale-105"
               />
               
               {/* Gradient Overlay for text readability */}
-              <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-transparent to-black/80 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 md:bg-gradient-to-b md:from-black/80 md:via-transparent to-black/80 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-700"></div>
               
-              {/* Red Accent Block like screenshot */}
-              <div className="absolute top-0 left-0 w-16 h-16 md:w-24 md:h-24 bg-brand-red opacity-0 transition-all duration-500 -translate-x-full group-hover:translate-x-0 group-hover:opacity-100 z-10 flex items-start justify-start p-2 md:p-4">
+              {/* Red Accent Block like screenshot (Desktop only) */}
+              <div className="hidden md:flex absolute top-0 left-0 w-16 h-16 md:w-24 md:h-24 bg-brand-red opacity-0 transition-all duration-500 -translate-x-full group-hover:translate-x-0 group-hover:opacity-100 z-10 items-start justify-start p-2 md:p-4">
                 <div className="w-full h-full border-t-2 border-l-2 border-white/30"></div>
               </div>
-              <div className="absolute bottom-0 right-0 w-16 h-16 md:w-24 md:h-24 bg-brand-red opacity-0 transition-all duration-500 translate-x-full group-hover:translate-x-0 group-hover:opacity-100 z-10 flex items-end justify-end p-2 md:p-4">
+              <div className="hidden md:flex absolute bottom-0 right-0 w-16 h-16 md:w-24 md:h-24 bg-brand-red opacity-0 transition-all duration-500 translate-x-full group-hover:translate-x-0 group-hover:opacity-100 z-10 items-end justify-end p-2 md:p-4">
                 <div className="w-full h-full border-b-2 border-r-2 border-white/30"></div>
               </div>
 
-              {/* Text Overlay (Hovered) */}
-              <div className="absolute top-4 left-4 md:top-6 md:left-6 z-20 opacity-0 transition-all duration-500 translate-y-4 group-hover:translate-y-0 group-hover:opacity-100 delay-100">
-                <span className="font-hero text-lg md:text-2xl lg:text-4xl font-bold uppercase tracking-widest text-white drop-shadow-lg whitespace-nowrap block">
+              {/* Text Overlay (Always visible on mobile at bottom, hover on top for desktop) */}
+              <div className="absolute bottom-4 left-4 md:top-6 md:left-6 md:bottom-auto z-20 opacity-100 md:opacity-0 transition-all duration-500 translate-y-0 md:translate-y-4 md:group-hover:translate-y-0 md:group-hover:opacity-100 delay-100">
+                <span className="font-hero text-2xl md:text-2xl lg:text-4xl font-bold uppercase tracking-widest text-white drop-shadow-lg whitespace-nowrap block">
                   {celeb.name}
                 </span>
               </div>
 
-              {/* Text Overlay (Unhovered) - vertical text */}
+              {/* Text Overlay (Unhovered) - vertical text (Desktop only) */}
               <div className="absolute bottom-6 left-0 w-full flex justify-center z-10 opacity-100 transition-all duration-300 group-hover:opacity-0 hidden md:flex pointer-events-none">
                 <span 
                   className="font-main text-xs font-bold uppercase tracking-[0.3em] text-white/70 rotate-180"

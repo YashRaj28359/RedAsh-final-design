@@ -217,18 +217,6 @@ const VideoPlaylist = ({ videos, category, theme = 'blue' }) => {
                   onReady={onPlayerReady}
                   onStateChange={onPlayerStateChange}
                 />
-                {!isPlaying && (
-                  <div 
-                    className="absolute inset-0 z-10 cursor-pointer flex items-center justify-center bg-black"
-                    onClick={handlePlayVideo}
-                  >
-                    <ThumbnailImage video={activeVideo} isLarge={true} />
-                    <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors"></div>
-                    <div className="absolute w-12 h-12 bg-red-600 rounded-xl flex items-center justify-center shadow-[0_4px_20px_rgba(220,38,38,0.5)] transform group-hover:scale-110 transition-transform duration-300">
-                      <FiPlay className="text-white text-2xl ml-1" />
-                    </div>
-                  </div>
-                )}
               </>
             )}
           </div>
@@ -309,7 +297,7 @@ const VideoPlaylist = ({ videos, category, theme = 'blue' }) => {
                   onReady={onPlayerReady}
                   onStateChange={onPlayerStateChange}
                 />
-                {!isPlaying && (
+                {!isPlaying && !isMobileLandscape && (
                   <div 
                     className="absolute inset-0 z-10 cursor-pointer flex items-center justify-center bg-black"
                     onClick={handlePlayVideo}

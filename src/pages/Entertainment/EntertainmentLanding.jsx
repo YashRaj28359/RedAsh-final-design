@@ -99,7 +99,7 @@ const EntertainmentLanding = () => {
             {/* CTA Link (Desktop) */}
             <Link 
               to="/entertainment/films" 
-              className="hero-btn mt-4 relative group bg-transparent text-brand-red font-main text-xs md:text-sm uppercase tracking-[0.2em] font-bold py-4 px-10 rounded-full transition-all duration-500 overflow-hidden border border-brand-red/40 hover:border-brand-red shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-xl hover:shadow-brand-red/20 w-max hidden lg:inline-block"
+              className="hero-btn mt-10 relative group bg-transparent text-brand-red font-main text-xs md:text-sm uppercase tracking-[0.2em] font-bold py-4 px-10 rounded-full transition-all duration-500 overflow-hidden border border-brand-red/40 hover:border-brand-red shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-xl hover:shadow-brand-red/20 w-max hidden lg:inline-block"
             >
               <span className="relative z-10 transition-colors duration-500 group-hover:text-white">Watch More Entertainment Films</span>
               <div className="absolute inset-0 bg-brand-red w-full h-full -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] z-0" />
@@ -116,7 +116,7 @@ const EntertainmentLanding = () => {
         </div>
 
         {/* CTA Link (Mobile - Below Collage) */}
-        <div className={`w-full flex justify-center pb-12 lg:hidden relative z-20 transition-opacity duration-300 ${isVideoOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+        <div className={`w-full flex justify-center pb-0 landscape:mt-6 lg:hidden relative z-20 transition-opacity duration-300 ${isVideoOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
           <Link 
             to="/entertainment/films" 
             className="hero-btn relative group bg-transparent text-brand-red font-main text-xs uppercase tracking-[0.2em] font-bold py-4 px-8 sm:px-10 rounded-full transition-all duration-500 overflow-hidden border border-brand-red/40 hover:border-brand-red shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-xl hover:shadow-brand-red/20 w-max inline-block text-center"

@@ -56,8 +56,8 @@ const ArtistCard = ({ artist }) => {
       />
       
       {/* Hover Overlay - Fade black from bottom only, name bottom left */}
-      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 md:p-5">
-        <h3 className="text-white font-hero text-[10px] md:text-sm tracking-[0.1em] uppercase font-bold text-left translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3 md:p-4 lg:p-5 pointer-events-none">
+        <h3 className="text-white font-hero text-xs sm:text-sm md:text-sm tracking-[0.1em] uppercase font-bold text-left translate-y-0 lg:translate-y-4 lg:group-hover:translate-y-0 transition-transform duration-300">
           {artist.name}
         </h3>
       </div>

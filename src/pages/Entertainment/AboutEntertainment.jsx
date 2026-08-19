@@ -80,7 +80,7 @@ const AboutEntertainment = () => {
               <motion.span variants={wordAnim} className="text-xl sm:text-2xl md:text-3xl lg:text-4xl">WELCOME</motion.span>
               <motion.span variants={wordAnim} className="text-xl sm:text-2xl md:text-3xl lg:text-4xl">TO</motion.span>
               <motion.span variants={wordAnim} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
-                <span className="text-brand-red">RED</span><span className="text-brand-gray">ASH</span> FILMS
+                <span className="text-brand-red">RED</span><span className="text-brand-gray">ASH</span> <span className="text-brand-red">FILMS</span>
               </motion.span>
             </h3>
             <h1 className="flex flex-col text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black uppercase leading-[0.85] tracking-tighter text-neutral-900 w-fit" aria-label="Where Substance Meets Mass Appeal">
@@ -96,7 +96,7 @@ const AboutEntertainment = () => {
 
 
         {/* Our Story Section */}
-        <section className="w-full max-w-[1500px] mx-auto px-6 lg:px-12 py-12 md:py-24 flex flex-col md:flex-row items-center gap-8 md:gap-16">
+        <section className="w-full max-w-[1500px] mx-auto px-6 lg:px-12 py-12 md:py-24 flex flex-col md:flex-row items-center md:items-stretch gap-8 md:gap-16">
           {/* Left Text */}
           <motion.div 
             initial="hidden"
@@ -145,7 +145,7 @@ const AboutEntertainment = () => {
                   <span className="text-brand-red">RED</span>
                   <span className="text-brand-gray">ASH</span>
                 </div>
-                <span className="text-neutral-900">FILMS</span>
+                <span className="text-brand-red">FILMS</span>
               </motion.h3>
             </div>
 
@@ -155,7 +155,7 @@ const AboutEntertainment = () => {
                 hidden: { opacity: 0, y: 30 },
                 visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } }
               }}
-              className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-neutral-900 tracking-tight leading-[1.15] text-left mt-6 xl:mt-8 max-w-3xl"
+              className="text-xl landscape:text-base sm:text-2xl sm:landscape:text-lg md:text-3xl md:landscape:text-xl lg:text-4xl lg:landscape:text-4xl font-bold text-neutral-900 tracking-tight leading-[1.15] text-left mt-6 landscape:mt-4 lg:mt-8 max-w-3xl"
             >
               has evolved into a Mumbai-based production house focused on creating compelling entertainment across films, web series, microdrama shows, television serials, AI fiction films, short films, music videos, and <span className="text-brand-red">emerging formats.</span>
             </motion.p>
@@ -168,9 +168,9 @@ const AboutEntertainment = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
             viewport={{ once: true, margin: "-50px" }}
-            className="w-full md:w-1/2 flex justify-center md:justify-end"
+            className="w-full md:w-1/2 flex flex-col"
           >
-            <div className="relative w-full h-[350px] md:h-[400px] lg:h-[450px] xl:h-[500px] bg-neutral-100 shadow-xl overflow-hidden rounded-xl border border-gray-200">
+            <div className="relative w-full h-[350px] md:h-full md:flex-1 bg-neutral-100 shadow-xl overflow-hidden rounded-xl border border-gray-200">
               <img 
                 src={aboutPic} 
                 alt="Ashish Lal" 
@@ -219,7 +219,7 @@ const AboutEntertainment = () => {
                   hidden: { opacity: 0, y: 50 },
                   visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
                 }}
-                className="group relative flex flex-col border-t border-gray-200 pt-8 pb-8 px-6 -mx-6 sm:px-10 sm:-mx-10 md:mt-16 lg:mt-32 overflow-hidden transition-colors duration-500 hover:border-transparent rounded-xl"
+                className="group relative flex flex-col border-t border-gray-200 pt-8 pb-8 px-6 -mx-6 sm:px-10 sm:-mx-10 mt-8 md:mt-16 landscape:mt-24 md:landscape:mt-32 lg:mt-32 lg:landscape:mt-32 overflow-hidden transition-colors duration-500 hover:border-transparent rounded-xl"
               >
                 {/* Bottom-to-Top Red Fill */}
                 <div className="absolute inset-0 bg-red-600 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out z-0"></div>
@@ -238,7 +238,7 @@ const AboutEntertainment = () => {
         </section>
 
         {/* CTA Typography Section (Re-ordered logical flow based on feedback) */}
-        <section className="w-full bg-white py-32 lg:py-48 flex flex-col items-center justify-center relative overflow-hidden">
+        <section className="w-full bg-white py-32 landscape:py-12 lg:py-48 lg:landscape:py-48 flex flex-col items-center justify-center relative overflow-hidden">
           
           {/* Background Ghost Text */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.04]">
@@ -256,7 +256,7 @@ const AboutEntertainment = () => {
               viewport={{ once: true, amount: 0.5 }}
               className="mb-6 md:mb-8 max-w-5xl"
             >
-              <p className="text-lg sm:text-xl md:text-2xl font-bold text-neutral-800 uppercase tracking-widest leading-relaxed">
+              <p className="text-lg sm:text-xl landscape:text-base md:text-2xl md:landscape:text-lg lg:landscape:text-2xl font-bold text-neutral-800 uppercase tracking-widest leading-relaxed">
                 <ScrollText text="As we expand our slate of films, web series, microdrama shows, television serials, and other new formats," />
               </p>
             </motion.div>
@@ -268,13 +268,13 @@ const AboutEntertainment = () => {
               viewport={{ once: true, amount: 0.5 }}
               className="flex items-end mb-2 md:mb-4"
             >
-              <h4 className="text-red-600 font-bold uppercase tracking-[0.3em] text-xl md:text-3xl lg:text-4xl">
+              <h4 className="text-red-600 font-bold uppercase tracking-[0.3em] text-xl landscape:text-lg md:text-3xl md:landscape:text-xl lg:text-4xl lg:landscape:text-4xl">
                 WE WELCOME
               </h4>
             </motion.div>
 
             {/* 3. investors */}
-            <h2 className="font-serif text-[3.5rem] sm:text-[5rem] md:text-[7rem] lg:text-[8rem] leading-[0.8] tracking-tighter text-black -ml-1 md:-ml-2">
+            <h2 className="font-serif text-[3.5rem] sm:text-[5rem] landscape:text-[3rem] md:text-[7rem] md:landscape:text-[4.5rem] lg:text-[8rem] lg:landscape:text-[8rem] leading-[0.8] tracking-tighter text-black -ml-1 md:-ml-2">
               <ScrollText text="investors" />
             </h2>
 
@@ -283,9 +283,9 @@ const AboutEntertainment = () => {
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, amount: 0.5 }}
-              className="flex flex-col sm:flex-row sm:items-end gap-2 sm:gap-6 pl-4 sm:pl-16 md:pl-24 lg:pl-32 mt-6 md:mt-10"
+              className="flex flex-col sm:flex-row sm:items-end gap-2 sm:gap-6 pl-4 sm:pl-16 md:pl-24 lg:pl-32 mt-6 landscape:mt-2 md:mt-10 md:landscape:mt-4 lg:landscape:mt-10"
             >
-              <h2 className="font-serif text-[3.5rem] sm:text-[4.5rem] md:text-[6rem] lg:text-[7rem] leading-[0.8] tracking-tighter text-black">
+              <h2 className="font-serif text-[3.5rem] sm:text-[4.5rem] landscape:text-[2.5rem] md:text-[6rem] md:landscape:text-[4rem] lg:text-[7rem] lg:landscape:text-[7rem] leading-[0.8] tracking-tighter text-black">
                 <ScrollText text="& sponsors" />
               </h2>
             </motion.div>
@@ -297,7 +297,7 @@ const AboutEntertainment = () => {
               viewport={{ once: true, amount: 0.5 }}
               className="mt-6 md:mt-8 pl-4 sm:pl-16 md:pl-24 lg:pl-32"
             >
-              <p className="text-lg sm:text-xl md:text-2xl font-medium text-neutral-800 max-w-4xl leading-relaxed">
+              <p className="text-lg sm:text-xl landscape:text-base md:text-2xl md:landscape:text-lg lg:landscape:text-2xl font-medium text-neutral-800 max-w-4xl leading-relaxed">
                 <ScrollText text="who want to be part of compelling entertainment with strong commercial potential." />
               </p>
             </motion.div>

@@ -87,12 +87,7 @@ const ProcessTimeline = () => {
           transition={{ duration: 0.6, delay: 1 }}
           className="pb-2 w-full md:w-auto mt-12 md:mt-0 flex justify-center md:justify-start"
         >
-          {/* 
-            BUTTON ALIGNMENT CONTROLS: 
-            Adjust the 'marginLeft' value below to move the button left or right. 
-            Negative values (e.g., '-20px') move it left, positive values move it right. 
-          */}
-          <div style={{ marginLeft: '-48px' }}>
+          <div>
             <a 
               href="#films" 
               onClick={(e) => {

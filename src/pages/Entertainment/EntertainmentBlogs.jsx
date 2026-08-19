@@ -67,7 +67,7 @@ const EntertainmentBlogs = () => {
         {/* Blogs Grid */}
         <div className="w-full py-16 md:py-24 bg-white">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1920px]">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 landscape:grid-cols-3 md:landscape:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 xl:landscape:grid-cols-4 gap-6 lg:gap-8">
               {blogsData.map((blog, index) => (
                 <motion.div
                   key={blog.id}
@@ -75,7 +75,7 @@ const EntertainmentBlogs = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-50px" }}
                   transition={{ duration: 0.5, delay: (index % 4) * 0.1 }}
-                  className="group relative flex flex-col h-[400px] md:h-[450px] overflow-hidden rounded-xl bg-neutral-950 cursor-pointer shadow-lg hover:shadow-brand-red/20 transition-all duration-500"
+                  className="group relative flex flex-col h-[400px] landscape:h-[300px] md:h-[450px] md:landscape:h-[350px] lg:landscape:h-[450px] xl:landscape:h-[450px] overflow-hidden rounded-xl bg-neutral-950 cursor-pointer shadow-lg hover:shadow-brand-red/20 transition-all duration-500"
                 >
                   <Link to={`/entertainment/blog/${blog.slug}`} className="absolute inset-0 z-0">
                     {blog.imageUrl ? (

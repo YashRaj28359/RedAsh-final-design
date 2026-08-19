@@ -105,9 +105,9 @@ const SelectedEntertainmentProjects = () => {
         </div>
       </div>
 
-      {/* 2 Rows of 3 Cards */}
+      {/* Grid of Cards */}
       <div className="w-full px-2 sm:px-4 lg:px-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4 lg:gap-6 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 landscape:grid-cols-3 lg:grid-cols-3 gap-3 md:gap-4 lg:gap-6 w-full">
           {projects.map((project) => (
             <HorizontalCard key={project.id} project={project} />
           ))}

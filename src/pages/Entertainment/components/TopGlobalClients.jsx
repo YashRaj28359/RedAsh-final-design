@@ -15,15 +15,15 @@ import secondLastImg from '../../../assets/Films/ClientLogos/2ndlast.png';
 import lastImg from '../../../assets/Films/ClientLogos/Last.png';
 
 const clients = [
-  { img: jioImg, alt: 'Jio Star', rotate: 'rotate-[-12deg]', pos: 'md:-top-[10%] md:-left-[18%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
-  { img: starPlusImg, alt: 'Star Plus', rotate: 'rotate-[-5deg]', pos: 'md:top-[20%] md:-left-[7%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
-  { img: redChilliesImg, alt: 'Red Chillies', rotate: 'rotate-[5deg]', pos: 'md:top-[50%] md:left-[8%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
-  { img: kukuTvImg, alt: 'Kuku TV', rotate: 'rotate-[12deg]', pos: 'md:top-[75%] md:left-[23%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
-  { img: amazonImg, alt: 'Amazon Prime Video', rotate: 'rotate-[-10deg]', pos: 'md:top-[85%] md:left-[43%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
-  { img: tangyTvImg, alt: 'Tangy TV', rotate: 'rotate-[5deg]', pos: 'md:top-[75%] md:right-[23%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
-  { img: pocketImg, alt: 'Pocket Films', rotate: 'rotate-[-8deg]', pos: 'md:top-[50%] md:right-[8%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
-  { img: secondLastImg, alt: 'Vertical TV', rotate: 'rotate-[10deg]', pos: 'md:top-[20%] md:-right-[7%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
-  { img: lastImg, alt: 'Alright TV', rotate: 'rotate-[-15deg]', pos: 'md:-top-[10%] md:-right-[18%]', size: 'w-32 h-32 md:w-40 md:h-40', shape: 'rounded-full' },
+  { img: jioImg, alt: 'Jio Star', rotate: 'rotate-[-12deg]', pos: 'md:-top-[10%] md:-left-[5%]', size: 'w-24 h-24 lg:w-32 lg:h-32', shape: 'rounded-full' },
+  { img: starPlusImg, alt: 'Star Plus', rotate: 'rotate-[-5deg]', pos: 'md:top-[20%] md:left-[0%]', size: 'w-24 h-24 lg:w-32 lg:h-32', shape: 'rounded-full' },
+  { img: redChilliesImg, alt: 'Red Chillies', rotate: 'rotate-[5deg]', pos: 'md:top-[50%] md:left-[10%]', size: 'w-24 h-24 lg:w-32 lg:h-32', shape: 'rounded-full' },
+  { img: kukuTvImg, alt: 'Kuku TV', rotate: 'rotate-[12deg]', pos: 'md:top-[75%] md:left-[25%]', size: 'w-24 h-24 lg:w-32 lg:h-32', shape: 'rounded-full' },
+  { img: amazonImg, alt: 'Amazon Prime Video', rotate: 'rotate-[-10deg]', pos: 'md:top-[85%] md:left-[43%]', size: 'w-24 h-24 lg:w-32 lg:h-32', shape: 'rounded-full' },
+  { img: tangyTvImg, alt: 'Tangy TV', rotate: 'rotate-[5deg]', pos: 'md:top-[75%] md:right-[25%]', size: 'w-24 h-24 lg:w-32 lg:h-32', shape: 'rounded-full' },
+  { img: pocketImg, alt: 'Pocket Films', rotate: 'rotate-[-8deg]', pos: 'md:top-[50%] md:right-[10%]', size: 'w-24 h-24 lg:w-32 lg:h-32', shape: 'rounded-full' },
+  { img: secondLastImg, alt: 'Vertical TV', rotate: 'rotate-[10deg]', pos: 'md:top-[20%] md:right-[0%]', size: 'w-24 h-24 lg:w-32 lg:h-32', shape: 'rounded-full' },
+  { img: lastImg, alt: 'Alright TV', rotate: 'rotate-[-15deg]', pos: 'md:-top-[10%] md:-right-[5%]', size: 'w-24 h-24 lg:w-32 lg:h-32', shape: 'rounded-full' },
 ];
 
 const TopGlobalClients = () => {
@@ -36,7 +36,7 @@ const TopGlobalClients = () => {
     let mm = gsap.matchMedia();
 
     // Desktop Animation
-    mm.add("(min-width: 768px)", () => {
+    mm.add("(min-width: 1024px)", () => {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
@@ -80,7 +80,7 @@ const TopGlobalClients = () => {
     });
 
     // Mobile Animation (Much faster, unblurs instantly)
-    mm.add("(max-width: 767px)", () => {
+    mm.add("(max-width: 1023px)", () => {
       const tlMobile = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
@@ -115,13 +115,13 @@ const TopGlobalClients = () => {
   }, { scope: containerRef });
 
   return (
-    <section ref={containerRef} className="w-full py-20 md:py-32 bg-white relative z-20 flex flex-col items-center justify-center">
+    <section ref={containerRef} className="w-full pt-18 md:pt-20 pb-8 landscape:pb-0 lg:landscape:pb-32 lg:pb-32 bg-white relative z-20 flex flex-col items-center justify-center">
       
       {/* Central Container */}
-      <div className="relative z-10 text-center max-w-5xl mx-auto px-4 flex flex-col items-center justify-center min-h-[40vh] md:min-h-[60vh] w-full">
+      <div className="relative z-10 text-center max-w-5xl mx-auto px-4 flex flex-col items-center justify-center min-h-[20vh] lg:min-h-[60vh] w-full">
         
         {/* Desktop Scattered Sticker Layout */}
-        <div className="absolute inset-0 w-full h-full hidden md:block pointer-events-none z-0">
+        <div className="absolute inset-0 w-full h-full hidden lg:block pointer-events-none z-0">
           {clients.map((client, idx) => (
             <div 
               key={idx}
@@ -139,7 +139,7 @@ const TopGlobalClients = () => {
         </div>
 
         {/* Central Heading */}
-        <h2 className="-mt-12 md:-mt-[250px] text-6xl md:text-8xl lg:text-9xl font-bold uppercase tracking-wider font-hero leading-none relative z-20 pointer-events-none drop-shadow-[0_10px_20px_rgba(255,255,255,0.9)] bg-white/40 md:bg-transparent backdrop-blur-md md:backdrop-blur-none p-6 md:p-0 rounded-3xl">
+        <h2 className="-mt-12 lg:-mt-[250px] text-5xl md:text-7xl lg:text-8xl font-bold uppercase tracking-wider font-hero leading-none relative z-20 pointer-events-none drop-shadow-[0_10px_20px_rgba(255,255,255,0.9)] bg-white/40 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none p-6 md:p-0 rounded-3xl">
           <div ref={textRef} className="relative text-center mx-auto w-fit">
             
             {/* Invisible Spacer to preserve perfect center alignment */}
@@ -166,16 +166,31 @@ const TopGlobalClients = () => {
       </div>
 
       {/* Mobile Grid Layout (visible only on small screens) */}
-      <div className="md:hidden mt-12 grid grid-cols-2 gap-4 px-6 w-full relative z-10">
-        {clients.map((client, idx) => (
-          <div 
-            key={idx}
-            ref={(el) => (mobileLogosRef.current[idx] = el)}
-            className={`bg-white p-4 shadow-lg border border-gray-100 flex items-center justify-center aspect-square overflow-hidden ${client.shape} ${idx === clients.length - 1 && clients.length % 2 !== 0 ? 'col-span-2 mx-auto w-2/3' : ''}`}
-          >
-            <img src={client.img} alt={client.alt} className="w-full h-full object-contain transition-transform duration-300 hover:scale-110" />
+      <div className="lg:hidden mt-2 px-6 w-full relative z-10 overflow-x-auto pb-6 landscape:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <div className="flex flex-col gap-4 w-max mx-auto">
+          {/* Row 1 */}
+          <div className="flex gap-4">
+            {clients.slice(0, 5).map((client, idx) => (
+              <div 
+                key={`r1-${idx}`}
+                className={`bg-white p-3 shadow-lg border border-gray-100 flex items-center justify-center aspect-square w-28 sm:w-32 overflow-hidden flex-none ${client.shape}`}
+              >
+                <img src={client.img} alt={client.alt} className="w-full h-full object-contain transition-transform duration-300 hover:scale-110" />
+              </div>
+            ))}
           </div>
-        ))}
+          {/* Row 2 */}
+          <div className="flex gap-4 justify-center">
+            {clients.slice(5).map((client, idx) => (
+              <div 
+                key={`r2-${idx}`}
+                className={`bg-white p-3 shadow-lg border border-gray-100 flex items-center justify-center aspect-square w-28 sm:w-32 overflow-hidden flex-none ${client.shape}`}
+              >
+                <img src={client.img} alt={client.alt} className="w-full h-full object-contain transition-transform duration-300 hover:scale-110" />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
     </section>

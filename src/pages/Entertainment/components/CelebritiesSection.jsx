@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -33,6 +33,7 @@ const celebs = [
 const CelebritiesSection = () => {
   const containerRef = useRef(null);
   const textRef = useRef(null);
+  const [activeCard, setActiveCard] = useState(null);
 
   useGSAP(() => {
     gsap.fromTo(textRef.current,
@@ -70,6 +71,11 @@ const CelebritiesSection = () => {
     );
   }, { scope: containerRef });
 
+  const handleCardClick = (index) => {
+    // If clicking the currently active card, close it. Otherwise open the new one.
+    setActiveCard(activeCard === index ? null : index);
+  };
+
   return (
     <section ref={containerRef} className="w-full py-10 md:py-14 bg-white relative overflow-hidden flex flex-col items-center">
       
@@ -96,47 +102,51 @@ const CelebritiesSection = () => {
 
       {/* Accordion Gallery Container */}
       <div className="w-full max-w-[1920px] mx-auto px-0 md:px-8 mb-8 md:mb-12">
-        <div className="flex w-full h-[350px] md:h-[500px] lg:h-[600px] gap-2 md:gap-2 overflow-x-auto md:overflow-hidden snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] px-4 md:px-0">
-          {celebs.map((celeb, index) => (
-            <div 
-              key={index} 
-              className="celeb-card group relative flex-none w-[75vw] sm:w-[50vw] md:w-auto md:flex-1 snap-center transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] md:hover:flex-[6] cursor-pointer overflow-hidden rounded-md bg-[#1a1a1a]"
-            >
-              <img 
-                src={celeb.img} 
-                alt={celeb.name} 
-                className="absolute inset-0 w-full h-full object-cover object-top grayscale-0 opacity-100 md:grayscale md:opacity-60 transition-all duration-700 md:group-hover:grayscale-0 md:group-hover:opacity-100 md:group-hover:scale-105"
-              />
-              
-              {/* Gradient Overlay for text readability */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 md:bg-gradient-to-b md:from-black/80 md:via-transparent to-black/80 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-700"></div>
-              
-              {/* Red Accent Block like screenshot (Desktop only) */}
-              <div className="hidden md:flex absolute top-0 left-0 w-16 h-16 md:w-24 md:h-24 bg-brand-red opacity-0 transition-all duration-500 -translate-x-full group-hover:translate-x-0 group-hover:opacity-100 z-10 items-start justify-start p-2 md:p-4">
-                <div className="w-full h-full border-t-2 border-l-2 border-white/30"></div>
-              </div>
-              <div className="hidden md:flex absolute bottom-0 right-0 w-16 h-16 md:w-24 md:h-24 bg-brand-red opacity-0 transition-all duration-500 translate-x-full group-hover:translate-x-0 group-hover:opacity-100 z-10 items-end justify-end p-2 md:p-4">
-                <div className="w-full h-full border-b-2 border-r-2 border-white/30"></div>
-              </div>
+        <div className="flex w-full h-[350px] landscape:h-[280px] lg:landscape:h-[600px] lg:h-[600px] gap-2 lg:gap-2 overflow-x-auto lg:overflow-hidden snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] px-4 lg:px-0">
+          {celebs.map((celeb, index) => {
+            const isActive = activeCard === index;
+            return (
+              <div 
+                key={index}
+                onClick={() => handleCardClick(index)}
+                className={`celeb-card group relative flex-none w-[75vw] sm:w-[50vw] md:w-[40vw] lg:w-auto lg:flex-1 snap-center transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] lg:hover:flex-[6] cursor-pointer overflow-hidden rounded-md bg-[#1a1a1a] ${isActive ? 'is-active lg:!flex-[6]' : ''}`}
+              >
+                <img 
+                  src={celeb.img} 
+                  alt={celeb.name} 
+                  className={`absolute inset-0 w-full h-full object-cover object-top grayscale-0 opacity-100 transition-all duration-700 lg:group-hover:grayscale-0 lg:group-hover:opacity-100 lg:group-hover:scale-105 ${isActive ? 'lg:grayscale-0 lg:opacity-100 lg:scale-105' : 'lg:grayscale lg:opacity-60'}`}
+                />
+                
+                {/* Gradient Overlay for text readability */}
+                <div className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 lg:bg-gradient-to-b lg:from-black/80 lg:via-transparent to-black/80 transition-opacity duration-700 lg:group-hover:opacity-100 ${isActive ? 'opacity-100 lg:opacity-100' : 'opacity-100 lg:opacity-0'}`}></div>
+                
+                {/* Red Accent Block like screenshot (Desktop only) */}
+                <div className={`hidden lg:flex absolute top-0 left-0 w-16 h-16 lg:w-24 lg:h-24 bg-brand-red transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100 z-10 items-start justify-start p-2 lg:p-4 ${isActive ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0'}`}>
+                  <div className="w-full h-full border-t-2 border-l-2 border-white/30"></div>
+                </div>
+                <div className={`hidden lg:flex absolute bottom-0 right-0 w-16 h-16 lg:w-24 lg:h-24 bg-brand-red transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100 z-10 items-end justify-end p-2 lg:p-4 ${isActive ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'}`}>
+                  <div className="w-full h-full border-b-2 border-r-2 border-white/30"></div>
+                </div>
 
-              {/* Text Overlay (Always visible on mobile at bottom, hover on top for desktop) */}
-              <div className="absolute bottom-4 left-4 md:top-6 md:left-6 md:bottom-auto z-20 opacity-100 md:opacity-0 transition-all duration-500 translate-y-0 md:translate-y-4 md:group-hover:translate-y-0 md:group-hover:opacity-100 delay-100">
-                <span className="font-hero text-2xl md:text-2xl lg:text-4xl font-bold uppercase tracking-widest text-white drop-shadow-lg whitespace-nowrap block">
-                  {celeb.name}
-                </span>
-              </div>
+                {/* Text Overlay (Always visible on mobile at bottom, hover on top for desktop) */}
+                <div className={`absolute bottom-4 left-4 lg:top-6 lg:left-6 lg:bottom-auto z-20 transition-all duration-500 lg:group-hover:translate-y-0 lg:group-hover:opacity-100 delay-100 ${isActive ? 'opacity-100 lg:opacity-100 lg:translate-y-0' : 'opacity-100 lg:opacity-0 lg:translate-y-4'}`}>
+                  <span className="font-hero text-2xl lg:text-4xl font-bold uppercase tracking-widest text-white drop-shadow-lg whitespace-nowrap block">
+                    {celeb.name}
+                  </span>
+                </div>
 
-              {/* Text Overlay (Unhovered) - vertical text (Desktop only) */}
-              <div className="absolute bottom-6 left-0 w-full flex justify-center z-10 opacity-100 transition-all duration-300 group-hover:opacity-0 hidden md:flex pointer-events-none">
-                <span 
-                  className="font-main text-xs font-bold uppercase tracking-[0.3em] text-white/70 rotate-180"
-                  style={{ writingMode: 'vertical-rl' }}
-                >
-                  {celeb.name}
-                </span>
+                {/* Text Overlay (Unhovered) - vertical text (Desktop only) */}
+                <div className={`absolute bottom-6 left-0 w-full justify-center z-10 transition-all duration-300 group-hover:opacity-0 hidden lg:flex pointer-events-none ${isActive ? 'opacity-0' : 'opacity-100'}`}>
+                  <span 
+                    className="font-main text-xs font-bold uppercase tracking-[0.3em] text-white/70 rotate-180"
+                    style={{ writingMode: 'vertical-rl' }}
+                  >
+                    {celeb.name}
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

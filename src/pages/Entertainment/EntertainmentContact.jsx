@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import EntertainmentNavbar from './components/EntertainmentNavbar';
 import EntertainmentFooter from './components/EntertainmentFooter';
@@ -8,6 +8,8 @@ import contactData from '../../data/contact.json';
 import Lenis from 'lenis';
 
 const EntertainmentContact = () => {
+  const [isMapInteractive, setIsMapInteractive] = useState(false);
+
   useEffect(() => {
     window.scrollTo(0, 0);
 
@@ -51,7 +53,7 @@ const EntertainmentContact = () => {
 
         {/* Contact Info Bento Grid */}
         <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12 mb-24">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 landscape:grid-cols-12 lg:grid-cols-12 gap-6 landscape:gap-4 lg:gap-8">
             
             {/* Main Office Card - Spans 7 cols */}
             <motion.a 
@@ -62,12 +64,12 @@ const EntertainmentContact = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="lg:col-span-7 bg-white p-8 md:p-12 flex flex-col justify-between group border border-neutral-300 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 cursor-pointer relative"
+              className="landscape:col-span-7 lg:col-span-7 bg-white p-8 landscape:p-6 md:p-12 flex flex-col justify-between group border border-neutral-300 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 cursor-pointer relative"
             >
-              <div className="relative z-10 mb-16">
-                <FaMapMarkerAlt className="text-brand-red text-4xl mb-6 group-hover:scale-110 transition-transform duration-500" />
-                <h4 className="text-xl md:text-2xl font-bold mb-2 text-neutral-900 group-hover:text-brand-red transition-colors duration-300">{contactData.office.title}</h4>
-                <p className="text-neutral-500 text-lg md:text-xl leading-relaxed max-w-md">
+              <div className="relative z-10 mb-16 landscape:mb-6 lg:mb-16">
+                <FaMapMarkerAlt className="text-brand-red text-4xl landscape:text-2xl lg:text-4xl mb-6 landscape:mb-3 lg:mb-6 group-hover:scale-110 transition-transform duration-500" />
+                <h4 className="text-xl md:text-2xl landscape:text-lg lg:text-2xl font-bold mb-2 text-neutral-900 group-hover:text-brand-red transition-colors duration-300">{contactData.office.title}</h4>
+                <p className="text-neutral-500 text-lg md:text-xl landscape:text-sm lg:text-xl leading-relaxed max-w-md">
                   {contactData.office.description}
                 </p>
               </div>
@@ -81,7 +83,7 @@ const EntertainmentContact = () => {
             </motion.a>
 
             {/* Emails Column - Spans 5 cols */}
-            <div className="lg:col-span-5 flex flex-col gap-6 lg:gap-8">
+            <div className="landscape:col-span-5 lg:col-span-5 flex flex-col gap-6 landscape:gap-4 lg:gap-8">
               {contactData.emails.map((emailData, index) => (
                 <motion.div 
                   key={index}
@@ -89,13 +91,13 @@ const EntertainmentContact = () => {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: 0.3 + (index * 0.1) }}
-                  className="flex-1 bg-white p-8 md:p-10 border border-neutral-300 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 flex flex-col justify-center group relative"
+                  className="flex-1 bg-white p-8 landscape:p-6 md:p-10 border border-neutral-300 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 flex flex-col justify-center group relative"
                 >
-                  <FaEnvelope className="text-neutral-300 text-3xl mb-4 group-hover:text-brand-red transition-colors duration-500" />
-                  <a href={`https://mail.google.com/mail/?view=cm&fs=1&to=${emailData.email}`} target="_blank" rel="noopener noreferrer" className="text-xl md:text-2xl font-bold text-neutral-900 mb-2 hover:text-brand-red transition-colors duration-300 break-all">
+                  <FaEnvelope className="text-neutral-300 text-3xl landscape:text-xl lg:text-3xl mb-4 landscape:mb-2 lg:mb-4 group-hover:text-brand-red transition-colors duration-500" />
+                  <a href={`https://mail.google.com/mail/?view=cm&fs=1&to=${emailData.email}`} target="_blank" rel="noopener noreferrer" className="text-xl md:text-2xl landscape:text-base lg:text-2xl font-bold text-neutral-900 mb-2 hover:text-brand-red transition-colors duration-300 break-all">
                     {emailData.email}
                   </a>
-                  <p className="text-neutral-500 text-sm md:text-base leading-relaxed">
+                  <p className="text-neutral-500 text-sm md:text-base landscape:text-xs lg:text-base leading-relaxed">
                     {emailData.description}
                   </p>
                 </motion.div>
@@ -125,8 +127,19 @@ const EntertainmentContact = () => {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1 }}
-          className="w-full h-[50vh] min-h-[400px] bg-neutral-200 relative z-0"
+          className="w-full h-[50vh] min-h-[400px] bg-neutral-200 relative z-0 cursor-pointer group"
+          onClick={() => setIsMapInteractive(true)}
+          onMouseLeave={() => setIsMapInteractive(false)}
         >
+          {/* Overlay to intercept scroll/touches until clicked */}
+          {!isMapInteractive && (
+            <div className="absolute inset-0 z-10 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 flex items-center justify-center">
+               <span className="bg-black/70 text-white px-4 py-2 rounded-full text-sm backdrop-blur-sm pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 md:hidden">
+                 Tap to interact
+               </span>
+            </div>
+          )}
+          
           <iframe 
             src={contactData.mapEmbedUrl}
             width="100%" 
@@ -136,7 +149,7 @@ const EntertainmentContact = () => {
             loading="lazy" 
             referrerPolicy="no-referrer-when-downgrade"
             title="RedAsh Films Location"
-            className="filter grayscale hover:grayscale-0 transition-all duration-1000"
+            className={`filter grayscale-0 lg:grayscale lg:hover:grayscale-0 transition-all duration-1000 ${isMapInteractive ? 'pointer-events-auto' : 'pointer-events-none'}`}
           ></iframe>
         </motion.div>
 

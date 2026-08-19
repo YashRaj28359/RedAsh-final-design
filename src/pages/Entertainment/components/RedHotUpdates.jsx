@@ -27,7 +27,7 @@ const updates = [
     title: "THE CODPASTER",
     subtitle: "Produced the world's first fiction web series set in the world of podcasting, featuring a well-known star cast.",
     image: codpasterImg,
-    style: { zIndex: 20, width: '340px', height: '480px', transform: 'rotate(-4deg)' },
+    style: { zIndex: 20, width: '280px', height: '400px', transform: 'rotate(-4deg)' },
     foldCorner: 'top-left',
     tape: { top: '-15px', left: '45%', rotation: '-15deg', width: '110px' },
     links: [
@@ -40,7 +40,7 @@ const updates = [
     title: "AI SHOW",
     subtitle: "Producing an AI show for a premium entertainment company.",
     image: aiShowImg,
-    style: { zIndex: 15, width: '340px', height: '420px', transform: 'rotate(2deg)' },
+    style: { zIndex: 15, width: '280px', height: '360px', transform: 'rotate(2deg)' },
     foldCorner: 'top-right',
     tape: { top: '-12px', left: '60%', rotation: '18deg', width: '90px' },
     links: [{ text: 'Coming Soon', url: '#' }]
@@ -50,7 +50,7 @@ const updates = [
     title: "DAILY SOAP",
     subtitle: "Developing an approved concept into a daily soap for one of India's leading television channels.",
     image: dailySoapImg,
-    style: { zIndex: 25, width: '340px', height: '450px', transform: 'rotate(-2deg)' },
+    style: { zIndex: 25, width: '280px', height: '380px', transform: 'rotate(-2deg)' },
     foldCorner: 'bottom-left',
     tape: { top: '-14px', left: '30%', rotation: '8deg', width: '120px' },
     links: [{ text: 'In Development', url: '#' }]
@@ -60,7 +60,7 @@ const updates = [
     title: "CASTING OUCH",
     subtitle: "Producing our sitcom web series Casting Ouch.",
     image: castingOuchImg,
-    style: { zIndex: 30, width: '340px', height: '420px', transform: 'rotate(4deg)' },
+    style: { zIndex: 30, width: '280px', height: '360px', transform: 'rotate(4deg)' },
     foldCorner: 'bottom-right',
     tape: { top: '-12px', left: '70%', rotation: '-22deg', width: '100px' },
     links: [{ text: 'Pre-Production', url: '#' }]
@@ -109,31 +109,37 @@ const RedHotUpdates = () => {
   const containerRef = useRef(null);
 
   useGSAP(() => {
-    // Reveal animation for the cards sliding in from the left like a train on parallax scroll
-    gsap.fromTo('.update-card', 
-      { x: -1500, opacity: 0, filter: 'blur(20px)' }, 
-      { 
-        x: 0, 
-        opacity: 1, 
-        filter: 'blur(0px)', 
-        stagger: 0.5,
-        ease: 'power1.out',
-        scrollTrigger: { 
-          trigger: containerRef.current, 
-          start: 'top 90%',
-          end: 'top 20%',
-          scrub: 1 // Ties the animation to the scroll position
-        } 
-      }
-    );
+    let mm = gsap.matchMedia();
+
+    mm.add("(min-width: 1024px)", () => {
+      // Reveal animation for the cards sliding in from the left like a train on parallax scroll
+      gsap.fromTo('.update-card', 
+        { x: -1500, opacity: 0, filter: 'blur(20px)' }, 
+        { 
+          x: 0, 
+          opacity: 1, 
+          filter: 'blur(0px)', 
+          stagger: 0.5,
+          ease: 'power1.out',
+          scrollTrigger: { 
+            trigger: containerRef.current, 
+            start: 'top 90%',
+            end: 'top 20%',
+            scrub: 1 // Ties the animation to the scroll position
+          } 
+        }
+      );
+    });
+
+    return () => mm.revert();
   }, { scope: containerRef });
 
   return (
-    <section className="w-full py-20 px-4 md:px-8 bg-transparent relative overflow-hidden flex flex-col items-center">
+    <section className="w-full pt-8 lg:pt-20 pb-20 px-4 md:px-8 bg-transparent relative overflow-hidden flex flex-col items-center">
       {/* Section Header (Graffiti Style) */}
       <div className="mb-16 w-full max-w-[1920px] mx-auto z-50 text-center relative pointer-events-none flex flex-col items-center">
         
-        <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8 mt-10 scale-75 sm:scale-100">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 lg:gap-8 mt-10 scale-75 sm:scale-100 landscape:scale-[0.8] lg:landscape:scale-100">
           
           {/* RED-HOT */}
           <div className="relative inline-block transform -rotate-2">
@@ -143,7 +149,7 @@ const RedHotUpdates = () => {
               <line x1="10" y1="70" x2="85" y2="70" />
             </svg>
             {/* Text with Flame Icon replacing O */}
-            <h2 className="relative z-10 text-6xl md:text-8xl font-hero font-bold text-brand-red px-2 pt-4 pb-2 tracking-[0.05em] md:tracking-[0.1em] flex items-center justify-center" style={{ textShadow: '2px 2px 0px rgba(226,0,2,0.2)' }}>
+            <h2 className="relative z-10 text-5xl md:text-6xl lg:text-8xl font-hero font-bold text-brand-red px-2 pt-4 pb-2 tracking-[0.05em] lg:tracking-[0.1em] flex items-center justify-center" style={{ textShadow: '2px 2px 0px rgba(226,0,2,0.2)' }}>
               RED-H
               <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1" className="w-[0.8em] h-[0.9em] mx-1 inline-block -translate-y-1">
                 <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />
@@ -158,7 +164,7 @@ const RedHotUpdates = () => {
           {/* AT */}
           <div className="relative inline-block transform rotate-3 mt-4 md:mt-0">
              {/* Text */}
-             <span className="relative z-10 text-3xl md:text-5xl font-hero font-bold text-black px-2 pt-2 pb-1 tracking-[0.05em] md:tracking-[0.1em]">
+             <span className="relative z-10 text-3xl md:text-4xl lg:text-5xl font-hero font-bold text-black px-2 pt-2 pb-1 tracking-[0.05em] lg:tracking-[0.1em]">
                AT
              </span>
              {/* Red Scribble Underline */}
@@ -167,7 +173,7 @@ const RedHotUpdates = () => {
 
           {/* REDASH FILMS */}
           <div className="relative inline-block mt-4 md:mt-0 ml-0 md:ml-4">
-             <h2 className="relative z-10 text-6xl md:text-8xl font-hero font-bold tracking-[0.05em] md:tracking-[0.1em] flex items-center">
+             <h2 className="relative z-10 text-5xl md:text-6xl lg:text-8xl font-hero font-bold tracking-[0.05em] lg:tracking-[0.1em] flex items-center">
                <span className="text-brand-red" style={{ textShadow: '2px 2px 0px rgba(226,0,2,0.2)' }}>RED</span>
                <span className="text-brand-gray mx-1">ASH</span>
                <span className="text-black ml-4">FILMS</span>
@@ -191,111 +197,208 @@ const RedHotUpdates = () => {
       {/* Wall Container */}
       <div ref={containerRef} className="relative w-full py-16 overflow-hidden lg:overflow-visible flex items-center justify-center">
         
-        {/* Row Container */}
-        <div className="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-16 lg:gap-8 xl:gap-12 w-full max-w-[1920px]">
+        {/* Rows Container */}
+        <div className="flex flex-col gap-0 lg:gap-12 w-full items-center justify-center max-w-[1920px]">
           
-          {updates.map((update, index) => {
-            const fold = getFoldConfig(update.foldCorner);
-            
-            return (
-              <div 
-                key={update.id}
-                className={`update-card update-card-${index} relative shrink-0`}
-                style={{
-                  zIndex: update.style.zIndex,
-                  width: update.style.width,
-                  height: update.style.height
-                }}
-              >
+          {/* Row 1 */}
+          <div className="flex flex-row items-center justify-center gap-8 lg:gap-12 w-full overflow-x-auto lg:overflow-visible pt-6 pb-12 lg:py-0 px-8 lg:px-0 snap-x snap-mandatory lg:snap-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            {updates.slice(0, 2).map((update, index) => {
+              const fold = getFoldConfig(update.foldCorner);
+              return (
                 <div 
-                  className="group relative block w-full h-full transition-transform duration-300 hover:z-50 hover:scale-[1.03]"
+                  key={update.id}
+                  className={`update-card update-card-${index} relative shrink-0 snap-center lg:snap-align-none`}
                   style={{
-                    transform: update.style.transform,
-                    boxShadow: '0 25px 40px -10px rgba(0,0,0,0.3)'
+                    zIndex: update.style.zIndex,
+                    width: update.style.width,
+                    height: update.style.height
                   }}
                 >
-                  {/* Red Push Pin */}
-                  <div className="absolute z-40 pointer-events-none origin-center"
-                       style={{ 
-                         top: '-10px',
-                         left: '50%',
-                         transform: 'translateX(-50%)'
-                       }}>
-                    {/* Pin drop shadow on the paper */}
-                    <div className="absolute top-4 left-1.5 w-1.5 h-3 bg-black/40 blur-[1px] rounded-full transform -rotate-12" />
-                    {/* Metal needle */}
-                    <div className="absolute top-2 left-[9px] w-[2px] h-[15px] bg-gradient-to-b from-gray-200 via-gray-400 to-gray-600 rounded-b-full shadow-sm" />
-                    {/* Red plastic head */}
-                    <div className="relative w-5 h-5 bg-[radial-gradient(circle_at_30%_30%,_#ff4d4d,_#b30000)] rounded-full shadow-[inset_-2px_-2px_4px_rgba(0,0,0,0.4),_0_3px_5px_rgba(0,0,0,0.5)] border border-red-800/20">
-                      {/* Highlight reflection */}
-                      <div className="absolute top-1 left-1 w-1.5 h-1.5 bg-white/60 rounded-full blur-[0.5px]" />
-                    </div>
-                  </div>
-
-                  {/* Folded Corner Element */}
-                  {fold && (
-                    <div className={fold.wrapperClass} style={{ filter: fold.wrapperFilter }}>
-                      <div 
-                        className="w-full h-full bg-[#fdfdfd]"
-                        style={{
-                          clipPath: fold.foldClipPath,
-                          backgroundImage: subtleNoise,
-                          boxShadow: 'inset 2px 2px 5px rgba(255,255,255,0.8), inset -1px -1px 3px rgba(0,0,0,0.1)'
-                        }}
-                      />
-                    </div>
-                  )}
-
-                  {/* Main Polaroid Body */}
                   <div 
-                    className="absolute inset-0 bg-[#fdfdfd] p-3 md:p-4 flex flex-col pointer-events-auto"
-                    style={{ 
-                      clipPath: fold ? fold.mainClipPath : 'none',
-                      boxShadow: 'inset 0 0 40px rgba(0,0,0,0.02)'
+                    className="group relative block w-full h-full transition-transform duration-300 hover:z-50 hover:scale-[1.03]"
+                    style={{
+                      transform: update.style.transform,
+                      boxShadow: '0 25px 40px -10px rgba(0,0,0,0.3)'
                     }}
                   >
-                    {/* Noise texture overlay for paper feel */}
-                    <div className="absolute inset-0 opacity-[0.4] pointer-events-none mix-blend-multiply" style={{ backgroundImage: subtleNoise }} />
-                    
-                    {/* Image Area */}
-                    <div className="w-full h-[60%] md:h-[65%] relative bg-gray-200 overflow-hidden shadow-[inset_0_2px_10px_rgba(0,0,0,0.1)]">
-                      <img 
-                        src={update.image} 
-                        alt={update.title} 
-                        className="w-full h-full object-cover grayscale-[20%] contrast-110 sepia-[10%] brightness-95"
-                      />
-                      <div className="absolute inset-0 shadow-[inset_0_0_20px_rgba(0,0,0,0.2)] pointer-events-none" />
+                    {/* Red Push Pin */}
+                    <div className="absolute z-40 pointer-events-none origin-center"
+                         style={{ 
+                           top: '-10px',
+                           left: '50%',
+                           transform: 'translateX(-50%)'
+                         }}>
+                      <div className="absolute top-4 left-1.5 w-1.5 h-3 bg-black/40 blur-[1px] rounded-full transform -rotate-12" />
+                      <div className="absolute top-2 left-[9px] w-[2px] h-[15px] bg-gradient-to-b from-gray-200 via-gray-400 to-gray-600 rounded-b-full shadow-sm" />
+                      <div className="relative w-5 h-5 bg-[radial-gradient(circle_at_30%_30%,_#ff4d4d,_#b30000)] rounded-full shadow-[inset_-2px_-2px_4px_rgba(0,0,0,0.4),_0_3px_5px_rgba(0,0,0,0.5)] border border-red-800/20">
+                        <div className="absolute top-1 left-1 w-1.5 h-1.5 bg-white/60 rounded-full blur-[0.5px]" />
+                      </div>
                     </div>
 
-                    {/* Content Area */}
-                    <div className="flex-1 w-full flex flex-col pt-4">
-                      <h3 className="font-hero text-xl md:text-2xl font-bold text-gray-900 leading-none">
-                        {update.title}
-                      </h3>
-                      <p className="font-main text-xs md:text-sm text-gray-700 mt-2 leading-snug flex-1">
-                        {update.subtitle}
-                      </p>
+                    {/* Folded Corner Element */}
+                    {fold && (
+                      <div className={fold.wrapperClass} style={{ filter: fold.wrapperFilter }}>
+                        <div 
+                          className="w-full h-full bg-[#fdfdfd]"
+                          style={{
+                            clipPath: fold.foldClipPath,
+                            backgroundImage: subtleNoise,
+                            boxShadow: 'inset 2px 2px 5px rgba(255,255,255,0.8), inset -1px -1px 3px rgba(0,0,0,0.1)'
+                          }}
+                        />
+                      </div>
+                    )}
+
+                    {/* Main Polaroid Body */}
+                    <div 
+                      className="absolute inset-0 bg-[#fdfdfd] p-3 md:p-4 flex flex-col pointer-events-auto"
+                      style={{ 
+                        clipPath: fold ? fold.mainClipPath : 'none',
+                        boxShadow: 'inset 0 0 40px rgba(0,0,0,0.02)'
+                      }}
+                    >
+                      <div className="absolute inset-0 opacity-[0.4] pointer-events-none mix-blend-multiply" style={{ backgroundImage: subtleNoise }} />
                       
-                      {/* Links Area */}
-                      <div className="flex flex-wrap gap-3 mt-2">
-                        {update.links.map((link, i) => (
-                          <a 
-                            key={i} 
-                            href={link.url} 
-                            target={link.url !== '#' ? "_blank" : undefined}
-                            rel={link.url !== '#' ? "noopener noreferrer" : undefined}
-                            className="inline-flex items-center gap-1 text-[10px] md:text-xs font-bold uppercase tracking-wider text-brand-red border-b border-brand-red/30 hover:border-brand-red transition-colors pb-0.5"
-                          >
-                            {link.text} {link.url !== '#' && <ArrowUpRight className="w-3 h-3" />}
-                          </a>
-                        ))}
+                      {/* Image Area */}
+                      <div className="w-full h-[60%] md:h-[65%] relative bg-gray-200 overflow-hidden shadow-[inset_0_2px_10px_rgba(0,0,0,0.1)]">
+                        <img 
+                          src={update.image} 
+                          alt={update.title} 
+                          className="w-full h-full object-cover grayscale-[20%] contrast-110 sepia-[10%] brightness-95"
+                        />
+                        <div className="absolute inset-0 shadow-[inset_0_0_20px_rgba(0,0,0,0.2)] pointer-events-none" />
+                      </div>
+
+                      {/* Content Area */}
+                      <div className="flex-1 w-full flex flex-col pt-4">
+                        <h3 className="font-hero text-xl md:text-2xl font-bold text-gray-900 leading-none">
+                          {update.title}
+                        </h3>
+                        <p className="font-main text-xs md:text-sm text-gray-700 mt-2 leading-snug flex-1">
+                          {update.subtitle}
+                        </p>
+                        
+                        {/* Links Area */}
+                        <div className="flex flex-wrap gap-3 mt-2">
+                          {update.links.map((link, i) => (
+                            <a 
+                              key={i} 
+                              href={link.url} 
+                              target={link.url !== '#' ? "_blank" : undefined}
+                              rel={link.url !== '#' ? "noopener noreferrer" : undefined}
+                              className="inline-flex items-center gap-1 text-[10px] md:text-xs font-bold uppercase tracking-wider text-brand-red border-b border-brand-red/30 hover:border-brand-red transition-colors pb-0.5"
+                            >
+                              {link.text} {link.url !== '#' && <ArrowUpRight className="w-3 h-3" />}
+                            </a>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
+
+          {/* Row 2 */}
+          <div className="flex flex-row items-center justify-center gap-8 lg:gap-12 w-full overflow-x-auto lg:overflow-visible pt-6 pb-12 lg:py-0 px-8 lg:px-0 snap-x snap-mandatory lg:snap-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            {updates.slice(2, 4).map((update, index) => {
+              const fold = getFoldConfig(update.foldCorner);
+              return (
+                <div 
+                  key={update.id}
+                  className={`update-card update-card-${index + 2} relative shrink-0 snap-center lg:snap-align-none`}
+                  style={{
+                    zIndex: update.style.zIndex,
+                    width: update.style.width,
+                    height: update.style.height
+                  }}
+                >
+                  <div 
+                    className="group relative block w-full h-full transition-transform duration-300 hover:z-50 hover:scale-[1.03]"
+                    style={{
+                      transform: update.style.transform,
+                      boxShadow: '0 25px 40px -10px rgba(0,0,0,0.3)'
+                    }}
+                  >
+                    {/* Red Push Pin */}
+                    <div className="absolute z-40 pointer-events-none origin-center"
+                         style={{ 
+                           top: '-10px',
+                           left: '50%',
+                           transform: 'translateX(-50%)'
+                         }}>
+                      <div className="absolute top-4 left-1.5 w-1.5 h-3 bg-black/40 blur-[1px] rounded-full transform -rotate-12" />
+                      <div className="absolute top-2 left-[9px] w-[2px] h-[15px] bg-gradient-to-b from-gray-200 via-gray-400 to-gray-600 rounded-b-full shadow-sm" />
+                      <div className="relative w-5 h-5 bg-[radial-gradient(circle_at_30%_30%,_#ff4d4d,_#b30000)] rounded-full shadow-[inset_-2px_-2px_4px_rgba(0,0,0,0.4),_0_3px_5px_rgba(0,0,0,0.5)] border border-red-800/20">
+                        <div className="absolute top-1 left-1 w-1.5 h-1.5 bg-white/60 rounded-full blur-[0.5px]" />
+                      </div>
+                    </div>
+
+                    {/* Folded Corner Element */}
+                    {fold && (
+                      <div className={fold.wrapperClass} style={{ filter: fold.wrapperFilter }}>
+                        <div 
+                          className="w-full h-full bg-[#fdfdfd]"
+                          style={{
+                            clipPath: fold.foldClipPath,
+                            backgroundImage: subtleNoise,
+                            boxShadow: 'inset 2px 2px 5px rgba(255,255,255,0.8), inset -1px -1px 3px rgba(0,0,0,0.1)'
+                          }}
+                        />
+                      </div>
+                    )}
+
+                    {/* Main Polaroid Body */}
+                    <div 
+                      className="absolute inset-0 bg-[#fdfdfd] p-3 md:p-4 flex flex-col pointer-events-auto"
+                      style={{ 
+                        clipPath: fold ? fold.mainClipPath : 'none',
+                        boxShadow: 'inset 0 0 40px rgba(0,0,0,0.02)'
+                      }}
+                    >
+                      <div className="absolute inset-0 opacity-[0.4] pointer-events-none mix-blend-multiply" style={{ backgroundImage: subtleNoise }} />
+                      
+                      {/* Image Area */}
+                      <div className="w-full h-[60%] md:h-[65%] relative bg-gray-200 overflow-hidden shadow-[inset_0_2px_10px_rgba(0,0,0,0.1)]">
+                        <img 
+                          src={update.image} 
+                          alt={update.title} 
+                          className="w-full h-full object-cover grayscale-[20%] contrast-110 sepia-[10%] brightness-95"
+                        />
+                        <div className="absolute inset-0 shadow-[inset_0_0_20px_rgba(0,0,0,0.2)] pointer-events-none" />
+                      </div>
+
+                      {/* Content Area */}
+                      <div className="flex-1 w-full flex flex-col pt-4">
+                        <h3 className="font-hero text-xl md:text-2xl font-bold text-gray-900 leading-none">
+                          {update.title}
+                        </h3>
+                        <p className="font-main text-xs md:text-sm text-gray-700 mt-2 leading-snug flex-1">
+                          {update.subtitle}
+                        </p>
+                        
+                        {/* Links Area */}
+                        <div className="flex flex-wrap gap-3 mt-2">
+                          {update.links.map((link, i) => (
+                            <a 
+                              key={i} 
+                              href={link.url} 
+                              target={link.url !== '#' ? "_blank" : undefined}
+                              rel={link.url !== '#' ? "noopener noreferrer" : undefined}
+                              className="inline-flex items-center gap-1 text-[10px] md:text-xs font-bold uppercase tracking-wider text-brand-red border-b border-brand-red/30 hover:border-brand-red transition-colors pb-0.5"
+                            >
+                              {link.text} {link.url !== '#' && <ArrowUpRight className="w-3 h-3" />}
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

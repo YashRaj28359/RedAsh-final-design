@@ -34,7 +34,7 @@ const ContactForm = ({
             <div className="hidden md:block flex-1 h-[2px] bg-gradient-to-r from-transparent via-gray-200 to-gray-300 relative">
               <div className={`absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full ${buttonTheme === 'red' ? 'bg-brand-red shadow-[0_0_8px_rgba(230,57,70,0.5)]' : 'bg-brand-blue shadow-[0_0_8px_rgba(22,114,239,0.5)]'}`}></div>
             </div>
-            <h2 className={`text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold uppercase mx-2 md:mx-6 whitespace-normal md:whitespace-nowrap text-center leading-tight ${headingClass}`}>
+            <h2 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold uppercase mx-2 md:mx-6 whitespace-normal xl:whitespace-nowrap text-center leading-tight ${headingClass}`}>
               {titlePrefix} <span className={dynamicHighlightColorClass}>{titleHighlight}</span>
             </h2>
             <div className="hidden md:block flex-1 h-[2px] bg-gradient-to-l from-transparent via-gray-200 to-gray-300 relative">

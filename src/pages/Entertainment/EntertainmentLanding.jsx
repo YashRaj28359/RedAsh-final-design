@@ -72,7 +72,7 @@ const EntertainmentLanding = () => {
 
       <EntertainmentNavbar />
       
-      <main className="relative z-10 w-full flex-grow flex flex-col lg:flex-row pt-[80px] lg:pt-[100px]">
+      <main className="relative z-10 w-full flex-grow flex flex-col lg:flex-row pt-[80px] lg:pt-[100px] landscape:pb-16 lg:landscape:pb-0">
         
         {/* Left Column: Typography & Info */}
         <div className={`w-full landscape:w-[50%] lg:w-[40%] lg:landscape:w-[40%] xl:w-[35%] xl:landscape:w-[35%] flex flex-col justify-start pt-0 landscape:pt-4 lg:pt-12 px-6 sm:px-8 lg:pl-10 xl:pl-12 pb-4 lg:py-0 relative z-20 transition-opacity duration-300 ${isVideoOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
@@ -116,7 +116,7 @@ const EntertainmentLanding = () => {
         </div>
 
         {/* CTA Link (Mobile - Below Collage) */}
-        <div className={`w-full flex justify-center pb-0 landscape:mt-6 lg:hidden relative z-20 transition-opacity duration-300 ${isVideoOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+        <div className={`w-full flex justify-center pb-0 landscape:mt-24 lg:hidden relative z-20 transition-opacity duration-300 ${isVideoOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
           <Link 
             to="/entertainment/films" 
             className="hero-btn relative group bg-transparent text-brand-red font-main text-xs uppercase tracking-[0.2em] font-bold py-4 px-8 sm:px-10 rounded-full transition-all duration-500 overflow-hidden border border-brand-red/40 hover:border-brand-red shadow-[0_0_0_0_rgba(0,0,0,0)] hover:shadow-xl hover:shadow-brand-red/20 w-max inline-block text-center"

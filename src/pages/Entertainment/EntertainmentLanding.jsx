@@ -75,10 +75,10 @@ const EntertainmentLanding = () => {
       <main className="relative z-10 w-full flex-grow flex flex-col lg:flex-row pt-[80px] lg:pt-[100px]">
         
         {/* Left Column: Typography & Info */}
-        <div className={`w-full lg:w-[40%] xl:w-[35%] flex flex-col justify-start pt-0 lg:pt-12 px-6 sm:px-8 lg:pl-10 xl:pl-12 pb-4 lg:py-0 relative z-20 transition-opacity duration-300 ${isVideoOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+        <div className={`w-full landscape:w-[50%] lg:w-[40%] lg:landscape:w-[40%] xl:w-[35%] xl:landscape:w-[35%] flex flex-col justify-start pt-0 landscape:pt-4 lg:pt-12 px-6 sm:px-8 lg:pl-10 xl:pl-12 pb-4 lg:py-0 relative z-20 transition-opacity duration-300 ${isVideoOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
           <div className="flex flex-col gap-6 lg:gap-8">
             {/* Main Headline */}
-            <h1 className="text-center md:text-left text-[50px] sm:text-[65px] lg:text-[75px] xl:text-[90px] font-hero font-bold leading-[0.85] tracking-normal uppercase text-black landscape:-ml-8 md:landscape:-ml-5 lg:landscape:ml-0">
+            <h1 className="text-center landscape:text-left md:text-left text-[50px] landscape:text-[40px] sm:text-[65px] sm:landscape:text-[50px] lg:text-[75px] lg:landscape:text-[75px] xl:text-[90px] xl:landscape:text-[90px] font-hero font-bold leading-[0.85] tracking-normal uppercase text-black landscape:-ml-2 sm:landscape:ml-0 md:landscape:-ml-5 lg:landscape:ml-0">
               <span className="block"><SplitText text="SUBSTANCE" className="text-brand-gray transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#6B7280]" /></span>
               <span className="block"><SplitText text="MEETS" /></span>
               <span className="block"><SplitText text="MASS " className="text-brand-gray transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#6B7280]" /></span>

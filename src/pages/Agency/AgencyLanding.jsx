@@ -76,12 +76,12 @@ const AgencyLanding = () => {
       <main className="relative z-10 w-full flex flex-col">
         
         {/* Central container holding the Hero and the Absolute Collage */}
-        <div className="relative w-full max-w-[1600px] mx-auto min-h-[75vh] md:min-h-screen flex items-center justify-center pt-16 pb-16 md:pt-20 md:pb-10">
+        <div className="relative w-full max-w-[1600px] mx-auto min-h-0 md:min-h-screen flex items-start md:items-center justify-center pt-24 pb-8 md:pt-20 md:pb-10">
           <Hero />
           <VideoCollage />
         </div>
         
-        <div className="mt-32 sm:mt-48 md:mt-0">
+        <div className="-mt-13 md:mt-0">
           <ContactForm 
             linkColorClass="text-brand-blue hover:text-blue-700" 
             highlightColorClass="text-brand-blue"

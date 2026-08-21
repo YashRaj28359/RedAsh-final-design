@@ -12,7 +12,7 @@ const steps = [
 
 const ProcessTimeline = () => {
   return (
-    <div className="w-full max-w-[1400px] mx-auto pt-4 pb-8 md:pt-6 md:pb-12 px-4 overflow-hidden mt-2 md:mt-4">
+    <div className="w-full max-w-[1400px] mx-auto pt-4 pb-8 md:pt-6 md:pb-12 px-2 md:px-4 overflow-hidden mt-2 md:mt-4">
       {/* Top Left Text */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
@@ -39,13 +39,13 @@ const ProcessTimeline = () => {
               transition={{ duration: 0.6, delay: index * 0.15 }}
               className="flex flex-col items-center relative z-10 w-full md:w-auto my-6 md:my-0"
             >
-              <div className="flex items-center gap-1 md:gap-3 mb-3 md:mb-4">
-                <span className="text-5xl md:text-[4rem] font-hero text-brand-red leading-none">{step.id}</span>
-                <div className="w-16 h-16 md:w-20 md:h-20 rounded-full border border-gray-200 bg-gray-50 flex items-center justify-center shadow-sm">
-                   <step.icon className="w-6 h-6 md:w-8 md:h-8 text-neutral-800" strokeWidth={1.5} />
+              <div className="flex items-center gap-1 md:gap-2 lg:gap-3 mb-3 md:mb-4">
+                <span className="text-5xl md:text-5xl lg:text-[4rem] font-hero text-brand-red leading-none">{step.id}</span>
+                <div className="w-16 h-16 md:w-16 md:h-16 lg:w-20 lg:h-20 rounded-full border border-gray-200 bg-gray-50 flex items-center justify-center shadow-sm">
+                   <step.icon className="w-6 h-6 md:w-6 md:h-6 lg:w-8 lg:h-8 text-neutral-800" strokeWidth={1.5} />
                 </div>
               </div>
-              <h3 className="text-sm md:text-base font-bold tracking-wider text-neutral-900 mt-2">{step.title}</h3>
+              <h3 className="text-sm md:text-xs lg:text-base font-bold tracking-wider text-neutral-900 mt-2">{step.title}</h3>
               <div className="w-8 h-[2px] bg-brand-red mt-2"></div>
             </motion.div>
 

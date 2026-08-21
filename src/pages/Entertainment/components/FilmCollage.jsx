@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -152,6 +153,15 @@ const FilmCollage = ({ onVideoToggle }) => {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  useEffect(() => {
+    if (activeVideo) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [activeVideo]);
 
   useGSAP(() => {
     // Initial entrance animations
@@ -364,31 +374,37 @@ const FilmCollage = ({ onVideoToggle }) => {
       </div>
 
       {/* Video Modal */}
-      {activeVideo && (
-        <div 
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm pointer-events-auto"
-          onClick={() => setActiveVideo(null)}
-        >
-          <div 
-            className="relative w-[90%] max-w-5xl aspect-video rounded-xl overflow-hidden shadow-2xl bg-black" 
-            onClick={e => e.stopPropagation()}
-          >
-            <button 
-              className="absolute top-4 right-4 z-20 w-10 h-10 bg-black/50 hover:bg-brand-red text-white rounded-full flex items-center justify-center transition-colors duration-300 font-bold"
+      {typeof document !== 'undefined' && createPortal(
+        <>
+          {activeVideo && (
+            <div 
+              className="fixed top-0 left-0 w-screen h-[100dvh] z-[2147483647] flex items-center justify-center bg-black/95 pointer-events-auto"
               onClick={() => setActiveVideo(null)}
+              data-lenis-prevent="true"
             >
-              ✕
-            </button>
-            <iframe 
-              src={getEmbedUrl(activeVideo)}
-              title="Video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full relative z-10 bg-black"
-            ></iframe>
-          </div>
-        </div>
+              <div 
+                className="relative w-[90%] max-w-5xl aspect-video rounded-xl shadow-2xl bg-black mt-16 md:mt-24" 
+                onClick={e => e.stopPropagation()}
+              >
+                <button 
+                  className="absolute -top-12 md:-top-16 right-0 z-20 w-10 h-10 bg-black/50 hover:bg-brand-red text-white rounded-full flex items-center justify-center transition-colors duration-300 font-bold"
+                  onClick={() => setActiveVideo(null)}
+                >
+                  ✕
+                </button>
+                <iframe 
+                  src={getEmbedUrl(activeVideo)}
+                  title="Video player"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full relative z-10 bg-black rounded-xl"
+                ></iframe>
+              </div>
+            </div>
+          )}
+        </>,
+        document.body
       )}
     </div>
   );

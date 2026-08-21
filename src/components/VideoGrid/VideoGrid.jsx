@@ -31,6 +31,15 @@ const VideoGrid = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  useEffect(() => {
+    if (selectedVideo) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [selectedVideo]);
+
   const displayVideos = videos.map(v => ({ ...v, uniqueId: v.id }));
 
   return (
@@ -111,14 +120,15 @@ const VideoGrid = () => {
       <div 
         className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 md:p-12"
         onClick={() => setSelectedVideo(null)}
+        data-lenis-prevent="true"
       >
         <div 
-          className="relative w-full max-w-6xl aspect-video bg-black rounded-xl overflow-hidden shadow-2xl"
+          className="relative w-full max-w-6xl aspect-video bg-black rounded-xl shadow-2xl mt-16 md:mt-24"
           onClick={(e) => e.stopPropagation()}
         >
           <button 
             onClick={() => setSelectedVideo(null)}
-            className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-brand-red rounded-full text-white transition-colors"
+            className="absolute -top-12 md:-top-16 right-0 z-20 w-10 h-10 bg-black/50 hover:bg-brand-red rounded-full text-white flex items-center justify-center transition-colors font-bold"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -127,7 +137,7 @@ const VideoGrid = () => {
           </button>
           
           <iframe 
-            className="w-full h-full"
+            className="w-full h-full rounded-xl"
             src={`https://www.youtube.com/embed/${selectedVideo.id}?autoplay=1`}
             title={selectedVideo.title}
             frameBorder="0"

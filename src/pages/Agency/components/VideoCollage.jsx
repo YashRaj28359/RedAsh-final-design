@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -28,7 +29,7 @@ const VideoCard = ({ video, className, onPlay, isMobile }) => (
       <img 
         src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`} 
         alt={video.label} 
-        className="w-full h-full object-cover"
+        className="w-full h-full object-cover scale-[1.02]"
       />
       
       {/* Permanent Overlay: Black Fade + Text */}
@@ -39,7 +40,7 @@ const VideoCard = ({ video, className, onPlay, isMobile }) => (
 
         {/* Category Text (Bottom) */}
         <div className="relative w-full flex justify-center pb-2 md:pb-4 z-20">
-          <span className="text-brand-blue font-hero font-bold tracking-normal text-[10px] sm:text-xs md:text-3xl lg:text-4xl uppercase drop-shadow-md text-center px-1">
+          <span className="text-brand-blue font-hero font-bold tracking-[2px] md:tracking-[3px] text-[10px] sm:text-xs md:text-3xl lg:text-4xl [@media(max-height:600px)_and_(orientation:landscape)]:!text-sm uppercase drop-shadow-md text-center px-1 [-webkit-text-stroke:0.05px_white] md:[-webkit-text-stroke:0.05px_white]">
             {video.label}
           </span>
         </div>
@@ -59,15 +60,17 @@ const VideoCard = ({ video, className, onPlay, isMobile }) => (
 const VideoCollage = () => {
   const containerRef = useRef(null);
   const [activeVideo, setActiveVideo] = useState(null);
-  const [mobileIndex, setMobileIndex] = useState(0);
+  const navigate = useNavigate();
 
-  // Cycle mobile videos every 4 seconds
   useEffect(() => {
-    const interval = setInterval(() => {
-      setMobileIndex((prev) => (prev + 1) % 3);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
+    if (activeVideo) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [activeVideo]);
+
 
   useGSAP(() => {
     // Left side slides in from left
@@ -126,7 +129,7 @@ const VideoCollage = () => {
       <div ref={containerRef} className="absolute inset-0 w-full h-full pointer-events-none z-10 hidden md:block">
         
         {/* Left Column */}
-        <div className="absolute top-0 bottom-0 left-[5%] [@media(max-height:600px)_and_(orientation:landscape)]:left-[2%] w-[20%] [@media(max-height:600px)_and_(orientation:landscape)]:w-[14%] flex flex-col justify-center gap-8 [@media(max-height:600px)_and_(orientation:landscape)]:gap-4 collage-column-left">
+        <div className="absolute top-0 bottom-0 left-[5%] [@media(max-height:600px)_and_(orientation:landscape)]:left-[3%] w-[20%] [@media(max-height:600px)_and_(orientation:landscape)]:w-[18%] flex flex-col justify-center gap-8 [@media(max-height:600px)_and_(orientation:landscape)]:gap-4 collage-column-left">
           {leftVideos.map((video, index) => (
             <div key={`left-${index}`} className="collage-card-left">
               <VideoCard video={video} onPlay={() => setActiveVideo(video.id)} />
@@ -135,7 +138,7 @@ const VideoCollage = () => {
         </div>
 
         {/* Right Column */}
-        <div className="absolute top-0 bottom-0 right-[5%] [@media(max-height:600px)_and_(orientation:landscape)]:right-[2%] w-[20%] [@media(max-height:600px)_and_(orientation:landscape)]:w-[14%] flex flex-col justify-center gap-8 [@media(max-height:600px)_and_(orientation:landscape)]:gap-4 collage-column-right">
+        <div className="absolute top-0 bottom-0 right-[5%] [@media(max-height:600px)_and_(orientation:landscape)]:right-[3%] w-[20%] [@media(max-height:600px)_and_(orientation:landscape)]:w-[18%] flex flex-col justify-center gap-8 [@media(max-height:600px)_and_(orientation:landscape)]:gap-4 collage-column-right">
           {rightVideos.map((video, index) => (
             <div key={`right-${index}`} className="collage-card-right">
               <VideoCard video={video} onPlay={() => setActiveVideo(video.id)} />
@@ -146,36 +149,59 @@ const VideoCollage = () => {
       </div>
 
       {/* Mobile Layout */}
-      <div className="absolute top-[18%] sm:top-[20%] left-0 w-full px-4 md:hidden z-20 pointer-events-none flex justify-center gap-3">
-        <div className="w-1/2 max-w-[200px] relative aspect-video">
-          <AnimatePresence mode="wait">
-            <motion.div 
-              key={`mobile-left-${mobileIndex}`}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.4 }}
-              className="absolute inset-0"
-            >
-              <VideoCard video={leftVideos[mobileIndex]} onPlay={() => setActiveVideo(leftVideos[mobileIndex].id)} isMobile />
-            </motion.div>
-          </AnimatePresence>
+      <div className="w-full px-4 pt-4 pb-8 md:hidden z-20 flex flex-col items-center justify-center gap-5 mt-0 relative pointer-events-auto">
+        <h1 className="font-hero text-[44px] leading-[0.9] text-black uppercase font-bold text-center">
+          <div className="whitespace-nowrap"><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-blue">AD Agency.</span></div>
+        </h1>
+        
+        <div className="flex w-full justify-center gap-3">
+          <div className="w-1/2 max-w-[200px] relative aspect-video">
+            <VideoCard video={leftVideos[0]} onPlay={() => setActiveVideo(leftVideos[0].id)} isMobile />
+          </div>
+          <div className="w-1/2 max-w-[200px] relative aspect-video">
+            <VideoCard video={rightVideos[0]} onPlay={() => setActiveVideo(rightVideos[0].id)} isMobile />
+          </div>
         </div>
 
-        <div className="w-1/2 max-w-[200px] relative aspect-video">
-          <AnimatePresence mode="wait">
-            <motion.div 
-              key={`mobile-right-${mobileIndex}`}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.4 }}
-              className="absolute inset-0"
-            >
-              <VideoCard video={rightVideos[mobileIndex]} onPlay={() => setActiveVideo(rightVideos[mobileIndex].id)} isMobile />
-            </motion.div>
-          </AnimatePresence>
+        <h2 className="font-hero text-[34px] leading-[1] opacity-80 uppercase text-center font-bold">
+          Marketing Campaigns.
+        </h2>
+
+        <div className="flex w-full justify-center gap-3">
+          <div className="w-1/2 max-w-[200px] relative aspect-video">
+            <VideoCard video={leftVideos[1]} onPlay={() => setActiveVideo(leftVideos[1].id)} isMobile />
+          </div>
+          <div className="w-1/2 max-w-[200px] relative aspect-video">
+            <VideoCard video={rightVideos[1]} onPlay={() => setActiveVideo(rightVideos[1].id)} isMobile />
+          </div>
         </div>
+
+        <h2 className="font-hero text-[44px] leading-[0.9] text-brand-blue uppercase font-bold text-center flex flex-col">
+          <span>Design.</span>
+          <span>Create.</span>
+          <span>Execute.</span>
+        </h2>
+
+        <div className="flex w-full justify-center gap-3">
+          <div className="w-1/2 max-w-[200px] relative aspect-video">
+            <VideoCard video={leftVideos[2]} onPlay={() => setActiveVideo(leftVideos[2].id)} isMobile />
+          </div>
+          <div className="w-1/2 max-w-[200px] relative aspect-video">
+            <VideoCard video={rightVideos[2]} onPlay={() => setActiveVideo(rightVideos[2].id)} isMobile />
+          </div>
+        </div>
+
+        <h3 className="font-hero text-[44px] leading-[0.9] opacity-80 text-black uppercase font-bold text-center">
+          Since 2007.
+        </h3>
+
+        <button 
+          onClick={() => navigate('/ad-agency/films')}
+          className="mt-6 relative group bg-transparent text-brand-blue font-main text-xs uppercase tracking-[0.2em] font-bold py-4 px-8 rounded-full pointer-events-auto transition-all duration-500 overflow-hidden border border-brand-blue/40 hover:border-brand-blue"
+        >
+          <span className="relative z-10 transition-colors duration-500 group-hover:text-white">Watch More Enterprise Films</span>
+          <div className="absolute inset-0 bg-brand-blue w-full h-full -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] z-0" />
+        </button>
       </div>
 
       {/* Video Modal */}
@@ -183,13 +209,14 @@ const VideoCollage = () => {
         <div 
           className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm pointer-events-auto"
           onClick={() => setActiveVideo(null)}
+          data-lenis-prevent="true"
         >
           <div 
-            className="relative w-[90%] max-w-5xl aspect-video rounded-2xl overflow-hidden shadow-2xl bg-black" 
+            className="relative w-[90%] max-w-5xl aspect-video rounded-2xl shadow-2xl bg-black mt-16 md:mt-24" 
             onClick={e => e.stopPropagation()}
           >
             <button 
-              className="absolute top-4 right-4 z-20 w-10 h-10 bg-black/50 hover:bg-brand-blue text-white rounded-full flex items-center justify-center transition-colors duration-300"
+              className="absolute -top-12 md:-top-16 right-0 z-20 w-10 h-10 bg-black/50 hover:bg-brand-blue text-white rounded-full flex items-center justify-center transition-colors duration-300 font-bold"
               onClick={() => setActiveVideo(null)}
             >
               ✕
@@ -200,7 +227,7 @@ const VideoCollage = () => {
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
-              className="w-full h-full relative z-10"
+              className="w-full h-full relative z-10 rounded-2xl"
             ></iframe>
           </div>
         </div>

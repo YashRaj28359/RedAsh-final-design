@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiPlay, FiX, FiChevronLeft, FiChevronRight, FiChevronDown, FiTv, FiMic, FiBriefcase, FiMonitor, FiBookOpen, FiCpu, FiFilm, FiVideo } from 'react-icons/fi';
-import { FaLightbulb } from 'react-icons/fa';
+import { FaLightbulb, FaYoutube } from 'react-icons/fa';
 import YouTube from 'react-youtube';
 
 const getCategoryIcon = (category, theme = 'blue') => {
@@ -299,13 +299,22 @@ const VideoPlaylist = ({ videos, category, theme = 'blue' }) => {
                 />
                 {!isPlaying && !isMobileLandscape && (
                   <div 
-                    className="absolute inset-0 z-10 cursor-pointer flex items-center justify-center bg-black"
+                    className="absolute inset-0 z-10 cursor-pointer flex flex-col items-center justify-center bg-black overflow-hidden"
                     onClick={handlePlayVideo}
                   >
                     <ThumbnailImage video={activeVideo} isLarge={true} />
-                    <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors"></div>
-                    <div className="absolute w-16 h-16 md:w-20 md:h-20 bg-red-600 rounded-xl flex items-center justify-center shadow-[0_4px_20px_rgba(220,38,38,0.5)] transform group-hover:scale-110 transition-transform duration-300">
-                      <FiPlay className="text-white text-3xl md:text-4xl ml-1" />
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
+                    
+                    {/* YouTube Title Bar */}
+                    <div className="absolute top-0 left-0 w-full px-4 py-4 md:px-5 md:py-4 flex items-start z-20 bg-gradient-to-b from-black/80 via-black/40 to-transparent pb-10">
+                      <div className="text-white text-base md:text-lg font-main font-medium line-clamp-1 drop-shadow-md pr-8">
+                        {activeVideo.title}
+                      </div>
+                    </div>
+
+                    <div className="absolute flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
+                      <div className="absolute w-8 h-8 md:w-12 md:h-12 bg-white rounded-sm"></div>
+                      <FaYoutube className="text-[#FF0000] text-[60px] md:text-[80px] drop-shadow-2xl relative z-10" />
                     </div>
                   </div>
                 )}

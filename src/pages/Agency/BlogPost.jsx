@@ -68,7 +68,7 @@ const BlogPost = () => {
         <div className="max-w-7xl mx-auto w-full">
           <Link 
             to="/ad-agency/blog" 
-            className="inline-flex items-center text-gray-500 hover:text-brand-blue mb-8 font-bold text-sm uppercase tracking-widest transition-colors"
+            className="inline-flex items-center text-gray-500 md:hover:text-brand-blue active:text-brand-blue mb-8 font-bold text-sm uppercase tracking-widest transition-colors"
           >
             <FiArrowLeft className="mr-2" /> Back to Blogs
           </Link>

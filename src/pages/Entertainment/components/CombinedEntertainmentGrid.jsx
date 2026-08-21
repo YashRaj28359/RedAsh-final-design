@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiPlay } from 'react-icons/fi';
 import gsap from 'gsap';
@@ -62,6 +63,15 @@ const CombinedEntertainmentGrid = () => {
   const containerRef = useRef(null);
   const cardsRef = useRef([]);
   const [selectedVideoUrl, setSelectedVideoUrl] = useState(null);
+
+  useEffect(() => {
+    if (selectedVideoUrl) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [selectedVideoUrl]);
 
   // Generate the Combined Rows using the specific requested pattern
   // Row 1: V, H, V
@@ -244,42 +254,46 @@ const CombinedEntertainmentGrid = () => {
       </div>
 
       {/* YT Video Modal Pop-out */}
-      <AnimatePresence>
-        {selectedVideoUrl && (
-          <motion.div 
-            className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/90 p-4 md:p-12 backdrop-blur-sm"
-            onClick={() => setSelectedVideoUrl(null)}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {selectedVideoUrl && (
             <motion.div 
-              className="relative w-[90%] max-w-5xl aspect-video bg-black rounded-xl overflow-hidden shadow-2xl mt-16 md:mt-24" 
-              onClick={e => e.stopPropagation()}
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              className="fixed top-0 left-0 w-screen h-[100dvh] z-[2147483647] flex items-center justify-center bg-black/95 p-4 md:p-12"
+              onClick={() => setSelectedVideoUrl(null)}
+              data-lenis-prevent="true"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
             >
-              <button 
-                onClick={() => setSelectedVideoUrl(null)} 
-                className="absolute top-4 right-4 z-20 w-10 h-10 bg-black/50 hover:bg-brand-red text-white rounded-full flex items-center justify-center transition-colors duration-300 font-bold"
+              <motion.div 
+                className="relative w-[90%] max-w-5xl aspect-video bg-black rounded-xl shadow-2xl mt-16 md:mt-24" 
+                onClick={e => e.stopPropagation()}
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 300, damping: 25 }}
               >
-                ✕
-              </button>
-              <iframe 
-                className="w-full h-full"
-                src={selectedVideoUrl.includes('youtu.be') ? `https://www.youtube.com/embed/${selectedVideoUrl.split('youtu.be/')[1].split('?')[0]}?autoplay=1` : selectedVideoUrl.includes('youtube.com') ? selectedVideoUrl.replace('watch?v=', 'embed/').split('&')[0] + '?autoplay=1' : selectedVideoUrl}
-                title="YouTube video player"
-                frameBorder="0"
-                allow="autoplay; encrypted-media"
-                allowFullScreen
-              ></iframe>
+                <button 
+                  onClick={() => setSelectedVideoUrl(null)} 
+                  className="absolute -top-12 md:-top-16 right-0 z-20 w-10 h-10 bg-black/50 hover:bg-brand-red text-white rounded-full flex items-center justify-center transition-colors duration-300 font-bold"
+                >
+                  ✕
+                </button>
+                <iframe 
+                  className="w-full h-full rounded-xl"
+                  src={selectedVideoUrl.includes('youtu.be') ? `https://www.youtube.com/embed/${selectedVideoUrl.split('youtu.be/')[1].split('?')[0]}?autoplay=1` : selectedVideoUrl.includes('youtube.com') ? selectedVideoUrl.replace('watch?v=', 'embed/').split('&')[0] + '?autoplay=1' : selectedVideoUrl}
+                  title="YouTube video player"
+                  frameBorder="0"
+                  allow="autoplay; encrypted-media"
+                  allowFullScreen
+                ></iframe>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
       
     </section>
   );

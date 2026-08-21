@@ -67,7 +67,7 @@ const AboutEntertainment = () => {
 
       <main className="pt-24 lg:pt-32">
         {/* Hero Section */}
-        <section className="px-6 lg:px-16 xl:px-24 py-12 lg:py-24 w-full flex flex-col items-center justify-center overflow-hidden min-h-[70vh]">
+        <section className="px-6 lg:px-16 xl:px-24 py-4 lg:py-8 w-full flex flex-col items-center justify-center overflow-hidden">
           <motion.div 
             className="space-y-4 z-10 w-fit flex flex-col items-center"
             initial="hidden"
@@ -96,7 +96,7 @@ const AboutEntertainment = () => {
 
 
         {/* Our Story Section */}
-        <section className="w-full max-w-[1500px] mx-auto px-6 lg:px-12 py-12 md:py-24 flex flex-col md:flex-row items-center md:items-stretch gap-8 md:gap-16">
+        <section className="w-full max-w-[1500px] mx-auto px-6 lg:px-12 py-8 md:py-16 flex flex-col md:flex-row items-center md:items-stretch gap-8 md:gap-16">
           {/* Left Text */}
           <motion.div 
             initial="hidden"

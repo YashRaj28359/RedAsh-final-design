@@ -87,21 +87,40 @@ const TextTestimonial = ({ text, name, title, company, avatar, rotationClass = "
 
 const Testimonials = () => {
   return (
-    <section className="w-full pt-12 pb-24 bg-[#FAFAFA] relative z-20 font-main">
+    <section className="w-full pt-12 pb-24 bg-[#F4F9FF] relative z-30 font-main shadow-[0_0_50px_rgba(0,0,0,0.15)] border-y border-gray-100">
       <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8">
         
         {/* Header Section */}
-        <div className="flex flex-col items-center mb-16 w-full overflow-hidden">
-          <div className="flex items-center justify-center w-full mb-4">
-            <div className="hidden md:block flex-1 h-[2px] bg-gradient-to-r from-transparent via-gray-200 to-gray-300 relative">
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand-blue shadow-[0_0_8px_rgba(22,114,239,0.5)]"></div>
+        <div className="flex flex-col items-center mb-16 w-full overflow-hidden mt-4">
+          <div className="flex items-center justify-center w-full">
+            
+            {/* Left Dots */}
+            <div className="hidden sm:flex gap-1.5 md:gap-2 mx-4 md:mx-8 items-center">
+              {[...Array(6)].map((_, i) => (
+                <div key={`left-dot-${i}`} className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-brand-blue" />
+              ))}
             </div>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-hero font-extrabold tracking-wider text-brand-gray mx-4 md:mx-6 text-center uppercase whitespace-nowrap">
-              Testimonials
-            </h2>
-            <div className="hidden md:block flex-1 h-[2px] bg-gradient-to-l from-transparent via-gray-200 to-gray-300 relative">
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand-blue shadow-[0_0_8px_rgba(22,114,239,0.5)]"></div>
+
+            {/* Design 12 Heading */}
+            <div className="relative mx-2 md:mx-4">
+              {/* Offset Outline Parallelogram */}
+              <div className="absolute inset-0 border-[1.5px] border-brand-blue skew-x-[-15deg] -translate-x-1.5 -translate-y-1.5 md:-translate-x-2 md:-translate-y-2 pointer-events-none z-0"></div>
+              
+              {/* Solid Filled Parallelogram */}
+              <div className="relative bg-brand-blue skew-x-[-15deg] px-8 py-2 md:px-12 md:py-3 z-10">
+                <h2 className="text-3xl md:text-5xl lg:text-6xl font-hero font-bold tracking-widest text-white text-center uppercase whitespace-nowrap skew-x-[15deg] pt-1">
+                  Testimonials
+                </h2>
+              </div>
             </div>
+
+            {/* Right Dots */}
+            <div className="hidden sm:flex gap-1.5 md:gap-2 mx-4 md:mx-8 items-center">
+              {[...Array(6)].map((_, i) => (
+                <div key={`right-dot-${i}`} className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-brand-blue" />
+              ))}
+            </div>
+            
           </div>
         </div>
 

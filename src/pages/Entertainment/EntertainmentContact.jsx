@@ -49,6 +49,14 @@ const EntertainmentContact = () => {
           >
             GET IN <span className="text-brand-red block md:inline">TOUCH</span>
           </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-lg md:text-xl text-neutral-600 font-medium max-w-2xl mx-auto"
+          >
+            Potential Clients, Investors, and Sponsors can email or fill the form below
+          </motion.p>
         </div>
 
         {/* Contact Info Bento Grid */}
@@ -117,7 +125,6 @@ const EntertainmentContact = () => {
             headingClass="font-subtitle text-[#6A6A6A] tracking-[2px] md:tracking-[4px]"
             highlightColorClass="text-brand-red"
             buttonTheme="red"
-            customFooterText="Potential Clients, Investors, and Sponsors can email or fill the form below"
           />
         </div>
 

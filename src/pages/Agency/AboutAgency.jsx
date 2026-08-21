@@ -249,15 +249,15 @@ const AboutAgency = () => {
               </div>
               <motion.div 
                 variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } } }}
-                className="self-start text-brand-blue text-[13vw] md:text-[9rem] mt-2 md:-mt-4 -ml-2 md:-ml-4"
+                className="self-start text-brand-blue text-[13vw] md:text-[9rem] mt-2 md:-mt-4 -ml-2 md:-ml-4 [@media(max-height:600px)_and_(orientation:landscape)]:text-[6rem]"
               >
-                AGENCY<span className="text-[10vw] md:text-[8.5rem]">!</span>
+                AGENCY<span className="text-[10vw] md:text-[8.5rem] [@media(max-height:600px)_and_(orientation:landscape)]:text-[5.5rem]">!</span>
               </motion.div>
               <motion.div 
                 variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } } }}
-                className="self-end text-brand-black text-[10vw] md:text-[7rem] mt-4 md:mt-8 lg:mt-4 mr-0 md:mr-8"
+                className="self-end text-brand-black text-[10vw] md:text-[7rem] mt-4 md:mt-8 lg:mt-4 mr-0 md:mr-8 [@media(max-height:600px)_and_(orientation:landscape)]:text-[5rem]"
               >
-                FOUNDED IN
+                FOUNDED
               </motion.div>
               
               <motion.div 
@@ -267,8 +267,13 @@ const AboutAgency = () => {
                 <div className="text-left text-sm md:text-lg lg:text-xl font-medium text-gray-500 normal-case leading-snug tracking-normal max-w-[280px] md:max-w-sm pb-2 md:pb-6 mt-6 md:mt-0 self-start md:self-end">
                   by <a href="https://www.linkedin.com/in/ashishlalreal/" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline transition-colors hover:text-blue-700">Ashish Lal</a>, an engineer from IIT Delhi, RedAsh has assembled a highly experienced and professional team of experts spanning filmmaking, advertising, strategy and data analytics.
                 </div>
-                <div className="self-end text-brand-gray text-[22vw] md:text-[13rem] leading-[0.75]">
-                  2007
+                <div className="flex items-baseline gap-4 md:gap-6 self-end">
+                  <span className="text-brand-black text-[10vw] md:text-[7rem] leading-none mb-1 md:mb-5 [@media(max-height:600px)_and_(orientation:landscape)]:text-[5rem]">
+                    IN
+                  </span>
+                  <span className="text-brand-gray text-[22vw] md:text-[13rem] leading-[0.75] [@media(max-height:600px)_and_(orientation:landscape)]:text-[8rem]">
+                    2007
+                  </span>
                 </div>
               </motion.div>
             </motion.div>

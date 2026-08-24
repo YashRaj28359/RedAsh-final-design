@@ -157,10 +157,34 @@ const FilmCollage = ({ onVideoToggle }) => {
   useEffect(() => {
     if (activeVideo) {
       document.body.style.overflow = 'hidden';
+
+      const handleVisibilityChange = () => {
+        if (document.hidden) {
+          const iframe = document.getElementById('yt-iframe');
+          if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+          }
+        }
+      };
+
+      const handleBlur = () => {
+        const iframe = document.getElementById('yt-iframe');
+        if (iframe && iframe.contentWindow) {
+          iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        }
+      };
+
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+      window.addEventListener("blur", handleBlur);
+
+      return () => { 
+        document.body.style.overflow = 'unset'; 
+        document.removeEventListener("visibilitychange", handleVisibilityChange);
+        window.removeEventListener("blur", handleBlur);
+      };
     } else {
       document.body.style.overflow = 'unset';
     }
-    return () => { document.body.style.overflow = 'unset'; };
   }, [activeVideo]);
 
   useGSAP(() => {
@@ -205,18 +229,23 @@ const FilmCollage = ({ onVideoToggle }) => {
   }, [activeVideo, onVideoToggle]);
 
   const getEmbedUrl = (url) => {
+    if (!url) return '';
+    let videoId = '';
     if (url.includes('youtu.be/')) {
-      const id = url.split('youtu.be/')[1].split('?')[0];
-      return `https://www.youtube.com/embed/${id}?autoplay=1`;
+      videoId = url.split('youtu.be/')[1].split('?')[0];
     } else if (url.includes('youtube.com/shorts/')) {
-      const id = url.split('youtube.com/shorts/')[1].split('?')[0];
-      return `https://www.youtube.com/embed/${id}?autoplay=1`;
+      videoId = url.split('youtube.com/shorts/')[1].split('?')[0];
+    } else if (url.includes('youtube.com/embed/')) {
+      videoId = url.split('embed/')[1].split('?')[0];
     } else if (url.includes('youtube.com/watch')) {
       try {
         const urlObj = new URL(url);
-        const id = urlObj.searchParams.get('v');
-        return `https://www.youtube.com/embed/${id}?autoplay=1`;
+        videoId = urlObj.searchParams.get('v');
       } catch (e) { return url; }
+    }
+    
+    if (videoId) {
+      return `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1&playsinline=1&rel=0`;
     }
     return url;
   };
@@ -393,12 +422,13 @@ const FilmCollage = ({ onVideoToggle }) => {
                   ✕
                 </button>
                 <iframe 
+                  id="yt-iframe"
                   src={getEmbedUrl(activeVideo)}
                   title="Video player"
                   frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
-                  className="w-full h-full relative z-10 bg-black rounded-xl"
+                  className="w-full h-full relative z-10 bg-black rounded-xl pointer-events-auto"
                 ></iframe>
               </div>
             </div>

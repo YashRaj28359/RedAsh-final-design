@@ -27,6 +27,23 @@ const projects = [
   { id: "09", title: "100 SHORT FILMS EMERGING LEADERS", image: p9, url: 'https://youtu.be/Rz0El0ooOwM?si=1TkAE07Ek8dbJm1w', customStyle: { objectPosition: '50% 10%' } }
 ];
 
+const getEmbedUrl = (url) => {
+  if (!url) return '';
+  let videoId = '';
+  if (url.includes('youtu.be/')) {
+    videoId = url.split('youtu.be/')[1].split('?')[0];
+  } else if (url.includes('youtube.com/watch?v=')) {
+    videoId = url.split('watch?v=')[1].split('&')[0];
+  } else if (url.includes('youtube.com/embed/')) {
+    videoId = url.split('embed/')[1].split('?')[0];
+  }
+  
+  if (videoId) {
+    return `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1&playsinline=1&rel=0`;
+  }
+  return url;
+};
+
 const EntertainmentFilmsShowcase = () => {
   const [selectedVideoUrl, setSelectedVideoUrl] = useState(null);
 
@@ -42,10 +59,34 @@ const EntertainmentFilmsShowcase = () => {
   useEffect(() => {
     if (selectedVideoUrl) {
       document.body.style.overflow = 'hidden';
+
+      const handleVisibilityChange = () => {
+        if (document.hidden) {
+          const iframe = document.getElementById('yt-iframe');
+          if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+          }
+        }
+      };
+
+      const handleBlur = () => {
+        const iframe = document.getElementById('yt-iframe');
+        if (iframe && iframe.contentWindow) {
+          iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        }
+      };
+
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+      window.addEventListener("blur", handleBlur);
+
+      return () => { 
+        document.body.style.overflow = 'unset'; 
+        document.removeEventListener("visibilitychange", handleVisibilityChange);
+        window.removeEventListener("blur", handleBlur);
+      };
     } else {
       document.body.style.overflow = 'unset';
     }
-    return () => { document.body.style.overflow = 'unset'; };
   }, [selectedVideoUrl]);
 
   const handleVideoClick = (url) => {
@@ -136,11 +177,12 @@ const EntertainmentFilmsShowcase = () => {
                 ✕
               </button>
               <iframe 
-                className="w-full h-full rounded-xl"
-                src={selectedVideoUrl.includes('youtu.be') ? `https://www.youtube.com/embed/${selectedVideoUrl.split('youtu.be/')[1].split('?')[0]}?autoplay=1` : selectedVideoUrl.includes('youtube.com') ? selectedVideoUrl.replace('watch?v=', 'embed/').split('&')[0] + '?autoplay=1' : selectedVideoUrl}
+                id="yt-iframe"
+                className="w-full h-full rounded-xl pointer-events-auto"
+                src={getEmbedUrl(selectedVideoUrl)}
                 title="YouTube video player"
                 frameBorder="0"
-                allow="autoplay; encrypted-media"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
               ></iframe>
           </motion.div>

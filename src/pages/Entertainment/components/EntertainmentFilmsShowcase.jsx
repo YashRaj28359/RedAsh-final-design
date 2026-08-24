@@ -61,28 +61,23 @@ const EntertainmentFilmsShowcase = () => {
       document.body.style.overflow = 'hidden';
 
       const handleVisibilityChange = () => {
-        if (document.hidden) {
-          const iframe = document.getElementById('yt-iframe');
-          if (iframe && iframe.contentWindow) {
-            iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-          }
-        }
-      };
-
-      const handleBlur = () => {
-        const iframe = document.getElementById('yt-iframe');
-        if (iframe && iframe.contentWindow) {
-          iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        if (document.hidden || document.visibilityState === 'hidden') {
+          const iframes = document.querySelectorAll('iframe');
+          iframes.forEach(iframe => {
+            if (iframe.src.includes('youtube.com')) {
+              iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+            }
+          });
         }
       };
 
       document.addEventListener("visibilitychange", handleVisibilityChange);
-      window.addEventListener("blur", handleBlur);
+      window.addEventListener("pagehide", handleVisibilityChange);
 
       return () => { 
         document.body.style.overflow = 'unset'; 
         document.removeEventListener("visibilitychange", handleVisibilityChange);
-        window.removeEventListener("blur", handleBlur);
+        window.removeEventListener("pagehide", handleVisibilityChange);
       };
     } else {
       document.body.style.overflow = 'unset';

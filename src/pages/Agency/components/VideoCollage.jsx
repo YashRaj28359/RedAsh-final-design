@@ -16,36 +16,47 @@ const leftVideos = [
 
 const rightVideos = [
   { id: 'rqfTN_Fj1SA', label: 'DIGITAL ADS', rotation: '-7deg', offsetX: '-60px', scale: 0.9 },
-  { id: 'R_EAcTv-59o', label: 'ANIMATED EXPLAINERS', rotation: '-2deg', offsetX: '-150px', scale: 1.10 },
+  { id: 'R_EAcTv-59o', label: 'EXPLAINERS', rotation: '-2deg', offsetX: '-150px', scale: 1.10 },
   { id: 'l4XYMZzh7Tc', label: 'AI VIDEOS', rotation: '8deg', offsetX: '-30px', scale: 0.90 },
 ];
 
-const VideoCard = ({ video, className, onPlay, isMobile }) => (
-  <div className={className} style={isMobile ? {} : { transform: `translateX(${video.offsetX || '0px'}) rotate(${video.rotation || '0deg'}) scale(${video.scale || 1})` }}>
-    <div 
-      onClick={onPlay}
-      className={`relative block w-full aspect-video rounded-lg overflow-hidden shadow-2xl transition-transform duration-500 hover:scale-105 hover:z-50 pointer-events-auto cursor-pointer group ${isMobile ? 'border border-white/20' : ''}`}
-    >
-      <img 
-        src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`} 
-        alt={video.label} 
-        className="w-full h-full object-cover scale-[1.02]"
-      />
-      
-      {/* Permanent Overlay: Black Fade + Text */}
-      <div className="absolute inset-0 z-10 flex flex-col justify-end pointer-events-none">
+const isLandscapeMobile = "[@media(max-height:600px)_and_(orientation:landscape)]";
+
+const VideoCard = ({ video, className, onPlay, isMobile }) => {
+  const fadeClasses = isMobile 
+    ? "bottom-0 h-[50%] from-white/95 via-white/40 to-transparent" 
+    : `inset-0 from-black/80 via-black/30 to-transparent ${isLandscapeMobile}:bottom-0 ${isLandscapeMobile}:top-auto ${isLandscapeMobile}:h-[50%] ${isLandscapeMobile}:from-white/95 ${isLandscapeMobile}:via-white/40`;
+
+  const textClasses = `text-brand-blue font-hero font-bold tracking-[2px] md:tracking-[3px] text-[16px] sm:text-[18px] md:text-2xl lg:text-3xl xl:text-4xl ${isLandscapeMobile}:!text-lg uppercase text-center px-1 ` + 
+    (isMobile 
+      ? "drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]" 
+      : `[-webkit-text-stroke:0.05px_white] md:[-webkit-text-stroke:0.05px_white] ${isLandscapeMobile}:[-webkit-text-stroke:0px] ${isLandscapeMobile}:drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]`);
+
+  return (
+    <div className={className} style={isMobile ? {} : { transform: `translateX(${video.offsetX || '0px'}) rotate(${video.rotation || '0deg'}) scale(${video.scale || 1})` }}>
+      <div 
+        onClick={onPlay}
+        className={`relative block w-full aspect-video rounded-lg overflow-hidden shadow-2xl transition-transform duration-500 hover:scale-105 hover:z-50 pointer-events-auto cursor-pointer group`}
+        style={isMobile ? {} : { WebkitTransform: 'translateZ(0)', outline: '1px solid transparent' }}
+      >
+        <img 
+          src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`} 
+          alt={video.label} 
+          className="w-full h-full object-cover scale-[1.02]"
+        />
         
-        {/* Black fade from bottom */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+        {/* Permanent Overlay */}
+        <div className="absolute inset-0 z-10 flex flex-col justify-end pointer-events-none">
+          
+          <div className={`absolute w-full bg-gradient-to-t ${fadeClasses}`} />
 
-        {/* Category Text (Bottom) */}
-        <div className="relative w-full flex justify-center pb-2 md:pb-4 z-20">
-          <span className="text-brand-blue font-hero font-bold tracking-[2px] md:tracking-[3px] text-[10px] sm:text-xs md:text-3xl lg:text-4xl [@media(max-height:600px)_and_(orientation:landscape)]:!text-sm uppercase drop-shadow-md text-center px-1 [-webkit-text-stroke:0.05px_white] md:[-webkit-text-stroke:0.05px_white]">
-            {video.label}
-          </span>
+          <div className={`absolute bottom-0 w-full flex justify-center pb-1 md:pb-4 ${isLandscapeMobile}:!pb-[1px] z-20`}>
+            <span className={textClasses}>
+              {video.label}
+            </span>
+          </div>
+
         </div>
-
-      </div>
 
       {/* Hover Overlay: Play Button */}
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 flex items-center justify-center">
@@ -55,7 +66,8 @@ const VideoCard = ({ video, className, onPlay, isMobile }) => (
       </div>
     </div>
   </div>
-);
+  );
+};
 
 const VideoCollage = () => {
   const containerRef = useRef(null);
@@ -126,10 +138,10 @@ const VideoCollage = () => {
   return (
     <>
       {/* Desktop Layout */}
-      <div ref={containerRef} className="absolute inset-0 w-full h-full pointer-events-none z-10 hidden md:block">
+      <div ref={containerRef} className="absolute inset-0 w-full h-full pointer-events-none z-10 hidden md:block [@media(max-height:600px)_and_(orientation:landscape)]:block">
         
         {/* Left Column */}
-        <div className="absolute top-0 bottom-0 left-[5%] [@media(max-height:600px)_and_(orientation:landscape)]:left-[3%] w-[20%] [@media(max-height:600px)_and_(orientation:landscape)]:w-[18%] flex flex-col justify-center gap-8 [@media(max-height:600px)_and_(orientation:landscape)]:gap-4 collage-column-left">
+        <div className="absolute top-0 bottom-0 left-[5%] [@media(max-height:600px)_and_(orientation:landscape)]:left-[1%] w-[20%] [@media(max-height:600px)_and_(orientation:landscape)]:w-[22%] flex flex-col justify-center gap-8 [@media(max-height:600px)_and_(orientation:landscape)]:gap-4 collage-column-left">
           {leftVideos.map((video, index) => (
             <div key={`left-${index}`} className="collage-card-left">
               <VideoCard video={video} onPlay={() => setActiveVideo(video.id)} />
@@ -138,7 +150,7 @@ const VideoCollage = () => {
         </div>
 
         {/* Right Column */}
-        <div className="absolute top-0 bottom-0 right-[5%] [@media(max-height:600px)_and_(orientation:landscape)]:right-[3%] w-[20%] [@media(max-height:600px)_and_(orientation:landscape)]:w-[18%] flex flex-col justify-center gap-8 [@media(max-height:600px)_and_(orientation:landscape)]:gap-4 collage-column-right">
+        <div className="absolute top-0 bottom-0 right-[5%] [@media(max-height:600px)_and_(orientation:landscape)]:right-[1%] w-[20%] [@media(max-height:600px)_and_(orientation:landscape)]:w-[22%] flex flex-col justify-center gap-8 [@media(max-height:600px)_and_(orientation:landscape)]:gap-4 collage-column-right">
           {rightVideos.map((video, index) => (
             <div key={`right-${index}`} className="collage-card-right">
               <VideoCard video={video} onPlay={() => setActiveVideo(video.id)} />
@@ -149,9 +161,9 @@ const VideoCollage = () => {
       </div>
 
       {/* Mobile Layout */}
-      <div className="w-full px-4 pt-4 pb-8 md:hidden z-20 flex flex-col items-center justify-center gap-5 mt-0 relative pointer-events-auto">
-        <h1 className="font-hero text-[44px] leading-[0.9] text-black uppercase font-bold text-center">
-          <div className="whitespace-nowrap"><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-blue">AD Agency.</span></div>
+      <div className="w-full px-4 pt-4 pb-8 md:hidden [@media(max-height:600px)_and_(orientation:landscape)]:hidden z-20 flex flex-col items-center justify-center gap-5 mt-0 relative pointer-events-auto">
+        <h1 className="font-hero text-[34px] xs:text-[38px] sm:text-[44px] leading-[1] text-black uppercase font-bold text-center">
+          <div className="flex flex-wrap justify-center gap-x-2"><span className="text-brand-red">Red<span className="text-brand-gray">Ash</span></span> <span className="text-brand-blue">AD Agency.</span></div>
         </h1>
         
         <div className="flex w-full justify-center gap-3">

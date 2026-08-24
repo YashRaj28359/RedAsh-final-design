@@ -1,13 +1,15 @@
 import React from 'react';
-import { FaLinkedin, FaYoutube, FaInstagram, FaFacebook } from 'react-icons/fa';
+import { FaLinkedin, FaYoutube, FaInstagram, FaFacebookF } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+
+const isLandscapeMobile = "[@media(max-height:600px)_and_(orientation:landscape)]";
 
 const HomeFooter = () => {
   return (
     <footer className="bg-brand-gray text-white py-12 px-6 md:px-12 w-full mt-auto relative z-50">
       <div className="max-w-7xl mx-auto flex flex-col justify-between h-full min-h-[90px]">
         {/* Top Section */}
-        <div className="flex flex-col md:flex-row justify-between items-center w-full gap-8 md:gap-0 mb-8 md:mb-12">
+        <div className="flex flex-col lg:flex-row justify-between items-center w-full gap-8 lg:gap-0 mb-8 lg:mb-12">
           {/* Social Icons */}
           <div className="flex items-center gap-6 text-xl">
             <a href="https://www.linkedin.com/company/redashfilms/" target="_blank" rel="noreferrer" className="hover:text-brand-black transition-colors">
@@ -20,7 +22,7 @@ const HomeFooter = () => {
               <FaInstagram />
             </a>
             <a href="https://www.facebook.com/redashfilms" target="_blank" rel="noreferrer" className="hover:text-brand-black transition-colors">
-              <FaFacebook />
+              <FaFacebookF />
             </a>
           </div>
 

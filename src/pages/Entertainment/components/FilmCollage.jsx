@@ -44,7 +44,7 @@ const films = [
   },
   {
     id: "03",
-    title: "MICRODRAMA SHOWS",
+    title: "MICRO DRAMAS",
     subtitle: "SHORT STORIES.\nBIG IMPACT.",
     link: "https://kukutv.app/show/billionaire-on-plane",
     image: card3Img,
@@ -159,28 +159,23 @@ const FilmCollage = ({ onVideoToggle }) => {
       document.body.style.overflow = 'hidden';
 
       const handleVisibilityChange = () => {
-        if (document.hidden) {
-          const iframe = document.getElementById('yt-iframe');
-          if (iframe && iframe.contentWindow) {
-            iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-          }
-        }
-      };
-
-      const handleBlur = () => {
-        const iframe = document.getElementById('yt-iframe');
-        if (iframe && iframe.contentWindow) {
-          iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        if (document.hidden || document.visibilityState === 'hidden') {
+          const iframes = document.querySelectorAll('iframe');
+          iframes.forEach(iframe => {
+            if (iframe.src.includes('youtube.com')) {
+              iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+            }
+          });
         }
       };
 
       document.addEventListener("visibilitychange", handleVisibilityChange);
-      window.addEventListener("blur", handleBlur);
+      window.addEventListener("pagehide", handleVisibilityChange);
 
       return () => { 
         document.body.style.overflow = 'unset'; 
         document.removeEventListener("visibilitychange", handleVisibilityChange);
-        window.removeEventListener("blur", handleBlur);
+        window.removeEventListener("pagehide", handleVisibilityChange);
       };
     } else {
       document.body.style.overflow = 'unset';
@@ -372,16 +367,16 @@ const FilmCollage = ({ onVideoToggle }) => {
                   {/* Bottom Left Content Box (Number + Title) */}
                   <div className="absolute inset-[12px] sm:inset-[16px] p-4 sm:p-6 flex flex-row items-end justify-start z-20 pointer-events-none gap-3 sm:gap-4">
                     {/* Number */}
-                    <span className="text-white/90 font-hero text-[50px] sm:text-[60px] leading-[0.8] font-bold tracking-normal drop-shadow-md group-hover:text-brand-red transition-colors duration-300">
+                    <span className="text-white/90 font-hero text-[70px] sm:text-[85px] lg:text-[50px] xl:text-[60px] leading-[0.8] font-bold tracking-normal drop-shadow-md group-hover:text-brand-red transition-colors duration-300">
                       {film.id}
                     </span>
                     
                     {/* Title */}
                     <div className="flex flex-col translate-y-1.5">
-                      <h3 className="text-2xl sm:text-3xl font-bold font-hero tracking-wider uppercase leading-[0.85] text-white drop-shadow-sm">
+                      <h3 className="text-[46px] sm:text-[56px] lg:text-2xl xl:text-3xl font-bold font-hero tracking-wider uppercase leading-[0.85] text-white drop-shadow-sm">
                         {film.title.split(' ').map((word, i) => (
                           <React.Fragment key={i}>
-                            <span className={i === 0 ? "text-brand-red group-hover:text-white transition-colors duration-300" : "group-hover:text-brand-red transition-colors duration-300"}>
+                            <span className={i === 0 ? "text-white lg:text-brand-red lg:group-hover:text-white transition-colors duration-300" : "text-white lg:group-hover:text-brand-red transition-colors duration-300"}>
                               {word}
                             </span>
                             {i !== film.title.split(' ').length - 1 && <br />}
@@ -409,14 +404,15 @@ const FilmCollage = ({ onVideoToggle }) => {
             <div 
               className="fixed top-0 left-0 w-screen h-[100dvh] z-[2147483647] flex items-center justify-center bg-black/95 pointer-events-auto"
               onClick={() => setActiveVideo(null)}
-              data-lenis-prevent="true"
+              style={{ touchAction: 'none' }}
             >
               <div 
-                className="relative w-[90%] max-w-5xl aspect-video rounded-xl shadow-2xl bg-black mt-16 md:mt-24" 
+                className="relative w-[90%] max-w-5xl aspect-video rounded-xl shadow-2xl bg-black mt-16 md:mt-24 pointer-events-auto" 
                 onClick={e => e.stopPropagation()}
+                style={{ touchAction: 'auto' }}
               >
                 <button 
-                  className="absolute -top-12 md:-top-16 right-0 z-20 w-10 h-10 bg-black/50 hover:bg-brand-red text-white rounded-full flex items-center justify-center transition-colors duration-300 font-bold"
+                  className="absolute -top-12 md:-top-16 right-0 z-20 w-10 h-10 bg-black/50 hover:bg-brand-red text-white rounded-full flex items-center justify-center transition-colors duration-300 font-bold pointer-events-auto"
                   onClick={() => setActiveVideo(null)}
                 >
                   ✕
@@ -429,6 +425,7 @@ const FilmCollage = ({ onVideoToggle }) => {
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
                   className="w-full h-full relative z-10 bg-black rounded-xl pointer-events-auto"
+                  style={{ pointerEvents: 'auto', touchAction: 'auto' }}
                 ></iframe>
               </div>
             </div>

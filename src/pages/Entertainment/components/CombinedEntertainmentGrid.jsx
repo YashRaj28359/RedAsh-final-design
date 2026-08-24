@@ -86,28 +86,23 @@ const CombinedEntertainmentGrid = () => {
       document.body.style.overflow = 'hidden';
 
       const handleVisibilityChange = () => {
-        if (document.hidden) {
-          const iframe = document.getElementById('yt-iframe');
-          if (iframe && iframe.contentWindow) {
-            iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-          }
-        }
-      };
-
-      const handleBlur = () => {
-        const iframe = document.getElementById('yt-iframe');
-        if (iframe && iframe.contentWindow) {
-          iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        if (document.hidden || document.visibilityState === 'hidden') {
+          const iframes = document.querySelectorAll('iframe');
+          iframes.forEach(iframe => {
+            if (iframe.src.includes('youtube.com')) {
+              iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+            }
+          });
         }
       };
 
       document.addEventListener("visibilitychange", handleVisibilityChange);
-      window.addEventListener("blur", handleBlur);
+      window.addEventListener("pagehide", handleVisibilityChange);
 
       return () => { 
         document.body.style.overflow = 'unset'; 
         document.removeEventListener("visibilitychange", handleVisibilityChange);
-        window.removeEventListener("blur", handleBlur);
+        window.removeEventListener("pagehide", handleVisibilityChange);
       };
     } else {
       document.body.style.overflow = 'unset';
@@ -299,17 +294,18 @@ const CombinedEntertainmentGrid = () => {
         <AnimatePresence>
           {selectedVideoUrl && (
             <motion.div 
-              className="fixed top-0 left-0 w-screen h-[100dvh] z-[2147483647] flex items-center justify-center bg-black/95 p-4 md:p-12"
+              className="fixed top-0 left-0 w-screen h-[100dvh] z-[2147483647] flex items-center justify-center bg-black/95 p-4 md:p-12 pointer-events-auto"
               onClick={() => setSelectedVideoUrl(null)}
-              data-lenis-prevent="true"
+              style={{ touchAction: 'none' }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
               <motion.div 
-                className="relative w-[90%] max-w-5xl aspect-video bg-black rounded-xl shadow-2xl mt-16 md:mt-24" 
+                className="relative w-[90%] max-w-5xl aspect-video bg-black rounded-xl shadow-2xl mt-16 md:mt-24 pointer-events-auto" 
                 onClick={e => e.stopPropagation()}
+                style={{ touchAction: 'auto' }}
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
@@ -317,7 +313,7 @@ const CombinedEntertainmentGrid = () => {
               >
                 <button 
                   onClick={() => setSelectedVideoUrl(null)} 
-                  className="absolute -top-12 md:-top-16 right-0 z-20 w-10 h-10 bg-black/50 hover:bg-brand-red text-white rounded-full flex items-center justify-center transition-colors duration-300 font-bold"
+                  className="absolute -top-12 md:-top-16 right-0 z-20 w-10 h-10 bg-black/50 hover:bg-brand-red text-white rounded-full flex items-center justify-center transition-colors duration-300 font-bold pointer-events-auto"
                 >
                   ✕
                 </button>
@@ -329,6 +325,7 @@ const CombinedEntertainmentGrid = () => {
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
+                  style={{ pointerEvents: 'auto', touchAction: 'auto' }}
                 ></iframe>
               </motion.div>
             </motion.div>

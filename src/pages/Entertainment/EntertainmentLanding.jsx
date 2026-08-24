@@ -83,8 +83,8 @@ const EntertainmentLanding = () => {
               <span className="block"><SplitText text="MEETS" /></span>
               <span className="block"><SplitText text="MASS " className="text-brand-gray transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#6B7280]" /></span>
               <span className="block">
-                <span className="mr-3 lg:mr-4"><SplitText text="APPEAL" className="text-brand-gray transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#6B7280]" /></span>
-                <span className="text-[40px] sm:text-[50px] lg:text-[60px] xl:text-[70px]"><SplitText text=" AT " /></span>
+                <SplitText text="APPEAL " className="text-brand-gray transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#6B7280]" />
+                <SplitText text="AT" />
               </span>
               <span className="block mt-1 lg:mt-2">
                 <SplitText text="RED" className="text-brand-red transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:1px_#E20002]" />

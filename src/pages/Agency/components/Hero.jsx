@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 const Hero = () => {
   const navigate = useNavigate();
   return (
-    <div className="hidden md:flex flex-col items-center justify-center text-center z-30 pointer-events-none w-full relative mt-[35vh] md:mt-0 [@media(max-height:600px)_and_(orientation:landscape)]:mt-4">
+    <div className="hidden md:flex flex-col items-center justify-center text-center z-30 pointer-events-none w-full relative mt-[35vh] md:mt-0 [@media(max-height:600px)_and_(orientation:landscape)]:flex [@media(max-height:600px)_and_(orientation:landscape)]:mt-4">
       
       <h1 className="font-hero text-[44px] sm:text-5xl md:text-7xl xl:text-[75px] leading-[0.9] tracking-normal text-black uppercase flex flex-col items-center overflow-visible font-bold mb-0 [@media(max-height:600px)_and_(orientation:landscape)]:text-5xl [@media(max-height:600px)_and_(orientation:landscape)]:!leading-[1]">
         <div className="overflow-visible whitespace-nowrap"><span className="block text-black pointer-events-auto"><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-blue transition-all duration-300 cursor-default hover:text-transparent hover:[-webkit-text-stroke:2px_#1672EF]">AD Agency.</span></span></div>

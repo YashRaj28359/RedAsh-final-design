@@ -25,12 +25,12 @@ const isLandscapeMobile = "[@media(max-height:600px)_and_(orientation:landscape)
 const VideoCard = ({ video, className, onPlay, isMobile }) => {
   const fadeClasses = isMobile 
     ? "bottom-0 h-[50%] from-white/95 via-white/40 to-transparent" 
-    : `inset-0 from-black/80 via-black/30 to-transparent ${isLandscapeMobile}:bottom-0 ${isLandscapeMobile}:top-auto ${isLandscapeMobile}:h-[50%] ${isLandscapeMobile}:from-white/95 ${isLandscapeMobile}:via-white/40`;
+    : "inset-0 from-black/80 via-black/30 to-transparent";
 
   const textClasses = `text-brand-blue font-hero font-bold tracking-[2px] md:tracking-[3px] text-[16px] sm:text-[18px] md:text-2xl lg:text-3xl xl:text-4xl ${isLandscapeMobile}:!text-lg uppercase text-center px-1 ` + 
     (isMobile 
       ? "drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]" 
-      : `[-webkit-text-stroke:0.05px_white] md:[-webkit-text-stroke:0.05px_white] ${isLandscapeMobile}:[-webkit-text-stroke:0px] ${isLandscapeMobile}:drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]`);
+      : "[-webkit-text-stroke:0.5px_white] drop-shadow-md");
 
   return (
     <div className={className} style={isMobile ? {} : { transform: `translateX(${video.offsetX || '0px'}) rotate(${video.rotation || '0deg'}) scale(${video.scale || 1})` }}>

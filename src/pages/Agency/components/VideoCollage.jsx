@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { FaPlay } from 'react-icons/fa';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -217,7 +218,7 @@ const VideoCollage = () => {
       </div>
 
       {/* Video Modal */}
-      {activeVideo && (
+      {activeVideo && createPortal(
         <div 
           className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm pointer-events-auto"
           onClick={() => setActiveVideo(null)}
@@ -242,7 +243,8 @@ const VideoCollage = () => {
               className="w-full h-full relative z-10 rounded-2xl"
             ></iframe>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );

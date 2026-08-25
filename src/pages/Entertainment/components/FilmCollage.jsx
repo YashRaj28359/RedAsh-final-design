@@ -10,6 +10,7 @@ import card5Img from "../../../assets/Films/Cards/Card5.png";
 import card6Img from "../../../assets/Films/Cards/Card6.png";
 import { Link } from 'react-router-dom';
 import { FiArrowRight } from 'react-icons/fi';
+import YouTube from 'react-youtube';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -140,6 +141,7 @@ const getFoldConfig = (corner) => {
 
 const FilmCollage = ({ onVideoToggle }) => {
   const [activeVideo, setActiveVideo] = useState(null);
+  const [player, setPlayer] = useState(null);
   const containerRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
   const [isLandscape, setIsLandscape] = useState(false);
@@ -223,7 +225,7 @@ const FilmCollage = ({ onVideoToggle }) => {
     }
   }, [activeVideo, onVideoToggle]);
 
-  const getEmbedUrl = (url) => {
+  const getVideoIdFromUrl = (url) => {
     if (!url) return '';
     let videoId = '';
     if (url.includes('youtu.be/')) {
@@ -238,11 +240,16 @@ const FilmCollage = ({ onVideoToggle }) => {
         videoId = urlObj.searchParams.get('v');
       } catch (e) { return url; }
     }
-    
-    if (videoId) {
-      return `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1&playsinline=1&rel=0`;
+    return videoId;
+  };
+
+  const handlePlay = (url) => {
+    setActiveVideo(url);
+    const videoId = getVideoIdFromUrl(url);
+    if (player && videoId) {
+      player.loadVideoById(videoId);
     }
-    return url;
+    if (typeof onVideoToggle === 'function') onVideoToggle(true);
   };
 
   return (
@@ -277,10 +284,7 @@ const FilmCollage = ({ onVideoToggle }) => {
                 onClick={(e) => {
                   e.preventDefault();
                   if (film.link && film.link.includes('youtu')) {
-                    flushSync(() => {
-                      setActiveVideo(film.link);
-                    });
-                    if (typeof onVideoToggle === 'function') onVideoToggle(true);
+                    handlePlay(film.link);
                   } else if (film.link) {
                     window.open(film.link, '_blank');
                   }
@@ -399,40 +403,49 @@ const FilmCollage = ({ onVideoToggle }) => {
         })}
       </div>
 
-      {/* Video Modal */}
+      {/* Video Modal - ALWAYS MOUNTED, VISIBILITY TOGGLED */}
       {typeof document !== 'undefined' && createPortal(
-        <>
-          {activeVideo && (
-            <div 
-              className="fixed top-0 left-0 w-screen h-[100dvh] z-[2147483647] flex items-center justify-center bg-black/95 pointer-events-auto"
-              onClick={() => setActiveVideo(null)}
-              style={{ touchAction: 'none' }}
+        <div 
+          className={`fixed top-0 left-0 w-screen h-[100dvh] z-[2147483647] flex items-center justify-center bg-black/95 transition-opacity duration-300 ${activeVideo ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+          style={{ visibility: activeVideo ? 'visible' : 'hidden', touchAction: 'none' }}
+          onClick={() => {
+            setActiveVideo(null);
+            if (player) player.pauseVideo();
+          }}
+        >
+          <div 
+            className="relative w-[90%] max-w-5xl aspect-video rounded-xl shadow-2xl bg-black mt-16 md:mt-24 pointer-events-auto" 
+            onClick={e => e.stopPropagation()}
+            style={{ touchAction: 'auto' }}
+          >
+            <button 
+              className="absolute -top-12 md:-top-16 right-0 z-20 w-10 h-10 bg-black/50 hover:bg-brand-red text-white rounded-full flex items-center justify-center transition-colors duration-300 font-bold pointer-events-auto"
+              onClick={() => {
+                setActiveVideo(null);
+                if (player) player.pauseVideo();
+              }}
             >
-              <div 
-                className="relative w-[90%] max-w-5xl aspect-video rounded-xl shadow-2xl bg-black mt-16 md:mt-24 pointer-events-auto" 
-                onClick={e => e.stopPropagation()}
-                style={{ touchAction: 'auto' }}
-              >
-                <button 
-                  className="absolute -top-12 md:-top-16 right-0 z-20 w-10 h-10 bg-black/50 hover:bg-brand-red text-white rounded-full flex items-center justify-center transition-colors duration-300 font-bold pointer-events-auto"
-                  onClick={() => setActiveVideo(null)}
-                >
-                  ✕
-                </button>
-                <iframe 
-                  id="yt-iframe"
-                  src={getEmbedUrl(activeVideo)}
-                  title="Video player"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                  className="w-full h-full relative z-10 bg-black rounded-xl pointer-events-auto"
-                  style={{ pointerEvents: 'auto', touchAction: 'auto' }}
-                ></iframe>
-              </div>
-            </div>
-          )}
-        </>,
+              ✕
+            </button>
+            <YouTube
+              videoId={getVideoIdFromUrl(films[0]?.link) || 'pIv7FFKm318'}
+              opts={{
+                width: '100%',
+                height: '100%',
+                playerVars: {
+                  autoplay: 0,
+                  rel: 0,
+                  modestbranding: 1,
+                  playsinline: 1,
+                  enablejsapi: 1
+                }
+              }}
+              className="w-full h-full relative z-10 bg-black rounded-xl pointer-events-auto"
+              iframeClassName="w-full h-full border-0 absolute inset-0"
+              onReady={(e) => setPlayer(e.target)}
+            />
+          </div>
+        </div>,
         document.body
       )}
     </div>

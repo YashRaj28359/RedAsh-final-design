@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import VideoCard from '../VideoCard/VideoCard';
 import { videos } from '../../data/videoData';
 import { motion } from 'framer-motion';
+import YouTube from 'react-youtube';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -23,11 +24,15 @@ import { flushSync } from 'react-dom';
 
 const VideoGrid = () => {
   const [selectedVideo, setSelectedVideo] = useState(null);
+  const [player, setPlayer] = useState(null);
 
   // Close modal on Escape key
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') setSelectedVideo(null);
+      if (e.key === 'Escape') {
+        setSelectedVideo(null);
+        if (player) player.pauseVideo();
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -94,9 +99,10 @@ const VideoGrid = () => {
               className="w-[46%] md:w-[14%] xl:w-[12%] mobile-landscape-item"
             >
               <VideoCard video={video} onClick={() => {
-                flushSync(() => {
-                  setSelectedVideo(video);
-                });
+                setSelectedVideo(video);
+                if (player) {
+                  player.loadVideoById(video.id);
+                }
               }} />
             </motion.div>
           ))}
@@ -122,37 +128,50 @@ const VideoGrid = () => {
       </div>
     </section>
 
-    {selectedVideo && (
+    <div 
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 md:p-12 transition-opacity duration-300 ${selectedVideo ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+      style={{ visibility: selectedVideo ? 'visible' : 'hidden' }}
+      onClick={() => {
+        setSelectedVideo(null);
+        if (player) player.pauseVideo();
+      }}
+      data-lenis-prevent="true"
+    >
       <div 
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 md:p-12"
-        onClick={() => setSelectedVideo(null)}
-        data-lenis-prevent="true"
+        className="relative w-full max-w-6xl aspect-video bg-black rounded-xl shadow-2xl mt-16 md:mt-24"
+        onClick={(e) => e.stopPropagation()}
       >
-        <div 
-          className="relative w-full max-w-6xl aspect-video bg-black rounded-xl shadow-2xl mt-16 md:mt-24"
-          onClick={(e) => e.stopPropagation()}
+        <button 
+          onClick={() => {
+            setSelectedVideo(null);
+            if (player) player.pauseVideo();
+          }}
+          className="absolute -top-12 md:-top-16 right-0 z-20 w-10 h-10 bg-black/50 hover:bg-brand-red rounded-full text-white flex items-center justify-center transition-colors font-bold"
         >
-          <button 
-            onClick={() => setSelectedVideo(null)}
-            className="absolute -top-12 md:-top-16 right-0 z-20 w-10 h-10 bg-black/50 hover:bg-brand-red rounded-full text-white flex items-center justify-center transition-colors font-bold"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-          
-          <iframe 
-            className="w-full h-full rounded-xl"
-            src={`https://www.youtube.com/embed/${selectedVideo.id}?autoplay=1&playsinline=1&rel=0`}
-            title={selectedVideo.title}
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          ></iframe>
-        </div>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+        
+        <YouTube
+          videoId={videos[0]?.id || 'b5hZr-8rSI4'}
+          opts={{
+            width: '100%',
+            height: '100%',
+            playerVars: {
+              autoplay: 0,
+              rel: 0,
+              modestbranding: 1,
+              playsinline: 1
+            }
+          }}
+          className="w-full h-full relative z-10 rounded-xl overflow-hidden"
+          iframeClassName="w-full h-full border-0 absolute inset-0"
+          onReady={(e) => setPlayer(e.target)}
+        />
       </div>
-    )}
+    </div>
     </>
   );
 };

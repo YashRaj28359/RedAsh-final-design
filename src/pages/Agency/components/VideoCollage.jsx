@@ -6,6 +6,7 @@ import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import YouTube from 'react-youtube';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -73,7 +74,15 @@ const VideoCard = ({ video, className, onPlay, isMobile }) => {
 const VideoCollage = () => {
   const containerRef = useRef(null);
   const [activeVideo, setActiveVideo] = useState(null);
+  const [player, setPlayer] = useState(null);
   const navigate = useNavigate();
+
+  const handlePlay = (videoId) => {
+    setActiveVideo(videoId);
+    if (player) {
+      player.loadVideoById(videoId);
+    }
+  };
 
   useEffect(() => {
     if (activeVideo) {
@@ -145,9 +154,7 @@ const VideoCollage = () => {
         <div className="absolute top-0 bottom-0 left-[5%] [@media(max-height:600px)_and_(orientation:landscape)]:left-[1%] w-[20%] [@media(max-height:600px)_and_(orientation:landscape)]:w-[22%] flex flex-col justify-center gap-8 [@media(max-height:600px)_and_(orientation:landscape)]:gap-4 collage-column-left">
           {leftVideos.map((video, index) => (
             <div key={`left-${index}`} className="collage-card-left">
-              <VideoCard video={video} onPlay={() => {
-                flushSync(() => setActiveVideo(video.id));
-              }} />
+              <VideoCard video={video} onPlay={() => handlePlay(video.id)} />
             </div>
           ))}
         </div>
@@ -156,9 +163,7 @@ const VideoCollage = () => {
         <div className="absolute top-0 bottom-0 right-[5%] [@media(max-height:600px)_and_(orientation:landscape)]:right-[1%] w-[20%] [@media(max-height:600px)_and_(orientation:landscape)]:w-[22%] flex flex-col justify-center gap-8 [@media(max-height:600px)_and_(orientation:landscape)]:gap-4 collage-column-right">
           {rightVideos.map((video, index) => (
             <div key={`right-${index}`} className="collage-card-right">
-              <VideoCard video={video} onPlay={() => {
-                flushSync(() => setActiveVideo(video.id));
-              }} />
+              <VideoCard video={video} onPlay={() => handlePlay(video.id)} />
             </div>
           ))}
         </div>
@@ -173,10 +178,10 @@ const VideoCollage = () => {
         
         <div className="flex w-full justify-center gap-3">
           <div className="w-1/2 max-w-[200px] relative aspect-video">
-            <VideoCard video={leftVideos[0]} onPlay={() => flushSync(() => setActiveVideo(leftVideos[0].id))} isMobile />
+            <VideoCard video={leftVideos[0]} onPlay={() => handlePlay(leftVideos[0].id)} isMobile />
           </div>
           <div className="w-1/2 max-w-[200px] relative aspect-video">
-            <VideoCard video={rightVideos[0]} onPlay={() => flushSync(() => setActiveVideo(rightVideos[0].id))} isMobile />
+            <VideoCard video={rightVideos[0]} onPlay={() => handlePlay(rightVideos[0].id)} isMobile />
           </div>
         </div>
 
@@ -186,10 +191,10 @@ const VideoCollage = () => {
 
         <div className="flex w-full justify-center gap-3">
           <div className="w-1/2 max-w-[200px] relative aspect-video">
-            <VideoCard video={leftVideos[1]} onPlay={() => flushSync(() => setActiveVideo(leftVideos[1].id))} isMobile />
+            <VideoCard video={leftVideos[1]} onPlay={() => handlePlay(leftVideos[1].id)} isMobile />
           </div>
           <div className="w-1/2 max-w-[200px] relative aspect-video">
-            <VideoCard video={rightVideos[1]} onPlay={() => flushSync(() => setActiveVideo(rightVideos[1].id))} isMobile />
+            <VideoCard video={rightVideos[1]} onPlay={() => handlePlay(rightVideos[1].id)} isMobile />
           </div>
         </div>
 
@@ -201,10 +206,10 @@ const VideoCollage = () => {
 
         <div className="flex w-full justify-center gap-3">
           <div className="w-1/2 max-w-[200px] relative aspect-video">
-            <VideoCard video={leftVideos[2]} onPlay={() => flushSync(() => setActiveVideo(leftVideos[2].id))} isMobile />
+            <VideoCard video={leftVideos[2]} onPlay={() => handlePlay(leftVideos[2].id)} isMobile />
           </div>
           <div className="w-1/2 max-w-[200px] relative aspect-video">
-            <VideoCard video={rightVideos[2]} onPlay={() => flushSync(() => setActiveVideo(rightVideos[2].id))} isMobile />
+            <VideoCard video={rightVideos[2]} onPlay={() => handlePlay(rightVideos[2].id)} isMobile />
           </div>
         </div>
 
@@ -221,11 +226,15 @@ const VideoCollage = () => {
         </button>
       </div>
 
-      {/* Video Modal */}
-      {activeVideo && createPortal(
+      {/* Video Modal - ALWAYS MOUNTED, VISIBILITY TOGGLED */}
+      {createPortal(
         <div 
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm pointer-events-auto"
-          onClick={() => setActiveVideo(null)}
+          className={`fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm transition-opacity duration-300 ${activeVideo ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+          style={{ visibility: activeVideo ? 'visible' : 'hidden' }}
+          onClick={() => {
+            setActiveVideo(null);
+            if (player) player.pauseVideo();
+          }}
           data-lenis-prevent="true"
         >
           <div 
@@ -234,18 +243,29 @@ const VideoCollage = () => {
           >
             <button 
               className="absolute -top-12 md:-top-16 right-0 z-20 w-10 h-10 bg-black/50 hover:bg-brand-blue text-white rounded-full flex items-center justify-center transition-colors duration-300 font-bold"
-              onClick={() => setActiveVideo(null)}
+              onClick={() => {
+                setActiveVideo(null);
+                if (player) player.pauseVideo();
+              }}
             >
               ✕
             </button>
-            <iframe 
-              src={`https://www.youtube.com/embed/${activeVideo}?autoplay=1&playsinline=1&rel=0`}
-              title="YouTube video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full relative z-10 rounded-2xl"
-            ></iframe>
+            <YouTube
+              videoId={leftVideos[0]?.id || 'b5hZr-8rSI4'}
+              opts={{
+                width: '100%',
+                height: '100%',
+                playerVars: {
+                  autoplay: 0,
+                  rel: 0,
+                  modestbranding: 1,
+                  playsinline: 1
+                }
+              }}
+              className="w-full h-full relative z-10 rounded-2xl overflow-hidden"
+              iframeClassName="w-full h-full border-0 absolute inset-0"
+              onReady={(e) => setPlayer(e.target)}
+            />
           </div>
         </div>,
         document.body

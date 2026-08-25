@@ -62,6 +62,14 @@ const TextTestimonial = ({ text, name, title, company, avatar, rotationClass = "
 
 const Testimonials = () => {
   const [activeVideo, setActiveVideo] = useState(null);
+  const [player, setPlayer] = useState(null);
+
+  const handlePlay = (videoId) => {
+    setActiveVideo(videoId);
+    if (player) {
+      player.loadVideoById(videoId);
+    }
+  };
 
   useEffect(() => {
     if (activeVideo) {
@@ -121,7 +129,7 @@ const Testimonials = () => {
               company="Disprz" 
               videoId="1AUDTOK84ns" 
               rotationClass="-rotate-2"
-              onPlay={setActiveVideo}
+              onPlay={handlePlay}
             />
             <VideoTestimonial 
               name="Sudeep Rao" 
@@ -129,7 +137,7 @@ const Testimonials = () => {
               company="Sigmoid" 
               videoId="27Fip-3VgSU" 
               rotationClass="rotate-1"
-              onPlay={setActiveVideo}
+              onPlay={handlePlay}
             />
             <TextTestimonial 
               text="More video testimonials coming soon…"
@@ -143,11 +151,15 @@ const Testimonials = () => {
         </div>
       </section>
 
-      {/* Video Modal */}
-      {activeVideo && createPortal(
+      {/* Video Modal - ALWAYS MOUNTED, VISIBILITY TOGGLED */}
+      {createPortal(
         <div 
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm pointer-events-auto"
-          onClick={() => setActiveVideo(null)}
+          className={`fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm transition-opacity duration-300 ${activeVideo ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+          style={{ visibility: activeVideo ? 'visible' : 'hidden' }}
+          onClick={() => {
+            setActiveVideo(null);
+            if (player) player.pauseVideo();
+          }}
           data-lenis-prevent="true"
         >
           <div 
@@ -156,17 +168,20 @@ const Testimonials = () => {
           >
             <button 
               className="absolute -top-12 md:-top-16 right-0 z-20 w-10 h-10 bg-black/50 hover:bg-brand-blue text-white rounded-full flex items-center justify-center transition-colors duration-300 font-bold"
-              onClick={() => setActiveVideo(null)}
+              onClick={() => {
+                setActiveVideo(null);
+                if (player) player.pauseVideo();
+              }}
             >
               ✕
             </button>
             <YouTube
-              videoId={activeVideo}
+              videoId="1AUDTOK84ns"
               opts={{
                 width: '100%',
                 height: '100%',
                 playerVars: {
-                  autoplay: 1,
+                  autoplay: 0,
                   rel: 0,
                   modestbranding: 1,
                   playsinline: 1
@@ -174,7 +189,7 @@ const Testimonials = () => {
               }}
               className="w-full h-full relative z-10 rounded-2xl overflow-hidden bg-black"
               iframeClassName="w-full h-full border-0 absolute inset-0"
-              onReady={(e) => e.target.playVideo()}
+              onReady={(e) => setPlayer(e.target)}
             />
           </div>
         </div>,

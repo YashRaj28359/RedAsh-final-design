@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { FaStar, FaPlay, FaTimes } from 'react-icons/fa';
+import YouTube from 'react-youtube';
 
 const VideoTestimonial = ({ name, title, company, videoId, rotationClass = "", onPlay }) => {
   const thumbUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
@@ -159,14 +160,22 @@ const Testimonials = () => {
             >
               ✕
             </button>
-            <iframe 
-              src={`https://www.youtube.com/embed/${activeVideo}?autoplay=1`}
-              title="YouTube video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full relative z-10 rounded-2xl"
-            ></iframe>
+            <YouTube
+              videoId={activeVideo}
+              opts={{
+                width: '100%',
+                height: '100%',
+                playerVars: {
+                  autoplay: 1,
+                  rel: 0,
+                  modestbranding: 1,
+                  playsinline: 1
+                }
+              }}
+              className="w-full h-full relative z-10 rounded-2xl overflow-hidden bg-black"
+              iframeClassName="w-full h-full border-0 absolute inset-0"
+              onReady={(e) => e.target.playVideo()}
+            />
           </div>
         </div>,
         document.body

@@ -19,6 +19,8 @@ const itemVariants = {
   show: { opacity: 1, scale: 1, transition: { duration: 0.5 } }
 };
 
+import { flushSync } from 'react-dom';
+
 const VideoGrid = () => {
   const [selectedVideo, setSelectedVideo] = useState(null);
 
@@ -91,7 +93,11 @@ const VideoGrid = () => {
               variants={itemVariants}
               className="w-[46%] md:w-[14%] xl:w-[12%] mobile-landscape-item"
             >
-              <VideoCard video={video} onClick={() => setSelectedVideo(video)} />
+              <VideoCard video={video} onClick={() => {
+                flushSync(() => {
+                  setSelectedVideo(video);
+                });
+              }} />
             </motion.div>
           ))}
         </motion.div>
@@ -138,7 +144,7 @@ const VideoGrid = () => {
           
           <iframe 
             className="w-full h-full rounded-xl"
-            src={`https://www.youtube.com/embed/${selectedVideo.id}?autoplay=1`}
+            src={`https://www.youtube.com/embed/${selectedVideo.id}?autoplay=1&playsinline=1&rel=0`}
             title={selectedVideo.title}
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

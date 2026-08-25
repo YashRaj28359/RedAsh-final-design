@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
+import { createPortal, flushSync } from 'react-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -277,7 +277,9 @@ const FilmCollage = ({ onVideoToggle }) => {
                 onClick={(e) => {
                   e.preventDefault();
                   if (film.link && film.link.includes('youtu')) {
-                    setActiveVideo(film.link);
+                    flushSync(() => {
+                      setActiveVideo(film.link);
+                    });
                     if (typeof onVideoToggle === 'function') onVideoToggle(true);
                   } else if (film.link) {
                     window.open(film.link, '_blank');

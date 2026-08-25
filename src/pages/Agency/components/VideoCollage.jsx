@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
+import { createPortal, flushSync } from 'react-dom';
 import { FaPlay } from 'react-icons/fa';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -145,7 +145,9 @@ const VideoCollage = () => {
         <div className="absolute top-0 bottom-0 left-[5%] [@media(max-height:600px)_and_(orientation:landscape)]:left-[1%] w-[20%] [@media(max-height:600px)_and_(orientation:landscape)]:w-[22%] flex flex-col justify-center gap-8 [@media(max-height:600px)_and_(orientation:landscape)]:gap-4 collage-column-left">
           {leftVideos.map((video, index) => (
             <div key={`left-${index}`} className="collage-card-left">
-              <VideoCard video={video} onPlay={() => setActiveVideo(video.id)} />
+              <VideoCard video={video} onPlay={() => {
+                flushSync(() => setActiveVideo(video.id));
+              }} />
             </div>
           ))}
         </div>
@@ -154,7 +156,9 @@ const VideoCollage = () => {
         <div className="absolute top-0 bottom-0 right-[5%] [@media(max-height:600px)_and_(orientation:landscape)]:right-[1%] w-[20%] [@media(max-height:600px)_and_(orientation:landscape)]:w-[22%] flex flex-col justify-center gap-8 [@media(max-height:600px)_and_(orientation:landscape)]:gap-4 collage-column-right">
           {rightVideos.map((video, index) => (
             <div key={`right-${index}`} className="collage-card-right">
-              <VideoCard video={video} onPlay={() => setActiveVideo(video.id)} />
+              <VideoCard video={video} onPlay={() => {
+                flushSync(() => setActiveVideo(video.id));
+              }} />
             </div>
           ))}
         </div>
@@ -169,10 +173,10 @@ const VideoCollage = () => {
         
         <div className="flex w-full justify-center gap-3">
           <div className="w-1/2 max-w-[200px] relative aspect-video">
-            <VideoCard video={leftVideos[0]} onPlay={() => setActiveVideo(leftVideos[0].id)} isMobile />
+            <VideoCard video={leftVideos[0]} onPlay={() => flushSync(() => setActiveVideo(leftVideos[0].id))} isMobile />
           </div>
           <div className="w-1/2 max-w-[200px] relative aspect-video">
-            <VideoCard video={rightVideos[0]} onPlay={() => setActiveVideo(rightVideos[0].id)} isMobile />
+            <VideoCard video={rightVideos[0]} onPlay={() => flushSync(() => setActiveVideo(rightVideos[0].id))} isMobile />
           </div>
         </div>
 
@@ -182,10 +186,10 @@ const VideoCollage = () => {
 
         <div className="flex w-full justify-center gap-3">
           <div className="w-1/2 max-w-[200px] relative aspect-video">
-            <VideoCard video={leftVideos[1]} onPlay={() => setActiveVideo(leftVideos[1].id)} isMobile />
+            <VideoCard video={leftVideos[1]} onPlay={() => flushSync(() => setActiveVideo(leftVideos[1].id))} isMobile />
           </div>
           <div className="w-1/2 max-w-[200px] relative aspect-video">
-            <VideoCard video={rightVideos[1]} onPlay={() => setActiveVideo(rightVideos[1].id)} isMobile />
+            <VideoCard video={rightVideos[1]} onPlay={() => flushSync(() => setActiveVideo(rightVideos[1].id))} isMobile />
           </div>
         </div>
 
@@ -197,10 +201,10 @@ const VideoCollage = () => {
 
         <div className="flex w-full justify-center gap-3">
           <div className="w-1/2 max-w-[200px] relative aspect-video">
-            <VideoCard video={leftVideos[2]} onPlay={() => setActiveVideo(leftVideos[2].id)} isMobile />
+            <VideoCard video={leftVideos[2]} onPlay={() => flushSync(() => setActiveVideo(leftVideos[2].id))} isMobile />
           </div>
           <div className="w-1/2 max-w-[200px] relative aspect-video">
-            <VideoCard video={rightVideos[2]} onPlay={() => setActiveVideo(rightVideos[2].id)} isMobile />
+            <VideoCard video={rightVideos[2]} onPlay={() => flushSync(() => setActiveVideo(rightVideos[2].id))} isMobile />
           </div>
         </div>
 
@@ -235,7 +239,7 @@ const VideoCollage = () => {
               ✕
             </button>
             <iframe 
-              src={`https://www.youtube.com/embed/${activeVideo}?autoplay=1`}
+              src={`https://www.youtube.com/embed/${activeVideo}?autoplay=1&playsinline=1&rel=0`}
               title="YouTube video player"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

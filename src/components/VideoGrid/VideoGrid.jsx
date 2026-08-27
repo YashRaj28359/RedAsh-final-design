@@ -41,11 +41,27 @@ const VideoGrid = () => {
   useEffect(() => {
     if (selectedVideo) {
       document.body.style.overflow = 'hidden';
+
+      const handleVisibilityChange = () => {
+        if (document.hidden || document.visibilityState === 'hidden') {
+          if (player && typeof player.pauseVideo === 'function') {
+            player.pauseVideo();
+          }
+        }
+      };
+
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+      window.addEventListener("pagehide", handleVisibilityChange);
+
+      return () => { 
+        document.body.style.overflow = 'unset'; 
+        document.removeEventListener("visibilitychange", handleVisibilityChange);
+        window.removeEventListener("pagehide", handleVisibilityChange);
+      };
     } else {
       document.body.style.overflow = 'unset';
     }
-    return () => { document.body.style.overflow = 'unset'; };
-  }, [selectedVideo]);
+  }, [selectedVideo, player]);
 
   const displayVideos = videos.map(v => ({ ...v, uniqueId: v.id }));
 
@@ -102,6 +118,7 @@ const VideoGrid = () => {
                 setSelectedVideo(video);
                 if (player) {
                   player.loadVideoById(video.id);
+                  player.playVideo();
                 }
               }} />
             </motion.div>
@@ -154,22 +171,24 @@ const VideoGrid = () => {
           </svg>
         </button>
         
-        <YouTube
-          videoId={videos[0]?.id || 'b5hZr-8rSI4'}
-          opts={{
-            width: '100%',
-            height: '100%',
-            playerVars: {
-              autoplay: 0,
-              rel: 0,
-              modestbranding: 1,
-              playsinline: 1
-            }
-          }}
-          className="w-full h-full relative z-10 rounded-xl overflow-hidden"
-          iframeClassName="w-full h-full border-0 absolute inset-0"
-          onReady={(e) => setPlayer(e.target)}
-        />
+        {selectedVideo && (
+          <YouTube
+            videoId={selectedVideo.id}
+            opts={{
+              width: '100%',
+              height: '100%',
+              playerVars: {
+                autoplay: 1,
+                rel: 0,
+                modestbranding: 1,
+                playsinline: 1
+              }
+            }}
+            className="w-full h-full relative z-10 rounded-xl overflow-hidden"
+            iframeClassName="w-full h-full border-0 absolute inset-0"
+            onReady={(e) => setPlayer(e.target)}
+          />
+        )}
       </div>
     </div>
     </>

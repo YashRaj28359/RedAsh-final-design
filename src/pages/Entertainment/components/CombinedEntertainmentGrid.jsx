@@ -96,13 +96,24 @@ const CombinedEntertainmentGrid = () => {
         }
       };
 
+      const handleBlur = () => {
+        const iframes = document.querySelectorAll('iframe');
+        iframes.forEach(iframe => {
+          if (iframe.src.includes('youtube.com')) {
+            iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+          }
+        });
+      };
+
       document.addEventListener("visibilitychange", handleVisibilityChange);
       window.addEventListener("pagehide", handleVisibilityChange);
+      window.addEventListener("blur", handleBlur);
 
       return () => { 
         document.body.style.overflow = 'unset'; 
         document.removeEventListener("visibilitychange", handleVisibilityChange);
         window.removeEventListener("pagehide", handleVisibilityChange);
+        window.removeEventListener("blur", handleBlur);
       };
     } else {
       document.body.style.overflow = 'unset';

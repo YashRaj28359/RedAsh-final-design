@@ -162,27 +162,32 @@ const FilmCollage = ({ onVideoToggle }) => {
 
       const handleVisibilityChange = () => {
         if (document.hidden || document.visibilityState === 'hidden') {
-          const iframes = document.querySelectorAll('iframe');
-          iframes.forEach(iframe => {
-            if (iframe.src.includes('youtube.com')) {
-              iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-            }
-          });
+          if (player && typeof player.pauseVideo === 'function') {
+            player.pauseVideo();
+          }
+        }
+      };
+
+      const handleBlur = () => {
+        if (player && typeof player.pauseVideo === 'function') {
+          player.pauseVideo();
         }
       };
 
       document.addEventListener("visibilitychange", handleVisibilityChange);
       window.addEventListener("pagehide", handleVisibilityChange);
+      window.addEventListener("blur", handleBlur);
 
       return () => { 
         document.body.style.overflow = 'unset'; 
         document.removeEventListener("visibilitychange", handleVisibilityChange);
         window.removeEventListener("pagehide", handleVisibilityChange);
+        window.removeEventListener("blur", handleBlur);
       };
     } else {
       document.body.style.overflow = 'unset';
     }
-  }, [activeVideo]);
+  }, [activeVideo, player]);
 
   useGSAP(() => {
     // Initial entrance animations
@@ -248,6 +253,7 @@ const FilmCollage = ({ onVideoToggle }) => {
     const videoId = getVideoIdFromUrl(url);
     if (player && videoId) {
       player.loadVideoById(videoId);
+      player.playVideo();
     }
     if (typeof onVideoToggle === 'function') onVideoToggle(true);
   };
@@ -373,7 +379,7 @@ const FilmCollage = ({ onVideoToggle }) => {
                   {/* Bottom Left Content Box (Number + Title) */}
                   <div className="absolute inset-[12px] sm:inset-[16px] p-4 sm:p-6 flex flex-row items-end justify-start z-20 pointer-events-none gap-3 sm:gap-4">
                     {/* Number */}
-                    <span className="text-white/90 font-hero text-[70px] sm:text-[85px] lg:text-[50px] xl:text-[60px] leading-[0.8] font-bold tracking-normal drop-shadow-md group-hover:text-brand-red transition-colors duration-300">
+                    <span className={`${isMobile ? 'text-brand-red' : 'text-white/90'} font-hero text-[70px] sm:text-[85px] lg:text-[50px] xl:text-[60px] leading-[0.8] font-bold tracking-normal drop-shadow-md group-hover:text-brand-red transition-colors duration-300`}>
                       {film.id}
                     </span>
                     

@@ -11,28 +11,27 @@ import YouTube from 'react-youtube';
 gsap.registerPlugin(ScrollTrigger);
 
 const leftVideos = [
-  { id: 'b5hZr-8rSI4', label: 'TV ADS', rotation: '1deg', offsetX: '60px', scale: 1 }, 
-  { id: 'IUwZoT_-gt4', label: 'BRAND FILMS', rotation: '-9deg', offsetX: '160px', scale: 0.85 },
-  { id: 'RvciiZb-k1U', label: 'PODCASTS', rotation: '7deg', offsetX: '80px', scale: 1.05 },
+  { id: 'b5hZr-8rSI4', label: 'TV ADS', rotation: '1deg', offsetX: '60px', scale: 1, number: '01' }, 
+  { id: 'IUwZoT_-gt4', label: 'BRAND FILMS', rotation: '-9deg', offsetX: '160px', scale: 0.85, number: '03' },
+  { id: 'RvciiZb-k1U', label: 'PODCASTS', rotation: '7deg', offsetX: '80px', scale: 1.05, number: '05' },
 ];
 
 const rightVideos = [
-  { id: 'rqfTN_Fj1SA', label: 'DIGITAL ADS', rotation: '-7deg', offsetX: '-60px', scale: 0.9 },
-  { id: 'R_EAcTv-59o', label: 'EXPLAINERS', rotation: '-2deg', offsetX: '-150px', scale: 1.10 },
-  { id: 'l4XYMZzh7Tc', label: 'AI VIDEOS', rotation: '8deg', offsetX: '-30px', scale: 0.90 },
+  { id: 'rqfTN_Fj1SA', label: 'DIGITAL ADS', rotation: '-7deg', offsetX: '-60px', scale: 0.9, number: '02' },
+  { id: 'R_EAcTv-59o', label: 'EXPLAINERS', rotation: '-2deg', offsetX: '-150px', scale: 1.10, number: '04' },
+  { id: 'l4XYMZzh7Tc', label: 'AI VIDEOS', rotation: '8deg', offsetX: '-30px', scale: 0.90, number: '06' },
 ];
 
 const isLandscapeMobile = "[@media(max-height:600px)_and_(orientation:landscape)]";
 
 const VideoCard = ({ video, className, onPlay, isMobile }) => {
   const fadeClasses = isMobile 
-    ? "bottom-0 h-[50%] from-white/95 via-white/40 to-transparent" 
+    ? "bottom-0 h-[50%] from-black/80 via-black/40 to-transparent" 
     : "inset-0 from-black/80 via-black/30 to-transparent";
 
-  const textClasses = `text-brand-blue font-hero font-bold tracking-[2px] md:tracking-[3px] text-[16px] sm:text-[18px] md:text-2xl lg:text-3xl xl:text-4xl ${isLandscapeMobile}:!text-lg uppercase text-center px-1 ` + 
-    (isMobile 
-      ? "drop-shadow-[0_1px_2px_rgba(255,255,255,0.8)]" 
-      : "[-webkit-text-stroke:0.5px_white] drop-shadow-md");
+  const textClasses = `text-white font-hero font-bold tracking-[1px] md:tracking-[2px] text-[16px] sm:text-[18px] md:text-[18px] lg:text-[24px] xl:text-[28px] ${isLandscapeMobile}:!text-[16px] uppercase text-left drop-shadow-md`;
+
+  const labelParts = video.label.split(' ');
 
   return (
     <div className={className} style={isMobile ? {} : { transform: `translateX(${video.offsetX || '0px'}) rotate(${video.rotation || '0deg'}) scale(${video.scale || 1})` }}>
@@ -52,12 +51,30 @@ const VideoCard = ({ video, className, onPlay, isMobile }) => {
           
           <div className={`absolute w-full bg-gradient-to-t ${fadeClasses}`} />
 
-          <div className={`absolute bottom-0 w-full flex justify-center pb-1 md:pb-4 ${isLandscapeMobile}:!pb-[1px] z-20`}>
-            <span className={textClasses}>
-              {video.label}
-            </span>
+          <div className="absolute left-2 sm:left-3 md:left-5 bottom-1 sm:bottom-2 md:bottom-4 flex items-center gap-1.5 md:gap-2 z-30">
+            {video.number && (
+              <span className={`font-hero font-bold leading-[0.8] tracking-normal ${isMobile ? 'text-[38px] sm:text-[44px] text-brand-blue drop-shadow-md' : 'text-[32px] md:text-[40px] lg:text-[48px] xl:text-[54px] text-brand-blue drop-shadow-lg'}`}>
+                {video.number}
+              </span>
+            )}
+            
+            <div className="flex flex-col justify-center">
+              {labelParts.length >= 2 ? (
+                <>
+                  <span className={textClasses} style={{ lineHeight: '0.85', paddingBottom: '2px' }}>
+                    {labelParts[0]}
+                  </span>
+                  <span className={textClasses} style={{ lineHeight: '0.85' }}>
+                    {labelParts.slice(1).join(' ')}
+                  </span>
+                </>
+              ) : (
+                <span className={textClasses} style={{ lineHeight: '0.85' }}>
+                  {video.label}
+                </span>
+              )}
+            </div>
           </div>
-
         </div>
 
       {/* Hover Overlay: Play Button */}
@@ -81,17 +98,42 @@ const VideoCollage = () => {
     setActiveVideo(videoId);
     if (player) {
       player.loadVideoById(videoId);
+      player.playVideo();
     }
   };
 
   useEffect(() => {
     if (activeVideo) {
       document.body.style.overflow = 'hidden';
+
+      const handleVisibilityChange = () => {
+        if (document.hidden || document.visibilityState === 'hidden') {
+          if (player && typeof player.pauseVideo === 'function') {
+            player.pauseVideo();
+          }
+        }
+      };
+
+      const handleBlur = () => {
+        if (player && typeof player.pauseVideo === 'function') {
+          player.pauseVideo();
+        }
+      };
+
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+      window.addEventListener("pagehide", handleVisibilityChange);
+      window.addEventListener("blur", handleBlur);
+
+      return () => { 
+        document.body.style.overflow = 'unset'; 
+        document.removeEventListener("visibilitychange", handleVisibilityChange);
+        window.removeEventListener("pagehide", handleVisibilityChange);
+        window.removeEventListener("blur", handleBlur);
+      };
     } else {
       document.body.style.overflow = 'unset';
     }
-    return () => { document.body.style.overflow = 'unset'; };
-  }, [activeVideo]);
+  }, [activeVideo, player]);
 
 
   useGSAP(() => {

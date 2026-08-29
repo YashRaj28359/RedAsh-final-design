@@ -15,11 +15,16 @@ const PlayIcon = () => (
 );
 
 const VideoCard = ({ video, onClick }) => {
+  const urlToUse = video.url || video.videoUrl;
+  const categoryToUse = video.category === 'Custom' ? video.customCategory : video.category;
+  const colorToUse = video.color || (video.categoryColor === 'red' ? '#ef4444' : '#3b82f6');
+  
   const handleClick = () => {
-    if (video.videoUrl.includes('youtu')) {
+    if (!urlToUse) return; // Static graphic tile
+    if (urlToUse.includes('youtu')) {
       onClick();
     } else {
-      window.open(video.videoUrl, '_blank');
+      window.open(urlToUse, '_blank');
     }
   };
 
@@ -40,9 +45,10 @@ const VideoCard = ({ video, onClick }) => {
       </div>
       <div className="flex justify-center items-center p-0">
         <h4 
-          className={`text-[10px] font-bold text-center m-0 ${video.categoryColor === 'red' ? 'text-brand-red' : 'text-brand-blue'}`}
+          className="text-[10px] font-bold text-center m-0"
+          style={{ color: colorToUse }}
         >
-          {video.category}
+          {categoryToUse}
         </h4>
       </div>
     </motion.div>

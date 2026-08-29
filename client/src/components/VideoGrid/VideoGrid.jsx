@@ -25,6 +25,30 @@ import { flushSync } from 'react-dom';
 const VideoGrid = () => {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [player, setPlayer] = useState(null);
+  const [dynamicVideos, setDynamicVideos] = useState(null);
+
+  const extractYouTubeId = (url) => {
+    if (!url) return '';
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : '';
+  };
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/content')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.homepage && data.homepage.video_tile && data.homepage.video_tile.videos) {
+          setDynamicVideos(data.homepage.video_tile.videos);
+        } else {
+          setDynamicVideos([]); // empty
+        }
+      })
+      .catch(err => {
+        console.error('Failed to fetch videos:', err);
+        setDynamicVideos([]);
+      });
+  }, []);
 
   // Close modal on Escape key
   useEffect(() => {
@@ -63,7 +87,15 @@ const VideoGrid = () => {
     }
   }, [selectedVideo, player]);
 
-  const displayVideos = videos.map(v => ({ ...v, uniqueId: v.id }));
+  const displayVideos = (dynamicVideos || []).map(v => ({ ...v, uniqueId: v.uniqueId || v.id }));
+
+  if (dynamicVideos === null) {
+    return <div className="w-full h-[200px] flex items-center justify-center">Loading Videos...</div>;
+  }
+  
+  if (dynamicVideos.length === 0) {
+    return <div className="w-full h-[200px] flex items-center justify-center text-gray-500">No videos added yet.</div>;
+  }
 
   return (
     <>
@@ -102,7 +134,7 @@ const VideoGrid = () => {
       </style>
       <div className="w-full mx-auto">
         <motion.div 
-          className="flex flex-wrap justify-center gap-x-[8%] md:gap-x-[3%] xl:gap-x-[5%] gap-y-4 w-full"
+          className="flex flex-wrap justify-start gap-x-[8%] md:gap-x-[3%] xl:gap-x-[5%] gap-y-4 w-full md:pl-[1.5%]"
           variants={containerVariants}
           initial="hidden"
           whileInView="show"
@@ -115,10 +147,16 @@ const VideoGrid = () => {
               className="w-[46%] md:w-[14%] xl:w-[12%] mobile-landscape-item"
             >
               <VideoCard video={video} onClick={() => {
+                const url = video.url || video.videoUrl;
+                if (!url || !url.includes('youtu')) return;
+                
                 setSelectedVideo(video);
                 if (player) {
-                  player.loadVideoById(video.id);
-                  player.playVideo();
+                  const videoId = video.id || (video.videoUrl ? extractYouTubeId(video.videoUrl) : null);
+                  if (videoId) {
+                    player.loadVideoById(videoId);
+                    player.playVideo();
+                  }
                 }
               }} />
             </motion.div>

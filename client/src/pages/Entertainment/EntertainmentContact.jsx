@@ -118,6 +118,7 @@ const EntertainmentContact = () => {
         {/* Contact Form Section */}
         <div className="w-full bg-white py-20 relative z-10 overflow-hidden border-t border-neutral-200">
           <ContactForm 
+            dataSource="entertainment"
             titlePrefix="INVEST IN OR SPONSOR OUR"
             titleHighlight="PROJECTS"
             input4Placeholder="Investment Queries"

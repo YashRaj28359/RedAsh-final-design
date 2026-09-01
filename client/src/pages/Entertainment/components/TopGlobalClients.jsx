@@ -31,6 +31,20 @@ const TopGlobalClients = () => {
   const textRef = useRef(null);
   const desktopLogosRef = useRef([]);
   const mobileLogosRef = useRef([]);
+  const [dbClients, setDbClients] = React.useState(null);
+
+  React.useEffect(() => {
+    fetch('http://localhost:5000/api/content')
+      .then(res => res.json())
+      .then(data => {
+        if (data?.entertainment?.clients && data.entertainment.clients.length > 0) {
+          setDbClients(data.entertainment.clients);
+        }
+      })
+      .catch(err => console.error(err));
+  }, []);
+
+  const activeClients = dbClients || clients;
 
   useGSAP(() => {
     let mm = gsap.matchMedia();
@@ -56,27 +70,6 @@ const TopGlobalClients = () => {
         { filter: 'blur(0px)', duration: 4, ease: 'power2.out' },
         0 
       );
-
-      desktopLogosRef.current.forEach((logo, i) => {
-        if (!logo) return;
-        let startX = 0;
-        let startY = 800;
-        if (i < 4) startX = -600; 
-        else if (i > 4) startX = 600; 
-
-        const startTime = 0.5 + (i * 0.05);
-        
-        tl.fromTo(logo,
-          { opacity: 0 },
-          { opacity: 1, duration: 0.8, ease: 'power2.out' },
-          startTime
-        );
-        tl.fromTo(logo,
-          { filter: 'blur(20px)', x: startX, y: startY, scale: 0.2 },
-          { filter: 'blur(0px)', x: 0, y: 0, scale: 1, duration: 3, ease: 'power3.out' },
-          "<"
-        );
-      });
     });
 
     // Mobile Animation (Much faster, unblurs instantly)
@@ -118,28 +111,10 @@ const TopGlobalClients = () => {
     <section ref={containerRef} className="w-full pt-18 md:pt-20 pb-8 landscape:pb-0 lg:landscape:pb-32 lg:pb-32 bg-white relative z-20 flex flex-col items-center justify-center">
       
       {/* Central Container */}
-      <div className="relative z-10 text-center max-w-5xl mx-auto px-4 flex flex-col items-center justify-center min-h-[20vh] lg:min-h-[60vh] w-full">
+      <div className="relative z-10 text-center max-w-5xl mx-auto px-4 flex flex-col items-center justify-center w-full">
         
-        {/* Desktop Scattered Sticker Layout */}
-        <div className="absolute inset-0 w-full h-full hidden lg:block pointer-events-none z-0">
-          {clients.map((client, idx) => (
-            <div 
-              key={idx}
-              ref={(el) => (desktopLogosRef.current[idx] = el)}
-              className={`absolute ${client.pos} pointer-events-auto z-10 hover:z-30`}
-            >
-              {/* Inner wrapper handles hover states independent of GSAP */}
-              <div className={`transition-transform duration-500 hover:scale-110 hover:-rotate-0 ${client.rotate}`}>
-                <div className={`bg-white p-4 shadow-[0px_15px_40px_rgba(0,0,0,0.12)] border-2 border-gray-100 flex items-center justify-center overflow-hidden group ${client.size} ${client.shape}`}>
-                  <img src={client.img} alt={client.alt} className="w-full h-full object-contain transition-all duration-500 scale-90 group-hover:scale-105" />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
         {/* Central Heading */}
-        <h2 className="-mt-12 lg:-mt-[250px] text-5xl md:text-7xl lg:text-8xl font-bold uppercase tracking-wider font-hero leading-none relative z-20 pointer-events-none drop-shadow-[0_10px_20px_rgba(255,255,255,0.9)] bg-white/40 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none p-6 md:p-0 rounded-3xl">
+        <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold uppercase tracking-wider font-hero leading-none relative z-20 pointer-events-none drop-shadow-[0_10px_20px_rgba(255,255,255,0.9)] bg-white/40 lg:bg-transparent backdrop-blur-md lg:backdrop-blur-none p-6 md:p-0 rounded-3xl mb-4">
           <div ref={textRef} className="relative text-center mx-auto w-fit">
             
             {/* Invisible Spacer to preserve perfect center alignment */}
@@ -165,28 +140,70 @@ const TopGlobalClients = () => {
 
       </div>
 
+      {/* Desktop Hanging Lanyard Logo Marquee (Moving Right to Left Edge to Edge) */}
+      <div className="w-full hidden lg:block overflow-hidden relative pointer-events-auto py-6 mt-4">
+        
+        {/* Top Suspension Cable Line */}
+        <div className="w-full h-[2px] bg-gradient-to-r from-transparent via-[#E20002]/50 to-transparent absolute top-0 left-0"></div>
+
+        {/* Marquee Track - Continuous 100% Seamless Infinite Loop */}
+        <div className="animate-marquee-left flex items-center">
+          {/* Set 1 */}
+          <div className="flex gap-12 items-center pr-12">
+            {activeClients.map((client, idx) => (
+              <div key={`s1-${idx}`} className="flex items-center justify-center group flex-none py-4">
+                {/* Circular White Floating Logo Badge with Soft Drop Shadow */}
+                <div className="bg-white p-4 shadow-[0px_20px_45px_rgba(0,0,0,0.12)] border-2 border-gray-100 flex items-center justify-center overflow-hidden rounded-full w-28 h-28 lg:w-32 lg:h-32 transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0px_25px_50px_rgba(226,0,2,0.25)] group-hover:border-[#E20002]/30">
+                  <img 
+                    src={client.img} 
+                    alt={client.name || client.alt} 
+                    className="w-full h-full object-contain transition-all duration-300 scale-90 group-hover:scale-105" 
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Set 2 (Identical Duplicate for Seamless -50% Loop) */}
+          <div className="flex gap-12 items-center pr-12">
+            {activeClients.map((client, idx) => (
+              <div key={`s2-${idx}`} className="flex items-center justify-center group flex-none py-4">
+                {/* Circular White Floating Logo Badge with Soft Drop Shadow */}
+                <div className="bg-white p-4 shadow-[0px_20px_45px_rgba(0,0,0,0.12)] border-2 border-gray-100 flex items-center justify-center overflow-hidden rounded-full w-28 h-28 lg:w-32 lg:h-32 transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0px_25px_50px_rgba(226,0,2,0.25)] group-hover:border-[#E20002]/30">
+                  <img 
+                    src={client.img} 
+                    alt={client.name || client.alt} 
+                    className="w-full h-full object-contain transition-all duration-300 scale-90 group-hover:scale-105" 
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Mobile Grid Layout (visible only on small screens) */}
       <div className="lg:hidden mt-2 px-6 w-full relative z-10 overflow-x-auto pb-6 landscape:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <div className="flex flex-col gap-4 w-max mx-auto">
           {/* Row 1 */}
           <div className="flex gap-4">
-            {clients.slice(0, 5).map((client, idx) => (
+            {activeClients.slice(0, Math.ceil(activeClients.length / 2)).map((client, idx) => (
               <div 
                 key={`r1-${idx}`}
-                className={`bg-white p-3 shadow-lg border border-gray-100 flex items-center justify-center aspect-square w-28 sm:w-32 overflow-hidden flex-none ${client.shape}`}
+                className="bg-white p-3 shadow-lg border border-gray-100 flex items-center justify-center aspect-square w-28 sm:w-32 overflow-hidden flex-none rounded-full"
               >
-                <img src={client.img} alt={client.alt} className="w-full h-full object-contain transition-transform duration-300 hover:scale-110" />
+                <img src={client.img} alt={client.name || client.alt} className="w-full h-full object-contain transition-transform duration-300 hover:scale-110" />
               </div>
             ))}
           </div>
           {/* Row 2 */}
           <div className="flex gap-4 justify-center">
-            {clients.slice(5).map((client, idx) => (
+            {activeClients.slice(Math.ceil(activeClients.length / 2)).map((client, idx) => (
               <div 
                 key={`r2-${idx}`}
-                className={`bg-white p-3 shadow-lg border border-gray-100 flex items-center justify-center aspect-square w-28 sm:w-32 overflow-hidden flex-none ${client.shape}`}
+                className="bg-white p-3 shadow-lg border border-gray-100 flex items-center justify-center aspect-square w-28 sm:w-32 overflow-hidden flex-none rounded-full"
               >
-                <img src={client.img} alt={client.alt} className="w-full h-full object-contain transition-transform duration-300 hover:scale-110" />
+                <img src={client.img} alt={client.name || client.alt} className="w-full h-full object-contain transition-transform duration-300 hover:scale-110" />
               </div>
             ))}
           </div>

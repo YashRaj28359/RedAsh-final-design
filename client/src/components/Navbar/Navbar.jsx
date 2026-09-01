@@ -1,10 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import logo from '../../assets/Logo/Redash Logo_PNG.png';
+import { fetchContent } from '../../utils/api';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [serverLogo, setServerLogo] = useState(null);
+
+  useEffect(() => {
+    fetchContent()
+      .then(data => {
+        if (data?.homepage?.logo?.url) {
+          setServerLogo(data.homepage.logo.url);
+        }
+      })
+      .catch(err => console.error("Error fetching logo data:", err));
+  }, []);
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const closeMenu = () => setIsOpen(false);
@@ -20,7 +32,7 @@ const Navbar = () => {
         <Link to="/" onClick={closeMenu}>
           <div>
             <img 
-              src={logo} 
+              src={serverLogo || logo} 
               alt="RedAsh Films" 
               className="h-14 w-auto object-contain" 
               onError={(e) => {

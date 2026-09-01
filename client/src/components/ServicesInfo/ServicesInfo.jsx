@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { fetchContent } from '../../utils/api';
 
 const ServicesInfo = () => {
   const [expanded, setExpanded] = useState(null);
@@ -41,9 +42,13 @@ const ServicesInfo = () => {
     },
   });
 
+  const [topButtons, setTopButtons] = useState({
+    entertainment: { text: 'GO TO REDASH ENTERTAINMENT FILMS', link: '/entertainment' },
+    agency: { text: 'GO TO REDASH AD AGENCY', link: '/ad-agency' }
+  });
+
   useEffect(() => {
-    fetch("http://localhost:5000/api/content")
-      .then((res) => res.json())
+    fetchContent()
       .then((data) => {
         if (data && data.homepage && data.homepage.divisions) {
           setDivisionsData({
@@ -53,6 +58,10 @@ const ServicesInfo = () => {
             enterprise:
               data.homepage.divisions.enterprise || divisionsData.enterprise,
           });
+          
+          if (data.homepage.divisions.topButtons) {
+            setTopButtons(data.homepage.divisions.topButtons);
+          }
         }
       })
       .catch((err) => console.error("Error fetching divisions data:", err));
@@ -77,9 +86,9 @@ const ServicesInfo = () => {
       <div className="w-full md:w-[99%] xl:w-[97%] mx-auto flex flex-col lg:flex-row items-stretch lg:items-start gap-6 md:gap-8">
         {/* Mobile Portrait Red Button */}
         <div className="w-full justify-center mobile-portrait-button">
-          <Link to="/entertainment" className="w-full flex justify-center">
+          <Link to={topButtons.entertainment.link} className="w-full flex justify-center">
             <button className="bg-[#E20002] hover:bg-[#cc0000] transition-colors text-white font-bold py-3 px-8 rounded-md text-sm uppercase flex items-center justify-center shadow-md tracking-wider w-full sm:w-[380px]">
-              GO TO REDASH ENTERTAINMENT FILMS
+              {topButtons.entertainment.text}
             </button>
           </Link>
         </div>
@@ -194,9 +203,9 @@ const ServicesInfo = () => {
 
         {/* Mobile Portrait Blue Button */}
         <div className="w-full justify-center mobile-portrait-button mt-4">
-          <Link to="/ad-agency" className="w-full flex justify-center">
+          <Link to={topButtons.agency.link} className="w-full flex justify-center">
             <button className="bg-brand-blue hover:bg-[#0f4a9b] transition-colors text-white font-bold py-3 px-8 rounded-md text-sm uppercase flex items-center justify-center shadow-md tracking-wider w-full sm:w-[380px]">
-              GO TO REDASH AD AGENCY
+              {topButtons.agency.text}
             </button>
           </Link>
         </div>

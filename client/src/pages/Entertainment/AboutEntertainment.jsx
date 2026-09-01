@@ -55,11 +55,66 @@ const ScrollText = ({ text }) => {
 };
 
 const AboutEntertainment = () => {
+  const [contentData, setContentData] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    import('../../utils/api').then(({ fetchContent }) => {
+      fetchContent().then(data => {
+        setContentData(data?.entertainment?.about || {});
+        setLoading(false);
+      }).catch(err => {
+        console.error(err);
+        setContentData({}); // Fallback
+        setLoading(false);
+      });
+    });
   }, []);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center">
+        <div className="w-12 h-12 border-4 border-brand-red border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
+  const heroSmallHeading = contentData?.heroSmallHeading || 'WELCOME TO REDASH FILMS';
+  
+  // Use heroMainWords if it exists (the new individual word editor format), otherwise fallback to splitting heroMainHeading
+  let mainHeadingWords = ['WHERE', 'SUBSTANCE', 'MEETS', 'MASS', 'APPEAL'];
+  if (contentData?.heroMainWords && Array.isArray(contentData.heroMainWords)) {
+    mainHeadingWords = contentData.heroMainWords;
+  } else if (contentData?.heroMainHeading) {
+    mainHeadingWords = contentData.heroMainHeading.split(' ').filter(Boolean);
+  }
+
+  const storyParagraph = contentData?.storyParagraph || 'has evolved into a Mumbai-based production house focused on creating compelling entertainment across films, web series, microdrama shows, television serials, AI fiction films, short films, music videos, and *emerging formats.*';
+  const storyImage = contentData?.storyImage ? `http://localhost:5000${contentData.storyImage}` : aboutPic;
+
+  const renderParagraph = (text) => {
+    const parts = text.split(/(\*[^*]+\*)/g);
+    return parts.map((part, index) => {
+      if (part.startsWith('*') && part.endsWith('*')) {
+        return <span key={index} className="text-brand-red">{part.slice(1, -1)}</span>;
+      }
+      return part;
+    });
+  };
+
+  const visionParagraph = contentData?.visionParagraph || 'Our Entertainment Films are built around *strong stories*, memorable characters, well-known actors, and ideas that can connect with wide audiences. From mainstream fiction and original IPs to commissioned entertainment projects, we aim to create content that combines *creativity with commercial potential*.';
+  const processParagraph = contentData?.processParagraph || 'We work across the complete filmmaking journey — concept development, writing, pre-production, production, post-production, and delivery — bringing together *experienced writers, directors, actors, technicians and creative professionals* for every project.';
+
+  const renderBoldParagraph = (text) => {
+    const parts = text.split(/(\*[^*]+\*)/g);
+    return parts.map((part, index) => {
+      if (part.startsWith('*') && part.endsWith('*')) {
+        return <strong key={index} className="text-black group-hover:text-white font-bold transition-colors duration-500">{part.slice(1, -1)}</strong>;
+      }
+      return part;
+    });
+  };
 
   return (
     <div className="min-h-screen bg-white font-sans text-neutral-900">
@@ -77,18 +132,41 @@ const AboutEntertainment = () => {
             }}
           >
             <h3 className="text-brand-black font-black tracking-tighter uppercase mb-4 leading-none w-fit flex items-baseline justify-center gap-2 sm:gap-3 flex-wrap">
-              <motion.span variants={wordAnim} className="text-xl sm:text-2xl md:text-3xl lg:text-4xl">WELCOME</motion.span>
-              <motion.span variants={wordAnim} className="text-xl sm:text-2xl md:text-3xl lg:text-4xl">TO</motion.span>
-              <motion.span variants={wordAnim} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
-                <span className="text-brand-red">RED</span><span className="text-brand-gray">ASH</span> <span className="text-brand-red">FILMS</span>
-              </motion.span>
+              {heroSmallHeading.split(' ').map((word, i) => {
+                // If the word contains "RED" or "ASH" or "FILMS", style it like the original
+                if (word.toUpperCase() === 'REDASH') {
+                  return (
+                    <motion.span key={i} variants={wordAnim} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
+                      <span className="text-brand-red">RED</span><span className="text-brand-gray">ASH</span>
+                    </motion.span>
+                  );
+                }
+                if (word.toUpperCase() === 'RED') {
+                  return <motion.span key={i} variants={wordAnim} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"><span className="text-brand-red">{word}</span></motion.span>
+                }
+                if (word.toUpperCase() === 'ASH') {
+                  return <motion.span key={i} variants={wordAnim} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"><span className="text-brand-gray">{word}</span></motion.span>
+                }
+                if (word.toUpperCase() === 'FILMS') {
+                  return <motion.span key={i} variants={wordAnim} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"><span className="text-brand-red">{word}</span></motion.span>
+                }
+                return <motion.span key={i} variants={wordAnim} className="text-xl sm:text-2xl md:text-3xl lg:text-4xl">{word}</motion.span>
+              })}
             </h3>
-            <h1 className="flex flex-col text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black uppercase leading-[0.85] tracking-tighter text-neutral-900 w-fit" aria-label="Where Substance Meets Mass Appeal">
-              <motion.span variants={wordAnim} className="block text-left text-brand-black">WHERE</motion.span>
-              <motion.span variants={wordAnim} className="block text-left text-brand-gray">SUBSTANCE</motion.span>
-              <motion.span variants={wordAnim} className="block text-right text-brand-black">MEETS</motion.span>
-              <motion.span variants={wordAnim} className="block text-right text-brand-gray">MASS</motion.span>
-              <motion.span variants={wordAnim} className="block text-left text-brand-red">APPEAL</motion.span>
+            <h1 className="flex flex-col text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black uppercase leading-[0.85] tracking-tighter text-neutral-900 w-fit" aria-label={mainHeadingWords.join(' ')}>
+              {mainHeadingWords.map((word, i) => {
+                // Cycle through colors based on the original design
+                const colors = ['text-brand-black', 'text-brand-gray', 'text-brand-black', 'text-brand-gray', 'text-brand-red'];
+                const alignments = ['text-left', 'text-left', 'text-right', 'text-right', 'text-left'];
+                const colorClass = colors[i % colors.length];
+                const alignClass = alignments[i % alignments.length];
+                
+                return (
+                  <motion.span key={i} variants={wordAnim} className={`block ${alignClass} ${colorClass}`}>
+                    {word}
+                  </motion.span>
+                );
+              })}
             </h1>
           </motion.div>
         </section>
@@ -157,7 +235,7 @@ const AboutEntertainment = () => {
               }}
               className="text-xl landscape:text-base sm:text-2xl sm:landscape:text-lg md:text-3xl md:landscape:text-xl lg:text-4xl lg:landscape:text-4xl font-bold text-neutral-900 tracking-tight leading-[1.15] text-left mt-6 landscape:mt-4 lg:mt-8 max-w-3xl"
             >
-              has evolved into a Mumbai-based production house focused on creating compelling entertainment across films, web series, microdrama shows, television serials, AI fiction films, short films, music videos, and <span className="text-brand-red">emerging formats.</span>
+              {renderParagraph(storyParagraph)}
             </motion.p>
 
           </motion.div>
@@ -172,7 +250,7 @@ const AboutEntertainment = () => {
           >
             <div className="relative w-full h-[350px] md:h-full md:flex-1 bg-neutral-100 shadow-xl overflow-hidden rounded-xl border border-gray-200">
               <img 
-                src={aboutPic} 
+                src={storyImage} 
                 alt="Ashish Lal" 
                 className="absolute inset-0 w-full h-full object-cover object-top"
               />
@@ -209,7 +287,7 @@ const AboutEntertainment = () => {
                   <span className="text-sm md:text-base font-bold tracking-[0.2em] uppercase text-neutral-500 group-hover:text-red-100 transition-colors duration-500">The Vision</span>
                 </div>
                 <p className="relative z-10 text-xl md:text-2xl lg:text-[2rem] font-light leading-relaxed text-neutral-700 group-hover:text-white transition-colors duration-500">
-                  Our Entertainment Films are built around <strong className="text-black group-hover:text-white font-bold transition-colors duration-500">strong stories</strong>, memorable characters, well-known actors, and ideas that can connect with wide audiences. From mainstream fiction and original IPs to commissioned entertainment projects, we aim to create content that combines <strong className="text-black group-hover:text-white font-bold transition-colors duration-500">creativity with commercial potential</strong>.
+                  {renderBoldParagraph(visionParagraph)}
                 </p>
               </motion.div>
 
@@ -229,7 +307,7 @@ const AboutEntertainment = () => {
                   <span className="text-sm md:text-base font-bold tracking-[0.2em] uppercase text-neutral-500 group-hover:text-red-100 transition-colors duration-500">The Process</span>
                 </div>
                 <p className="relative z-10 text-xl md:text-2xl lg:text-[2rem] font-light leading-relaxed text-neutral-700 group-hover:text-white transition-colors duration-500">
-                  We work across the complete filmmaking journey — concept development, writing, pre-production, production, post-production, and delivery — bringing together <strong className="text-black group-hover:text-white font-bold transition-colors duration-500">experienced writers, directors, actors, technicians and creative professionals</strong> for every project.
+                  {renderBoldParagraph(processParagraph)}
                 </p>
               </motion.div>
 
@@ -249,15 +327,15 @@ const AboutEntertainment = () => {
 
           <div className="relative z-10 flex flex-col items-start max-w-5xl mx-auto px-6 w-full">
             
-            {/* 1. As we expand... */}
+            {/* 2. WE WELCOME */}
             <motion.div 
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.5 }}
               className="mb-6 md:mb-8 max-w-5xl"
             >
               <p className="text-lg sm:text-xl landscape:text-base md:text-2xl md:landscape:text-lg lg:landscape:text-2xl font-bold text-neutral-800 uppercase tracking-widest leading-relaxed">
-                <ScrollText text="As we expand our slate of films, web series, microdrama shows, television serials, and other new formats," />
+                <ScrollText text={contentData?.investorTopText || "As we expand our slate of films, web series, microdrama shows, television serials, and other new formats,"} />
               </p>
             </motion.div>
 
@@ -269,13 +347,13 @@ const AboutEntertainment = () => {
               className="flex items-end mb-2 md:mb-4"
             >
               <h4 className="text-red-600 font-bold uppercase tracking-[0.3em] text-xl landscape:text-lg md:text-3xl md:landscape:text-xl lg:text-4xl lg:landscape:text-4xl">
-                WE WELCOME
+                {contentData?.investorRedText || "WE WELCOME"}
               </h4>
             </motion.div>
 
             {/* 3. investors */}
             <h2 className="font-serif text-[3.5rem] sm:text-[5rem] landscape:text-[3rem] md:text-[7rem] md:landscape:text-[4.5rem] lg:text-[8rem] lg:landscape:text-[8rem] leading-[0.8] tracking-tighter text-black -ml-1 md:-ml-2">
-              <ScrollText text="investors" />
+              <ScrollText text={contentData?.investorMainText1 || "investors"} />
             </h2>
 
             {/* 4. & sponsors */}
@@ -286,7 +364,7 @@ const AboutEntertainment = () => {
               className="flex flex-col sm:flex-row sm:items-end gap-2 sm:gap-6 pl-4 sm:pl-16 md:pl-24 lg:pl-32 mt-6 landscape:mt-2 md:mt-10 md:landscape:mt-4 lg:landscape:mt-10"
             >
               <h2 className="font-serif text-[3.5rem] sm:text-[4.5rem] landscape:text-[2.5rem] md:text-[6rem] md:landscape:text-[4rem] lg:text-[7rem] lg:landscape:text-[7rem] leading-[0.8] tracking-tighter text-black">
-                <ScrollText text="& sponsors" />
+                <ScrollText text={contentData?.investorMainText2 || "& sponsors"} />
               </h2>
             </motion.div>
 
@@ -298,7 +376,7 @@ const AboutEntertainment = () => {
               className="mt-6 md:mt-8 pl-4 sm:pl-16 md:pl-24 lg:pl-32"
             >
               <p className="text-lg sm:text-xl landscape:text-base md:text-2xl md:landscape:text-lg lg:landscape:text-2xl font-medium text-neutral-800 max-w-4xl leading-relaxed">
-                <ScrollText text="who want to be part of compelling entertainment with strong commercial potential." />
+                <ScrollText text={contentData?.investorBottomText || "who want to be part of compelling entertainment with strong commercial potential."} />
               </p>
             </motion.div>
 
@@ -307,6 +385,7 @@ const AboutEntertainment = () => {
 
         {/* Invest In Our Project Form */}
         <ContactForm 
+          dataSource="entertainment"
           titlePrefix="INVEST IN OR SPONSOR OUR"
           titleHighlight="PROJECTS"
           input4Placeholder="Company"

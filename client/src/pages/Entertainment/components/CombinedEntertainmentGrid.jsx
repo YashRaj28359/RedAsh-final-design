@@ -10,6 +10,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 // Import Data
 import { microdramaShows } from '../../../data/microdramaShows';
+import { fetchContent } from '../../../utils/api';
 
 // Import horizontal images directly
 import p1 from '../../../assets/Films/Poster/1. Copy of Movie Poster_20x10.webp';
@@ -81,6 +82,31 @@ const CombinedEntertainmentGrid = () => {
   const cardsRef = useRef([]);
   const [selectedVideoUrl, setSelectedVideoUrl] = useState(null);
 
+  const [dynamicHorizontalProjects, setDynamicHorizontalProjects] = useState(horizontalProjects);
+  const [dynamicVerticalProjects, setDynamicVerticalProjects] = useState(verticalProjects);
+
+  useEffect(() => {
+    fetchContent().then(data => {
+      const horizontalCards = data?.entertainment?.projects?.horizontalCards;
+      if (horizontalCards && horizontalCards.length > 0) {
+        setDynamicHorizontalProjects(horizontalCards.map(item => ({...item, isHorizontal: true, url: item.linkFilms !== undefined ? item.linkFilms : (item.link || item.url)})));
+      }
+      
+      const verticalCards = data?.entertainment?.projects?.verticalCards;
+      if (verticalCards && verticalCards.length > 0) {
+        setDynamicVerticalProjects(verticalCards.map((item, index) => {
+          let newUrl = item.link || item.url;
+          if (newUrl && newUrl.includes('kukutv.app') && index !== 1) {
+            newUrl = newUrl.replace('/show/', '/watch/');
+            if (!newUrl.includes('?')) newUrl += '?episode=trailer';
+            else if (!newUrl.includes('episode=trailer')) newUrl += '&episode=trailer';
+          }
+          return { ...item, url: newUrl, isHorizontal: false };
+        }));
+      }
+    }).catch(err => console.error("Error fetching entertainment projects:", err));
+  }, []);
+
   useEffect(() => {
     if (selectedVideoUrl) {
       document.body.style.overflow = 'hidden';
@@ -130,22 +156,34 @@ const CombinedEntertainmentGrid = () => {
   let patternIdx = 0;
 
   // Fill rows based on pattern until we run out of horizontal videos
-  while (hIdx < horizontalProjects.length) {
+  while (hIdx < dynamicHorizontalProjects.length) {
     const rowType = patternIdx % 3;
     const rowItems = [];
     
     if (rowType === 0) { // V, H, V
-      if (vIdx < verticalProjects.length) rowItems.push(verticalProjects[vIdx++]);
-      rowItems.push(horizontalProjects[hIdx++]);
-      if (vIdx < verticalProjects.length) rowItems.push(verticalProjects[vIdx++]);
+      if (vIdx < dynamicVerticalProjects.length) rowItems.push(dynamicVerticalProjects[vIdx++]);
+      else rowItems.push({ id: `ph-v1-${patternIdx}`, isPlaceholder: true, isHorizontal: false });
+      
+      rowItems.push(dynamicHorizontalProjects[hIdx++]);
+      
+      if (vIdx < dynamicVerticalProjects.length) rowItems.push(dynamicVerticalProjects[vIdx++]);
+      else rowItems.push({ id: `ph-v2-${patternIdx}`, isPlaceholder: true, isHorizontal: false });
     } else if (rowType === 1) { // V, V, H
-      if (vIdx < verticalProjects.length) rowItems.push(verticalProjects[vIdx++]);
-      if (vIdx < verticalProjects.length) rowItems.push(verticalProjects[vIdx++]);
-      rowItems.push(horizontalProjects[hIdx++]);
+      if (vIdx < dynamicVerticalProjects.length) rowItems.push(dynamicVerticalProjects[vIdx++]);
+      else rowItems.push({ id: `ph-v1-${patternIdx}`, isPlaceholder: true, isHorizontal: false });
+      
+      if (vIdx < dynamicVerticalProjects.length) rowItems.push(dynamicVerticalProjects[vIdx++]);
+      else rowItems.push({ id: `ph-v2-${patternIdx}`, isPlaceholder: true, isHorizontal: false });
+      
+      rowItems.push(dynamicHorizontalProjects[hIdx++]);
     } else { // H, V, V
-      rowItems.push(horizontalProjects[hIdx++]);
-      if (vIdx < verticalProjects.length) rowItems.push(verticalProjects[vIdx++]);
-      if (vIdx < verticalProjects.length) rowItems.push(verticalProjects[vIdx++]);
+      rowItems.push(dynamicHorizontalProjects[hIdx++]);
+      
+      if (vIdx < dynamicVerticalProjects.length) rowItems.push(dynamicVerticalProjects[vIdx++]);
+      else rowItems.push({ id: `ph-v1-${patternIdx}`, isPlaceholder: true, isHorizontal: false });
+      
+      if (vIdx < dynamicVerticalProjects.length) rowItems.push(dynamicVerticalProjects[vIdx++]);
+      else rowItems.push({ id: `ph-v2-${patternIdx}`, isPlaceholder: true, isHorizontal: false });
     }
     
     rows.push(rowItems);
@@ -154,9 +192,12 @@ const CombinedEntertainmentGrid = () => {
 
   // Any remaining vertical posters go into rows of 4 at the bottom
   let leftoverRow = [];
-  while (vIdx < verticalProjects.length) {
-    leftoverRow.push(verticalProjects[vIdx++]);
-    if (leftoverRow.length === 4 || vIdx === verticalProjects.length) {
+  while (vIdx < dynamicVerticalProjects.length) {
+    leftoverRow.push(dynamicVerticalProjects[vIdx++]);
+    if (leftoverRow.length === 4 || vIdx === dynamicVerticalProjects.length) {
+      while (leftoverRow.length > 0 && leftoverRow.length < 4) {
+        leftoverRow.push({ id: `ph-leftover-${vIdx}-${leftoverRow.length}`, isPlaceholder: true, isHorizontal: false });
+      }
       rows.push(leftoverRow);
       leftoverRow = [];
     }
@@ -186,7 +227,7 @@ const CombinedEntertainmentGrid = () => {
   }, { scope: containerRef });
 
   const handleItemClick = (url) => {
-    if (!url) return;
+    if (!url || url === '#') return;
     if (url.includes('youtu')) {
       setSelectedVideoUrl(url);
     } else {
@@ -246,15 +287,31 @@ const CombinedEntertainmentGrid = () => {
       <div className="w-full max-w-[1920px] px-0.5 flex flex-col gap-1 sm:gap-2">
         {rows.map((row, rowIdx) => (
           <div key={`row-${rowIdx}`} className="flex flex-row w-full gap-1 sm:gap-2">
-            {row.map((item, colIdx) => (
+            {row.map((item, colIdx) => {
+              if (item.isPlaceholder) {
+                return (
+                  <div 
+                    key={item.id} 
+                    className="flex-shrink-0 invisible"
+                    style={{
+                      flex: 0.666,
+                      aspectRatio: '2/3'
+                    }}
+                  />
+                );
+              }
+              
+              return (
               <div 
                 key={`${item.id}-${colIdx}`}
                 ref={(el) => {
-                  // Find absolute index for GSAP stagger array
-                  let absIdx = 0;
-                  for (let i = 0; i < rowIdx; i++) absIdx += rows[i].length;
-                  absIdx += colIdx;
-                  cardsRef.current[absIdx] = el;
+                  if (!item.isPlaceholder) {
+                    // Find absolute index for GSAP stagger array (excluding placeholders)
+                    let absIdx = 0;
+                    for (let i = 0; i < rowIdx; i++) absIdx += rows[i].filter(x => !x.isPlaceholder).length;
+                    absIdx += row.slice(0, colIdx).filter(x => !x.isPlaceholder).length;
+                    cardsRef.current[absIdx] = el;
+                  }
                 }}
                 onClick={() => handleItemClick(item.url)}
                 className="relative rounded-md overflow-hidden group cursor-pointer bg-black shadow-lg hover:shadow-2xl transition-all duration-300 flex-shrink-0"
@@ -295,7 +352,7 @@ const CombinedEntertainmentGrid = () => {
                   </div>
                 )}
               </div>
-            ))}
+            )})}
           </div>
         ))}
       </div>

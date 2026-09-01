@@ -1,10 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { LuNewspaper } from "react-icons/lu";
-import mediaData from '../../data/media.json';
+import { fetchContent } from '../../utils/api';
 
 const MediaLinks = () => {
-  const articles = mediaData.slice(0, 3);
+  const [articles, setArticles] = useState([]);
+
+  useEffect(() => {
+    fetchContent()
+      .then(data => {
+        if (data && data.homepage && data.homepage.mediaCards) {
+          const visibleCards = data.homepage.mediaCards.filter(card => card.showOnHomepage !== false);
+          setArticles(visibleCards.slice(0, 3));
+        }
+      })
+      .catch(err => {
+        console.error('Failed to fetch media cards:', err);
+      });
+  }, []);
   // Helper to dynamically calculate CSS Object Position and Scale from user controls
   const getImageStyles = (article) => {
     const x = 50 + (article.moveLeft || 0) - (article.moveRight || 0);

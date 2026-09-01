@@ -31,11 +31,31 @@ const artists = [
   { id: 13, name: 'Piyush Sahdev', image: imgPiyush, imdb: 'https://www.imdb.com/name/nm9824657/?ref_=ext_shr_lnk' },
 ];
 
+const staticImageMap = {
+  'Ashish Lal': imgAshish,
+  'Surbhi Jyoti': imgSurbhi,
+  'Upendra Limaye': imgUpendra,
+  'Vidya Malavade': imgVidya,
+  'Zakir Hussain': imgZakir,
+  'Navni Parihar': imgNavni,
+  'Durgesh Kumar': imgDurgesh,
+  'Pariva Pranati': imgPariva,
+  'Tom Alter': imgTom,
+  'Seema Biswas': imgSeema,
+  'Kiran Kumar': imgKiran,
+  'Nibeditaa Paal': imgNibedita,
+  'Piyush Sahdev': imgPiyush,
+};
+
 const ArtistCard = ({ artist }) => {
   // Generate a pseudo-random tilt between -3deg and 3deg based on the artist's ID
   const tiltClass = artist.id % 4 === 0 ? 'hover:rotate-3' : 
                     artist.id % 3 === 0 ? 'hover:-rotate-2' : 
                     artist.id % 2 === 0 ? 'hover:rotate-2' : 'hover:-rotate-3';
+
+  const imageUrl = artist.image ? 
+    (artist.image.startsWith('http') || artist.image.startsWith('/uploads') ? artist.image : `http://localhost:5000${artist.image}`) 
+    : staticImageMap[artist.name];
 
   return (
     <motion.a 
@@ -49,7 +69,7 @@ const ArtistCard = ({ artist }) => {
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
       <img 
-        src={artist.image} 
+        src={imageUrl} 
         alt={artist.name} 
         className="w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105" 
         loading="lazy"
@@ -65,7 +85,10 @@ const ArtistCard = ({ artist }) => {
   );
 };
 
-const TalentShowcase = () => {
+const TalentShowcase = ({ talentData }) => {
+  // Use DB artists if available and not empty, otherwise fallback to default artists
+  const displayArtists = talentData?.artists?.length > 0 ? talentData.artists : artists;
+
   return (
     <section id="talent" className="w-full py-16 md:py-24 bg-white font-main relative overflow-hidden">
       <div className="w-full max-w-[1600px] mx-auto px-4 md:px-8 flex flex-col gap-4">
@@ -116,27 +139,17 @@ const TalentShowcase = () => {
         </div>
 
         {/* DESKTOP LAYOUT (md and up) */}
-        <div className="hidden md:flex flex-col gap-2 lg:gap-4">
-          
-          {/* Top Row: 6 images */}
-          <div className="grid grid-cols-6 gap-2 lg:gap-4">
-            {artists.slice(0, 6).map(artist => (
-              <ArtistCard key={artist.id} artist={artist} />
-            ))}
-          </div>
-
-          {/* Bottom Row: 7 images */}
-          <div className="grid grid-cols-7 gap-2 lg:gap-4">
-            {artists.slice(6, 13).map(artist => (
-              <ArtistCard key={artist.id} artist={artist} />
-            ))}
-          </div>
-          
+        <div className="hidden md:flex flex-wrap justify-center gap-2 lg:gap-4 w-full">
+          {displayArtists.map(artist => (
+            <div key={artist.id} className="w-[calc((100%-3rem)/7)] lg:w-[calc((100%-6rem)/7)] flex-shrink-0">
+              <ArtistCard artist={artist} />
+            </div>
+          ))}
         </div>
 
         {/* MOBILE LAYOUT (hidden on md) - Simple uniform grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 md:hidden">
-          {artists.map(artist => (
+          {displayArtists.map(artist => (
             <ArtistCard key={artist.id} artist={artist} />
           ))}
         </div>

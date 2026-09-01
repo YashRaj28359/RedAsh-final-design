@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import HeroColumn from '../HeroColumn/HeroColumn';
+import { fetchContent } from '../../utils/api';
 
 const SectionDivider = ({ colorClass = "bg-black/20" }) => (
   <div className={`hidden md:block w-[0.5px] h-[100px] mx-4 ${colorClass}`}></div>
@@ -10,8 +11,7 @@ const HeroSection = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/content')
-      .then(res => res.json())
+    fetchContent()
       .then(data => {
         if (data && data.homepage && data.homepage.hero && data.homepage.hero.heading_blocks) {
           setBlocks(data.homepage.hero.heading_blocks);

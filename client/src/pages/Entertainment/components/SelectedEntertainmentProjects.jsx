@@ -1,82 +1,20 @@
-import React from 'react';
-
-import p1 from '../../../assets/Films/Poster/1. Copy of Movie Poster_20x10.webp';
-import p2 from '../../../assets/Films/Poster/2. Copy of Horizontal Poster_Main Tumhare Bachche.webp';
-import p3 from '../../../assets/Films/Poster/3. Copy of Final Poster_No More MeToo.webp';
-import p4 from '../../../assets/Films/Poster/4. Copy of IAYV_Horizontal Poster.webp';
-import p5 from '../../../assets/Films/Poster/5. Corona is a Conspiracy.webp';
-import p6 from '../../../assets/Films/Poster/6. Hum Azaad Hain.webp';
-import p9 from '../../../assets/Films/Poster/9. 100 Short Films_Emerging Leaders.png';
-import card2Img from '../../../assets/Films/Cards/Card2.jpg';
-import card6Img from '../../../assets/Films/Cards/Card6.png';
-
-const projects = [
-  {
-    id: "01",
-    title: "WITH LOVE, DELHI!",
-    image: p1,
-    url: 'https://www.imdb.com/title/tt7460834/'
-  },
-  {
-    id: "02",
-    title: "THE CODPASTER",
-    image: card2Img,
-    url: 'https://timesofindia.indiatimes.com/entertainment/hindi/bollywood/news/ashish-lal-explores-friendship-and-loss-in-the-codpaster/articleshow/131854264.cms'
-  },
-  {
-    id: "03",
-    title: "MAIN TUMHARE\nBACHCHE...",
-    image: p2,
-    url: 'https://www.amazon.com/Main-Tumhare-Bachche-Baanne-Waali/dp/B07Y2BG8Z2/ref=sr_1_1?keywords=Main+Tumhare+Bachche+Ki+Maa+Baanne+Waali+Hoon&qid=1569482686&s=instant-video&sr=1-1'
-  },
-  {
-    id: "04",
-    title: "NO MORE\n#METOO",
-    image: p3,
-    url: 'https://www.imdb.com/title/tt9384614/'
-  },
-  {
-    id: "05",
-    title: "I AM YOUR\nVOICE",
-    image: p4,
-    url: 'https://www.imdb.com/title/tt12195860/'
-  },
-  {
-    id: "06",
-    title: "CORONA IS A\nCONSPIRACY",
-    image: p5,
-    url: null
-  },
-  {
-    id: "07",
-    title: "HUM AZAAD\nHAIN",
-    image: p6,
-    url: 'https://www.imdb.com/title/tt13124440/'
-  },
-  {
-    id: "08",
-    title: "MUSIC VIDEOS",
-    image: card6Img,
-    url: null,
-    scaleImage: true // Flag to enlarge and crop black bands
-  },
-  {
-    id: "09",
-    title: "100 SHORT FILMS\nEMERGING LEADERS",
-    image: p9,
-    url: 'https://www.imdb.com/title/tt16385196'
-  }
-];
+import React, { useState, useEffect } from 'react';
+import { fetchContent } from '../../../utils/api';
 
 const HorizontalCard = ({ project }) => {
   return (
     <div className="relative w-full aspect-video rounded-md overflow-hidden group cursor-pointer bg-black">
       {/* Background Image */}
-      <img src={project.image} alt={project.title} className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-500 ${project.scaleImage ? 'scale-[1.35] group-hover:scale-[1.45]' : 'group-hover:scale-105'}`} />
+      {project.image ? (
+        <img src={project.image} alt={project.title} className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-500 ${project.scaleImage ? 'scale-[1.35] group-hover:scale-[1.45]' : 'group-hover:scale-105'}`} />
+      ) : (
+        <div className="w-full h-full bg-gray-800 flex items-center justify-center group-hover:scale-105 transition-all duration-500">
+           <span className="text-gray-500 text-xs uppercase tracking-widest font-bold text-center px-2">Placeholder</span>
+        </div>
+      )}
       
-      {/* Title removed per user request */}
       {/* Link Overlay */}
-      {project.url && (
+      {project.url && project.url !== '#' && (
         <a href={project.url} target="_blank" rel="noopener noreferrer" className="absolute inset-0 z-20">
           <span className="sr-only">View {project.title}</span>
         </a>
@@ -86,6 +24,19 @@ const HorizontalCard = ({ project }) => {
 };
 
 const SelectedEntertainmentProjects = () => {
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    fetchContent().then(data => {
+      const horizontalCards = data?.entertainment?.projects?.horizontalCards;
+      if (horizontalCards && horizontalCards.length > 0) {
+        setProjects(horizontalCards.map(item => ({...item, url: item.linkHome !== undefined ? item.linkHome : (item.link || item.url)})));
+      }
+    }).catch(err => console.error("Error fetching horizontal projects:", err));
+  }, []);
+
+  if (!projects || projects.length === 0) return null;
+
   return (
     <section className="w-full pt-16 lg:pt-24 pb-4 lg:pb-8 bg-[#f9f9f9] relative flex flex-col items-center">
       

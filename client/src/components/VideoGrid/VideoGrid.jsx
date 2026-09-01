@@ -22,10 +22,17 @@ const itemVariants = {
 
 import { flushSync } from 'react-dom';
 
+import { fetchContent } from '../../utils/api';
+
 const VideoGrid = () => {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [player, setPlayer] = useState(null);
   const [dynamicVideos, setDynamicVideos] = useState(null);
+  const [visibleCount, setVisibleCount] = useState(24);
+  const [topButtons, setTopButtons] = useState({
+    entertainment: { text: 'GO TO REDASH ENTERTAINMENT FILMS', link: '/entertainment' },
+    agency: { text: 'GO TO REDASH AD AGENCY', link: '/ad-agency' }
+  });
 
   const extractYouTubeId = (url) => {
     if (!url) return '';
@@ -35,13 +42,16 @@ const VideoGrid = () => {
   };
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/content')
-      .then(res => res.json())
+    fetchContent()
       .then(data => {
         if (data && data.homepage && data.homepage.video_tile && data.homepage.video_tile.videos) {
           setDynamicVideos(data.homepage.video_tile.videos);
         } else {
           setDynamicVideos([]); // empty
+        }
+        
+        if (data?.homepage?.divisions?.topButtons) {
+          setTopButtons(data.homepage.divisions.topButtons);
         }
       })
       .catch(err => {
@@ -87,7 +97,44 @@ const VideoGrid = () => {
     }
   }, [selectedVideo, player]);
 
-  const displayVideos = (dynamicVideos || []).map(v => ({ ...v, uniqueId: v.uniqueId || v.id }));
+  const loadMoreRef = React.useRef(null);
+
+  useEffect(() => {
+    if (!dynamicVideos) return;
+    
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisibleCount((prev) => prev + 24);
+        }
+      },
+      { rootMargin: '0px 0px 400px 0px' }
+    );
+
+    const currentRef = loadMoreRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [dynamicVideos]);
+
+  const displayVideos = (dynamicVideos || []).map(v => {
+    let finalThumbnail = v.thumbnail;
+    const localVideo = videos.find(lv => lv.category === v.category);
+    
+    // Fallback to local imported image if the DB provides a generic youtube thumbnail 
+    // for a category that has a special local image (e.g. Microdrama, Web Series)
+    if (localVideo && localVideo.thumbnail && !localVideo.thumbnail.startsWith('http') && finalThumbnail && finalThumbnail.includes('img.youtube.com')) {
+      finalThumbnail = localVideo.thumbnail;
+    }
+    
+    return { ...v, uniqueId: v.uniqueId || v.id, thumbnail: finalThumbnail };
+  });
 
   if (dynamicVideos === null) {
     return <div className="w-full h-[200px] flex items-center justify-center">Loading Videos...</div>;
@@ -134,13 +181,13 @@ const VideoGrid = () => {
       </style>
       <div className="w-full mx-auto">
         <motion.div 
-          className="flex flex-wrap justify-start gap-x-[8%] md:gap-x-[3%] xl:gap-x-[5%] gap-y-4 w-full md:pl-[1.5%]"
+          className="flex flex-wrap justify-start gap-x-[8%] md:gap-x-[3%] xl:gap-x-[5%] gap-y-8 md:gap-y-6 w-full md:pl-[1.5%]"
           variants={containerVariants}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
         >
-          {displayVideos.map((video) => (
+          {displayVideos.slice(0, visibleCount).map((video) => (
             <motion.div 
               key={video.uniqueId} 
               variants={itemVariants}
@@ -163,19 +210,22 @@ const VideoGrid = () => {
           ))}
         </motion.div>
 
+        {/* Infinite Scroll Trigger */}
+        <div ref={loadMoreRef} className="w-full h-2 mt-4 pointer-events-none opacity-0"></div>
+
         {/* Division Navigation Buttons */}
         <div className="w-full md:w-[99%] xl:w-[97%] mx-auto mt-12 md:mt-16 flex flex-col lg:flex-row gap-6 md:gap-8 mobile-landscape-buttons hide-on-mobile-portrait">
           <div className="flex-1 flex justify-center lg:justify-center mobile-landscape-wrapper">
-            <Link to="/entertainment" className="w-full flex justify-center">
+            <Link to={topButtons.entertainment.link} className="w-full flex justify-center">
               <button className="bg-[#E20002] hover:bg-[#cc0000] transition-colors text-white font-bold py-3 md:py-4 px-8 md:px-12 rounded-md text-sm md:text-lg uppercase flex items-center justify-center shadow-md tracking-wider w-full sm:w-[380px] md:w-[450px] lg:w-[480px] whitespace-nowrap mobile-landscape-btn">
-                GO TO REDASH ENTERTAINMENT FILMS
+                {topButtons.entertainment.text}
               </button>
             </Link>
           </div>
           <div className="flex-1 flex justify-center lg:justify-center mobile-landscape-wrapper">
-            <Link to="/ad-agency" className="w-full flex justify-center">
+            <Link to={topButtons.agency.link} className="w-full flex justify-center">
               <button className="bg-brand-blue hover:bg-[#0f4a9b] transition-colors text-white font-bold py-3 md:py-4 px-8 md:px-12 rounded-md text-sm md:text-lg uppercase flex items-center justify-center shadow-md tracking-wider w-full sm:w-[380px] md:w-[450px] lg:w-[480px] whitespace-nowrap mobile-landscape-btn">
-                GO TO REDASH AD AGENCY
+                {topButtons.agency.text}
               </button>
             </Link>
           </div>

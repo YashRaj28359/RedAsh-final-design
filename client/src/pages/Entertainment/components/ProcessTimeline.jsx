@@ -10,7 +10,7 @@ const steps = [
   { id: '05', title: 'DELIVERY', icon: LuClapperboard },
 ];
 
-const ProcessTimeline = () => {
+const ProcessTimeline = ({ processData }) => {
   return (
     <div className="w-full max-w-[1400px] mx-auto pt-4 pb-8 md:pt-6 md:pb-12 px-2 md:px-4 overflow-hidden mt-2 md:mt-4">
       {/* Top Left Text */}
@@ -24,7 +24,7 @@ const ProcessTimeline = () => {
         {/* Red Snake Line (Top Left) */}
         <div className="hidden md:block absolute left-0 top-2 bottom-[-4rem] w-[2px] bg-brand-red rounded-full"></div>
         <p className="text-xl md:text-2xl lg:text-3xl font-bold text-neutral-800 tracking-tight max-w-lg">
-          <span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-red">Films</span> handles the entire filmmaking journey
+          <span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-red">Films</span> {processData?.topLeft || "handles the entire filmmaking journey"}
         </p>
       </motion.div>
 
@@ -114,7 +114,7 @@ const ProcessTimeline = () => {
           className="text-right flex justify-center md:justify-end w-full md:w-auto"
         >
           <p className="text-xl md:text-2xl lg:text-3xl font-bold text-neutral-800 tracking-tight max-w-lg leading-relaxed text-center md:text-right">
-            working with experienced creative and technical talent to bring every project to screen.
+            {processData?.bottomRight || "working with experienced creative and technical talent to bring every project to screen."}
           </p>
         </motion.div>
       </div>

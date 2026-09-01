@@ -4,28 +4,52 @@ import { FaLinkedinIn, FaYoutube, FaInstagram, FaFacebookF, FaBars } from 'react
 import logo from "../../../assets/Films/Logo/RedAsh Films Horizontal Logo_wo bg.png";
 import { AnimatePresence, motion } from 'framer-motion';
 
-const navLinks = [
-  { name: 'HOME', path: '/entertainment' },
-  { name: 'ABOUT', path: '/entertainment/about' },
-  { name: 'ENTERTAINMENT FILMS', path: '/entertainment/films' },
-  { name: 'BLOG', path: '/entertainment/blog' },
-  { name: 'MEDIA', path: '/entertainment/media' },
-  { name: 'CONTACT', path: '/entertainment/contact' },
-];
+import { fetchContent } from '../../../utils/api';
 
 const EntertainmentNavbar = () => {
   const location = useLocation();
-  const [activeMenu, setActiveMenu] = useState('HOME');
+  const [activeMenuKey, setActiveMenuKey] = useState('home');
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [serverLogo, setServerLogo] = useState(null);
+
+  const [navData, setNavData] = useState([
+    { key: 'home', name: 'HOME', path: '/entertainment' },
+    { key: 'about', name: 'ABOUT', path: '/entertainment/about' },
+    { key: 'films', name: 'ENTERTAINMENT FILMS', path: '/entertainment/films' },
+    { key: 'blog', name: 'BLOG', path: '/entertainment/blog' },
+    { key: 'media', name: 'MEDIA', path: '/entertainment/media' },
+    { key: 'contact', name: 'CONTACT', path: '/entertainment/contact' },
+  ]);
 
   useEffect(() => {
-    if (location.pathname.includes('/about')) setActiveMenu('ABOUT');
-    else if (location.pathname.includes('/films')) setActiveMenu('ENTERTAINMENT FILMS');
-    else if (location.pathname.includes('/blog')) setActiveMenu('BLOG');
-    else if (location.pathname.includes('/media')) setActiveMenu('MEDIA');
-    else if (location.pathname.includes('/contact')) setActiveMenu('CONTACT');
-    else setActiveMenu('HOME');
+    fetchContent()
+      .then(data => {
+        if (data?.entertainment?.logo?.url) {
+          setServerLogo(data.entertainment.logo.url);
+        }
+        if (data?.entertainment?.navigation) {
+          const apiNav = data.entertainment.navigation;
+          setNavData([
+            { key: 'home', name: apiNav.home || 'HOME', path: '/entertainment' },
+            { key: 'about', name: apiNav.about || 'ABOUT', path: '/entertainment/about' },
+            { key: 'films', name: apiNav.films || 'ENTERTAINMENT FILMS', path: '/entertainment/films' },
+            { key: 'blog', name: apiNav.blog || 'BLOG', path: '/entertainment/blog' },
+            { key: 'media', name: apiNav.media || 'MEDIA', path: '/entertainment/media' },
+            { key: 'contact', name: apiNav.contact || 'CONTACT', path: '/entertainment/contact' },
+          ]);
+        }
+      })
+      .catch(err => console.error("Error fetching navbar data:", err));
+  }, []);
+
+  useEffect(() => {
+    if (location.pathname.includes('/about')) setActiveMenuKey('about');
+    else if (location.pathname.includes('/films')) setActiveMenuKey('films');
+    else if (location.pathname.includes('/blog')) setActiveMenuKey('blog');
+    else if (location.pathname.includes('/media')) setActiveMenuKey('media');
+    else if (location.pathname.includes('/contact')) setActiveMenuKey('contact');
+    else setActiveMenuKey('home');
   }, [location.pathname]);
 
   useEffect(() => {
@@ -44,7 +68,7 @@ const EntertainmentNavbar = () => {
           <div className="flex-shrink-0 z-20">
             <Link to="/entertainment" className="block">
               <img 
-                src={logo} 
+                src={serverLogo || logo} 
                 alt="RedAsh Films" 
                 className="h-12 sm:h-16 md:h-[60px] landscape:h-8 lg:landscape:h-[60px] w-auto object-contain transition-all duration-300 hover:scale-105"
                 onError={(e) => {
@@ -57,17 +81,17 @@ const EntertainmentNavbar = () => {
 
           {/* Center Links */}
           <div className="hidden lg:flex items-center gap-8 xl:gap-12 absolute left-1/2 -translate-x-1/2 z-10">
-            {navLinks.map((link) => (
+            {navData.map((link) => (
               <Link
-                key={link.name}
+                key={link.key}
                 to={link.path}
-                onClick={() => setActiveMenu(link.name)}
+                onClick={() => setActiveMenuKey(link.key)}
                 className={`relative font-main font-bold text-[12px] xl:text-[13px] tracking-[0.15em] transition-colors duration-300 ${
-                  activeMenu === link.name ? 'text-red-600' : 'text-black hover:text-red-600'
+                  activeMenuKey === link.key ? 'text-red-600' : 'text-black hover:text-red-600'
                 }`}
               >
                 {link.name}
-                {activeMenu === link.name && (
+                {activeMenuKey === link.key && (
                   <span className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-red-600" />
                 )}
               </Link>
@@ -119,16 +143,16 @@ const EntertainmentNavbar = () => {
             transition={{ duration: 0.3 }}
           >
             <div className="flex flex-col gap-y-6 w-full px-4 text-center">
-              {navLinks.map((link) => (
+              {navData.map((link) => (
                 <Link
-                  key={link.name}
+                  key={link.key}
                   to={link.path}
                   onClick={() => {
-                    setActiveMenu(link.name);
+                    setActiveMenuKey(link.key);
                     setIsMobileMenuOpen(false);
                   }}
                   className={`font-main font-bold text-lg uppercase tracking-wider transition-colors duration-300 ${
-                    activeMenu === link.name ? 'text-red-600' : 'text-black hover:text-red-600'
+                    activeMenuKey === link.key ? 'text-red-600' : 'text-black hover:text-red-600'
                   }`}
                 >
                   {link.name}

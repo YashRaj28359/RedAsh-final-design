@@ -1,11 +1,11 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
-import { microdramaShows } from '../../../data/microdramaShows';
+import { fetchContent } from '../../../utils/api';
 
 const VerticalCard = ({ project, cardRef }) => {
   return (
@@ -23,7 +23,7 @@ const VerticalCard = ({ project, cardRef }) => {
       {/* Titles removed per user request */}
 
       {/* Link Overlay */}
-      {project.url && (
+      {project.url && project.url !== '#' && (
         <a href={project.url} target="_blank" rel="noopener noreferrer" className="absolute inset-0 z-20">
           <span className="sr-only">View {project.title}</span>
         </a>
@@ -35,8 +35,27 @@ const VerticalCard = ({ project, cardRef }) => {
 const AllMicrodramaShows = () => {
   const containerRef = useRef(null);
   const cardsRef = useRef([]);
+  const [shows, setShows] = useState([]);
+
+  useEffect(() => {
+    fetchContent().then(data => {
+      const verticalCards = data?.entertainment?.projects?.verticalCards;
+      if (verticalCards && verticalCards.length > 0) {
+        setShows(verticalCards.map((item, index) => {
+          let newUrl = item.link || item.url;
+          if (newUrl && newUrl.includes('kukutv.app') && index !== 1) {
+            newUrl = newUrl.replace('/show/', '/watch/');
+            if (!newUrl.includes('?')) newUrl += '?episode=trailer';
+            else if (!newUrl.includes('episode=trailer')) newUrl += '&episode=trailer';
+          }
+          return { ...item, url: newUrl };
+        }));
+      }
+    }).catch(err => console.error("Error fetching vertical projects:", err));
+  }, []);
 
   useGSAP(() => {
+    if (shows.length === 0) return;
     gsap.fromTo(
       cardsRef.current,
       { opacity: 0, filter: 'blur(20px)', y: 50 },
@@ -54,7 +73,9 @@ const AllMicrodramaShows = () => {
         }
       }
     );
-  }, { scope: containerRef });
+  }, { scope: containerRef, dependencies: [shows] });
+
+  if (shows.length === 0) return null;
 
   return (
     <section ref={containerRef} className="w-full pt-2 pb-16 lg:pb-24 bg-white relative flex flex-col items-center">
@@ -65,14 +86,24 @@ const AllMicrodramaShows = () => {
       <div className="w-full px-8 max-w-[1920px]">
         {/* 6 columns layout as requested */}
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 md:gap-3 lg:gap-4 w-full">
-          {microdramaShows.map((project, idx) => (
-            <div 
-              key={project.id} 
-              className={idx === 24 ? "col-start-1 md:col-start-2 lg:col-start-3" : ""}
-            >
-              <VerticalCard project={project} cardRef={(el) => (cardsRef.current[idx] = el)} />
-            </div>
-          ))}
+          {shows.map((project, idx) => {
+            let extraClass = "";
+            const remainder = shows.length % 6;
+            if (remainder > 0 && idx >= shows.length - remainder) {
+              if (remainder === 2 && idx === shows.length - 2) extraClass = "col-start-1 md:col-start-2 lg:col-start-3";
+              else if (remainder === 4 && idx === shows.length - 4) extraClass = "col-start-1 md:col-start-2";
+              else if (remainder === 1 && idx === shows.length - 1) extraClass = "col-start-1 md:col-start-3 lg:col-start-4";
+            }
+            
+            return (
+              <div 
+                key={project.id || idx} 
+                className={extraClass}
+              >
+                <VerticalCard project={project} cardRef={(el) => (cardsRef.current[idx] = el)} />
+              </div>
+            );
+          })}
         </div>
 
         {/* Watch Entertainment Films Button */}

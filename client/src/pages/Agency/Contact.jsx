@@ -84,7 +84,7 @@ const Contact = () => {
 
             {/* Contact Form Section */}
             <div className="w-full relative z-10 overflow-hidden">
-              <ContactForm highlightColorClass="text-brand-blue" showFooter={false} />
+              <ContactForm dataSource="agency" highlightColorClass="text-brand-blue" showFooter={false} />
             </div>
 
             {/* Google Map Section */}

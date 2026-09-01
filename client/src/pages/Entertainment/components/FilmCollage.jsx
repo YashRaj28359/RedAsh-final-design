@@ -11,6 +11,7 @@ import card6Img from "../../../assets/Films/Cards/Card6.png";
 import { Link } from 'react-router-dom';
 import { FiArrowRight } from 'react-icons/fi';
 import YouTube from 'react-youtube';
+import { fetchContent } from '../../../utils/api';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -145,6 +146,29 @@ const FilmCollage = ({ onVideoToggle }) => {
   const containerRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
   const [isLandscape, setIsLandscape] = useState(false);
+  const [dynamicFilms, setDynamicFilms] = useState(films);
+
+  useEffect(() => {
+    fetchContent().then(data => {
+      const cmsCards = data?.entertainment?.projects?.horizontalCards || data?.entertainment?.heroCards;
+      if (cmsCards && cmsCards.length > 0) {
+        setDynamicFilms(prevFilms => 
+          prevFilms.map((film, index) => {
+            const cmsCard = cmsCards[index];
+            if (!cmsCard) return film;
+            return {
+              ...film,
+              id: cmsCard.id || film.id,
+              title: cmsCard.title || film.title,
+              subtitle: cmsCard.subtitle || film.subtitle,
+              image: cmsCard.image || film.image,
+              link: cmsCard.linkHome !== undefined ? cmsCard.linkHome : (cmsCard.link || cmsCard.url || film.link)
+            };
+          })
+        );
+      }
+    }).catch(err => console.error("Error fetching entertainment cards:", err));
+  }, []);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -261,7 +285,7 @@ const FilmCollage = ({ onVideoToggle }) => {
   return (
     <div ref={containerRef} className="relative w-full h-full lg:min-h-[850px] overflow-hidden landscape:overflow-visible lg:overflow-visible flex items-start lg:items-center justify-center lg:justify-start z-50">
       <div className="relative w-[900px] h-[850px] scale-[0.35] sm:scale-[0.45] md:scale-75 lg:scale-[0.6] xl:scale-[0.75] 2xl:scale-[0.9] landscape:scale-[0.3] md:landscape:scale-[0.35] lg:landscape:scale-[0.6] xl:landscape:scale-[0.75] origin-top lg:origin-left landscape:origin-center lg:landscape:origin-left transition-transform duration-500 mt-4 lg:mt-0 -ml-12 lg:ml-0 landscape:ml-0 lg:landscape:ml-0">
-        {films.map((film, index) => {
+        {dynamicFilms.map((film, index) => {
           const fold = getFoldConfig(film.foldCorner);
           
           let currentStyle = film.style;
@@ -289,10 +313,12 @@ const FilmCollage = ({ onVideoToggle }) => {
                 href={film.link}
                 onClick={(e) => {
                   e.preventDefault();
-                  if (film.link && film.link.includes('youtu')) {
-                    handlePlay(film.link);
-                  } else if (film.link) {
-                    window.open(film.link, '_blank');
+                  if (film.link && film.link !== '#') {
+                    if (film.link.includes('youtu')) {
+                      handlePlay(film.link);
+                    } else {
+                      window.open(film.link, '_blank');
+                    }
                   }
                 }}
                 target="_blank"

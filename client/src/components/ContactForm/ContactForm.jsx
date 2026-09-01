@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { fetchContent } from '../../utils/api';
 
 const ContactForm = ({ 
   linkColorClass = "", 
@@ -11,10 +12,33 @@ const ContactForm = ({
   input4Placeholder = "Your Requirement",
   clientText = "Potential clients",
   buttonTheme = "blue",
-  customFooterText = null
+  customFooterText = null,
+  dataSource = "homepage"
 }) => {
   const dynamicLinkColorClass = linkColorClass || (buttonTheme === 'red' ? "text-brand-red hover:text-red-700" : "text-brand-blue hover:text-blue-700");
   const dynamicHighlightColorClass = highlightColorClass || (buttonTheme === 'red' ? "text-brand-red" : "text-brand-blue");
+
+  const [quotation, setQuotation] = useState({
+    text1: clientText + ' can fill this form or email us at',
+    email1: 'info@redashfilms.com',
+    text2: 'Actors, Film Crew Members & Vendors can email their profiles only at',
+    email2: 'redash.films@gmail.com',
+    officeText: 'RedAsh Office:',
+    officeAddress: '1101, Peninsula Park, Fun Republic Lane, Andheri West, Mumbai, 400053',
+    mapLinkText: '(Google Location)',
+    mapLinkUrl: 'https://share.google/Pxp4Tva4m3IyfrKAd'
+  });
+
+  useEffect(() => {
+    fetchContent()
+      .then(data => {
+        const sourceData = data?.[dataSource]?.quotation || data?.homepage?.quotation;
+        if (sourceData) {
+          setQuotation(prev => ({ ...prev, ...sourceData }));
+        }
+      })
+      .catch(err => console.error("Error fetching quotation data:", err));
+  }, [dataSource]);
 
   return (
     <section className="w-full px-4 md:px-8 pt-4 md:pt-10 pb-2 md:pb-0 bg-white relative z-10">
@@ -142,16 +166,16 @@ const ContactForm = ({
                   {customFooterText ? (
                     <span dangerouslySetInnerHTML={{ __html: customFooterText }} />
                   ) : (
-                    <>{clientText} can fill this form or email us at <a href="https://mail.google.com/mail/?view=cm&fs=1&to=info@redashfilms.com" target="_blank" rel="noopener noreferrer" className={`font-bold transition-colors ${dynamicLinkColorClass}`}>info@redashfilms.com</a></>
+                    <>{quotation.text1} <a href={`https://mail.google.com/mail/?view=cm&fs=1&to=${quotation.email1}`} target="_blank" rel="noopener noreferrer" className={`font-bold transition-colors ${dynamicLinkColorClass}`}>{quotation.email1}</a></>
                   )}
                 </p>
                 <p className="hidden xl:block font-main text-sm text-gray-300">|</p>
                 <p className="font-main text-xs md:text-sm text-gray-500 font-medium">
-                  Actors, Film Crew Members & Vendors can email their profiles only at <a href="https://mail.google.com/mail/?view=cm&fs=1&to=redash.films@gmail.com" target="_blank" rel="noopener noreferrer" className={`font-bold transition-colors ${dynamicLinkColorClass}`}>redash.films@gmail.com</a>
+                  {quotation.text2} <a href={`https://mail.google.com/mail/?view=cm&fs=1&to=${quotation.email2}`} target="_blank" rel="noopener noreferrer" className={`font-bold transition-colors ${dynamicLinkColorClass}`}>{quotation.email2}</a>
                 </p>
               </div>
               <p className="font-main text-xs md:text-sm text-gray-500 font-medium mt-2">
-                <span className="font-bold text-gray-700">RedAsh Office:</span> 1101, Peninsula Park, Fun Republic Lane, Andheri West, Mumbai, 400053 <a href="https://share.google/Pxp4Tva4m3IyfrKAd" target="_blank" rel="noopener noreferrer" className={`font-bold transition-colors hover:underline ${dynamicLinkColorClass}`}>(Google Location)</a>
+                <span className="font-bold text-gray-700">{quotation.officeText}</span> {quotation.officeAddress} <a href={quotation.mapLinkUrl} target="_blank" rel="noopener noreferrer" className={`font-bold transition-colors hover:underline ${dynamicLinkColorClass}`}>{quotation.mapLinkText}</a>
               </p>
             </motion.div>
           )}

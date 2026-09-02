@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import EntertainmentNavbar from './components/EntertainmentNavbar';
 import EntertainmentFooter from './components/EntertainmentFooter';
@@ -6,6 +6,21 @@ import mediaData from '../../data/media.json';
 import Lenis from 'lenis';
 
 const EntertainmentMedia = () => {
+  const [content, setContent] = useState(() => {
+    const saved = localStorage.getItem('entertainmentContent');
+    return saved ? JSON.parse(saved) : null;
+  });
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/content', { cache: 'no-store' })
+      .then(res => res.json())
+      .then(data => {
+        setContent(data.entertainment);
+        localStorage.setItem('entertainmentContent', JSON.stringify(data.entertainment));
+      })
+      .catch(err => console.error("Error fetching content:", err));
+  }, []);
+
   useEffect(() => {
     window.scrollTo(0, 0);
 
@@ -29,6 +44,16 @@ const EntertainmentMedia = () => {
     };
   }, []);
 
+  const dbMedia = content?.media || [];
+  const mergedMedia = mediaData.map(sm => {
+    const override = dbMedia.find(dbm => dbm.id === sm.id);
+    return override ? { ...sm, ...override } : sm;
+  });
+  const newDbMedia = dbMedia.filter(dbm => !mediaData.some(sm => sm.id === dbm.id));
+  const finalMedia = [...mergedMedia, ...newDbMedia];
+
+  const subtitleHtml = content?.mediaConfig?.subtitle || 'Featured news articles on RedAsh Films';
+
   return (
     <div className="min-h-screen bg-white flex flex-col font-main selection:bg-brand-red selection:text-white">
       <EntertainmentNavbar />
@@ -51,14 +76,13 @@ const EntertainmentMedia = () => {
               <span className="text-brand-red">MEDIA</span> <span className="text-neutral-900">COVERAGE</span>
             </motion.h1>
             
-            <motion.p 
+            <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-gray-600 text-lg max-w-2xl mx-auto"
-            >
-              Featured news articles on RedAsh Films
-            </motion.p>
+              dangerouslySetInnerHTML={{ __html: subtitleHtml }}
+            />
           </div>
 
           {/* Media List */}

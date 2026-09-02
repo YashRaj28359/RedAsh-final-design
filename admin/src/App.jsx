@@ -1,7 +1,9 @@
 import React, { useState, useRef } from 'react';
 import './App.css';
-import { Home, Film, Briefcase, Settings, LogOut, FileText, Image as ImageIcon, Layout, Phone, Info, Save, Eye, ChevronDown, ChevronLeft, ChevronRight, Plus, Trash2, Edit2, PlayCircle, GripVertical, RefreshCw, Users, Upload, Flame } from 'lucide-react';
-
+import { Mail, Home, Film, Briefcase, Settings, LogOut, FileText, Image as ImageIcon, Layout, Phone, Info, Save, Eye, ChevronDown, ChevronLeft, ChevronRight, Plus, Trash2, Edit2, PlayCircle, GripVertical, RefreshCw, Users, Upload, Flame, ToggleRight, ToggleLeft, ArrowRight, ExternalLink } from 'lucide-react';
+import JoditEditor from 'jodit-react';
+import staticBlogs from '../../client/src/data/entertainmentBlogs.json';
+import staticMedia from '../../client/src/data/media.json';
 import celeb1 from '../../client/src/assets/Films/celebs/Ashish - IMG_9131.jpg';
 import celeb2 from '../../client/src/assets/Films/celebs/Surbhi jyoti.png';
 import celeb3 from '../../client/src/assets/Films/celebs/Updendra limaye.png';
@@ -112,6 +114,11 @@ function App() {
   const [content, setContent] = useState(initialContent);
   const [activeSidebar, setActiveSidebar] = useState(() => localStorage.getItem('adminActiveSidebar') || 'homepage');
   const [activeSubMenu, setActiveSubMenu] = useState(() => localStorage.getItem('adminActiveSubMenu') || 'hero');
+  const [showAddBlogModal, setShowAddBlogModal] = useState(false);
+  const [newBlog, setNewBlog] = useState({});
+  const [showAddMediaModal, setShowAddMediaModal] = useState(false);
+  const [newMedia, setNewMedia] = useState({});
+  const [activeSubMenuState, setActiveSubMenuState] = useState(() => localStorage.getItem('adminActiveSubMenu') || 'hero');
   const [domain, setDomain] = useState('redashfilms.com');
 
   React.useEffect(() => {
@@ -823,19 +830,90 @@ function App() {
     setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 3000);
   };
 
-  const handleSave = async () => {
+  const handleOpenAddBlogModal = (blog, idx = null) => {
+    if (blog) {
+      setNewBlog({ ...blog, _idx: idx });
+    } else {
+      setNewBlog({ title: '', slug: '', date: new Date().toISOString().split('T')[0], imageUrl: '', content: '', _idx: null });
+    }
+    setShowAddBlogModal(true);
+  };
+
+  const handleConfirmAddBlogModal = () => {
+    if (!newBlog.title) {
+      alert('Blog Title is required');
+      return;
+    }
+    const newState = JSON.parse(JSON.stringify(content));
+    if (!newState.entertainment) newState.entertainment = {};
+    if (!newState.entertainment.blogs) newState.entertainment.blogs = [];
+
+    if (newBlog._idx !== null && newBlog._idx !== undefined) {
+      if (typeof newBlog._idx === 'string' && newBlog._idx.startsWith('static_')) {
+        newState.entertainment.blogs.push(newBlog);
+      } else {
+        newState.entertainment.blogs[newBlog._idx] = newBlog;
+      }
+    } else {
+      newState.entertainment.blogs.push(newBlog);
+    }
+    handleSave(newState);
+    setShowAddBlogModal(false);
+  };
+
+  const handleOpenAddMediaModal = (mediaItem, idx = null) => {
+    if (mediaItem) {
+      setNewMedia({ ...mediaItem, _idx: idx });
+    } else {
+      setNewMedia({ id: 'media_' + Date.now(), source: '', title: '', description: '', url: '', image: '', _idx: null });
+    }
+    setShowAddMediaModal(true);
+  };
+
+  const handleConfirmAddMediaModal = () => {
+    if (!newMedia.title || !newMedia.source) {
+      alert('Source and Title are required');
+      return;
+    }
+    const newState = JSON.parse(JSON.stringify(content));
+    if (!newState.entertainment) newState.entertainment = {};
+    if (!newState.entertainment.media) newState.entertainment.media = [];
+
+    if (newMedia._idx !== null && newMedia._idx !== undefined) {
+      if (typeof newMedia._idx === 'string' && newMedia._idx.startsWith('static_')) {
+        newState.entertainment.media.push(newMedia);
+      } else {
+        newState.entertainment.media[newMedia._idx] = newMedia;
+      }
+    } else {
+      newState.entertainment.media.push(newMedia);
+    }
+    handleSave(newState);
+    setShowAddMediaModal(false);
+  };
+
+  const handleSave = async (dataToSave = null) => {
     try {
+      const stateToUse = dataToSave && typeof dataToSave === 'object' ? dataToSave : content;
       let dbKey = activeSidebar;
-      // Note: If there are other entertainment-* tabs that need to save to 'entertainment', handle them here,
-      // but 'entertainment-films' must save to 'entertainment-films'.
       if (activeSidebar.startsWith('entertainment') && activeSidebar !== 'entertainment-films') {
         dbKey = 'entertainment';
       }
+      if (activeSidebar === 'homepage-media') {
+        dbKey = 'homepage';
+      }
+      if (activeSidebar === 'global-contact') {
+        dbKey = 'global';
+      }
+      if (activeSidebar === 'global-contact') {
+        dbKey = 'global';
+      }
       
+      const payload = stateToUse[dbKey] || (stateToUse.entertainment && dbKey === 'entertainment' ? stateToUse.entertainment : {});
       const res = await fetch(`http://localhost:5000/api/content/${dbKey}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ data: content[dbKey] })
+        body: JSON.stringify({ data: payload })
       });
       
       if (res.ok) {
@@ -1445,9 +1523,7 @@ function App() {
               <button className={`sub-nav-item ${activeSubMenu === 'quotation' ? 'active' : ''}`} onClick={() => setActiveSubMenu('quotation')}>
                 <div className="label-group"><Layout size={16} /> Quotation Form</div>
               </button>
-              <button className={`sub-nav-item ${activeSubMenu === 'mediaCards' ? 'active' : ''}`} onClick={() => setActiveSubMenu('mediaCards')}>
-                <div className="label-group"><Layout size={16} /> Media</div>
-              </button>
+
             </div>
           </>
         );
@@ -1532,6 +1608,34 @@ function App() {
             </div>
           </>
         );
+      case 'entertainment-media':
+        return (
+          <>
+            <div className="section-header">
+              <h1>Media Coverage</h1>
+              <p>Manage media articles and statement</p>
+            </div>
+            <div className="sub-nav">
+              <button className={`sub-nav-item ${activeSubMenu === 'media' ? 'active' : ''}`} onClick={() => setActiveSubMenu('media')}>
+                <div className="label-group"><FileText size={16} /> Media Settings</div>
+              </button>
+            </div>
+          </>
+        );
+      case 'entertainment-blog':
+        return (
+          <>
+            <div className="section-header">
+              <h1>Entertainment Blog</h1>
+              <p>Manage blog posts and articles</p>
+            </div>
+            <div className="sub-nav">
+              <button className={`sub-nav-item ${activeSubMenu === 'blog' ? 'active' : ''}`} onClick={() => setActiveSubMenu('blog')}>
+                <div className="label-group"><FileText size={16} /> Blog Posts</div>
+              </button>
+            </div>
+          </>
+        );
       case 'shared':
         return (
           <>
@@ -1546,11 +1650,30 @@ function App() {
               <button className="sub-nav-item">
                 <div className="label-group"><Layout size={16} /> Common Buttons</div>
               </button>
-              <button className={`sub-nav-item ${activeSubMenu === 'mediaCards' ? 'active' : ''}`} onClick={() => setActiveSubMenu('mediaCards')}>
-                <div className="label-group"><Layout size={16} /> Media</div>
-              </button>
+
             </div>
           </>
+        );
+      case 'global-contact':
+        return (
+          <div className="section-header">
+            <h1>Global Contact Info</h1>
+            <p>Manage contact info shown across the site</p>
+          </div>
+        );
+      case 'global-contact':
+        return (
+          <div className="section-header">
+            <h1>Global Contact Info</h1>
+            <p>Manage contact info shown across the site</p>
+          </div>
+        );
+      case 'homepage-media':
+        return (
+          <div className="section-header">
+            <h1>Media Cards</h1>
+            <p>Manage the news and press cards</p>
+          </div>
         );
       default:
         return (
@@ -1562,6 +1685,108 @@ function App() {
   };
 
   const renderEditor = () => {
+    if (activeSidebar === 'global-contact') {
+      const contactInfo = content.global?.contact || {
+        addressTitle: 'RedAsh, 1101, Peninsula Park',
+        addressDesc: 'Fun Republic Lane, Near Yash Raj Studios, Andheri West, Mumbai 400053',
+        mapLinkUrl: 'https://share.google/Pxp4Tva4m3IyfrKAd',
+        mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3769.754702008323!2d72.83299317593922!3d19.118432350639912!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c9d90e067ba9%3A0x16268e5d6bbc70d9!2sPeninsula%20Park!5e0!3m2!1sen!2sin!4v1716388437021!5m2!1sen!2sin',
+        email1: 'info@redashfilms.com',
+        email1Subtitle: 'Potential Clients, Investors, and Sponsors can email or fill the form below',
+        email2: 'redash.films@gmail.com',
+        email2Subtitle: 'For Actors, Film Crew Members & Vendors - only email'
+      };
+
+      const handleChange = (field, value) => {
+        setContent(prev => {
+          const newState = JSON.parse(JSON.stringify(prev));
+          if (!newState.global) newState.global = {};
+          if (!newState.global.contact) newState.global.contact = { ...contactInfo };
+          newState.global.contact[field] = value;
+          return newState;
+        });
+      };
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header">
+            <div>
+              <h2>Global Contact Info</h2>
+              <p>This information is used on the Entertainment and Ad Agency contact pages.</p>
+            </div>
+          </div>
+          
+          <div className="content-block-panel">
+            <h3 style={{ marginBottom: '1rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem' }}>Office Address</h3>
+            <div className="form-group">
+              <label>Address Title</label>
+              <input type="text" className="form-control" value={contactInfo.addressTitle || ''} onChange={(e) => handleChange('addressTitle', e.target.value)} />
+            </div>
+            <div className="form-group" style={{ marginTop: '1rem' }}>
+              <label>Address Description</label>
+              <textarea className="form-control" rows="2" value={contactInfo.addressDesc || ''} onChange={(e) => handleChange('addressDesc', e.target.value)} />
+            </div>
+            <div className="form-group" style={{ marginTop: '1rem' }}>
+              <label>Google Maps Link URL (click link)</label>
+              <input type="text" className="form-control" value={contactInfo.mapLinkUrl || ''} onChange={(e) => handleChange('mapLinkUrl', e.target.value)} />
+            </div>
+          </div>
+
+          <div className="content-block-panel" style={{ marginTop: '2rem' }}>
+            <h3 style={{ marginBottom: '1rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem' }}>Primary Email</h3>
+            <div className="form-group">
+              <label>Email Address</label>
+              <input type="text" className="form-control" value={contactInfo.email1 || ''} onChange={(e) => handleChange('email1', e.target.value)} />
+            </div>
+            <div className="form-group" style={{ marginTop: '1rem' }}>
+              <label>Subtitle / Description</label>
+              <input type="text" className="form-control" value={contactInfo.email1Subtitle || ''} onChange={(e) => handleChange('email1Subtitle', e.target.value)} />
+            </div>
+          </div>
+
+          <div className="content-block-panel" style={{ marginTop: '2rem' }}>
+            <h3 style={{ marginBottom: '1rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem' }}>Secondary Email</h3>
+            <div className="form-group">
+              <label>Email Address</label>
+              <input type="text" className="form-control" value={contactInfo.email2 || ''} onChange={(e) => handleChange('email2', e.target.value)} />
+            </div>
+            <div className="form-group" style={{ marginTop: '1rem' }}>
+              <label>Subtitle / Description</label>
+              <input type="text" className="form-control" value={contactInfo.email2Subtitle || ''} onChange={(e) => handleChange('email2Subtitle', e.target.value)} />
+            </div>
+          </div>
+          
+          <div className="content-block-panel" style={{ marginTop: '2rem' }}>
+            <h3 style={{ marginBottom: '1rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem' }}>Map Embed</h3>
+            <div className="form-group">
+              <label>Google Maps Embed URL (iframe src)</label>
+              <input type="text" className="form-control" value={contactInfo.mapEmbedUrl || ''} onChange={(e) => handleChange('mapEmbedUrl', e.target.value)} />
+            </div>
+            {contactInfo.mapEmbedUrl && (
+              <div style={{ marginTop: '1rem', width: '100%', height: '300px', borderRadius: '8px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+                <iframe 
+                  src={contactInfo.mapEmbedUrl}
+                  width="100%" 
+                  height="100%" 
+                  style={{ border: 0 }} 
+                  allowFullScreen="" 
+                  loading="lazy" 
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Location Preview"
+                ></iframe>
+              </div>
+            )}
+          </div>
+          
+          <div style={{ marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+            <label style={{ fontSize: '0.95rem', fontWeight: '600', color: '#334155', textAlign: 'center' }}>Save Contact Info</label>
+            <button type="button" className="btn-primary" onClick={() => handleSave(content)} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: '#e20002', color: '#fff', border: 'none', padding: '0.6rem 2.5rem', borderRadius: '6px', fontWeight: '600', fontSize: '0.95rem', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(226, 0, 2, 0.2), 0 2px 4px -1px rgba(226, 0, 2, 0.1)' }}>
+              <Save size={16} /> Save Changes
+            </button>
+          </div>
+        </div>
+      );
+    }
     if (activeSidebar === 'homepage' && activeSubMenu === 'hero') {
       const data = content.homepage?.hero || { heading_blocks: [] };
       
@@ -2500,7 +2725,7 @@ function App() {
       );
     }
 
-    if (activeSidebar === 'homepage' && activeSubMenu === 'mediaCards') {
+    if ((activeSidebar === 'homepage' && activeSubMenu === 'mediaCards') || activeSidebar === 'homepage-media') {
       const mediaCards = content.homepage?.mediaCards || [];
 
       return (
@@ -4335,6 +4560,244 @@ function App() {
       );
     }
 
+    // --- ENTERTAINMENT MEDIA SETTINGS ---
+    if (activeSidebar === 'entertainment-media' && activeSubMenu === 'media') {
+      const getVal = (key, defaultVal) => content.entertainment?.mediaConfig?.[key] !== undefined ? content.entertainment.mediaConfig[key] : defaultVal;
+      
+      const updateVal = (key, val) => {
+        setContent(prev => {
+          const newState = JSON.parse(JSON.stringify(prev));
+          if (!newState.entertainment) newState.entertainment = {};
+          if (!newState.entertainment.mediaConfig) newState.entertainment.mediaConfig = {};
+          newState.entertainment.mediaConfig[key] = val;
+          return newState;
+        });
+      };
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header">
+            <div>
+              <h2>Media Coverage Settings</h2>
+              <p>Manage the statement, coverage articles, and press publications</p>
+            </div>
+          </div>
+
+          {/* Sub Statement Editor */}
+          <div className="form-card" style={{ marginBottom: '2rem' }}>
+            <label style={{ fontSize: '0.9rem', fontWeight: '600', display: 'block', marginBottom: '0.6rem', color: '#334155' }}>Sub Statement</label>
+            <div style={{ border: '1px solid #cbd5e1', borderRadius: '8px', overflow: 'hidden' }}>
+              <textarea
+                value={getVal('subtitle', 'Featured news articles on RedAsh Films')}
+                onChange={(e) => updateVal('subtitle', e.target.value)}
+                placeholder="Enter sub statement..."
+                style={{
+                  width: '100%',
+                  height: '150px',
+                  padding: '12px',
+                  border: 'none',
+                  outline: 'none',
+                  resize: 'vertical',
+                  fontFamily: 'inherit',
+                  fontSize: '0.95rem'
+                }}
+              />
+            </div>
+            <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'flex-end' }}>
+              <button type="button" className="btn-primary" onClick={() => handleSave(content)} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: '#e20002', color: '#fff', border: 'none', padding: '0.6rem 1.4rem', borderRadius: '6px', fontWeight: '600', cursor: 'pointer' }}>
+                <Save size={16} /> Save Changes
+              </button>
+            </div>
+
+            <div style={{ marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+              <label style={{ fontSize: '0.95rem', fontWeight: '600', color: '#334155', textAlign: 'center' }}>Edit media cards</label>
+              <button 
+                type="button" 
+                onClick={() => {
+                  setActiveSidebar('homepage-media');
+                }}
+                style={{ 
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  background: '#e20002', 
+                  color: '#ffffff', 
+                  border: 'none', 
+                  padding: '0.6rem 2.5rem', 
+                  borderRadius: '6px', 
+                  fontWeight: '600', 
+                  fontSize: '0.95rem',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 6px -1px rgba(226, 0, 2, 0.2), 0 2px 4px -1px rgba(226, 0, 2, 0.1)'
+                }}
+              >
+                Edit
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // --- ENTERTAINMENT BLOG SETTINGS ---
+    if (activeSidebar === 'entertainment-contact' && activeSubMenu === 'contact') {
+      const getVal = (key, defaultVal) => content.entertainment?.contact?.[key] !== undefined ? content.entertainment.contact[key] : defaultVal;
+      
+      const updateVal = (key, val) => {
+        setContent(prev => {
+          const newState = JSON.parse(JSON.stringify(prev));
+          if (!newState.entertainment) newState.entertainment = {};
+          if (!newState.entertainment.contact) newState.entertainment.contact = {};
+          newState.entertainment.contact[key] = val;
+          return newState;
+        });
+      };
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header">
+            <div>
+              <h2>Entertainment Contact</h2>
+              <p>Manage the "GET IN TOUCH" subtext specifically for the Entertainment Contact page.</p>
+            </div>
+          </div>
+          
+          <div className="section-card" style={{ marginTop: '2rem' }}>
+            <div className="form-group">
+              <label>Header Subtitle</label>
+              <textarea 
+                className="form-control" rows="3"
+                value={getVal('headerSubtitle', 'Potential Clients, Investors, and Sponsors can email or fill the form below')} 
+                onChange={(e) => updateVal('headerSubtitle', e.target.value)} 
+              />
+              <p style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.5rem' }}>This text appears below the "GET IN TOUCH" heading.</p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+        if (activeSidebar === 'entertainment-blog' && activeSubMenu === 'blog') {
+      const dbBlogs = content.entertainment?.blogs || [];
+      const mergedStaticBlogs = staticBlogs.map(sb => {
+        const override = dbBlogs.find(dbb => dbb.slug === sb.slug);
+        return override ? { ...override, isStaticOrigin: true } : { ...sb, isStaticOrigin: true };
+      });
+      const newDbBlogs = dbBlogs.filter(dbb => !staticBlogs.some(sb => sb.slug === dbb.slug));
+      const blogs = [...mergedStaticBlogs, ...newDbBlogs];
+
+      const removeBlog = (idx) => {
+        const blogToRemove = blogs[idx];
+        if (blogToRemove.isStaticOrigin) return; 
+        
+        const dbIdx = dbBlogs.findIndex(b => b.slug === blogToRemove.slug);
+        if (dbIdx === -1) return;
+
+        if (window.confirm('Are you sure you want to delete this blog post?')) {
+          const newState = JSON.parse(JSON.stringify(content));
+          newState.entertainment.blogs.splice(dbIdx, 1);
+          handleSave(newState);
+        }
+      };
+
+      const togglePublish = (idx) => {
+        const blogToToggle = blogs[idx];
+        const newState = JSON.parse(JSON.stringify(content));
+        
+        const dbIdx = (newState.entertainment.blogs || []).findIndex(b => b.slug === blogToToggle.slug);
+        
+        if (dbIdx !== -1) {
+          newState.entertainment.blogs[dbIdx].published = !newState.entertainment.blogs[dbIdx].published;
+        } else {
+          if (!newState.entertainment.blogs) newState.entertainment.blogs = [];
+          newState.entertainment.blogs.push({ ...blogToToggle, published: !blogToToggle.published });
+        }
+        handleSave(newState);
+      };
+
+      const handleEditClick = (blog, idx) => {
+        const dbIdx = (content.entertainment?.blogs || []).findIndex(b => b.slug === blog.slug);
+        handleOpenAddBlogModal(blog, dbIdx !== -1 ? dbIdx : `static_${blog.slug}`);
+      };
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header">
+            <div>
+              <h2>Entertainment Blog Settings</h2>
+              <p>Manage blog posts and articles</p>
+            </div>
+            <div className="header-actions">
+              <button type="button" className="btn-primary" onClick={() => handleSave(content)} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Save size={18} /> Save Changes
+              </button>
+            </div>
+          </div>
+
+          <div className="form-card">
+            <h3 style={{ marginBottom: '1rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              Blog Posts
+              <button type="button" className="btn-secondary" onClick={() => handleOpenAddBlogModal(null, null)} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', padding: '0.4rem 0.8rem' }}>
+                <Plus size={14} /> Add Blog
+              </button>
+            </h3>
+            
+            <div className="blogs-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem', marginTop: '1.5rem' }}>
+              {blogs.map((blog, idx) => {
+                const isStaticOrigin = blog.isStaticOrigin;
+                const isPublished = blog.published !== false;
+                
+                return (
+                  <div key={blog.slug || idx} className="blog-card" style={{ border: '1px solid #e2e8f0', borderRadius: '8px', overflow: 'hidden', background: '#fff', display: 'flex', flexDirection: 'column' }}>
+                    <div style={{ height: '160px', overflow: 'hidden', position: 'relative' }}>
+                      <img src={blog.imageUrl ? (blog.imageUrl.startsWith('http') ? blog.imageUrl : `http://localhost:5000${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`) : 'https://placehold.co/600x400?text=No+Image'} alt={blog.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <div style={{ position: 'absolute', top: '10px', left: '10px', background: '#e20002', color: 'white', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold' }}>
+                        {blog.date ? new Date(blog.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }).toUpperCase() : ''}
+                      </div>
+                      <div style={{ position: 'absolute', top: '10px', right: '10px', background: isPublished ? '#10b981' : '#64748b', color: 'white', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold' }}>
+                        {isPublished ? 'PUBLISHED' : 'DRAFT'}
+                      </div>
+                    </div>
+                    <div style={{ padding: '1.2rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                      <h4 style={{ fontSize: '1rem', fontWeight: '700', margin: '0 0 0.5rem 0', color: '#0f172a', lineHeight: '1.4' }}>{blog.title}</h4>
+                      
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid #f1f5f9' }}>
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <button 
+                            className="btn-icon" 
+                            onClick={() => handleEditClick(blog, idx)}
+                            title="Edit Blog"
+                          >
+                            <Edit2 size={16} /> Edit
+                          </button>
+                          <button 
+                            className="btn-icon" 
+                            onClick={() => togglePublish(idx)}
+                            title={isPublished ? "Unpublish" : "Publish"}
+                          >
+                            {isPublished ? <ToggleRight size={18} color="#10b981" /> : <ToggleLeft size={18} />}
+                          </button>
+                          <button 
+                            className={`btn-icon ${isStaticOrigin ? 'disabled' : ''}`} 
+                            onClick={() => !isStaticOrigin && removeBlog(idx)}
+                            disabled={isStaticOrigin}
+                            title={isStaticOrigin ? "Cannot delete original static blogs" : "Delete Blog"}
+                            style={isStaticOrigin ? { opacity: 0.3, cursor: 'not-allowed' } : {}}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="empty-editor">
         <FileText size={48} />
@@ -4374,11 +4837,11 @@ function App() {
           }}>
             <Briefcase size={16} /> Ad Agency
           </button>
-          <button className={`top-nav-tab ${activeSidebar === 'shared' ? 'active' : ''}`} onClick={() => setActiveSidebar('shared')}>
-            <Layout size={16} /> Shared Content
+          <button className={`top-nav-tab ${activeSidebar === 'homepage-media' ? 'active' : ''}`} onClick={() => setActiveSidebar('homepage-media')}>
+            <ImageIcon size={16} /> Media Cards
           </button>
-          <button className={`top-nav-tab ${activeSidebar === 'media' ? 'active' : ''}`} onClick={() => setActiveSidebar('media')}>
-            <ImageIcon size={16} /> Media Library
+          <button className={`top-nav-tab ${activeSidebar === 'global-contact' ? 'active' : ''}`} onClick={() => setActiveSidebar('global-contact')}>
+            <Mail size={16} /> Contact
           </button>
         </nav>
 
@@ -4428,27 +4891,17 @@ function App() {
                   </button>
                   
                   <button 
-                    disabled
-                    title="Coming Soon"
-                    style={{ background: 'none', border: 'none', cursor: 'not-allowed', padding: '0.5rem 0', color: '#94a3b8', borderBottom: '2px solid transparent', fontSize: '0.9rem', fontWeight: '600', opacity: 0.7 }}
+                    onClick={() => { setActiveSidebar('entertainment-blog'); setActiveSubMenu('blog'); }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.5rem 0', color: activeSidebar === 'entertainment-blog' ? '#e20002' : '#0f172a', borderBottom: activeSidebar === 'entertainment-blog' ? '2px solid #e20002' : '2px solid transparent', fontSize: '0.9rem', fontWeight: '600', transition: 'all 0.2s' }}
                   >
-                    Blog <span style={{fontSize: '0.7rem', fontWeight: 'normal'}}>(Soon)</span>
+                    Blog
                   </button>
                   
                   <button 
-                    disabled
-                    title="Coming Soon"
-                    style={{ background: 'none', border: 'none', cursor: 'not-allowed', padding: '0.5rem 0', color: '#94a3b8', borderBottom: '2px solid transparent', fontSize: '0.9rem', fontWeight: '600', opacity: 0.7 }}
+                    onClick={() => { setActiveSidebar('entertainment-media'); setActiveSubMenu('media'); }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.5rem 0', color: activeSidebar === 'entertainment-media' ? '#e20002' : '#0f172a', borderBottom: activeSidebar === 'entertainment-media' ? '2px solid #e20002' : '2px solid transparent', fontSize: '0.9rem', fontWeight: '600', transition: 'all 0.2s' }}
                   >
-                    Media <span style={{fontSize: '0.7rem', fontWeight: 'normal'}}>(Soon)</span>
-                  </button>
-                  
-                  <button 
-                    disabled
-                    title="Coming Soon"
-                    style={{ background: 'none', border: 'none', cursor: 'not-allowed', padding: '0.5rem 0', color: '#94a3b8', borderBottom: '2px solid transparent', fontSize: '0.9rem', fontWeight: '600', opacity: 0.7 }}
-                  >
-                    Contact <span style={{fontSize: '0.7rem', fontWeight: 'normal'}}>(Soon)</span>
+                    Media
                   </button>
                 </div>
               )}
@@ -4841,6 +5294,247 @@ function App() {
               </button>
               <button type="button" className="btn-primary" onClick={handleConfirmAddProjectModal} style={{ background: '#e20002', border: 'none', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                 <Plus size={16} /> Add Project Card
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      
+      {/* ADD BLOG MODAL */}
+      {showAddBlogModal && (
+        <div className="modal-overlay" onClick={() => setShowAddBlogModal(false)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()} style={{ width: '90vw', maxWidth: '1200px', height: '90vh', display: 'flex', flexDirection: 'column' }}>
+            <div className="modal-header">
+              <h3 style={{ fontSize: '1.1rem', fontWeight: '700', color: '#0f172a', margin: 0 }}>Add New Blog</h3>
+              <button className="btn-icon" onClick={() => setShowAddBlogModal(false)} style={{ color: '#64748b' }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+            <div className="modal-body" style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+              <div className="form-group" style={{ marginBottom: '1.2rem' }}>
+                <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Blog Title *</label>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  value={newBlog.title || ''} 
+                  onChange={(e) => setNewBlog({ ...newBlog, title: e.target.value })} 
+                  placeholder="Enter blog title"
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.2rem' }}>
+                <div className="form-group">
+                  <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Slug (Optional)</label>
+                  <input 
+                    type="text" 
+                    className="form-control" 
+                    value={newBlog.slug || ''} 
+                    onChange={(e) => setNewBlog({ ...newBlog, slug: e.target.value })} 
+                    placeholder="custom-url-slug"
+                  />
+                </div>
+                <div className="form-group">
+                  <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Date</label>
+                  <input 
+                    type="date" 
+                    className="form-control" 
+                    value={newBlog.date || ''} 
+                    onChange={(e) => setNewBlog({ ...newBlog, date: e.target.value })} 
+                  />
+                </div>
+              </div>
+
+              <div className="form-group" style={{ marginBottom: '1.2rem' }}>
+                <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Cover Image</label>
+                <div style={{ display: 'flex', gap: '0.5rem', flexDirection: 'column' }}>
+                  <input 
+                    type="text" 
+                    className="form-control" 
+                    style={{ fontSize: '0.85rem' }}
+                    value={newBlog.imageUrl || ''} 
+                    onChange={(e) => setNewBlog({ ...newBlog, imageUrl: e.target.value })} 
+                    placeholder="Paste image URL or upload..."
+                  />
+                  <label className="btn-secondary" style={{ padding: '0.6rem 1rem', fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: '#e20002', color: '#ffffff', border: 'none', borderRadius: '6px', fontWeight: '600' }}>
+                    <Upload size={16} /> Choose Image File
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      style={{ display: 'none' }}
+                      onChange={async (e) => {
+                        const file = e.target.files && e.target.files[0];
+                        if (file) {
+                          const formData = new FormData();
+                          formData.append('image', file);
+                          try {
+                            const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: formData });
+                            const data = await res.json();
+                            if (res.ok && data.url) {
+                              setNewBlog({ ...newBlog, imageUrl: data.url });
+                            } else {
+                              alert('Error uploading file');
+                            }
+                          } catch (error) {
+                            console.error("Upload error:", error);
+                            alert('Error uploading file');
+                          }
+                        }
+                      }} 
+                    />
+                  </label>
+                </div>
+                {newBlog.imageUrl && (
+                  <div style={{ marginTop: '0.5rem', width: '100%', height: '120px', borderRadius: '6px', overflow: 'hidden' }}>
+                    <img src={newBlog.imageUrl.startsWith('http') ? newBlog.imageUrl : `http://localhost:5000${newBlog.imageUrl.startsWith('/') ? '' : '/'}${newBlog.imageUrl}`} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                )}
+              </div>
+
+              <div className="form-group" style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: '400px' }}>
+                <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Main article body</label>
+                <div style={{ flex: 1, overflow: 'hidden' }}>
+                  <JoditEditor
+                    value={newBlog.content || ''}
+                    config={{
+                      readonly: false,
+                      height: '100%',
+                      toolbarAdaptive: false,
+                      placeholder: 'Write your blog post here...'
+                    }}
+                    onBlur={newContent => setNewBlog({ ...newBlog, content: newContent })}
+                    onChange={() => {}}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn-secondary" onClick={() => setShowAddBlogModal(false)}>
+                Cancel
+              </button>
+              <button type="button" className="btn-primary" onClick={handleConfirmAddBlogModal} style={{ background: '#e20002', border: 'none', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <Save size={16} /> Save Blog Post
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ADD MEDIA MODAL */}
+      {showAddMediaModal && (
+        <div className="modal-overlay" onClick={() => setShowAddMediaModal(false)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()} style={{ width: '90vw', maxWidth: '1200px', height: '90vh', display: 'flex', flexDirection: 'column' }}>
+            <div className="modal-header">
+              <h3 style={{ fontSize: '1.1rem', fontWeight: '700', color: '#0f172a', margin: 0 }}>Add New Media Coverage</h3>
+              <button className="btn-icon" onClick={() => setShowAddMediaModal(false)} style={{ color: '#64748b' }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+            <div className="modal-body" style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.2rem' }}>
+                <div className="form-group">
+                  <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Source/Publisher (e.g. Times of India) *</label>
+                  <input 
+                    type="text" 
+                    className="form-control" 
+                    value={newMedia.source || ''} 
+                    onChange={(e) => setNewMedia({ ...newMedia, source: e.target.value })} 
+                    placeholder="Enter publisher name"
+                  />
+                </div>
+                <div className="form-group">
+                  <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Article URL</label>
+                  <input 
+                    type="text" 
+                    className="form-control" 
+                    value={newMedia.url || ''} 
+                    onChange={(e) => setNewMedia({ ...newMedia, url: e.target.value })} 
+                    placeholder="https://..."
+                  />
+                </div>
+              </div>
+
+              <div className="form-group" style={{ marginBottom: '1.2rem' }}>
+                <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Article Title *</label>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  value={newMedia.title || ''} 
+                  onChange={(e) => setNewMedia({ ...newMedia, title: e.target.value })} 
+                  placeholder="Enter article title"
+                />
+              </div>
+
+              <div className="form-group" style={{ marginBottom: '1.2rem' }}>
+                <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Cover Image</label>
+                <div style={{ display: 'flex', gap: '0.5rem', flexDirection: 'column' }}>
+                  <input 
+                    type="text" 
+                    className="form-control" 
+                    style={{ fontSize: '0.85rem' }}
+                    value={newMedia.image || ''} 
+                    onChange={(e) => setNewMedia({ ...newMedia, image: e.target.value })} 
+                    placeholder="Paste image URL or upload..."
+                  />
+                  <label className="btn-secondary" style={{ padding: '0.6rem 1rem', fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: '#e20002', color: '#ffffff', border: 'none', borderRadius: '6px', fontWeight: '600' }}>
+                    <Upload size={16} /> Choose Image File
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      style={{ display: 'none' }}
+                      onChange={async (e) => {
+                        const file = e.target.files && e.target.files[0];
+                        if (file) {
+                          const formData = new FormData();
+                          formData.append('image', file);
+                          try {
+                            const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: formData });
+                            const data = await res.json();
+                            if (res.ok && data.url) {
+                              setNewMedia({ ...newMedia, image: data.url });
+                            } else {
+                              alert('Error uploading file');
+                            }
+                          } catch (error) {
+                            console.error("Upload error:", error);
+                            alert('Error uploading file');
+                          }
+                        }
+                      }} 
+                    />
+                  </label>
+                </div>
+                {newMedia.image && (
+                  <div style={{ marginTop: '0.5rem', width: '100%', height: '120px', borderRadius: '6px', overflow: 'hidden' }}>
+                    <img src={newMedia.image.startsWith('http') ? newMedia.image : `http://localhost:5000${newMedia.image.startsWith('/') ? '' : '/'}${newMedia.image}`} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                )}
+              </div>
+              
+              <div className="form-group" style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: '300px' }}>
+                <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Article Summary / Description</label>
+                <div style={{ flex: 1, overflow: 'hidden' }}>
+                  <JoditEditor
+                    value={newMedia.description || ''}
+                    config={{
+                      readonly: false,
+                      height: '100%',
+                      toolbarAdaptive: false,
+                      placeholder: 'Write article summary...'
+                    }}
+                    onBlur={newContent => setNewMedia({ ...newMedia, description: newContent })}
+                    onChange={() => {}}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn-secondary" onClick={() => setShowAddMediaModal(false)}>
+                Cancel
+              </button>
+              <button type="button" className="btn-primary" onClick={handleConfirmAddMediaModal} style={{ background: '#e20002', border: 'none', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <Save size={16} /> Save Media
               </button>
             </div>
           </div>

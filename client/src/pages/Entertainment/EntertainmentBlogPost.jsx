@@ -10,6 +10,7 @@ import blogsData from '../../data/entertainmentBlogs.json';
 const EntertainmentBlogPost = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const [blogs, setBlogs] = useState([]);
   const [blog, setBlog] = useState(null);
   const [prevBlog, setPrevBlog] = useState(null);
   const [nextBlog, setNextBlog] = useState(null);
@@ -31,6 +32,21 @@ const EntertainmentBlogPost = () => {
     }
     animationFrameId = requestAnimationFrame(raf);
 
+    // Fetch dynamic content
+    fetch('http://localhost:5000/api/content/entertainment')
+      .then(res => res.json())
+      .then(data => {
+        if (data.blogs && Array.isArray(data.blogs)) {
+          setBlogs([...blogsData, ...data.blogs.filter(b => b.published !== false)]);
+        } else {
+          setBlogs(blogsData);
+        }
+      })
+      .catch(err => {
+        console.error("Error fetching blogs content:", err);
+        setBlogs(blogsData);
+      });
+
     return () => {
       cancelAnimationFrame(animationFrameId);
       lenis.destroy();
@@ -38,9 +54,11 @@ const EntertainmentBlogPost = () => {
   }, [slug]);
 
   useEffect(() => {
-    const currentIndex = blogsData.findIndex(b => b.slug === slug);
+    if (blogs.length === 0) return;
+
+    const currentIndex = blogs.findIndex(b => b.slug === slug);
     if (currentIndex !== -1) {
-      setBlog(blogsData[currentIndex]);
+      setBlog(blogs[currentIndex]);
       
       const newBlogSlugs = [
         'the-art-of-microdrama-short-form-storytelling-2026',
@@ -54,27 +72,27 @@ const EntertainmentBlogPost = () => {
       if (newBlogSlugs.includes(slug)) {
         if (slug === newBlogSlugs[0]) {
           prev = null;
-          next = blogsData.find(b => b.slug === newBlogSlugs[1]);
+          next = blogs.find(b => b.slug === newBlogSlugs[1]);
         } else if (slug === newBlogSlugs[1]) {
-          prev = blogsData.find(b => b.slug === newBlogSlugs[0]);
-          next = blogsData.find(b => b.slug === newBlogSlugs[2]);
+          prev = blogs.find(b => b.slug === newBlogSlugs[0]);
+          next = blogs.find(b => b.slug === newBlogSlugs[2]);
         } else if (slug === newBlogSlugs[2]) {
-          prev = blogsData.find(b => b.slug === newBlogSlugs[1]);
+          prev = blogs.find(b => b.slug === newBlogSlugs[1]);
           next = null;
         }
       } else {
         // Normal blogs (skip the new isolated ones)
         let pIndex = currentIndex + 1;
-        while (pIndex < blogsData.length && newBlogSlugs.includes(blogsData[pIndex].slug)) {
+        while (pIndex < blogs.length && newBlogSlugs.includes(blogs[pIndex].slug)) {
           pIndex++;
         }
-        prev = pIndex < blogsData.length ? blogsData[pIndex] : null;
+        prev = pIndex < blogs.length ? blogs[pIndex] : null;
 
         let nIndex = currentIndex - 1;
-        while (nIndex >= 0 && newBlogSlugs.includes(blogsData[nIndex].slug)) {
+        while (nIndex >= 0 && newBlogSlugs.includes(blogs[nIndex].slug)) {
           nIndex--;
         }
-        next = nIndex >= 0 ? blogsData[nIndex] : null;
+        next = nIndex >= 0 ? blogs[nIndex] : null;
       }
 
       setPrevBlog(prev);
@@ -82,12 +100,18 @@ const EntertainmentBlogPost = () => {
     } else {
       navigate('/entertainment/blog');
     }
-  }, [slug, navigate]);
+  }, [slug, navigate, blogs]);
 
   if (!blog) return null;
 
   // Get 4 suggested blogs (excluding the current one)
-  const suggestedBlogs = blogsData.filter(b => b.id !== blog.id).slice(0, 4);
+  const suggestedBlogs = blogs.filter(b => b.id !== blog.id && b.published !== false).slice(0, 4);
+
+  const getImageUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    return `http://localhost:5000${url.startsWith('/') ? '' : '/'}${url}`;
+  };
 
   const renderSuggestedBlogs = () => {
     if (suggestedBlogs.length === 0) return null;
@@ -102,7 +126,7 @@ const EntertainmentBlogPost = () => {
             <Link key={suggested.id} to={`/entertainment/blog/${suggested.slug}`} className="group flex gap-4 items-start bg-neutral-50 p-3 rounded-xl hover:shadow-lg hover:bg-white border border-transparent transition-all duration-300">
               <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-neutral-200">
                 {suggested.imageUrl ? (
-                  <img src={suggested.imageUrl} alt={suggested.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
+                  <img src={getImageUrl(suggested.imageUrl)} alt={suggested.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
                     <span className="text-[10px] text-neutral-400 font-bold text-center">NO IMG</span>
@@ -173,9 +197,9 @@ const EntertainmentBlogPost = () => {
           className="w-full max-w-7xl mx-auto px-4 md:px-8 relative z-10"
         >
           <img 
-            src={blog.imageUrl} 
+            src={getImageUrl(blog.imageUrl)} 
             alt={blog.title} 
-            className="w-full object-cover aspect-video md:aspect-[21/9]"
+            className="w-full object-cover aspect-video md:aspect-[21/9] rounded-xl"
           />
         </motion.div>
       )}

@@ -1,20 +1,28 @@
 let cachedData = null;
 let fetchPromise = null;
 
+export const getCachedContent = () => {
+  if (cachedData) return cachedData;
+  try {
+    const local = localStorage.getItem('redash_content');
+    if (local) {
+      cachedData = JSON.parse(local);
+      return cachedData;
+    }
+  } catch (e) {
+    console.error(e);
+  }
+  return null;
+};
+
 export const fetchContent = () => {
-  /*
-  if (cachedData) {
-    return Promise.resolve(cachedData);
-  }
-  if (fetchPromise) {
-    return fetchPromise;
-  }
-  */
-  
   fetchPromise = fetch('http://localhost:5000/api/content')
     .then(res => res.json())
     .then(data => {
       cachedData = data;
+      try {
+        localStorage.setItem('redash_content', JSON.stringify(data));
+      } catch (e) {}
       fetchPromise = null;
       return data;
     })

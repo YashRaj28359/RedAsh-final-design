@@ -49,16 +49,29 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server is running' });
 });
 
-// GET all content
-app.get('/api/content', async (req, res) => {
+let cachedContentMap = null;
+
+// Helper to fetch and cache content
+async function refreshCache() {
   try {
     const contents = await Content.find();
-    // Transform array into nested object map for the frontend: { homepage: { hero: {...} }, ... }
     const contentMap = {};
     contents.forEach(item => {
       contentMap[item.key] = item.data;
     });
-    res.json(contentMap);
+    cachedContentMap = contentMap;
+  } catch (error) {
+    console.error('Error fetching cache:', error);
+  }
+}
+
+// GET all content
+app.get('/api/content', async (req, res) => {
+  try {
+    if (!cachedContentMap) {
+      await refreshCache();
+    }
+    res.json(cachedContentMap);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching content', error: error.message });
   }
@@ -75,6 +88,14 @@ app.put('/api/content/:key', async (req, res) => {
       { data },
       { new: true, upsert: true } // upsert creates it if it doesn't exist
     );
+    
+    // Update cache
+    if (cachedContentMap) {
+      cachedContentMap[key] = data;
+    } else {
+      await refreshCache();
+    }
+    
     res.json({ message: 'Content updated successfully', content: updatedContent });
   } catch (error) {
     res.status(500).json({ message: 'Error updating content', error: error.message });

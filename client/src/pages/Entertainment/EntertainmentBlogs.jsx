@@ -7,6 +7,11 @@ import EntertainmentFooter from './components/EntertainmentFooter';
 import blogsData from '../../data/entertainmentBlogs.json';
 
 const EntertainmentBlogs = () => {
+  const [blogs, setBlogs] = useState([]);
+  const [hero, setHero] = useState({
+    subtitle: 'Creative and industry insights from the world of movies, web series, TV serials, microdramas, AI filmmaking, music videos and new-age entertainment.'
+  });
+
   useEffect(() => {
     window.scrollTo(0, 0);
 
@@ -24,6 +29,24 @@ const EntertainmentBlogs = () => {
     }
     animationFrameId = requestAnimationFrame(raf);
 
+    // Fetch dynamic content
+    fetch('http://localhost:5000/api/content/entertainment')
+      .then(res => res.json())
+      .then(data => {
+        if (data.blogsHero && data.blogsHero.subtitle) {
+          setHero(prev => ({ ...prev, subtitle: data.blogsHero.subtitle }));
+        }
+        if (data.blogs && Array.isArray(data.blogs)) {
+          setBlogs([...blogsData, ...data.blogs.filter(b => b.published !== false)]);
+        } else {
+          setBlogs(blogsData); // fallback to static data if no blogs in db
+        }
+      })
+      .catch(err => {
+        console.error("Error fetching blogs content:", err);
+        setBlogs(blogsData);
+      });
+
     return () => {
       cancelAnimationFrame(animationFrameId);
       lenis.destroy();
@@ -34,6 +57,19 @@ const EntertainmentBlogs = () => {
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
+  const getExcerpt = (blog) => {
+    if (blog.excerpt) return blog.excerpt;
+    if (!blog.content) return '';
+    const text = blog.content.replace(/<[^>]+>/g, '');
+    return text.length > 120 ? text.substring(0, 120) + '...' : text;
+  };
+
+  const getImageUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    return `http://localhost:5000${url.startsWith('/') ? '' : '/'}${url}`;
   };
 
   return (
@@ -52,15 +88,13 @@ const EntertainmentBlogs = () => {
             >
               BLOG - <span className="text-brand-red">RED</span><span className="text-neutral-500">ASH</span> <span className="text-brand-red">FILMS</span>
             </motion.h1>
-            <motion.p 
+            <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-lg md:text-xl text-neutral-600 font-medium max-w-3xl mx-auto"
-            >
-              Creative and industry insights from the world of movies, web series, TV serials, microdramas, AI filmmaking, music videos and new-age entertainment.
-
-            </motion.p>
+              className="text-lg md:text-xl text-neutral-600 font-medium max-w-3xl mx-auto whitespace-pre-wrap prose-sm prose-p:my-0"
+              dangerouslySetInnerHTML={{ __html: hero.subtitle }}
+            />
           </div>
         </div>
 
@@ -68,9 +102,9 @@ const EntertainmentBlogs = () => {
         <div className="w-full py-16 md:py-24 bg-white">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1920px]">
             <div className="grid grid-cols-1 md:grid-cols-2 landscape:grid-cols-3 md:landscape:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 xl:landscape:grid-cols-4 gap-6 lg:gap-8">
-              {blogsData.map((blog, index) => (
+              {blogs.map((blog, index) => (
                 <motion.div
-                  key={blog.id}
+                  key={blog.id || index}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-50px" }}
@@ -80,7 +114,7 @@ const EntertainmentBlogs = () => {
                   <Link to={`/entertainment/blog/${blog.slug}`} className="absolute inset-0 z-0">
                     {blog.imageUrl ? (
                       <img 
-                        src={blog.imageUrl} 
+                        src={getImageUrl(blog.imageUrl)} 
                         alt={blog.title}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40"
                       />
@@ -95,7 +129,7 @@ const EntertainmentBlogs = () => {
                     {/* Top Section: Date Badge */}
                     <div className="flex justify-end">
                       <span className="bg-brand-red text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-sm shadow-md">
-                        {formatDate(blog.date)}
+                        {formatDate(blog.date || Date.now())}
                       </span>
                     </div>
 
@@ -109,7 +143,7 @@ const EntertainmentBlogs = () => {
                       
                       <div 
                         className="text-neutral-300 text-sm mb-6 line-clamp-2 prose-sm prose-p:my-0"
-                        dangerouslySetInnerHTML={{ __html: blog.excerpt }}
+                        dangerouslySetInnerHTML={{ __html: getExcerpt(blog) }}
                       />
                       
                       <div className="pt-4 border-t border-white/20">

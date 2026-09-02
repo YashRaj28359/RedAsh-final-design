@@ -4,10 +4,30 @@ import Navbar from './components/Navbar';
 import AgencyFooter from './components/AgencyFooter';
 import ContactForm from '../../components/ContactForm/ContactForm';
 import { FaMapMarkerAlt, FaEnvelope } from 'react-icons/fa';
+import { fetchContent, getCachedContent } from '../../utils/api';
+import Lenis from 'lenis';
 
 const Contact = () => {
+  const cached = getCachedContent();
+  const initialContact = cached?.global?.contact || {
+    addressTitle: 'RedAsh, 1101, Peninsula Park',
+    addressDesc: 'Fun Republic Lane, Near Yash Raj Studios, Andheri West, Mumbai 400053',
+    mapLinkUrl: 'https://share.google/Pxp4Tva4m3IyfrKAd',
+    mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3769.754702008323!2d72.83299317593922!3d19.118432350639912!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c9d90e067ba9%3A0x16268e5d6bbc70d9!2sPeninsula%20Park!5e0!3m2!1sen!2sin!4v1716388437021!5m2!1sen!2sin',
+    email1: 'info@redashfilms.com',
+    email1Subtitle: 'For Potential Clients - email or fill the form below',
+    email2: 'redash.films@gmail.com',
+    email2Subtitle: 'For Actors, Film Crew Members & Vendors - only email'
+  };
+  const [contactData, setContactData] = useState(initialContact);
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    fetchContent().then(data => {
+      if (data?.global?.contact) {
+        setContactData(prev => ({ ...prev, ...data.global.contact }));
+      }
+    }).catch(console.error);
   }, []);
 
   return (
@@ -23,11 +43,10 @@ const Contact = () => {
           
           {/* Header Section */}
           <div className="text-center mb-16">
-
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
+              transition={{ duration: 0.6 }}
               className="text-5xl md:text-7xl font-hero font-black uppercase tracking-wide mb-8"
             >
               <span className="text-brand-black">CONTACT</span> <span className="text-brand-blue">US</span>
@@ -45,68 +64,58 @@ const Contact = () => {
             >
               {/* Office Details */}
               <a 
-                href="https://www.google.com/maps/place/RedAsh+Films/@19.1366832,72.8329931,17z/data=!3m1!4b1!4m6!3m5!1s0x3be7b752374bccbf:0xe74df382b4d4195e!8m2!3d19.1366832!4d72.835568!16s%2Fg%2F11s0jgskcs?entry=tts&g_ep=EgoyMDI0MDUyMi4wKgBIAVAD"
+                href={contactData.mapLinkUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="bg-white p-8 h-full flex flex-col items-center justify-center text-center shadow-sm border border-gray-50 hover:shadow-md transition-shadow group cursor-pointer"
               >
                 <FaMapMarkerAlt className="text-brand-blue text-4xl mb-4 group-hover:scale-110 transition-transform" />
                 <p className="text-[#0a2540] font-semibold text-lg mb-3 group-hover:text-brand-blue transition-colors">
-                  RedAsh, 1101, Peninsula Park
+                  {contactData.addressTitle}
                 </p>
                 <p className="text-gray-600 text-sm leading-relaxed max-w-xs">
-                  Fun Republic Lane, Near Yash Raj Studios, Andheri West, Mumbai 400053
+                  {contactData.addressDesc}
                 </p>
               </a>
 
               {/* Contact Groups - Clients */}
               <div className="bg-white p-8 h-full flex flex-col items-center justify-center text-center shadow-sm border border-gray-50">
                 <FaEnvelope className="text-brand-blue text-4xl mb-4" />
-                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=info@redashfilms.com" target="_blank" rel="noopener noreferrer" className="text-[#0a2540] font-semibold text-lg mb-3 hover:text-brand-blue transition-colors">
-                  info@redashfilms.com
+                <a href={`https://mail.google.com/mail/?view=cm&fs=1&to=${contactData.email1}`} target="_blank" rel="noopener noreferrer" className="text-[#0a2540] font-semibold text-lg mb-3 hover:text-brand-blue transition-colors break-all">
+                  {contactData.email1}
                 </a>
                 <p className="text-gray-600 text-sm leading-relaxed max-w-xs">
-                  For Potential Clients - email or fill the form below
+                  {contactData.email1Subtitle}
                 </p>
               </div>
 
               {/* Contact Groups - Actors */}
               <div className="bg-white p-8 h-full flex flex-col items-center justify-center text-center shadow-sm border border-gray-50">
                 <FaEnvelope className="text-brand-blue text-4xl mb-4" />
-                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=redash.films@gmail.com" target="_blank" rel="noopener noreferrer" className="text-[#0a2540] font-semibold text-lg mb-3 hover:text-brand-blue transition-colors">
-                  redash.films@gmail.com
+                <a href={`https://mail.google.com/mail/?view=cm&fs=1&to=${contactData.email2}`} target="_blank" rel="noopener noreferrer" className="text-[#0a2540] font-semibold text-lg mb-3 hover:text-brand-blue transition-colors break-all">
+                  {contactData.email2}
                 </a>
                 <p className="text-gray-600 text-sm leading-relaxed max-w-xs">
-                  For Actors, Film Crew Members & Vendors - only email
+                  {contactData.email2Subtitle}
                 </p>
               </div>
             </motion.div>
 
-            {/* Contact Form Section */}
-            <div className="w-full relative z-10 overflow-hidden">
-              <ContactForm dataSource="agency" highlightColorClass="text-brand-blue" showFooter={false} />
-            </div>
-
-            {/* Google Map Section */}
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="w-full h-[450px] shadow-sm border border-gray-100 mt-12 bg-gray-100"
-            >
-              <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15079.294689408078!2d72.835568!3d19.1366832!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7b752374bccbf%3A0xe74df382b4d4195e!2sRedAsh%20Films!5e0!3m2!1sen!2sin!4v1716382000000!5m2!1sen!2sin" 
-                width="100%" 
-                height="100%" 
-                style={{ border: 0 }} 
-                allowFullScreen="" 
-                loading="lazy" 
-                referrerPolicy="no-referrer-when-downgrade"
-                title="RedAsh Films Location"
-              ></iframe>
-            </motion.div>
           </div>
+        </div>
 
+        {/* Contact Form Section */}
+        <div className="w-full bg-white mt-10 relative z-10 overflow-hidden">
+          <ContactForm 
+            dataSource="agency"
+            titlePrefix="READY TO START"
+            titleHighlight="A PROJECT?"
+            input4Placeholder="Project Details"
+            clientText="Tell us about your project"
+            headingClass="font-hero font-black text-brand-black tracking-widest text-4xl md:text-6xl"
+            highlightColorClass="text-brand-blue"
+            buttonTheme="blue"
+          />
         </div>
       </main>
 

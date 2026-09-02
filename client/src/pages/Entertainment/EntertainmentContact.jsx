@@ -4,11 +4,39 @@ import EntertainmentNavbar from './components/EntertainmentNavbar';
 import EntertainmentFooter from './components/EntertainmentFooter';
 import ContactForm from '../../components/ContactForm/ContactForm';
 import { FaMapMarkerAlt, FaEnvelope } from 'react-icons/fa';
-import contactData from '../../data/contact.json';
+import { fetchContent, getCachedContent } from '../../utils/api';
 import Lenis from 'lenis';
 
 const EntertainmentContact = () => {
   const [isMapInteractive, setIsMapInteractive] = useState(false);
+  
+  const cached = getCachedContent();
+  const initialContact = {
+    ...(cached?.global?.contact || {
+      addressTitle: 'RedAsh, 1101, Peninsula Park',
+      addressDesc: 'Fun Republic Lane, Near Yash Raj Studios, Andheri West, Mumbai 400053',
+      mapLinkUrl: 'https://share.google/Pxp4Tva4m3IyfrKAd',
+      mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3769.754702008323!2d72.83299317593922!3d19.118432350639912!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c9d90e067ba9%3A0x16268e5d6bbc70d9!2sPeninsula%20Park!5e0!3m2!1sen!2sin!4v1716388437021!5m2!1sen!2sin',
+      email1: 'info@redashfilms.com',
+      email1Subtitle: 'Potential Clients, Investors, and Sponsors can email or fill the form below',
+      email2: 'redash.films@gmail.com',
+      email2Subtitle: 'For Actors, Film Crew Members & Vendors - only email'
+    }),
+    headerSubtitle: cached?.entertainment?.contact?.headerSubtitle || 'Potential Clients, Investors, and Sponsors can email or fill the form below'
+  };
+  const [contactData, setContactData] = useState(initialContact);
+
+  useEffect(() => {
+    fetchContent().then(data => {
+      if (data) {
+        setContactData(prev => ({ 
+          ...prev, 
+          ...(data.global?.contact || {}),
+          headerSubtitle: data.entertainment?.contact?.headerSubtitle || prev.headerSubtitle
+        }));
+      }
+    }).catch(console.error);
+  }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -55,7 +83,7 @@ const EntertainmentContact = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-lg md:text-xl text-neutral-600 font-medium max-w-2xl mx-auto"
           >
-            Potential Clients, Investors, and Sponsors can email or fill the form below
+            {contactData.email1Subtitle}
           </motion.p>
         </div>
 
@@ -65,7 +93,7 @@ const EntertainmentContact = () => {
             
             {/* Main Office Card - Spans 7 cols */}
             <motion.a 
-              href={contactData.office.mapUrl}
+              href={contactData.mapLinkUrl}
               target="_blank"
               rel="noopener noreferrer"
               initial={{ opacity: 0, y: 30 }}
@@ -76,9 +104,9 @@ const EntertainmentContact = () => {
             >
               <div className="relative z-10 mb-16 landscape:mb-6 lg:mb-16">
                 <FaMapMarkerAlt className="text-brand-red text-4xl landscape:text-2xl lg:text-4xl mb-6 landscape:mb-3 lg:mb-6 group-hover:scale-110 transition-transform duration-500" />
-                <h4 className="text-xl md:text-2xl landscape:text-lg lg:text-2xl font-bold mb-2 text-neutral-900 group-hover:text-brand-red transition-colors duration-300">{contactData.office.title}</h4>
+                <h4 className="text-xl md:text-2xl landscape:text-lg lg:text-2xl font-bold mb-2 text-neutral-900 group-hover:text-brand-red transition-colors duration-300">{contactData.addressTitle}</h4>
                 <p className="text-neutral-500 text-lg md:text-xl landscape:text-sm lg:text-xl leading-relaxed max-w-md">
-                  {contactData.office.description}
+                  {contactData.addressDesc}
                 </p>
               </div>
 
@@ -92,7 +120,10 @@ const EntertainmentContact = () => {
 
             {/* Emails Column - Spans 5 cols */}
             <div className="landscape:col-span-5 lg:col-span-5 flex flex-col gap-6 landscape:gap-4 lg:gap-8">
-              {contactData.emails.map((emailData, index) => (
+              {[ 
+                { email: contactData.email1, description: contactData.email1Subtitle },
+                { email: contactData.email2, description: contactData.email2Subtitle }
+              ].map((emailData, index) => (
                 <motion.div 
                   key={index}
                   initial={{ opacity: 0, x: 30 }}

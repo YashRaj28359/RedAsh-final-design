@@ -1622,6 +1622,20 @@ function App() {
             </div>
           </>
         );
+      case 'entertainment-contact':
+        return (
+          <>
+            <div className="section-header">
+              <h1>Entertainment Contact</h1>
+              <p>Manage the contact section for the Entertainment page</p>
+            </div>
+            <div className="sub-nav">
+              <button className={`sub-nav-item ${activeSubMenu === 'contact' ? 'active' : ''}`} onClick={() => setActiveSubMenu('contact')}>
+                <div className="label-group"><FileText size={16} /> Contact Subtext</div>
+              </button>
+            </div>
+          </>
+        );
       case 'entertainment-blog':
         return (
           <>
@@ -4633,6 +4647,32 @@ function App() {
               >
                 Edit
               </button>
+              </div>
+              <div style={{ marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                <label style={{ fontSize: '0.95rem', fontWeight: '600', color: '#334155', textAlign: 'center' }}>Edit contact details</label>
+                <button 
+                  type="button" 
+                  onClick={() => {
+                    setActiveSidebar('entertainment-contact');
+                    setActiveSubMenu('contact');
+                  }}
+                  style={{ 
+                    display: 'inline-flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    background: '#e20002', 
+                    color: '#ffffff', 
+                    border: 'none', 
+                    padding: '0.6rem 2.5rem', 
+                    borderRadius: '6px', 
+                    fontWeight: '600', 
+                    fontSize: '0.95rem',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 6px -1px rgba(226, 0, 2, 0.2), 0 2px 4px -1px rgba(226, 0, 2, 0.1)'
+                  }}
+                >
+                  Edit Contact
+                </button>
             </div>
           </div>
         </div>
@@ -4902,6 +4942,13 @@ function App() {
                     style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.5rem 0', color: activeSidebar === 'entertainment-media' ? '#e20002' : '#0f172a', borderBottom: activeSidebar === 'entertainment-media' ? '2px solid #e20002' : '2px solid transparent', fontSize: '0.9rem', fontWeight: '600', transition: 'all 0.2s' }}
                   >
                     Media
+                  </button>
+                  
+                  <button 
+                    onClick={() => { setActiveSidebar('entertainment-contact'); setActiveSubMenu('contact'); }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.5rem 0', color: activeSidebar === 'entertainment-contact' ? '#e20002' : '#0f172a', borderBottom: activeSidebar === 'entertainment-contact' ? '2px solid #e20002' : '2px solid transparent', fontSize: '0.9rem', fontWeight: '600', transition: 'all 0.2s' }}
+                  >
+                    Contact
                   </button>
                 </div>
               )}

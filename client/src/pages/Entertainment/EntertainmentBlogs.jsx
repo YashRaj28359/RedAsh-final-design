@@ -30,14 +30,21 @@ const EntertainmentBlogs = () => {
     animationFrameId = requestAnimationFrame(raf);
 
     // Fetch dynamic content
-    fetch('http://localhost:5000/api/content/entertainment')
+    fetch('http://localhost:5000/api/content')
       .then(res => res.json())
       .then(data => {
-        if (data.blogsHero && data.blogsHero.subtitle) {
-          setHero(prev => ({ ...prev, subtitle: data.blogsHero.subtitle }));
+        const entData = data.entertainment || {};
+        if (entData.blogsHero && entData.blogsHero.subtitle) {
+          setHero(prev => ({ ...prev, subtitle: entData.blogsHero.subtitle }));
         }
-        if (data.blogs && Array.isArray(data.blogs)) {
-          setBlogs([...blogsData, ...data.blogs.filter(b => b.published !== false)]);
+        if (entData.blogs && Array.isArray(entData.blogs)) {
+          const dbBlogs = entData.blogs.filter(b => b.published !== false);
+          const mergedStaticBlogs = blogsData.map(sb => {
+            const override = dbBlogs.find(dbb => dbb.slug === sb.slug);
+            return override ? { ...override } : sb;
+          });
+          const newDbBlogs = dbBlogs.filter(dbb => !blogsData.some(sb => sb.slug === dbb.slug));
+          setBlogs([...mergedStaticBlogs, ...newDbBlogs]);
         } else {
           setBlogs(blogsData); // fallback to static data if no blogs in db
         }
@@ -111,7 +118,7 @@ const EntertainmentBlogs = () => {
                   transition={{ duration: 0.5, delay: (index % 4) * 0.1 }}
                   className="group relative flex flex-col h-[400px] landscape:h-[300px] md:h-[450px] md:landscape:h-[350px] lg:landscape:h-[450px] xl:landscape:h-[450px] overflow-hidden rounded-xl bg-neutral-950 cursor-pointer shadow-lg hover:shadow-brand-red/20 transition-all duration-500"
                 >
-                  <Link to={`/entertainment/blog/${blog.slug}`} className="absolute inset-0 z-0">
+                  <Link to={`/entertainment/blog/${blog.slug || blog.id}`} className="absolute inset-0 z-0">
                     {blog.imageUrl ? (
                       <img 
                         src={getImageUrl(blog.imageUrl)} 
@@ -134,7 +141,7 @@ const EntertainmentBlogs = () => {
                     </div>
 
                     <div className="mt-auto flex flex-col">
-                      <Link to={`/entertainment/blog/${blog.slug}`} className="pointer-events-auto">
+                      <Link to={`/entertainment/blog/${blog.slug || blog.id}`} className="pointer-events-auto">
                         <h3 
                           className="text-2xl font-bold text-white mb-3 leading-snug line-clamp-3 group-hover:text-brand-red transition-colors duration-300"
                           dangerouslySetInnerHTML={{ __html: blog.title }}
@@ -148,7 +155,7 @@ const EntertainmentBlogs = () => {
                       
                       <div className="pt-4 border-t border-white/20">
                         <Link 
-                          to={`/entertainment/blog/${blog.slug}`}
+                          to={`/entertainment/blog/${blog.slug || blog.id}`}
                           className="inline-flex items-center text-xs font-bold text-white group-hover:text-brand-red transition-colors duration-300 uppercase tracking-widest pointer-events-auto"
                         >
                           Read Article

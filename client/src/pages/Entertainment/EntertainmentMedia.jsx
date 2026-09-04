@@ -10,12 +10,16 @@ const EntertainmentMedia = () => {
     const saved = localStorage.getItem('entertainmentContent');
     return saved ? JSON.parse(saved) : null;
   });
+  const [dbMediaCards, setDbMediaCards] = useState([]);
 
   useEffect(() => {
     fetch('http://localhost:5000/api/content', { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         setContent(data.entertainment);
+        if (data.homepage && data.homepage.mediaCards) {
+          setDbMediaCards(data.homepage.mediaCards);
+        }
         localStorage.setItem('entertainmentContent', JSON.stringify(data.entertainment));
       })
       .catch(err => console.error("Error fetching content:", err));
@@ -44,12 +48,11 @@ const EntertainmentMedia = () => {
     };
   }, []);
 
-  const dbMedia = content?.media || [];
   const mergedMedia = mediaData.map(sm => {
-    const override = dbMedia.find(dbm => dbm.id === sm.id);
+    const override = dbMediaCards.find(dbm => dbm.id === sm.id);
     return override ? { ...sm, ...override } : sm;
   });
-  const newDbMedia = dbMedia.filter(dbm => !mediaData.some(sm => sm.id === dbm.id));
+  const newDbMedia = dbMediaCards.filter(dbm => !mediaData.some(sm => sm.id === dbm.id));
   const finalMedia = [...mergedMedia, ...newDbMedia];
 
   const subtitleHtml = content?.mediaConfig?.subtitle || 'Featured news articles on RedAsh Films';
@@ -87,7 +90,7 @@ const EntertainmentMedia = () => {
 
           {/* Media List */}
           <div className="flex flex-col gap-6 md:gap-8">
-            {mediaData.map((article, index) => {
+            {finalMedia.map((article, index) => {
               // Dummy data for design purposes to match screenshot
               const date = new Date(2026, 4 + index, 15 + index).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase();
 

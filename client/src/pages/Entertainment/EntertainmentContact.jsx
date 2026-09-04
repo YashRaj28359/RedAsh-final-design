@@ -83,7 +83,7 @@ const EntertainmentContact = () => {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-lg md:text-xl text-neutral-600 font-medium max-w-2xl mx-auto"
           >
-            {contactData.email1Subtitle}
+            {contactData.headerSubtitle}
           </motion.p>
         </div>
 

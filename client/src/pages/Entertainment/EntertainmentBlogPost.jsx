@@ -33,11 +33,18 @@ const EntertainmentBlogPost = () => {
     animationFrameId = requestAnimationFrame(raf);
 
     // Fetch dynamic content
-    fetch('http://localhost:5000/api/content/entertainment')
+    fetch('http://localhost:5000/api/content')
       .then(res => res.json())
       .then(data => {
-        if (data.blogs && Array.isArray(data.blogs)) {
-          setBlogs([...blogsData, ...data.blogs.filter(b => b.published !== false)]);
+        const entData = data.entertainment || {};
+        if (entData.blogs && Array.isArray(entData.blogs)) {
+          const dbBlogs = entData.blogs.filter(b => b.published !== false);
+          const mergedStaticBlogs = blogsData.map(sb => {
+            const override = dbBlogs.find(dbb => dbb.slug === sb.slug);
+            return override ? { ...override } : sb;
+          });
+          const newDbBlogs = dbBlogs.filter(dbb => !blogsData.some(sb => sb.slug === dbb.slug));
+          setBlogs([...mergedStaticBlogs, ...newDbBlogs]);
         } else {
           setBlogs(blogsData);
         }
@@ -56,44 +63,12 @@ const EntertainmentBlogPost = () => {
   useEffect(() => {
     if (blogs.length === 0) return;
 
-    const currentIndex = blogs.findIndex(b => b.slug === slug);
+    const currentIndex = blogs.findIndex(b => b.slug === slug || String(b.id) === slug);
     if (currentIndex !== -1) {
       setBlog(blogs[currentIndex]);
       
-      const newBlogSlugs = [
-        'the-art-of-microdrama-short-form-storytelling-2026',
-        'different-stages-of-post-production-their-importance',
-        'behind-the-scenes-the-creative-process-of-video-production'
-      ];
-
-      let prev = null;
-      let next = null;
-
-      if (newBlogSlugs.includes(slug)) {
-        if (slug === newBlogSlugs[0]) {
-          prev = null;
-          next = blogs.find(b => b.slug === newBlogSlugs[1]);
-        } else if (slug === newBlogSlugs[1]) {
-          prev = blogs.find(b => b.slug === newBlogSlugs[0]);
-          next = blogs.find(b => b.slug === newBlogSlugs[2]);
-        } else if (slug === newBlogSlugs[2]) {
-          prev = blogs.find(b => b.slug === newBlogSlugs[1]);
-          next = null;
-        }
-      } else {
-        // Normal blogs (skip the new isolated ones)
-        let pIndex = currentIndex + 1;
-        while (pIndex < blogs.length && newBlogSlugs.includes(blogs[pIndex].slug)) {
-          pIndex++;
-        }
-        prev = pIndex < blogs.length ? blogs[pIndex] : null;
-
-        let nIndex = currentIndex - 1;
-        while (nIndex >= 0 && newBlogSlugs.includes(blogs[nIndex].slug)) {
-          nIndex--;
-        }
-        next = nIndex >= 0 ? blogs[nIndex] : null;
-      }
+      const prev = currentIndex > 0 ? blogs[currentIndex - 1] : null;
+      const next = currentIndex < blogs.length - 1 ? blogs[currentIndex + 1] : null;
 
       setPrevBlog(prev);
       setNextBlog(next);
@@ -237,7 +212,7 @@ const EntertainmentBlogPost = () => {
         {/* Next / Previous Navigation */}
         <div className="mt-16 pt-8 border-t border-neutral-200 flex flex-col sm:flex-row justify-between gap-4">
           {prevBlog ? (
-            <Link to={`/entertainment/blog/${prevBlog.slug}`} className="flex-1 group flex flex-col items-start bg-neutral-50 p-4 rounded-xl hover:bg-brand-red hover:text-white transition-colors duration-300">
+            <Link to={`/entertainment/blog/${prevBlog.slug || prevBlog.id}`} className="flex-1 group flex flex-col items-start bg-neutral-50 p-4 rounded-xl hover:bg-brand-red hover:text-white transition-colors duration-300">
               <span className="text-[10px] font-bold tracking-widest uppercase text-neutral-500 group-hover:text-red-200 mb-2 flex items-center gap-1"><FiArrowLeft /> Previous Article</span>
               <span className="font-bold text-sm md:text-base leading-snug line-clamp-2" dangerouslySetInnerHTML={{ __html: prevBlog.title }} />
             </Link>
@@ -251,7 +226,7 @@ const EntertainmentBlogPost = () => {
           )}
 
           {nextBlog ? (
-            <Link to={`/entertainment/blog/${nextBlog.slug}`} className="flex-1 group flex flex-col items-end text-right bg-neutral-50 p-4 rounded-xl hover:bg-brand-red hover:text-white transition-colors duration-300">
+            <Link to={`/entertainment/blog/${nextBlog.slug || nextBlog.id}`} className="flex-1 group flex flex-col items-end text-right bg-neutral-50 p-4 rounded-xl hover:bg-brand-red hover:text-white transition-colors duration-300">
               <span className="text-[10px] font-bold tracking-widest uppercase text-neutral-500 group-hover:text-red-200 mb-2 flex items-center gap-1">Next Article <FiArrowRight /></span>
               <span className="font-bold text-sm md:text-base leading-snug line-clamp-2" dangerouslySetInnerHTML={{ __html: nextBlog.title }} />
             </Link>

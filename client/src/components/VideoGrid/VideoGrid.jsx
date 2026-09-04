@@ -23,6 +23,8 @@ const itemVariants = {
 import { flushSync } from 'react-dom';
 
 import { fetchContent } from '../../utils/api';
+import microDramaImg from '../../assets/Agency/Filmthumbnails/Micro drama.png';
+import webSeriesImg from '../../assets/Films/Cards/Card2.jpg';
 
 const VideoGrid = () => {
   const [selectedVideo, setSelectedVideo] = useState(null);
@@ -45,9 +47,18 @@ const VideoGrid = () => {
     fetchContent()
       .then(data => {
         if (data && data.homepage && data.homepage.video_tile && data.homepage.video_tile.videos) {
-          setDynamicVideos(data.homepage.video_tile.videos);
+          const mappedVideos = data.homepage.video_tile.videos.map(v => {
+            if (v.id === 'web-series' && (!v.thumbnail || v.thumbnail === '')) {
+              v.thumbnail = webSeriesImg;
+            }
+            if (v.id === 'kukufm' && (!v.thumbnail || v.thumbnail === '')) {
+              v.thumbnail = microDramaImg;
+            }
+            return v;
+          });
+          setDynamicVideos(mappedVideos);
         } else {
-          setDynamicVideos([]); // empty
+          setDynamicVideos(videos); // empty
         }
         
         if (data?.homepage?.divisions?.topButtons) {

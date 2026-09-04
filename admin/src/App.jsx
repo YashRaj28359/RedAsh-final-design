@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import './App.css';
 import { Mail, Home, Film, Briefcase, Settings, LogOut, FileText, Image as ImageIcon, Layout, Phone, Info, Save, Eye, ChevronDown, ChevronLeft, ChevronRight, Plus, Trash2, Edit2, PlayCircle, GripVertical, RefreshCw, Users, Upload, Flame, ToggleRight, ToggleLeft, ArrowRight, ExternalLink } from 'lucide-react';
 import JoditEditor from 'jodit-react';
+import { DEFAULT_VIDEOS } from './defaultVideos';
 import staticBlogs from '../../client/src/data/entertainmentBlogs.json';
 import staticMedia from '../../client/src/data/media.json';
 import celeb1 from '../../client/src/assets/Films/celebs/Ashish - IMG_9131.jpg';
@@ -28,7 +29,30 @@ import clientImg7 from '../../client/src/assets/Films/ClientLogos/Pocket films.p
 import clientImg8 from '../../client/src/assets/Films/ClientLogos/2ndlast.png';
 import clientImg9 from '../../client/src/assets/Films/ClientLogos/Last.png';
 
+const JODIT_BLOG_CONFIG = {
+  readonly: false,
+  minHeight: 400,
+  toolbarAdaptive: false,
+  placeholder: 'Write your blog post here...',
+  askBeforePasteHTML: false,
+  askBeforePasteFromWord: false,
+  defaultActionOnPaste: 'insert_as_html',
+  buttons: ['fontsize', 'brush', 'font', 'bold', 'italic', 'underline', 'table', 'undo', 'redo']
+};
+
+const JODIT_MEDIA_CONFIG = {
+  readonly: false,
+  minHeight: 300,
+  toolbarAdaptive: false,
+  placeholder: 'Write article summary...',
+  askBeforePasteHTML: false,
+  askBeforePasteFromWord: false,
+  defaultActionOnPaste: 'insert_as_html',
+  buttons: ['fontsize', 'brush', 'font', 'bold', 'italic', 'underline', 'table', 'undo', 'redo']
+};
+
 import redHotImg1 from '../../client/src/assets/Films/Cards/Card2.jpg';
+import microDramaImg from '../../client/src/assets/Agency/Filmthumbnails/Micro drama.png';
 import redHotImg2 from '../../client/src/assets/Films/Cards/RedHot/Ai Show.png';
 import redHotImg3 from '../../client/src/assets/Films/Cards/RedHot/Daily soap.png';
 
@@ -130,6 +154,8 @@ function App() {
   }, [activeSubMenu]);
   const [loading, setLoading] = useState(true);
   const [editingVideoIndex, setEditingVideoIndex] = useState(null);
+  const blogContentRef = useRef('');
+  const mediaDescRef = useRef('');
 
   const defaultClients = [
     { name: 'Jio Star', img: clientImg1 },
@@ -805,6 +831,15 @@ function App() {
           if (finalData.homepage?.video_tile?.videos) {
             finalData.homepage.video_tile.videos = finalData.homepage.video_tile.videos.map((v, i) => {
               if (!v.uniqueId) v.uniqueId = `vid-${Date.now()}-${i}`;
+              
+              // Fallback for static thumbnails that might be empty in the DB
+              if (v.id === 'web-series' && (!v.thumbnail || v.thumbnail === '')) {
+                v.thumbnail = redHotImg1;
+              }
+              if (v.id === 'kukufm' && (!v.thumbnail || v.thumbnail === '')) {
+                v.thumbnail = microDramaImg;
+              }
+              
               return v;
             });
           }
@@ -833,8 +868,10 @@ function App() {
   const handleOpenAddBlogModal = (blog, idx = null) => {
     if (blog) {
       setNewBlog({ ...blog, _idx: idx });
+      blogContentRef.current = blog.content || '';
     } else {
       setNewBlog({ title: '', slug: '', date: new Date().toISOString().split('T')[0], imageUrl: '', content: '', _idx: null });
+      blogContentRef.current = '';
     }
     setShowAddBlogModal(true);
   };
@@ -847,6 +884,14 @@ function App() {
     const newState = JSON.parse(JSON.stringify(content));
     if (!newState.entertainment) newState.entertainment = {};
     if (!newState.entertainment.blogs) newState.entertainment.blogs = [];
+    
+    if (!newBlog.slug) {
+      newBlog.slug = newBlog.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+    }
+    if (!newBlog.id) {
+      newBlog.id = Date.now();
+    }
+    newBlog.content = blogContentRef.current;
 
     if (newBlog._idx !== null && newBlog._idx !== undefined) {
       if (typeof newBlog._idx === 'string' && newBlog._idx.startsWith('static_')) {
@@ -864,8 +909,10 @@ function App() {
   const handleOpenAddMediaModal = (mediaItem, idx = null) => {
     if (mediaItem) {
       setNewMedia({ ...mediaItem, _idx: idx });
+      mediaDescRef.current = mediaItem.description || '';
     } else {
       setNewMedia({ id: 'media_' + Date.now(), source: '', title: '', description: '', url: '', image: '', _idx: null });
+      mediaDescRef.current = '';
     }
     setShowAddMediaModal(true);
   };
@@ -878,6 +925,8 @@ function App() {
     const newState = JSON.parse(JSON.stringify(content));
     if (!newState.entertainment) newState.entertainment = {};
     if (!newState.entertainment.media) newState.entertainment.media = [];
+    
+    newMedia.description = mediaDescRef.current;
 
     if (newMedia._idx !== null && newMedia._idx !== undefined) {
       if (typeof newMedia._idx === 'string' && newMedia._idx.startsWith('static_')) {
@@ -1113,7 +1162,7 @@ function App() {
   // Handle Video Tile Updates
   const handleUpdateVideo = (index, field, value) => {
     setContent(prev => {
-      const currentVideos = prev.homepage?.video_tile?.videos || [];
+      const currentVideos = prev.homepage?.video_tile?.videos || DEFAULT_VIDEOS;
       const updatedVideos = [...currentVideos];
       
       updatedVideos[index] = { ...updatedVideos[index], [field]: value };
@@ -1151,7 +1200,7 @@ function App() {
     if (draggedIndex === null || targetIndex === null || draggedIndex === targetIndex) return;
     
     setContent(prev => {
-      const currentVideos = [...(prev.homepage?.video_tile?.videos || [])];
+      const currentVideos = [...(prev.homepage?.video_tile?.videos || DEFAULT_VIDEOS)];
       const draggedItemContent = currentVideos.splice(draggedIndex, 1)[0];
       currentVideos.splice(targetIndex, 0, draggedItemContent);
       
@@ -1172,7 +1221,7 @@ function App() {
 
   const handleAddVideo = () => {
     setContent(prev => {
-      const currentVideos = prev.homepage?.video_tile?.videos || [];
+      const currentVideos = prev.homepage?.video_tile?.videos || DEFAULT_VIDEOS;
       const updatedVideos = [...currentVideos];
       
       updatedVideos.push({
@@ -1250,9 +1299,8 @@ function App() {
 
   const handleRemoveVideo = (index) => {
     setContent(prev => {
-      if (!prev.homepage?.video_tile?.videos) return prev;
-      
-      const updatedVideos = [...prev.homepage.video_tile.videos];
+      const currentVideos = prev.homepage?.video_tile?.videos || DEFAULT_VIDEOS;
+      const updatedVideos = [...currentVideos];
       updatedVideos.splice(index, 1);
       
       return {
@@ -1260,7 +1308,7 @@ function App() {
         homepage: {
           ...prev.homepage,
           video_tile: {
-            ...prev.homepage.video_tile,
+            ...prev.homepage?.video_tile,
             videos: updatedVideos
           }
         }
@@ -1365,23 +1413,41 @@ function App() {
     });
   };
 
-  const handleUpdateMediaCard = (index, field, value) => {
+  const handleUpdateMediaCard = (id, field, value) => {
     setContent(prev => {
       const newState = JSON.parse(JSON.stringify(prev));
       if (!newState.homepage) newState.homepage = {};
       if (!newState.homepage.mediaCards) newState.homepage.mediaCards = [];
       
+      let cardIndex = newState.homepage.mediaCards.findIndex(c => c.id === id);
+      
+      if (cardIndex === -1) {
+        const staticCard = staticMedia.find(sm => sm.id === id);
+        if (staticCard) {
+          newState.homepage.mediaCards.push({ ...staticCard });
+          cardIndex = newState.homepage.mediaCards.length - 1;
+        } else {
+          return prev;
+        }
+      }
+
       if (field === 'showOnHomepage' && value === true) {
-        const currentlyChecked = newState.homepage.mediaCards.filter(c => c.showOnHomepage !== false).length;
+        let currentlyChecked = 0;
+        staticMedia.forEach((sm, index) => {
+          const override = newState.homepage.mediaCards.find(c => c.id === sm.id);
+          if (override && override.showOnHomepage !== false) currentlyChecked++;
+          else if (!override && index < 3) currentlyChecked++;
+        });
+        const dynamicChecked = newState.homepage.mediaCards.filter(c => !staticMedia.some(sm => sm.id === c.id) && c.showOnHomepage !== false).length;
+        currentlyChecked += dynamicChecked;
+        
         if (currentlyChecked >= 3) {
           alert("You can only select up to 3 cards to display on the homepage.");
           return prev;
         }
       }
 
-      if (newState.homepage.mediaCards[index]) {
-        newState.homepage.mediaCards[index][field] = value;
-      }
+      newState.homepage.mediaCards[cardIndex][field] = value;
       return newState;
     });
   };
@@ -1478,14 +1544,25 @@ function App() {
     }
   };
 
-  const handleRemoveMediaCard = (index) => {
-    setContent(prev => {
-      const newState = JSON.parse(JSON.stringify(prev));
-      if (newState.homepage?.mediaCards) {
-        newState.homepage.mediaCards.splice(index, 1);
-      }
-      return newState;
-    });
+  const handleRemoveMediaCard = (id) => {
+    const isStatic = staticMedia.some(sm => sm.id === id);
+    if (isStatic) {
+      alert("This is a built-in static media card. You cannot delete it, but you can hide it from the homepage by unchecking the box.");
+      return;
+    }
+    
+    if (window.confirm('Are you sure you want to delete this media card?')) {
+      setContent(prev => {
+        const newState = JSON.parse(JSON.stringify(prev));
+        if (newState.homepage?.mediaCards) {
+          const idx = newState.homepage.mediaCards.findIndex(c => c.id === id);
+          if (idx !== -1) {
+            newState.homepage.mediaCards.splice(idx, 1);
+          }
+        }
+        return newState;
+      });
+    }
   };
 
   const getPreviewUrl = () => {
@@ -1892,7 +1969,7 @@ function App() {
     }
     
     if (activeSidebar === 'homepage' && activeSubMenu === 'video_tile') {
-      const videoData = content.homepage?.video_tile?.videos || [];
+      const videoData = content.homepage?.video_tile?.videos || DEFAULT_VIDEOS;
 
       if (editingVideoIndex !== null && videoData.length > 0) {
         const video = videoData[editingVideoIndex];
@@ -2740,7 +2817,17 @@ function App() {
     }
 
     if ((activeSidebar === 'homepage' && activeSubMenu === 'mediaCards') || activeSidebar === 'homepage-media') {
-      const mediaCards = content.homepage?.mediaCards || [];
+      const dbMediaCards = content.homepage?.mediaCards || [];
+      const mergedStaticMedia = staticMedia.map((sm, index) => {
+        const override = dbMediaCards.find(dbm => dbm.id === sm.id);
+        if (override) {
+          return { ...override, isStaticOrigin: true };
+        } else {
+          return { ...sm, showOnHomepage: index < 3, isStaticOrigin: true };
+        }
+      });
+      const newDbMedia = dbMediaCards.filter(dbm => !staticMedia.some(sm => sm.id === dbm.id));
+      const mediaCards = [...mergedStaticMedia, ...newDbMedia];
 
       return (
         <div className="editor-form-pane">
@@ -2757,44 +2844,47 @@ function App() {
             {mediaCards.map((card, index) => (
               <div key={card.id || index} className="content-block-panel">
                 <div className="block-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="block-title">Media Card {index + 1}{card.source ? ` — ${card.source}` : ''}</span>
-                  <button className="btn-icon" style={{ color: '#ef4444' }} onClick={() => handleRemoveMediaCard(index)} title="Remove Card">
+                  <span className="block-title">
+                    Media Card {index + 1}{card.source ? ` — ${card.source}` : ''}
+                    {card.isStaticOrigin && <span style={{ marginLeft: '10px', fontSize: '0.75rem', background: '#e2e8f0', padding: '2px 6px', borderRadius: '4px' }}>Static</span>}
+                  </span>
+                  <button className="btn-icon" style={{ color: card.isStaticOrigin ? '#94a3b8' : '#ef4444', cursor: card.isStaticOrigin ? 'not-allowed' : 'pointer' }} onClick={() => handleRemoveMediaCard(card.id)} title={card.isStaticOrigin ? "Cannot delete static cards" : "Remove Card"} disabled={card.isStaticOrigin}>
                     <Trash2 size={16} />
                   </button>
                 </div>
                 
                 <div className="form-group" style={{ marginTop: '1rem' }}>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
-                    <input type="checkbox" checked={card.showOnHomepage !== false} onChange={(e) => handleUpdateMediaCard(index, 'showOnHomepage', e.target.checked)} style={{ width: '18px', height: '18px' }} />
+                    <input type="checkbox" checked={card.showOnHomepage !== false} onChange={(e) => handleUpdateMediaCard(card.id, 'showOnHomepage', e.target.checked)} style={{ width: '18px', height: '18px' }} />
                     Show on main Homepage
                   </label>
                 </div>
                 
                 <div className="form-group" style={{ marginTop: '1rem' }}>
                   <label>News Source / Publication Name</label>
-                  <input type="text" className="form-control" value={card.source || ''} onChange={(e) => handleUpdateMediaCard(index, 'source', e.target.value)} placeholder="e.g. Times of India" />
+                  <input type="text" className="form-control" value={card.source || ''} onChange={(e) => handleUpdateMediaCard(card.id, 'source', e.target.value)} placeholder="e.g. Times of India" />
                 </div>
 
                 <div className="form-group" style={{ marginTop: '1rem' }}>
                   <label>Card Title / Headline</label>
-                  <input type="text" className="form-control" value={card.title || ''} onChange={(e) => handleUpdateMediaCard(index, 'title', e.target.value)} />
+                  <input type="text" className="form-control" value={card.title || ''} onChange={(e) => handleUpdateMediaCard(card.id, 'title', e.target.value)} />
                 </div>
 
                 <div className="form-group" style={{ marginTop: '1rem' }}>
                   <label>Card Description (Optional)</label>
-                  <textarea className="form-control" value={card.description || ''} onChange={(e) => handleUpdateMediaCard(index, 'description', e.target.value)} rows="3"></textarea>
+                  <textarea className="form-control" value={card.description || ''} onChange={(e) => handleUpdateMediaCard(card.id, 'description', e.target.value)} rows="3"></textarea>
                 </div>
 
                 <div className="form-group" style={{ marginTop: '1rem' }}>
                   <label>Article URL (Link)</label>
-                  <input type="text" className="form-control" value={card.url || ''} onChange={(e) => handleUpdateMediaCard(index, 'url', e.target.value)} placeholder="https://..." />
+                  <input type="text" className="form-control" value={card.url || ''} onChange={(e) => handleUpdateMediaCard(card.id, 'url', e.target.value)} placeholder="https://..." />
                 </div>
 
                 <div className="form-group" style={{ marginTop: '1rem' }}>
                   <label>Upload Image</label>
                   {card.image && (
                     <div style={{ marginBottom: '1rem', height: '150px', overflow: 'hidden', borderRadius: '8px', border: '1px solid #ccc' }}>
-                      <img src={card.image} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img src={card.image.startsWith('/media') ? `http://localhost:5173${card.image}` : card.image} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     </div>
                   )}
                   <input 
@@ -2813,7 +2903,7 @@ function App() {
                         });
                         const data = await res.json();
                         if (res.ok) {
-                          handleUpdateMediaCard(index, 'image', `http://localhost:5000${data.url}`);
+                          handleUpdateMediaCard(card.id, 'image', `http://localhost:5000${data.url}`);
                         } else {
                           alert('Upload failed: ' + data.message);
                         }
@@ -2833,7 +2923,7 @@ function App() {
           </button>
           
           <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
-            <button className="btn-primary" onClick={handleSave}>
+            <button className="btn-primary" onClick={() => handleSave(content)}>
               <Save size={16} /> Save Section Changes
             </button>
           </div>
@@ -4648,32 +4738,6 @@ function App() {
                 Edit
               </button>
               </div>
-              <div style={{ marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                <label style={{ fontSize: '0.95rem', fontWeight: '600', color: '#334155', textAlign: 'center' }}>Edit contact details</label>
-                <button 
-                  type="button" 
-                  onClick={() => {
-                    setActiveSidebar('entertainment-contact');
-                    setActiveSubMenu('contact');
-                  }}
-                  style={{ 
-                    display: 'inline-flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center',
-                    background: '#e20002', 
-                    color: '#ffffff', 
-                    border: 'none', 
-                    padding: '0.6rem 2.5rem', 
-                    borderRadius: '6px', 
-                    fontWeight: '600', 
-                    fontSize: '0.95rem',
-                    cursor: 'pointer',
-                    boxShadow: '0 4px 6px -1px rgba(226, 0, 2, 0.2), 0 2px 4px -1px rgba(226, 0, 2, 0.1)'
-                  }}
-                >
-                  Edit Contact
-                </button>
-            </div>
           </div>
         </div>
       );
@@ -4711,6 +4775,38 @@ function App() {
                 onChange={(e) => updateVal('headerSubtitle', e.target.value)} 
               />
               <p style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.5rem' }}>This text appears below the "GET IN TOUCH" heading.</p>
+            </div>
+
+            <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'flex-end' }}>
+              <button type="button" className="btn-primary" onClick={() => handleSave(content)} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: '#e20002', color: '#fff', border: 'none', padding: '0.6rem 1.4rem', borderRadius: '6px', fontWeight: '600', cursor: 'pointer' }}>
+                <Save size={16} /> Save Changes
+              </button>
+            </div>
+            
+            <div style={{ marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+              <label style={{ fontSize: '0.95rem', fontWeight: '600', color: '#334155', textAlign: 'center' }}>Edit contact details</label>
+              <button 
+                type="button" 
+                onClick={() => {
+                  setActiveSidebar('global-contact');
+                }}
+                style={{ 
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  background: '#e20002', 
+                  color: '#ffffff', 
+                  border: 'none', 
+                  padding: '0.6rem 2.5rem', 
+                  borderRadius: '6px', 
+                  fontWeight: '600', 
+                  fontSize: '0.95rem',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 6px -1px rgba(226, 0, 2, 0.2), 0 2px 4px -1px rgba(226, 0, 2, 0.1)'
+                }}
+              >
+                Edit Contact
+              </button>
             </div>
           </div>
         </div>
@@ -4809,13 +4905,6 @@ function App() {
                             title="Edit Blog"
                           >
                             <Edit2 size={16} /> Edit
-                          </button>
-                          <button 
-                            className="btn-icon" 
-                            onClick={() => togglePublish(idx)}
-                            title={isPublished ? "Unpublish" : "Publish"}
-                          >
-                            {isPublished ? <ToggleRight size={18} color="#10b981" /> : <ToggleLeft size={18} />}
                           </button>
                           <button 
                             className={`btn-icon ${isStaticOrigin ? 'disabled' : ''}`} 
@@ -5443,12 +5532,7 @@ function App() {
                 <div style={{ flex: 1, overflow: 'hidden' }}>
                   <JoditEditor
                     value={newBlog.content || ''}
-                    config={{
-                      readonly: false,
-                      height: '100%',
-                      toolbarAdaptive: false,
-                      placeholder: 'Write your blog post here...'
-                    }}
+                    config={JODIT_BLOG_CONFIG}
                     onBlur={newContent => setNewBlog({ ...newBlog, content: newContent })}
                     onChange={() => {}}
                   />
@@ -5564,12 +5648,7 @@ function App() {
                 <div style={{ flex: 1, overflow: 'hidden' }}>
                   <JoditEditor
                     value={newMedia.description || ''}
-                    config={{
-                      readonly: false,
-                      height: '100%',
-                      toolbarAdaptive: false,
-                      placeholder: 'Write article summary...'
-                    }}
+                    config={JODIT_MEDIA_CONFIG}
                     onBlur={newContent => setNewMedia({ ...newMedia, description: newContent })}
                     onChange={() => {}}
                   />

@@ -3,16 +3,25 @@ import { motion } from 'framer-motion';
 import { LuNewspaper } from "react-icons/lu";
 import { fetchContent } from '../../utils/api';
 
+import mediaData from '../../data/media.json';
+
 const MediaLinks = () => {
   const [articles, setArticles] = useState([]);
 
   useEffect(() => {
     fetchContent()
       .then(data => {
-        if (data && data.homepage && data.homepage.mediaCards) {
-          const visibleCards = data.homepage.mediaCards.filter(card => card.showOnHomepage !== false);
-          setArticles(visibleCards.slice(0, 3));
-        }
+        const dbMediaCards = (data && data.homepage && data.homepage.mediaCards) ? data.homepage.mediaCards : [];
+        const mergedStaticMedia = mediaData.map((sm, index) => {
+          const override = dbMediaCards.find(dbm => dbm.id === sm.id);
+          if (override) return override;
+          return { ...sm, showOnHomepage: index < 3 };
+        });
+        const newDbMedia = dbMediaCards.filter(dbm => !mediaData.some(sm => sm.id === dbm.id));
+        const mediaCards = [...mergedStaticMedia, ...newDbMedia];
+        
+        const visibleCards = mediaCards.filter(card => card.showOnHomepage !== false);
+        setArticles(visibleCards.slice(0, 3));
       })
       .catch(err => {
         console.error('Failed to fetch media cards:', err);

@@ -5,11 +5,26 @@ import AgencyFooter from './components/AgencyFooter';
 import ContactForm from '../../components/ContactForm/ContactForm';
 import mediaData from '../../data/media.json';
 import { LuNewspaper } from "react-icons/lu";
+import { fetchContent } from '../../utils/api';
 
 const MediaPage = () => {
+  const [dbMediaCards, setDbMediaCards] = React.useState([]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
+    fetchContent().then(data => {
+      if (data && data.homepage && data.homepage.mediaCards) {
+        setDbMediaCards(data.homepage.mediaCards);
+      }
+    }).catch(console.error);
   }, []);
+
+  const mergedStaticMedia = mediaData.map(sm => {
+    const override = dbMediaCards.find(dbm => dbm.id === sm.id);
+    return override ? { ...sm, ...override } : sm;
+  });
+  const newDbMedia = dbMediaCards.filter(dbm => !mediaData.some(sm => sm.id === dbm.id));
+  const finalMedia = [...mergedStaticMedia, ...newDbMedia];
 
   return (
     <div className="min-h-screen bg-white flex flex-col font-main selection:bg-brand-red selection:text-white">
@@ -47,7 +62,7 @@ const MediaPage = () => {
 
           {/* Media Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            {mediaData.map((article, index) => (
+            {finalMedia.map((article, index) => (
               <motion.a 
                 key={article.id || index}
                 href={article.url !== '#' ? article.url : undefined}
@@ -60,18 +75,16 @@ const MediaPage = () => {
               >
                 
                 {/* Image Header */}
-                <div className="w-full aspect-[4/3] bg-gray-50 overflow-hidden relative">
-                  {article.image && (
-                    <img 
-                      src={article.image} 
-                      alt={article.source} 
-                      className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-105" 
-                      style={article.zoom !== undefined ? {
-                        objectPosition: `${50 + (article.moveLeft || 0) - (article.moveRight || 0)}% ${50 + (article.moveUp || 0) - (article.moveDown || 0)}%`,
-                        transform: `scale(${1 + (article.zoom / 100)})`
-                      } : {}}
-                    />
-                  )}
+                <div className="relative h-64 overflow-hidden bg-gray-50 flex items-center justify-center">
+                  <img 
+                    src={article.image} 
+                    alt={article.source} 
+                    className="w-full h-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:scale-105" 
+                    style={article.zoom !== undefined ? {
+                      objectPosition: `${50 + (article.moveLeft || 0) - (article.moveRight || 0)}% ${50 + (article.moveUp || 0) - (article.moveDown || 0)}%`,
+                      transform: `scale(${1 + (article.zoom / 100)})`
+                    } : {}}
+                  />
                   <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-300"></div>
                 </div>
 

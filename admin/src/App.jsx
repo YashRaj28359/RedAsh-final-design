@@ -1881,12 +1881,12 @@ function App() {
   const handleUpdateHeroCard = (index, field, value) => {
     setContent(prev => {
       const defaultCards = [
-        { title: "MOVIES", link: "", image: "http://localhost:5173/src/assets/Films/Cards/Card1.jpg" },
-        { title: "WEB SERIES", link: "", image: "http://localhost:5173/src/assets/Films/Cards/Card2.jpg" },
-        { title: "MICRO DRAMAS", link: "", image: "http://localhost:5173/src/assets/Films/Cards/Card3.png" },
+        { title: "MOVIES", link: "", image: "" },
+        { title: "WEB SERIES", link: "", image: "" },
+        { title: "MICRO DRAMAS", link: "", image: "" },
         { title: "SHORT FILMS", link: "", image: "https://img.youtube.com/vi/5AGZjsdfOio/hqdefault.jpg" },
-        { title: "AI FILMS", link: "", image: "http://localhost:5173/src/assets/Films/Cards/Card5.png" },
-        { title: "MUSIC VIDEOS", link: "", image: "http://localhost:5173/src/assets/Films/Cards/Card6.png" }
+        { title: "AI FILMS", link: "", image: "" },
+        { title: "MUSIC VIDEOS", link: "", image: "" }
       ];
 
       const currentCards = prev.entertainment?.heroCards || defaultCards;
@@ -2018,12 +2018,12 @@ function App() {
   const handleResetHeroCards = () => {
     setContent(prev => {
       const defaultCards = [
-        { title: "MOVIES", link: "", image: "http://localhost:5173/src/assets/Films/Cards/Card1.jpg" },
-        { title: "WEB SERIES", link: "", image: "http://localhost:5173/src/assets/Films/Cards/Card2.jpg" },
-        { title: "MICRO DRAMAS", link: "", image: "http://localhost:5173/src/assets/Films/Cards/Card3.png" },
+        { title: "MOVIES", link: "", image: "" },
+        { title: "WEB SERIES", link: "", image: "" },
+        { title: "MICRO DRAMAS", link: "", image: "" },
         { title: "SHORT FILMS", link: "", image: "https://img.youtube.com/vi/5AGZjsdfOio/hqdefault.jpg" },
-        { title: "AI FILMS", link: "", image: "http://localhost:5173/src/assets/Films/Cards/Card5.png" },
-        { title: "MUSIC VIDEOS", link: "", image: "http://localhost:5173/src/assets/Films/Cards/Card6.png" }
+        { title: "AI FILMS", link: "", image: "" },
+        { title: "MUSIC VIDEOS", link: "", image: "" }
       ];
       return {
         ...prev,
@@ -2479,10 +2479,10 @@ function App() {
 
   const getPreviewUrl = () => {
     switch (activeSidebar) {
-      case 'homepage': return 'http://localhost:5173/';
-      case 'entertainment': return 'http://localhost:5173/entertainment';
-      case 'agency': return 'http://localhost:5173/ad-agency';
-      default: return 'http://localhost:5173/';
+      case 'homepage': return '';
+      case 'entertainment': return 'entertainment';
+      case 'agency': return 'ad-agency';
+      default: return '';
     }
   };
 
@@ -5492,12 +5492,12 @@ function App() {
 
     if (activeSidebar === 'entertainment' && activeSubMenu === 'hero_cards') {
       const defaultCards = [
-        { title: "MOVIES", link: "", image: "http://localhost:5173/src/assets/Films/Cards/Card1.jpg" },
-        { title: "WEB SERIES", link: "", image: "http://localhost:5173/src/assets/Films/Cards/Card2.jpg" },
-        { title: "MICRO DRAMAS", link: "", image: "http://localhost:5173/src/assets/Films/Cards/Card3.png" },
+        { title: "MOVIES", link: "", image: "" },
+        { title: "WEB SERIES", link: "", image: "" },
+        { title: "MICRO DRAMAS", link: "", image: "" },
         { title: "SHORT FILMS", link: "", image: "https://img.youtube.com/vi/5AGZjsdfOio/hqdefault.jpg" },
-        { title: "AI FILMS", link: "", image: "http://localhost:5173/src/assets/Films/Cards/Card5.png" },
-        { title: "MUSIC VIDEOS", link: "", image: "http://localhost:5173/src/assets/Films/Cards/Card6.png" }
+        { title: "AI FILMS", link: "", image: "" },
+        { title: "MUSIC VIDEOS", link: "", image: "" }
       ];
       const cards = content.entertainment?.heroCards || defaultCards;
 

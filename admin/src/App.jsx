@@ -955,6 +955,8 @@ function App() {
   const [showAddAgencyClientModal, setShowAddAgencyClientModal] = useState(false);
   const [newAgencyClient, setNewAgencyClient] = useState({ name: '', img: '', row: 'row1' });
   const [draggedAgencyClientIndex, setDraggedAgencyClientIndex] = useState(null);
+  const [draggedAgencyBlogIndex, setDraggedAgencyBlogIndex] = useState(null);
+  const [dragOverAgencyBlogIndex, setDragOverAgencyBlogIndex] = useState(null);
 
   const handleUpdateAgencyClient = (index, field, value) => {
     setContent(prev => {
@@ -1675,6 +1677,18 @@ function App() {
     if (!newState[section]) newState[section] = {};
     if (!newState[section].blogs) newState[section].blogs = [];
     
+    if (section === 'agency' && !newState.agency.blogsAllSaved) {
+      const deletedSlugs = newState.agency.deletedBlogSlugs || [];
+      const dbBlogs = newState.agency.blogs || [];
+      const newDbBlogs = dbBlogs.filter(dbb => !deletedSlugs.includes(dbb.slug) && !staticAgencyBlogs.some(sb => sb.slug === dbb.slug));
+      const mergedStaticBlogs = staticAgencyBlogs.filter(sb => !deletedSlugs.includes(sb.slug)).map(sb => {
+        const override = dbBlogs.find(dbb => dbb.slug === sb.slug);
+        return override ? { ...override } : { ...sb };
+      });
+      newState.agency.blogs = [...newDbBlogs, ...mergedStaticBlogs];
+      newState.agency.blogsAllSaved = true;
+    }
+
     if (!newBlog.slug) {
       newBlog.slug = newBlog.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
     }
@@ -1691,6 +1705,9 @@ function App() {
       }
     } else {
       newState[section].blogs.unshift(newBlog);
+    }
+    if (section === 'agency') {
+      newState.agency.blogsAllSaved = true;
     }
     handleSave(newState);
     setShowAddBlogModal(false);
@@ -7869,46 +7886,105 @@ function App() {
     }
 
     if (activeSidebar === 'agency-blog' && activeSubMenu === 'blog') {
+      const deletedSlugs = content.agency?.deletedBlogSlugs || [];
       const dbBlogs = content.agency?.blogs || [];
-      const mergedStaticBlogs = staticAgencyBlogs.map(sb => {
-        const override = dbBlogs.find(dbb => dbb.slug === sb.slug);
-        return override ? { ...override, isStaticOrigin: true } : { ...sb, isStaticOrigin: true };
-      });
-      const newDbBlogs = dbBlogs.filter(dbb => !staticAgencyBlogs.some(sb => sb.slug === dbb.slug));
-      const blogs = [...mergedStaticBlogs, ...newDbBlogs];
+
+      // Unified blogs array: If already saved with custom order, use it. Otherwise, put new dynamic blogs first followed by static blogs.
+      let blogs = [];
+      if (content.agency?.blogsAllSaved && Array.isArray(content.agency.blogs)) {
+        blogs = content.agency.blogs;
+      } else {
+        const newDbBlogs = dbBlogs.filter(dbb => !deletedSlugs.includes(dbb.slug) && !staticAgencyBlogs.some(sb => sb.slug === dbb.slug));
+        const mergedStaticBlogs = staticAgencyBlogs.filter(sb => !deletedSlugs.includes(sb.slug)).map(sb => {
+          const override = dbBlogs.find(dbb => dbb.slug === sb.slug);
+          return override ? { ...override } : { ...sb };
+        });
+        blogs = [...newDbBlogs, ...mergedStaticBlogs];
+      }
 
       const removeBlog = (idx) => {
         const blogToRemove = blogs[idx];
-        if (blogToRemove.isStaticOrigin) return; 
-        
-        const dbIdx = dbBlogs.findIndex(b => b.slug === blogToRemove.slug);
-        if (dbIdx === -1) return;
-
-        if (window.confirm('Are you sure you want to delete this blog post?')) {
+        if (!blogToRemove) return;
+        if (window.confirm(`Are you sure you want to delete "${blogToRemove.title || 'this blog post'}"?`)) {
           const newState = JSON.parse(JSON.stringify(content));
-          newState.agency.blogs.splice(dbIdx, 1);
+          if (!newState.agency) newState.agency = {};
+          
+          const updatedBlogs = [...blogs];
+          updatedBlogs.splice(idx, 1);
+          newState.agency.blogs = updatedBlogs;
+          newState.agency.blogsAllSaved = true;
+
+          if (!newState.agency.deletedBlogSlugs) newState.agency.deletedBlogSlugs = [];
+          if (blogToRemove.slug && !newState.agency.deletedBlogSlugs.includes(blogToRemove.slug)) {
+            newState.agency.deletedBlogSlugs.push(blogToRemove.slug);
+          }
+          setContent(newState);
           handleSave(newState);
         }
       };
 
       const togglePublish = (idx) => {
-        const blogToToggle = blogs[idx];
         const newState = JSON.parse(JSON.stringify(content));
+        if (!newState.agency) newState.agency = {};
         
-        const dbIdx = (newState.agency.blogs || []).findIndex(b => b.slug === blogToToggle.slug);
-        
-        if (dbIdx !== -1) {
-          newState.agency.blogs[dbIdx].published = !newState.agency.blogs[dbIdx].published;
-        } else {
-          if (!newState.agency.blogs) newState.agency.blogs = [];
-          newState.agency.blogs.push({ ...blogToToggle, published: !blogToToggle.published });
+        const updatedBlogs = [...blogs];
+        if (updatedBlogs[idx]) {
+          updatedBlogs[idx].published = updatedBlogs[idx].published === false ? true : false;
         }
+        newState.agency.blogs = updatedBlogs;
+        newState.agency.blogsAllSaved = true;
+        setContent(newState);
         handleSave(newState);
       };
 
       const handleEditClick = (blog, idx) => {
-        const dbIdx = (content.agency?.blogs || []).findIndex(b => b.slug === blog.slug);
-        handleOpenAddBlogModal(blog, dbIdx !== -1 ? dbIdx : `static_${blog.slug}`);
+        handleOpenAddBlogModal(blog, idx);
+      };
+
+      const handleBlogDragStart = (e, idx) => {
+        setDraggedAgencyBlogIndex(idx);
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', String(idx));
+      };
+
+      const handleBlogDragOver = (e, idx) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        if (dragOverAgencyBlogIndex !== idx) {
+          setDragOverAgencyBlogIndex(idx);
+        }
+        startAutoScrollIfNeeded(e.clientY);
+      };
+
+      const handleBlogDrop = (e, targetIndex) => {
+        e.preventDefault();
+        stopAutoScroll();
+        setDragOverAgencyBlogIndex(null);
+
+        if (draggedAgencyBlogIndex === null || draggedAgencyBlogIndex === targetIndex) {
+          setDraggedAgencyBlogIndex(null);
+          return;
+        }
+
+        const newState = JSON.parse(JSON.stringify(content));
+        if (!newState.agency) newState.agency = {};
+
+        const updatedBlogs = [...blogs];
+        if (draggedAgencyBlogIndex >= 0 && draggedAgencyBlogIndex < updatedBlogs.length) {
+          const [movedItem] = updatedBlogs.splice(draggedAgencyBlogIndex, 1);
+          updatedBlogs.splice(targetIndex, 0, movedItem);
+        }
+        newState.agency.blogs = updatedBlogs;
+        newState.agency.blogsAllSaved = true;
+        setContent(newState);
+        handleSave(newState);
+        setDraggedAgencyBlogIndex(null);
+      };
+
+      const handleBlogDragEnd = () => {
+        setDraggedAgencyBlogIndex(null);
+        setDragOverAgencyBlogIndex(null);
+        stopAutoScroll();
       };
 
       return (
@@ -7916,7 +7992,7 @@ function App() {
           <div className="form-header">
             <div>
               <h2>Ad Agency Blog Settings</h2>
-              <p>Manage agency blog posts and articles</p>
+              <p>Manage agency blog posts and articles. Drag any card to reorder, edit, or delete.</p>
             </div>
             <div className="header-actions">
               <button type="button" className="btn-primary" onClick={() => handleSave(content)} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#3b82f6' }}>
@@ -7927,48 +8003,109 @@ function App() {
 
           <div className="form-card">
             <h3 style={{ marginBottom: '1rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              Blog Posts
+              Blog Posts ({blogs.length})
               <button type="button" className="btn-secondary" onClick={() => handleOpenAddBlogModal(null, null)} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', padding: '0.4rem 0.8rem', color: '#3b82f6', borderColor: '#3b82f6' }}>
                 <Plus size={14} /> Add Blog
               </button>
             </h3>
             
-            <div className="blogs-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem', marginTop: '1.5rem' }}>
+            <div 
+              className="blogs-grid" 
+              onDragOver={(e) => handleBlogDragOver(e, blogs.length)}
+              onDrop={(e) => handleBlogDrop(e, blogs.length)}
+              style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem', marginTop: '1.5rem' }}
+            >
               {blogs.map((blog, idx) => {
-                const isStaticOrigin = blog.isStaticOrigin;
                 const isPublished = blog.published !== false;
+                const isDragging = draggedAgencyBlogIndex === idx;
+                const isDragOver = dragOverAgencyBlogIndex === idx && !isDragging;
                 
                 return (
-                  <div key={blog.slug || idx} className="blog-card" style={{ border: '1px solid #e2e8f0', borderRadius: '8px', overflow: 'hidden', background: '#fff', display: 'flex', flexDirection: 'column' }}>
+                  <div 
+                    key={blog.slug ? `${blog.slug}-${idx}` : idx} 
+                    draggable
+                    onDragStart={(e) => handleBlogDragStart(e, idx)}
+                    onDragOver={(e) => handleBlogDragOver(e, idx)}
+                    onDrop={(e) => handleBlogDrop(e, idx)}
+                    onDragEnd={handleBlogDragEnd}
+                    className="blog-card" 
+                    style={{ 
+                      border: isDragging 
+                        ? '2px dashed #3b82f6' 
+                        : isDragOver 
+                          ? '2px solid #3b82f6' 
+                          : '1px solid #e2e8f0', 
+                      borderRadius: '10px', 
+                      overflow: 'hidden', 
+                      background: '#fff', 
+                      display: 'flex', 
+                      flexDirection: 'column',
+                      opacity: isDragging ? 0.35 : 1,
+                      transform: isDragging ? 'scale(0.97)' : isDragOver ? 'scale(1.02)' : 'scale(1)',
+                      boxShadow: isDragOver 
+                        ? '0 12px 28px -5px rgba(59, 130, 246, 0.35)' 
+                        : isDragging
+                          ? '0 2px 4px rgba(0,0,0,0.05)'
+                          : '0 2px 8px rgba(0,0,0,0.04)',
+                      transition: 'transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease, border 0.2s ease',
+                      cursor: 'grab'
+                    }}
+                  >
                     <div style={{ height: '160px', overflow: 'hidden', position: 'relative' }}>
                       <img src={blog.imageUrl ? (blog.imageUrl.startsWith('http') ? blog.imageUrl : `${API_URL}${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`) : 'https://placehold.co/600x400?text=No+Image'} alt={blog.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      <div style={{ position: 'absolute', top: '10px', left: '10px', background: '#3b82f6', color: 'white', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold' }}>
+                      
+                      {/* Drag handle & date badge */}
+                      <div style={{ position: 'absolute', top: '10px', left: '10px', display: 'flex', alignItems: 'center', gap: '0.35rem', background: '#3b82f6', color: 'white', padding: '0.25rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold', boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
+                        <GripVertical size={13} style={{ opacity: 0.9 }} />
                         {blog.date ? new Date(blog.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase() : ''}
                       </div>
-                      <div style={{ position: 'absolute', top: '10px', right: '10px', background: isPublished ? '#10b981' : '#64748b', color: 'white', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold' }}>
+
+                      {/* Status badge */}
+                      <div 
+                        onClick={() => togglePublish(idx)}
+                        style={{ 
+                          position: 'absolute', 
+                          top: '10px', 
+                          right: '10px', 
+                          background: isPublished ? '#10b981' : '#64748b', 
+                          color: 'white', 
+                          padding: '0.25rem 0.6rem', 
+                          borderRadius: '4px', 
+                          fontSize: '0.75rem', 
+                          fontWeight: 'bold',
+                          cursor: 'pointer',
+                          userSelect: 'none',
+                          boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                        }}
+                        title="Click to toggle Published / Draft"
+                      >
                         {isPublished ? 'PUBLISHED' : 'DRAFT'}
                       </div>
                     </div>
+
                     <div style={{ padding: '1.2rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
                       <h4 style={{ fontSize: '1rem', fontWeight: '700', margin: '0 0 0.5rem 0', color: '#0f172a', lineHeight: '1.4' }}>{blog.title}</h4>
                       
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid #f1f5f9' }}>
-                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <div style={{ display: 'flex', gap: '0.5rem', width: '100%', justifyContent: 'space-between' }}>
                           <button 
+                            type="button"
                             className="btn-icon" 
                             onClick={() => handleEditClick(blog, idx)}
                             title="Edit Blog"
+                            style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', padding: '0.4rem 0.8rem', borderRadius: '6px', border: '1px solid #e2e8f0', background: '#f8fafc', color: '#334155', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer' }}
                           >
-                            <Edit2 size={16} /> Edit
+                            <Edit2 size={15} /> Edit
                           </button>
+
                           <button 
-                            className={`btn-icon ${isStaticOrigin ? 'disabled' : ''}`} 
-                            onClick={() => !isStaticOrigin && removeBlog(idx)}
-                            disabled={isStaticOrigin}
-                            title={isStaticOrigin ? "Cannot delete original static blogs" : "Delete Blog"}
-                            style={isStaticOrigin ? { opacity: 0.3, cursor: 'not-allowed' } : {}}
+                            type="button"
+                            className="btn-icon" 
+                            onClick={() => removeBlog(idx)}
+                            title="Delete Blog"
+                            style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', padding: '0.4rem 0.8rem', borderRadius: '6px', border: '1px solid #fee2e2', background: '#fef2f2', color: '#ef4444', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer' }}
                           >
-                            <Trash2 size={16} />
+                            <Trash2 size={15} /> Delete
                           </button>
                         </div>
                       </div>

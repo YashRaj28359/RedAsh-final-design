@@ -17,8 +17,14 @@ const BlogList = () => {
           setHeroText(data.agency.blogHeroText);
         }
         if (data?.agency?.blogs && data.agency.blogs.length > 0) {
-          const dynamicBlogs = data.agency.blogs.filter(b => b.published !== false);
-          setBlogs([...dynamicBlogs, ...blogsData]);
+          const dbBlogs = data.agency.blogs.filter(b => b.published !== false);
+          const deletedSlugs = data.agency.deletedBlogSlugs || [];
+          if (data.agency.blogsAllSaved) {
+            setBlogs(dbBlogs);
+          } else {
+            const remainingStatic = blogsData.filter(sb => !deletedSlugs.includes(sb.slug) && !dbBlogs.some(db => db.slug === sb.slug));
+            setBlogs([...dbBlogs, ...remainingStatic]);
+          }
         }
       };
 

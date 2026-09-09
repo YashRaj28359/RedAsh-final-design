@@ -142,6 +142,12 @@ const VideoGrid = () => {
       }
     }
     if (finalThumbnail && typeof finalThumbnail === 'string') {
+      while (finalThumbnail.includes('https://redash-final-design.onrender.comhttps://')) {
+        finalThumbnail = finalThumbnail.replace('https://redash-final-design.onrender.comhttps://', 'https://');
+      }
+      while (finalThumbnail.includes('http://localhost:5000http')) {
+        finalThumbnail = finalThumbnail.replace(/http:\/\/localhost:5000(?=http)/g, '');
+      }
       if (finalThumbnail.startsWith('/uploads/')) {
         finalThumbnail = `${API_URL}${finalThumbnail}`;
       } else if (finalThumbnail.startsWith('http://localhost:5000')) {

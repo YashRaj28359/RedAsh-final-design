@@ -4,6 +4,16 @@ import { Mail, Home, Film, Briefcase, Settings, LogOut, FileText, Image as Image
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://redash-final-design.onrender.com';
 
+const resolveUploadedUrl = (url) => {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    let cleaned = url.replace(/https:\/\/redash-final-design\.onrender\.comhttps:\/\//g, 'https://');
+    cleaned = cleaned.replace(/http:\/\/localhost:5000(?=http)/g, '');
+    return cleaned;
+  }
+  return `${API_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+};
+
 const CASE_STUDY_ICONS = [
   { value: 'FaBriefcase', label: 'Briefcase', icon: Briefcase },
   { value: 'FaMoneyBillWave', label: 'Money', icon: CircleDollarSign },
@@ -2012,7 +2022,7 @@ function App() {
       });
       const data = await res.json();
       if (res.ok) {
-        handleUpdateAgencyHeroCard(index, 'image', `${API_URL}${data.url}`);
+        handleUpdateAgencyHeroCard(index, 'image', resolveUploadedUrl(data.url));
       } else {
         alert('Upload failed: ' + data.message);
       }
@@ -2146,7 +2156,7 @@ function App() {
       });
       const data = await res.json();
       if (res.ok) {
-        handleUpdateVideo(editingVideoIndex, 'thumbnail', `${API_URL}${data.url}`);
+        handleUpdateVideo(editingVideoIndex, 'thumbnail', resolveUploadedUrl(data.url));
       } else {
         alert('Upload failed: ' + data.message);
       }
@@ -2170,7 +2180,7 @@ function App() {
       });
       const data = await res.json();
       if (res.ok) {
-        handleUpdateHeroCard(index, 'image', `${API_URL}${data.url}`);
+        handleUpdateHeroCard(index, 'image', resolveUploadedUrl(data.url));
       } else {
         alert('Upload failed: ' + data.message);
       }

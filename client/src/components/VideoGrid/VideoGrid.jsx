@@ -22,7 +22,7 @@ const itemVariants = {
 
 import { flushSync } from 'react-dom';
 
-import { fetchContent } from '../../utils/api';
+import { fetchContent, API_URL } from '../../utils/api';
 
 const VideoGrid = () => {
   const [selectedVideo, setSelectedVideo] = useState(null);
@@ -141,6 +141,13 @@ const VideoGrid = () => {
         finalThumbnail = localVideo.thumbnail;
       }
     }
+    if (finalThumbnail && typeof finalThumbnail === 'string') {
+      if (finalThumbnail.startsWith('/uploads/')) {
+        finalThumbnail = `${API_URL}${finalThumbnail}`;
+      } else if (finalThumbnail.startsWith('http://localhost:5000')) {
+        finalThumbnail = finalThumbnail.replace('http://localhost:5000', API_URL);
+      }
+    }
     
     return { ...v, uniqueId: v.uniqueId || v.id, thumbnail: finalThumbnail };
   });
@@ -196,7 +203,7 @@ const VideoGrid = () => {
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
         >
-          {displayVideos.slice(0, visibleCount).map((video) => (
+          {displayVideos.map((video) => (
             <motion.div 
               key={video.uniqueId} 
               variants={itemVariants}

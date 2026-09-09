@@ -38,8 +38,8 @@ const BlogPost = () => {
     const currentIndex = allBlogs.findIndex(b => b.slug === slug);
     if (currentIndex !== -1) {
       setBlog(allBlogs[currentIndex]);
-      setNextBlog(currentIndex > 0 ? allBlogs[currentIndex - 1] : null);
-      setPrevBlog(currentIndex < allBlogs.length - 1 ? allBlogs[currentIndex + 1] : null);
+      setPrevBlog(currentIndex > 0 ? allBlogs[currentIndex - 1] : null);
+      setNextBlog(currentIndex < allBlogs.length - 1 ? allBlogs[currentIndex + 1] : null);
     }
   }, [slug, allBlogs]);
 
@@ -165,14 +165,14 @@ const BlogPost = () => {
               <span className="text-[10px] font-bold tracking-widest uppercase text-gray-500 group-hover:text-blue-200 mb-2 flex items-center gap-1"><FiArrowLeft /> Previous Article</span>
               <span className="font-bold text-sm md:text-base leading-snug line-clamp-2" dangerouslySetInnerHTML={{ __html: prevBlog.title }} />
             </Link>
-          ) : <div className="flex-1"></div>}
+          ) : <div className="hidden sm:block flex-1"></div>}
 
           {nextBlog ? (
             <Link to={`/ad-agency/blog/${nextBlog.slug}`} className="flex-1 group flex flex-col items-end text-right bg-gray-50 p-4 rounded-xl hover:bg-brand-blue hover:text-white transition-colors duration-300">
               <span className="text-[10px] font-bold tracking-widest uppercase text-gray-500 group-hover:text-blue-200 mb-2 flex items-center gap-1">Next Article <FiArrowRight /></span>
               <span className="font-bold text-sm md:text-base leading-snug line-clamp-2" dangerouslySetInnerHTML={{ __html: nextBlog.title }} />
             </Link>
-          ) : <div className="flex-1"></div>}
+          ) : <div className="hidden sm:block flex-1"></div>}
         </div>
 
         {/* Sidebar for Mobile/Tablet (Renders below everything) */}

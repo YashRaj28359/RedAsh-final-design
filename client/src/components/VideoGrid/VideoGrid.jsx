@@ -90,13 +90,32 @@ const VideoGrid = () => {
         }
       };
 
+      const handleBlur = () => {
+        setTimeout(() => {
+          if (document.hidden || document.visibilityState === 'hidden') {
+            if (player && typeof player.pauseVideo === 'function') {
+              player.pauseVideo();
+            }
+          }
+        }, 100);
+        setTimeout(() => {
+          if (document.hidden || document.visibilityState === 'hidden') {
+            if (player && typeof player.pauseVideo === 'function') {
+              player.pauseVideo();
+            }
+          }
+        }, 300);
+      };
+
       document.addEventListener("visibilitychange", handleVisibilityChange);
       window.addEventListener("pagehide", handleVisibilityChange);
+      window.addEventListener("blur", handleBlur);
 
       return () => { 
         document.body.style.overflow = 'unset'; 
         document.removeEventListener("visibilitychange", handleVisibilityChange);
         window.removeEventListener("pagehide", handleVisibilityChange);
+        window.removeEventListener("blur", handleBlur);
       };
     } else {
       document.body.style.overflow = 'unset';

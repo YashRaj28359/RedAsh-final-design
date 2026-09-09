@@ -100,6 +100,11 @@ const VideoPlaylist = ({ videos, category, categoryName, categorySubtitle, theme
   useEffect(() => {
     setIsPlaying(false);
     setIsVideoPaused(false);
+    if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
+      try {
+        ytPlayer.pauseVideo();
+      } catch (e) {}
+    }
   }, [activeIndex]);
 
   useEffect(() => {
@@ -115,6 +120,47 @@ const VideoPlaylist = ({ videos, category, categoryName, categorySubtitle, theme
     window.addEventListener('stopOtherVideos', handleStopOtherVideos);
     return () => window.removeEventListener('stopOtherVideos', handleStopOtherVideos);
   }, [category, ytPlayer]);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden || document.visibilityState === 'hidden') {
+        if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
+          ytPlayer.pauseVideo();
+          setIsVideoPaused(true);
+        }
+      }
+    };
+
+    const handleBlur = () => {
+      // When clicking the YouTube icon in the bottom right, browser opens a new tab and window loses focus
+      setTimeout(() => {
+        if (document.hidden || document.visibilityState === 'hidden') {
+          if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
+            ytPlayer.pauseVideo();
+            setIsVideoPaused(true);
+          }
+        }
+      }, 100);
+      setTimeout(() => {
+        if (document.hidden || document.visibilityState === 'hidden') {
+          if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
+            ytPlayer.pauseVideo();
+            setIsVideoPaused(true);
+          }
+        }
+      }, 300);
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("pagehide", handleVisibilityChange);
+    window.addEventListener("blur", handleBlur);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("pagehide", handleVisibilityChange);
+      window.removeEventListener("blur", handleBlur);
+    };
+  }, [ytPlayer]);
 
   const handlePlayVideo = (e) => {
     if (e && e.stopPropagation) e.stopPropagation();
@@ -157,7 +203,10 @@ const VideoPlaylist = ({ videos, category, categoryName, categorySubtitle, theme
       autoplay: 0,
       rel: 0,
       controls: 1,
-      modestbranding: 1
+      modestbranding: 1,
+      playsinline: 1,
+      enablejsapi: 1,
+      origin: typeof window !== 'undefined' ? window.location.origin : ''
     },
   };
 

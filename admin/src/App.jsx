@@ -2,7 +2,10 @@ import React, { useState, useRef } from 'react';
 import './App.css';
 import { Mail, Home, Film, Briefcase, Settings, LogOut, FileText, Image as ImageIcon, Layout, Phone, Info, Save, Eye, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Plus, Trash2, Edit2, PlayCircle, GripVertical, RefreshCw, Users, Upload, Flame, ToggleRight, ToggleLeft, ArrowRight, ArrowDown, ExternalLink, CircleDollarSign, Brain, TrendingUp, Rocket, Target, Building, Lightbulb, Smartphone, Laptop, Globe, CheckCircle, MessageSquare, X } from 'lucide-react';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://redash-final-design.onrender.com';
+const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+const API_URL = isLocal 
+  ? (import.meta.env.VITE_API_URL || 'http://localhost:5000') 
+  : 'https://redash-final-design.onrender.com';
 
 const resolveUploadedUrl = (url) => {
   if (!url) return '';

@@ -144,7 +144,11 @@ const WhatsRedHot = () => {
               {/* Image Side */}
               <div className="w-full md:w-[60%] flex justify-center items-center relative [@media(max-height:600px)_and_(orientation:landscape)]:w-[40%]">
                 <div className="w-full max-w-[320px] md:max-w-[500px] aspect-[4/3] group-hover:scale-[1.05] transition-transform duration-500 flex justify-center items-center [@media(max-height:600px)_and_(orientation:landscape)]:max-w-[150px]">
-                  <img src={update.image} alt="Visual" className="max-w-full max-h-full object-contain" />
+                  <img 
+                    src={(update.image && !update.image.includes('/@fs/') && !update.image.includes('localhost:5173')) ? update.image : updatesData[index % updatesData.length]?.image} 
+                    alt="Visual" 
+                    className="max-w-full max-h-full object-contain" 
+                  />
                 </div>
               </div>
 

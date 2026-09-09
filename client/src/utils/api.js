@@ -15,8 +15,9 @@ export const getCachedContent = () => {
   return null;
 };
 
+export const API_URL = import.meta.env.VITE_API_URL || 'https://redash-final-design.onrender.com';
+
 export const fetchContent = () => {
-  const API_URL = import.meta.env.VITE_API_URL || 'https://redash-final-design.onrender.com';
   fetchPromise = fetch(`${API_URL}/api/content`)
     .then(res => res.json())
     .then(data => {

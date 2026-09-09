@@ -18,7 +18,10 @@ const MediaLinks = () => {
         const dbMediaCards = (data && data.homepage && data.homepage.mediaCards) ? data.homepage.mediaCards : [];
         const mergedStaticMedia = mediaData.map((sm, index) => {
           const override = dbMediaCards.find(dbm => dbm.id === sm.id);
-          if (override) return override;
+          if (override) {
+            const cleanImage = (override.image && !override.image.includes('/@fs/') && !override.image.includes('localhost:5173')) ? override.image : sm.image;
+            return { ...sm, ...override, image: cleanImage };
+          }
           return { ...sm, showOnHomepage: index < 3 };
         });
         const newDbMedia = dbMediaCards.filter(dbm => !mediaData.some(sm => sm.id === dbm.id));

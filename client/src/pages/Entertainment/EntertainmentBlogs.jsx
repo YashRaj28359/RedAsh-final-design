@@ -5,6 +5,7 @@ import Lenis from 'lenis';
 import EntertainmentNavbar from './components/EntertainmentNavbar';
 import EntertainmentFooter from './components/EntertainmentFooter';
 import blogsData from '../../data/entertainmentBlogs.json';
+import { API_URL } from '../../utils/api';
 
 const EntertainmentBlogs = () => {
   const [blogs, setBlogs] = useState([]);
@@ -30,7 +31,7 @@ const EntertainmentBlogs = () => {
     animationFrameId = requestAnimationFrame(raf);
 
     // Fetch dynamic content
-    fetch(`${import.meta.env.VITE_API_URL}/api/content`)
+    fetch(`${API_URL}/api/content`)
       .then(res => res.json())
       .then(data => {
         const entData = data.entertainment || {};
@@ -76,7 +77,7 @@ const EntertainmentBlogs = () => {
   const getImageUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `${import.meta.env.VITE_API_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+    return `${API_URL}${url.startsWith('/') ? '' : '/'}${url}`;
   };
 
   return (

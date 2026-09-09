@@ -161,7 +161,7 @@ const FilmCollage = ({ onVideoToggle }) => {
               id: cmsCard.id || film.id,
               title: cmsCard.title || film.title,
               subtitle: cmsCard.subtitle || film.subtitle,
-              image: cmsCard.image || film.image,
+              image: (cmsCard.image && !cmsCard.image.includes('/@fs/') && !cmsCard.image.includes('localhost:5173') && cmsCard.image.trim() !== "") ? cmsCard.image : film.image,
               link: cmsCard.linkHome !== undefined ? cmsCard.linkHome : (cmsCard.link || cmsCard.url || film.link)
             };
           })

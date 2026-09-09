@@ -26,6 +26,8 @@ const clients = [
   { img: lastImg, alt: 'Alright TV', rotate: 'rotate-[-15deg]', pos: 'md:-top-[10%] md:-right-[5%]', size: 'w-24 h-24 lg:w-32 lg:h-32', shape: 'rounded-full' },
 ];
 
+import { fetchContent } from '../../../utils/api';
+
 const TopGlobalClients = () => {
   const containerRef = useRef(null);
   const textRef = useRef(null);
@@ -34,11 +36,11 @@ const TopGlobalClients = () => {
   const [dbClients, setDbClients] = React.useState(null);
 
   React.useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/content`)
-      .then(res => res.json())
+    fetchContent()
       .then(data => {
         if (data?.entertainment?.clients && data.entertainment.clients.length > 0) {
-          setDbClients(data.entertainment.clients);
+          const valid = data.entertainment.clients.filter(c => c && c.img && !c.img.includes('/@fs/') && !c.img.includes('localhost:5173'));
+          if (valid.length > 0) setDbClients(valid);
         }
       })
       .catch(err => console.error(err));
@@ -155,7 +157,7 @@ const TopGlobalClients = () => {
                 {/* Circular White Floating Logo Badge with Soft Drop Shadow */}
                 <div className="bg-white p-4 shadow-[0px_20px_45px_rgba(0,0,0,0.12)] border-2 border-gray-100 flex items-center justify-center overflow-hidden rounded-full w-28 h-28 lg:w-32 lg:h-32 transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0px_25px_50px_rgba(226,0,2,0.25)] group-hover:border-[#E20002]/30">
                   <img 
-                    src={client.img} 
+                    src={(client.img && !client.img.includes('/@fs/') && !client.img.includes('localhost:5173')) ? client.img : clients[idx % clients.length]?.img} 
                     alt={client.name || client.alt} 
                     className="w-full h-full object-contain transition-all duration-300 scale-90 group-hover:scale-105" 
                   />
@@ -171,7 +173,7 @@ const TopGlobalClients = () => {
                 {/* Circular White Floating Logo Badge with Soft Drop Shadow */}
                 <div className="bg-white p-4 shadow-[0px_20px_45px_rgba(0,0,0,0.12)] border-2 border-gray-100 flex items-center justify-center overflow-hidden rounded-full w-28 h-28 lg:w-32 lg:h-32 transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0px_25px_50px_rgba(226,0,2,0.25)] group-hover:border-[#E20002]/30">
                   <img 
-                    src={client.img} 
+                    src={(client.img && !client.img.includes('/@fs/') && !client.img.includes('localhost:5173')) ? client.img : clients[idx % clients.length]?.img} 
                     alt={client.name || client.alt} 
                     className="w-full h-full object-contain transition-all duration-300 scale-90 group-hover:scale-105" 
                   />
@@ -192,7 +194,7 @@ const TopGlobalClients = () => {
                 key={`r1-${idx}`}
                 className="bg-white p-3 shadow-lg border border-gray-100 flex items-center justify-center aspect-square w-28 sm:w-32 overflow-hidden flex-none rounded-full"
               >
-                <img src={client.img} alt={client.name || client.alt} className="w-full h-full object-contain transition-transform duration-300 hover:scale-110" />
+                <img src={(client.img && !client.img.includes('/@fs/') && !client.img.includes('localhost:5173')) ? client.img : clients[idx % clients.length]?.img} alt={client.name || client.alt} className="w-full h-full object-contain transition-transform duration-300 hover:scale-110" />
               </div>
             ))}
           </div>
@@ -203,7 +205,7 @@ const TopGlobalClients = () => {
                 key={`r2-${idx}`}
                 className="bg-white p-3 shadow-lg border border-gray-100 flex items-center justify-center aspect-square w-28 sm:w-32 overflow-hidden flex-none rounded-full"
               >
-                <img src={client.img} alt={client.name || client.alt} className="w-full h-full object-contain transition-transform duration-300 hover:scale-110" />
+                <img src={(client.img && !client.img.includes('/@fs/') && !client.img.includes('localhost:5173')) ? client.img : clients[idx % clients.length]?.img} alt={client.name || client.alt} className="w-full h-full object-contain transition-transform duration-300 hover:scale-110" />
               </div>
             ))}
           </div>

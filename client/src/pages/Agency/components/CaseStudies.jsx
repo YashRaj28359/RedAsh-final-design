@@ -181,7 +181,7 @@ const CaseStudies = () => {
               <div className="relative w-full h-48 md:h-56 rounded-3xl overflow-hidden mb-6 bg-gray-100 [@media(max-height:600px)_and_(orientation:landscape)]:h-24 [@media(max-height:600px)_and_(orientation:landscape)]:mb-2 [@media(max-height:600px)_and_(orientation:landscape)]:rounded-xl">
                 
                 <img 
-                  src={study.image} 
+                  src={(study.image && !study.image.includes('/@fs/') && !study.image.includes('localhost:5173')) ? study.image : caseStudiesData[index % caseStudiesData.length]?.image} 
                   alt={study.title} 
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />

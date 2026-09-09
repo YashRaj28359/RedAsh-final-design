@@ -43,7 +43,10 @@ const staticWallLogos = [
 // Helper to resolve image URL
 const resolveImg = (img) => {
   if (!img) return null;
-  if (img.startsWith('http') || img.startsWith('/') || img.startsWith('data:')) return img;
+  if (typeof img === 'string') {
+    if (img.includes('/@fs/') || img.includes('localhost:5173') || img.trim() === '') return null;
+    if (img.startsWith('http') || img.startsWith('/') || img.startsWith('data:')) return img;
+  }
   // local static import (object)
   return img;
 };

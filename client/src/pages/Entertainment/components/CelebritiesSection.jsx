@@ -138,7 +138,7 @@ const CelebritiesSection = () => {
                 className={`celeb-card group relative flex-none h-full w-[75vw] sm:w-[50vw] md:w-[40vw] lg:w-auto lg:flex-1 snap-center transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] lg:hover:flex-[6] cursor-pointer overflow-hidden rounded-md bg-[#1a1a1a] ${isActive ? 'is-active lg:!flex-[6]' : ''}`}
               >
                 <img 
-                  src={celeb.img} 
+                  src={(celeb.img && !celeb.img.includes('/@fs/') && !celeb.img.includes('localhost:5173')) ? celeb.img : defaultRow1[index % defaultRow1.length]?.img} 
                   alt={celeb.name} 
                   className={`absolute inset-0 w-full h-full object-cover object-top grayscale-0 opacity-100 transition-all duration-700 lg:group-hover:grayscale-0 lg:group-hover:opacity-100 lg:group-hover:scale-105 ${isActive ? 'lg:grayscale-0 lg:opacity-100 lg:scale-105' : 'lg:grayscale lg:opacity-60'}`}
                 />
@@ -187,7 +187,7 @@ const CelebritiesSection = () => {
                 className={`celeb-card group relative flex-none h-full w-[75vw] sm:w-[50vw] md:w-[40vw] lg:w-[11.11%] snap-center transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] lg:hover:w-[42.85%] cursor-pointer overflow-hidden rounded-md bg-[#1a1a1a] ${isActive ? 'is-active lg:!w-[42.85%]' : ''}`}
               >
                 <img 
-                  src={celeb.img} 
+                  src={(celeb.img && !celeb.img.includes('/@fs/') && !celeb.img.includes('localhost:5173')) ? celeb.img : defaultRow2[index % defaultRow2.length]?.img} 
                   alt={celeb.name} 
                   className={`absolute inset-0 w-full h-full object-cover object-top grayscale-0 opacity-100 transition-all duration-700 lg:group-hover:grayscale-0 lg:group-hover:opacity-100 lg:group-hover:scale-105 ${isActive ? 'lg:grayscale-0 lg:opacity-100 lg:scale-105' : 'lg:grayscale lg:opacity-60'}`}
                 />

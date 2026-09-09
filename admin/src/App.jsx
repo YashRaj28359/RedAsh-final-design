@@ -2,6 +2,8 @@ import React, { useState, useRef } from 'react';
 import './App.css';
 import { Mail, Home, Film, Briefcase, Settings, LogOut, FileText, Image as ImageIcon, Layout, Phone, Info, Save, Eye, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Plus, Trash2, Edit2, PlayCircle, GripVertical, RefreshCw, Users, Upload, Flame, ToggleRight, ToggleLeft, ArrowRight, ExternalLink, CircleDollarSign, Brain, TrendingUp, Rocket, Target, Building, Lightbulb, Smartphone, Laptop, Globe, CheckCircle, MessageSquare, X } from 'lucide-react';
 
+const API_URL = import.meta.env.VITE_API_URL || 'https://redash-final-design.onrender.com';
+
 const CASE_STUDY_ICONS = [
   { value: 'FaBriefcase', label: 'Briefcase', icon: Briefcase },
   { value: 'FaMoneyBillWave', label: 'Money', icon: CircleDollarSign },
@@ -297,6 +299,11 @@ import redHotImg1 from '../../client/src/assets/Films/Cards/Card2.jpg';
 import microDramaImg from '../../client/src/assets/Agency/Filmthumbnails/Micro drama.png';
 import redHotImg2 from '../../client/src/assets/Films/Cards/RedHot/Ai Show.png';
 import redHotImg3 from '../../client/src/assets/Films/Cards/RedHot/Daily soap.png';
+import entHeroCard1 from '../../client/src/assets/Films/Cards/Card1.jpg';
+import entHeroCard2 from '../../client/src/assets/Films/Cards/Card2.jpg';
+import entHeroCard3 from '../../client/src/assets/Films/Cards/Card3.png';
+import entHeroCard5 from '../../client/src/assets/Films/Cards/Card5.png';
+import entHeroCard6 from '../../client/src/assets/Films/Cards/Card6.png';
 
 import poster1 from '../../client/src/assets/Films/Poster/1. Copy of Movie Poster_20x10.webp';
 import poster2 from '../../client/src/assets/Films/Cards/Card2.jpg';
@@ -3167,8 +3174,6 @@ function App() {
                       else if (video.id === 'kukufm') thumb = '/assets/microdrama-thumb.png';
                       else if (video.id) thumb = `https://img.youtube.com/vi/${video.id}/mqdefault.jpg`;
                     }
-                    // Resolve /assets/ paths to client dev server since admin is on a different port
-                    if (thumb && thumb.startsWith('/assets/')) thumb = `http://localhost:5173${thumb}`;
                     return (
                       <div style={{ width: '100%', aspectRatio: '16/9', backgroundColor: '#000', overflow: 'hidden', backgroundImage: thumb ? `url(${thumb})` : 'none', backgroundSize: 'cover', backgroundPosition: 'center' }}>
                         {!thumb && <div style={{width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center', color:'#555'}}><PlayCircle size={20}/></div>}
@@ -3990,8 +3995,8 @@ function App() {
                 </div>
 
                 <div style={{ width: '100%', height: '180px', background: '#f8fafc', borderRadius: '8px', overflow: 'hidden', border: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-                  {item.img ? (
-                    <img src={item.img} alt={`Logo ${idx + 1}`} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                  {((item.img && !item.img.includes('/@fs/') && !item.img.includes('localhost:5173')) || defaultAgencyClients[idx]?.img) ? (
+                    <img src={(item.img && !item.img.includes('/@fs/') && !item.img.includes('localhost:5173')) ? item.img : defaultAgencyClients[idx]?.img} alt={`Logo ${idx + 1}`} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                   ) : (
                     <div style={{ textAlign: 'center', color: '#94a3b8' }}>
                       <ImageIcon size={36} style={{ margin: '0 auto 0.4rem', opacity: 0.5 }} />
@@ -4007,7 +4012,7 @@ function App() {
                       type="text" 
                       className="form-control" 
                       style={{ fontSize: '0.85rem' }}
-                      value={item.img || ''} 
+                      value={(item.img && !item.img.includes('/@fs/') && !item.img.includes('localhost:5173')) ? item.img : ''} 
                       onChange={(e) => handleUpdateAgencyClient(idx, 'img', e.target.value)} 
                       placeholder="Image URL or upload..."
                     />
@@ -4119,7 +4124,11 @@ function App() {
                   <div>
                     <label style={{ fontSize: '0.8rem', fontWeight: '600', marginBottom: '0.4rem', display: 'block', color: '#475569' }}>Image</label>
                     <div style={{ width: '100%', height: '100px', background: '#f8fafc', borderRadius: '6px', border: '1px solid #e2e8f0', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      {study.image ? <img src={study.image} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <ImageIcon size={24} style={{ color: '#cbd5e1' }} />}
+                      {((study.image && !study.image.includes('/@fs/') && !study.image.includes('localhost:5173')) || defaultCaseStudies[idx % defaultCaseStudies.length]?.image) ? (
+                        <img src={(study.image && !study.image.includes('/@fs/') && !study.image.includes('localhost:5173')) ? study.image : defaultCaseStudies[idx % defaultCaseStudies.length]?.image} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ) : (
+                        <ImageIcon size={24} style={{ color: '#cbd5e1' }} />
+                      )}
                     </div>
                     <label style={{ display: 'block', marginTop: '0.5rem', cursor: 'pointer', textAlign: 'center', fontSize: '0.75rem', padding: '0.4rem', background: '#e0e7ff', color: '#4338ca', borderRadius: '4px', fontWeight: '600' }}>
                       Change Image
@@ -4429,10 +4438,14 @@ function App() {
                     <label style={{ fontSize: '0.8rem', fontWeight: '600', display: 'block', color: '#475569' }}>Image</label>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                       <div style={{ width: '80px', height: '60px', borderRadius: '4px', background: '#f8fafc', overflow: 'hidden', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        {item.image ? <img src={item.image} style={{ width: '100%', height: '100%', objectFit: 'contain' }} /> : <ImageIcon size={20} style={{ color: '#cbd5e1' }} />}
+                        {((item.image && !item.image.includes('/@fs/') && !item.image.includes('localhost:5173')) || defaultWhatsRedHot[idx % defaultWhatsRedHot.length]?.image) ? (
+                          <img src={(item.image && !item.image.includes('/@fs/') && !item.image.includes('localhost:5173')) ? item.image : defaultWhatsRedHot[idx % defaultWhatsRedHot.length]?.image} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                        ) : (
+                          <ImageIcon size={20} style={{ color: '#cbd5e1' }} />
+                        )}
                       </div>
                       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                        <input type="text" className="form-control" style={{ padding: '0.4rem 0.6rem', fontSize: '0.8rem' }} placeholder="Image URL" value={item.image || ''} onChange={(e) => handleUpdateWhatsRedHot(idx, 'image', e.target.value)} />
+                        <input type="text" className="form-control" style={{ padding: '0.4rem 0.6rem', fontSize: '0.8rem' }} placeholder="Image URL" value={(item.image && !item.image.includes('/@fs/') && !item.image.includes('localhost:5173')) ? item.image : ''} onChange={(e) => handleUpdateWhatsRedHot(idx, 'image', e.target.value)} />
                         <label style={{ cursor: 'pointer', fontSize: '0.75rem', padding: '0.4rem 0.8rem', background: '#e0e7ff', color: '#4338ca', borderRadius: '4px', fontWeight: '600', textAlign: 'center' }}>
                           Upload New Image
                           <input type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => handleWhatsRedHotFileUpload(e, idx)} />
@@ -5492,12 +5505,12 @@ function App() {
 
     if (activeSidebar === 'entertainment' && activeSubMenu === 'hero_cards') {
       const defaultCards = [
-        { title: "MOVIES", link: "", image: "" },
-        { title: "WEB SERIES", link: "", image: "" },
-        { title: "MICRO DRAMAS", link: "", image: "" },
-        { title: "SHORT FILMS", link: "", image: "https://img.youtube.com/vi/5AGZjsdfOio/hqdefault.jpg" },
-        { title: "AI FILMS", link: "", image: "" },
-        { title: "MUSIC VIDEOS", link: "", image: "" }
+        { title: "MOVIES", link: "https://youtu.be/pIv7FFKm318", image: entHeroCard1 },
+        { title: "WEB SERIES", link: "https://timesofindia.indiatimes.com/entertainment/hindi/bollywood/news/ashish-lal-explores-friendship-and-loss-in-the-codpaster/articleshow/131854264.cms", image: entHeroCard2 },
+        { title: "MICRO DRAMAS", link: "https://kukutv.app/show/billionaire-on-plane", image: entHeroCard3 },
+        { title: "SHORT FILMS", link: "https://www.youtube.com/watch?v=5AGZjsdfOio", image: "https://img.youtube.com/vi/5AGZjsdfOio/hqdefault.jpg" },
+        { title: "AI FILMS", link: "https://youtube.com/shorts/AKAxDl0W9jU", image: entHeroCard5 },
+        { title: "MUSIC VIDEOS", link: "https://youtu.be/6Q0mdzO9A4A", image: entHeroCard6 }
       ];
       const cards = content.entertainment?.heroCards || defaultCards;
 
@@ -5717,7 +5730,7 @@ function App() {
                   {card.image && (
                     <div style={{ marginBottom: '1rem', height: '150px', overflow: 'hidden', borderRadius: '8px', border: '1px solid #ccc' }}>
                       <img 
-                        src={card.image && card.image.startsWith('/') ? `http://localhost:5173${card.image}` : card.image} 
+                        src={card.image ? (card.image.startsWith('http') ? card.image : (card.image.startsWith('/uploads') ? `${API_URL}${card.image}` : card.image)) : ''} 
                         alt="Preview" 
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                       />

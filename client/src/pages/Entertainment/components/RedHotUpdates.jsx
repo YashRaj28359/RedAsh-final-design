@@ -105,13 +105,14 @@ const getFoldConfig = (corner) => {
   }
 };
 
+import { fetchContent } from '../../../utils/api';
+
 const RedHotUpdates = () => {
   const containerRef = useRef(null);
   const [dbUpdates, setDbUpdates] = React.useState(null);
 
   React.useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/content`)
-      .then(res => res.json())
+    fetchContent()
       .then(data => {
         if (data?.entertainment?.redHotCards && data.entertainment.redHotCards.length > 0) {
           // Normalize DB cards format to updates structure
@@ -126,7 +127,7 @@ const RedHotUpdates = () => {
               id: `db-${idx}`,
               title: card.title,
               subtitle: card.subtitle,
-              image: card.image,
+              image: (card.image && !card.image.includes('/@fs/') && !card.image.includes('localhost:5173') && card.image.trim() !== '') ? card.image : updates[idx % updates.length]?.image,
               style: { zIndex: 20 + idx, width: '280px', height: '380px', transform: defaultRotations[idx % 4] },
               foldCorner: defaultFold,
               links: links
@@ -299,7 +300,7 @@ const RedHotUpdates = () => {
                           {/* Image Area */}
                           <div className="w-full h-[60%] md:h-[65%] relative bg-gray-200 overflow-hidden shadow-[inset_0_2px_10px_rgba(0,0,0,0.1)]">
                             <img 
-                              src={update.image} 
+                              src={(update.image && !update.image.includes('/@fs/') && !update.image.includes('localhost:5173')) ? update.image : updates[globalIndex % updates.length]?.image} 
                               alt={update.title} 
                               className="w-full h-full object-cover grayscale-[20%] contrast-110 sepia-[10%] brightness-95"
                             />

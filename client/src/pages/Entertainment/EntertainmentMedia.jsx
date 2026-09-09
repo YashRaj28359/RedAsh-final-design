@@ -4,6 +4,7 @@ import EntertainmentNavbar from './components/EntertainmentNavbar';
 import EntertainmentFooter from './components/EntertainmentFooter';
 import mediaData from '../../data/media.json';
 import Lenis from 'lenis';
+import { API_URL } from '../../utils/api';
 
 const EntertainmentMedia = () => {
   const [content, setContent] = useState(() => {
@@ -13,7 +14,7 @@ const EntertainmentMedia = () => {
   const [dbMediaCards, setDbMediaCards] = useState([]);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/content`, { cache: 'no-store' })
+    fetch(`${API_URL}/api/content`, { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         setContent(data.entertainment);
@@ -50,7 +51,11 @@ const EntertainmentMedia = () => {
 
   const mergedMedia = mediaData.map(sm => {
     const override = dbMediaCards.find(dbm => dbm.id === sm.id);
-    return override ? { ...sm, ...override } : sm;
+    if (override) {
+      const cleanImage = (override.image && !override.image.includes('/@fs/') && !override.image.includes('localhost:5173')) ? override.image : sm.image;
+      return { ...sm, ...override, image: cleanImage };
+    }
+    return sm;
   });
   const newDbMedia = dbMediaCards.filter(dbm => !mediaData.some(sm => sm.id === dbm.id));
   const finalMedia = [...mergedMedia, ...newDbMedia];

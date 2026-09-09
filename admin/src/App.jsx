@@ -458,6 +458,10 @@ function AdminLogin({ onLogin }) {
       const data = await response.json();
       if (response.ok && data.success) {
         sessionStorage.setItem('redash_admin_authenticated', 'true');
+        sessionStorage.setItem('redash_admin_email', data.email || email.trim().toLowerCase());
+        if (data.token) {
+          sessionStorage.setItem('redash_admin_token', data.token);
+        }
         onLogin();
         setLoading(false);
         return;
@@ -489,6 +493,7 @@ function AdminLogin({ onLogin }) {
       }
 
       sessionStorage.setItem('redash_admin_authenticated', 'true');
+      sessionStorage.setItem('redash_admin_email', email.trim().toLowerCase());
       onLogin();
       setLoading(false);
     }
@@ -10165,10 +10170,18 @@ function App() {
                         return;
                       }
 
+                      const currentAdminEmail = sessionStorage.getItem('redash_admin_email') || '';
+                      const adminToken = sessionStorage.getItem('redash_admin_token') || '';
+                      const headers = { 'Content-Type': 'application/json' };
+                      if (adminToken) {
+                        headers['Authorization'] = `Bearer ${adminToken}`;
+                      }
+
                       const response = await fetch(`${API_URL}/api/admin/change-password`, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers,
                         body: JSON.stringify({
+                          email: currentAdminEmail,
                           currentPassword: passwordForm.currentPassword,
                           newPassword: passwordForm.newPassword
                         })
@@ -10201,10 +10214,18 @@ function App() {
                         return;
                       }
 
+                      const currentAdminEmail = sessionStorage.getItem('redash_admin_email') || '';
+                      const adminToken = sessionStorage.getItem('redash_admin_token') || '';
+                      const headers = { 'Content-Type': 'application/json' };
+                      if (adminToken) {
+                        headers['Authorization'] = `Bearer ${adminToken}`;
+                      }
+
                       const response = await fetch(`${API_URL}/api/admin/change-email`, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers,
                         body: JSON.stringify({
+                          email: currentAdminEmail,
                           currentPassword: emailForm.currentPassword,
                           newEmail: emailForm.newEmail
                         })
@@ -10217,6 +10238,7 @@ function App() {
                         return;
                       }
 
+                      sessionStorage.setItem('redash_admin_email', emailForm.newEmail.trim().toLowerCase());
                       showToast('Email changed successfully!', 'success');
                       setShowSettingsModal(false);
                       setEmailForm({ currentPassword: '', newEmail: '', confirmEmail: '' });

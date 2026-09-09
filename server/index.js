@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import { Resend } from 'resend';
 import Content from './models/Content.js';
@@ -14,6 +15,125 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 dotenv.config();
+
+// -------------------------------------------------------------
+// Security Utilities: Salted Password Hashing & Timing-Safe Verification
+// -------------------------------------------------------------
+const JWT_SECRET = process.env.ADMIN_JWT_SECRET || process.env.SESSION_SECRET || 'redash-secure-token-salt-key-2026';
+
+function hashPassword(password) {
+  const salt = crypto.randomBytes(16).toString('hex');
+  const hash = crypto.scryptSync(password, salt, 64).toString('hex');
+  return `scrypt:${salt}:${hash}`;
+}
+
+function verifyPassword(password, storedPassword) {
+  if (!storedPassword || !password) return false;
+  if (storedPassword.startsWith('scrypt:')) {
+    const parts = storedPassword.split(':');
+    if (parts.length !== 3) return false;
+    const [, salt, originalHash] = parts;
+    const hash = crypto.scryptSync(password, salt, 64).toString('hex');
+    const hashBuf = Buffer.from(hash, 'hex');
+    const origBuf = Buffer.from(originalHash, 'hex');
+    if (hashBuf.length !== origBuf.length) return false;
+    return crypto.timingSafeEqual(hashBuf, origBuf);
+  }
+  // Plaintext backward compatibility fallback
+  return password === storedPassword;
+}
+
+// -------------------------------------------------------------
+// Security: Brute-Force Rate Limiting (5 failed attempts = 15 min lock)
+// -------------------------------------------------------------
+const loginRateLimitMap = new Map();
+
+function checkLoginRateLimit(ip) {
+  const now = Date.now();
+  const record = loginRateLimitMap.get(ip);
+  if (!record) return { allowed: true };
+
+  if (record.lockedUntil && now < record.lockedUntil) {
+    const remainingMinutes = Math.ceil((record.lockedUntil - now) / 60000);
+    return { allowed: false, remainingMinutes };
+  }
+
+  // Reset window after 15 minutes
+  if (now - record.firstAttempt > 15 * 60 * 1000) {
+    loginRateLimitMap.delete(ip);
+    return { allowed: true };
+  }
+
+  return { allowed: true };
+}
+
+function recordFailedLogin(ip) {
+  const now = Date.now();
+  const record = loginRateLimitMap.get(ip) || { count: 0, firstAttempt: now };
+  record.count += 1;
+  if (record.count >= 5) {
+    record.lockedUntil = now + 15 * 60 * 1000;
+  }
+  loginRateLimitMap.set(ip, record);
+}
+
+function clearFailedLogin(ip) {
+  loginRateLimitMap.delete(ip);
+}
+
+// -------------------------------------------------------------
+// Security: Cryptographically Signed Session Token
+// -------------------------------------------------------------
+function generateAuthToken(email) {
+  const payload = Buffer.from(JSON.stringify({
+    email,
+    exp: Date.now() + 7 * 24 * 60 * 60 * 1000 // 7 days
+  })).toString('base64url');
+  
+  const signature = crypto
+    .createHmac('sha256', JWT_SECRET)
+    .update(payload)
+    .digest('base64url');
+    
+  return `${payload}.${signature}`;
+}
+
+function verifyAuthToken(token) {
+  if (!token) return null;
+  const parts = token.split('.');
+  if (parts.length !== 2) return null;
+  const [payload, signature] = parts;
+  
+  const expectedSig = crypto
+    .createHmac('sha256', JWT_SECRET)
+    .update(payload)
+    .digest('base64url');
+    
+  if (signature !== expectedSig) return null;
+  
+  try {
+    const data = JSON.parse(Buffer.from(payload, 'base64url').toString());
+    if (data.exp && Date.now() > data.exp) return null;
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+// Admin Authentication Middleware
+function authenticateAdmin(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Unauthorized: Admin authentication token required' });
+  }
+  const token = authHeader.split(' ')[1];
+  const verified = verifyAuthToken(token);
+  if (!verified) {
+    return res.status(401).json({ message: 'Unauthorized: Invalid or expired session token' });
+  }
+  req.admin = verified;
+  next();
+}
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -183,10 +303,10 @@ async function initializeAdminCredentials() {
     if (!existingAdmin) {
       const newAdmin = new Admin({
         email: adminEmail.toLowerCase(),
-        password: adminPassword
+        password: hashPassword(adminPassword)
       });
       await newAdmin.save();
-      console.log('Admin credentials initialized from environment variables');
+      console.log('Admin credentials securely initialized from environment variables');
     }
   } catch (error) {
     console.error('Error initializing admin credentials:', error);
@@ -196,22 +316,40 @@ async function initializeAdminCredentials() {
 // Initialize admin credentials when server starts
 initializeAdminCredentials();
 
-// Validate Admin Login
+// Validate Admin Login with Brute-Force Rate Limiting & Secure Token
 app.post('/api/admin/login', async (req, res) => {
   try {
+    const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown-ip';
+
+    // 1. Check rate limit
+    const rateCheck = checkLoginRateLimit(clientIp);
+    if (!rateCheck.allowed) {
+      return res.status(429).json({
+        success: false,
+        message: `Too many failed login attempts. For security, access is locked for ${rateCheck.remainingMinutes} more minute(s).`
+      });
+    }
+
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ message: 'Email and password are required' });
+      return res.status(400).json({ success: false, message: 'Email and password are required' });
     }
 
     const emailLower = String(email).trim().toLowerCase();
 
-    // First try database credentials
+    // 2. Lookup Admin in DB
     const admin = await Admin.findOne({ email: emailLower });
 
-    if (admin && admin.password === password) {
-      return res.json({ success: true, message: 'Login successful' });
+    if (admin && verifyPassword(password, admin.password)) {
+      // If legacy unhashed password, automatically upgrade to salted hash
+      if (!admin.password.startsWith('scrypt:')) {
+        admin.password = hashPassword(password);
+        await admin.save();
+      }
+      clearFailedLogin(clientIp);
+      const token = generateAuthToken(admin.email);
+      return res.json({ success: true, token, email: admin.email, message: 'Login successful' });
     }
 
     // Fall back to environment variables for backward compatibility
@@ -219,20 +357,24 @@ app.post('/api/admin/login', async (req, res) => {
     const defaultPassword = process.env.VITE_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD;
 
     if (defaultEmail && defaultPassword && emailLower === defaultEmail.trim().toLowerCase() && password === defaultPassword) {
-      return res.json({ success: true, message: 'Login successful' });
+      clearFailedLogin(clientIp);
+      const token = generateAuthToken(defaultEmail.trim().toLowerCase());
+      return res.json({ success: true, token, email: defaultEmail.trim().toLowerCase(), message: 'Login successful' });
     }
 
+    // Record failed attempt
+    recordFailedLogin(clientIp);
     res.status(401).json({ success: false, message: 'Invalid email or password' });
   } catch (error) {
     console.error('Error during login:', error);
-    res.status(500).json({ message: 'Error during login', error: error.message });
+    res.status(500).json({ success: false, message: 'Error during login' });
   }
 });
 
 // Change Admin Password Endpoint
 app.post('/api/admin/change-password', async (req, res) => {
   try {
-    const { currentPassword, newPassword } = req.body;
+    const { email, currentPassword, newPassword } = req.body;
 
     if (!currentPassword || !newPassword) {
       return res.status(400).json({ message: 'Current password and new password are required' });
@@ -242,39 +384,46 @@ app.post('/api/admin/change-password', async (req, res) => {
       return res.status(400).json({ message: 'New password must be at least 6 characters long' });
     }
 
-    // Get default email and password from environment
     const defaultEmail = process.env.VITE_ADMIN_EMAIL || process.env.ADMIN_EMAIL;
     const defaultPassword = process.env.VITE_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD;
 
-    if (!defaultEmail) {
-      return res.status(500).json({ message: 'Admin email not configured' });
+    // Find admin by provided email, configured default email, or existing admin document
+    let admin = null;
+    if (email) {
+      admin = await Admin.findOne({ email: String(email).trim().toLowerCase() });
+    }
+    if (!admin && defaultEmail) {
+      admin = await Admin.findOne({ email: String(defaultEmail).trim().toLowerCase() });
+    }
+    if (!admin) {
+      admin = await Admin.findOne();
     }
 
-    const adminEmailLower = String(defaultEmail).trim().toLowerCase();
-
-    // Try to find the admin in the database
-    let admin = await Admin.findOne({ email: adminEmailLower });
-
     if (!admin) {
-      // If not in DB, create with default credentials first
+      if (!defaultEmail) {
+        return res.status(500).json({ message: 'Admin email not configured' });
+      }
       admin = new Admin({
-        email: adminEmailLower,
-        password: defaultPassword
+        email: String(defaultEmail).trim().toLowerCase(),
+        password: hashPassword(defaultPassword || currentPassword)
       });
       await admin.save();
     }
 
-    // Validate current password - check both DB password and environment password
-    if (currentPassword !== admin.password && currentPassword !== defaultPassword) {
+    // Validate current password against DB password or default password
+    const isCurrentValid = verifyPassword(currentPassword, admin.password) ||
+      (defaultPassword && currentPassword === defaultPassword);
+
+    if (!isCurrentValid) {
       return res.status(401).json({ message: 'Current password is incorrect' });
     }
 
-    // Update password and timestamp
-    admin.password = newPassword;
+    // Update password with secure salted hash
+    admin.password = hashPassword(newPassword);
     admin.updatedAt = new Date();
     await admin.save();
 
-    res.json({ message: 'Password updated successfully' });
+    res.json({ success: true, message: 'Password updated successfully' });
   } catch (error) {
     console.error('Error changing password:', error);
     res.status(500).json({ message: 'Error changing password', error: error.message });
@@ -284,7 +433,7 @@ app.post('/api/admin/change-password', async (req, res) => {
 // Change Admin Email Endpoint
 app.post('/api/admin/change-email', async (req, res) => {
   try {
-    const { currentPassword, newEmail } = req.body;
+    const { email, currentPassword, newEmail } = req.body;
 
     if (!currentPassword || !newEmail) {
       return res.status(400).json({ message: 'Current password and new email are required' });
@@ -294,34 +443,41 @@ app.post('/api/admin/change-email', async (req, res) => {
       return res.status(400).json({ message: 'Invalid email address' });
     }
 
-    // Get the current admin email from environment or database
     const defaultEmail = process.env.VITE_ADMIN_EMAIL || process.env.ADMIN_EMAIL;
     const defaultPassword = process.env.VITE_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD;
 
-    if (!defaultEmail) {
-      return res.status(500).json({ message: 'Admin email not configured' });
+    // Find admin by provided email, configured default email, or existing admin document
+    let admin = null;
+    if (email) {
+      admin = await Admin.findOne({ email: String(email).trim().toLowerCase() });
+    }
+    if (!admin && defaultEmail) {
+      admin = await Admin.findOne({ email: String(defaultEmail).trim().toLowerCase() });
+    }
+    if (!admin) {
+      admin = await Admin.findOne();
     }
 
-    const adminEmailLower = String(defaultEmail).trim().toLowerCase();
-
-    // Try to find the admin in the database
-    let admin = await Admin.findOne({ email: adminEmailLower });
-
     if (!admin) {
-      // If not in DB, create with default credentials first
+      if (!defaultEmail) {
+        return res.status(500).json({ message: 'Admin email not configured' });
+      }
       admin = new Admin({
-        email: adminEmailLower,
-        password: defaultPassword
+        email: String(defaultEmail).trim().toLowerCase(),
+        password: hashPassword(defaultPassword || currentPassword)
       });
       await admin.save();
     }
 
-    // Validate current password - check both DB password and environment password
-    if (currentPassword !== admin.password && currentPassword !== defaultPassword) {
+    // Validate current password against DB password or default password
+    const isCurrentValid = verifyPassword(currentPassword, admin.password) ||
+      (defaultPassword && currentPassword === defaultPassword);
+
+    if (!isCurrentValid) {
       return res.status(401).json({ message: 'Current password is incorrect' });
     }
 
-    // Check if new email already exists (but not the current one)
+    // Check if new email already exists (for a different admin)
     const existingAdmin = await Admin.findOne({ email: newEmail.toLowerCase() });
     if (existingAdmin && existingAdmin._id.toString() !== admin._id.toString()) {
       return res.status(400).json({ message: 'Email address is already in use' });
@@ -332,7 +488,7 @@ app.post('/api/admin/change-email', async (req, res) => {
     admin.updatedAt = new Date();
     await admin.save();
 
-    res.json({ message: 'Email updated successfully' });
+    res.json({ success: true, message: 'Email updated successfully' });
   } catch (error) {
     console.error('Error changing email:', error);
     res.status(500).json({ message: 'Error changing email', error: error.message });

@@ -3857,7 +3857,7 @@ function App() {
                   {/* Image Preview */}
                   <div style={{ width: '100%', height: '220px', backgroundColor: '#f0f0f0', border: '1px solid #ddd', borderRadius: '4px', overflow: 'hidden', flexShrink: 0 }}>
                     {card.image || card.id ? (
-                      <img src={card.image || `https://img.youtube.com/vi/${card.id}/hqdefault.jpg`} alt={card.label} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img src={resolveUploadedUrl(card.image) || `https://img.youtube.com/vi/${card.id}/hqdefault.jpg`} alt={card.label} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     ) : (
                       <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999', fontSize: '0.8rem', textAlign: 'center', padding: '0.5rem' }}>
                         No Image or YouTube Video ID
@@ -3895,7 +3895,7 @@ function App() {
                   <input 
                     type="text" 
                     className="form-control" 
-                    value={card.image || ''}
+                    value={resolveUploadedUrl(card.image) || ''}
                     onChange={(e) => handleUpdateAgencyHeroCard(index, 'image', e.target.value)}
                     placeholder="https://..."
                   />
@@ -5541,7 +5541,7 @@ function App() {
                   {/* Image Preview */}
                   <div style={{ width: '100%', height: '220px', backgroundColor: '#f0f0f0', border: '1px solid #ddd', borderRadius: '4px', overflow: 'hidden', flexShrink: 0 }}>
                     {card.image || defaultCards[index].image ? (
-                      <img src={card.image || defaultCards[index].image} alt={card.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img src={resolveUploadedUrl(card.image) || defaultCards[index].image} alt={card.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     ) : (
                       <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999', fontSize: '0.8rem', textAlign: 'center', padding: '0.5rem' }}>
                         No Image
@@ -5579,7 +5579,7 @@ function App() {
                   <input 
                     type="text" 
                     className="form-control" 
-                    value={card.image || ''}
+                    value={resolveUploadedUrl(card.image) || ''}
                     onChange={(e) => handleUpdateHeroCard(index, 'image', e.target.value)}
                     placeholder="https://..."
                   />

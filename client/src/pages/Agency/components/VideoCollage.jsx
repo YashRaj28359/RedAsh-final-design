@@ -7,7 +7,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import YouTube from 'react-youtube';
-import { fetchContent } from '../../../utils/api';
+import { fetchContent, API_URL } from '../../../utils/api';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -101,7 +101,24 @@ const VideoCollage = () => {
     fetchContent()
       .then(data => {
         if (data?.agency?.heroCards) {
-          const cards = data.agency.heroCards;
+          const cards = data.agency.heroCards.map(c => {
+            if (!c) return c;
+            let img = c.image;
+            if (img && typeof img === 'string') {
+              while (img.includes('https://redash-final-design.onrender.comhttps://')) {
+                img = img.replace('https://redash-final-design.onrender.comhttps://', 'https://');
+              }
+              while (img.includes('http://localhost:5000http')) {
+                img = img.replace(/http:\/\/localhost:5000(?=http)/g, '');
+              }
+              if (img.startsWith('/uploads/')) {
+                img = `${API_URL}${img}`;
+              } else if (img.startsWith('http://localhost:5000')) {
+                img = img.replace('http://localhost:5000', API_URL);
+              }
+            }
+            return { ...c, image: img };
+          });
           // Map 1, 3, 5 to left side and 2, 4, 6 to right side
           const mergedLeft = [
             { ...defaultLeftVideos[0], ...(cards[0] || {}) },

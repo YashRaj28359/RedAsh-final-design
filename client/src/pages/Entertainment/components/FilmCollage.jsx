@@ -11,7 +11,7 @@ import card6Img from "../../../assets/Films/Cards/Card6.png";
 import { Link } from 'react-router-dom';
 import { FiArrowRight } from 'react-icons/fi';
 import YouTube from 'react-youtube';
-import { fetchContent } from '../../../utils/api';
+import { fetchContent, API_URL } from '../../../utils/api';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -156,12 +156,26 @@ const FilmCollage = ({ onVideoToggle }) => {
           prevFilms.map((film, index) => {
             const cmsCard = cmsCards[index];
             if (!cmsCard) return film;
+            let finalImage = (cmsCard.image && !cmsCard.image.includes('/@fs/') && !cmsCard.image.includes('localhost:5173') && cmsCard.image.trim() !== "") ? cmsCard.image : film.image;
+            if (finalImage && typeof finalImage === 'string') {
+              while (finalImage.includes('https://redash-final-design.onrender.comhttps://')) {
+                finalImage = finalImage.replace('https://redash-final-design.onrender.comhttps://', 'https://');
+              }
+              while (finalImage.includes('http://localhost:5000http')) {
+                finalImage = finalImage.replace(/http:\/\/localhost:5000(?=http)/g, '');
+              }
+              if (finalImage.startsWith('/uploads/')) {
+                finalImage = `${API_URL}${finalImage}`;
+              } else if (finalImage.startsWith('http://localhost:5000')) {
+                finalImage = finalImage.replace('http://localhost:5000', API_URL);
+              }
+            }
             return {
               ...film,
               id: cmsCard.id || film.id,
               title: cmsCard.title || film.title,
               subtitle: cmsCard.subtitle || film.subtitle,
-              image: (cmsCard.image && !cmsCard.image.includes('/@fs/') && !cmsCard.image.includes('localhost:5173') && cmsCard.image.trim() !== "") ? cmsCard.image : film.image,
+              image: finalImage,
               link: cmsCard.linkHome !== undefined ? cmsCard.linkHome : (cmsCard.link || cmsCard.url || film.link)
             };
           })
@@ -387,7 +401,7 @@ const FilmCollage = ({ onVideoToggle }) => {
                     <div 
                       className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110 will-change-transform transform-gpu"
                       style={{ 
-                        backgroundImage: `url(${film.image})`
+                        backgroundImage: `url("${encodeURI(film.image)}")`
                       }}
                     />
                     

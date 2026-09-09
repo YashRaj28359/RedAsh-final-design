@@ -7949,7 +7949,9 @@ function App() {
 
       const handleBlogDragOver = (e, idx) => {
         e.preventDefault();
+        e.stopPropagation();
         e.dataTransfer.dropEffect = 'move';
+        if (draggedAgencyBlogIndex === null || draggedAgencyBlogIndex === idx) return;
         if (dragOverAgencyBlogIndex !== idx) {
           setDragOverAgencyBlogIndex(idx);
         }
@@ -7958,6 +7960,7 @@ function App() {
 
       const handleBlogDrop = (e, targetIndex) => {
         e.preventDefault();
+        e.stopPropagation();
         stopAutoScroll();
         setDragOverAgencyBlogIndex(null);
 
@@ -8042,8 +8045,6 @@ function App() {
             
             <div 
               className="blogs-grid" 
-              onDragOver={(e) => handleBlogDragOver(e, blogs.length)}
-              onDrop={(e) => handleBlogDrop(e, blogs.length)}
               style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem', marginTop: '1.5rem' }}
             >
               {blogs.map((blog, idx) => {
@@ -8079,7 +8080,7 @@ function App() {
                         : isDragging
                           ? '0 2px 4px rgba(0,0,0,0.05)'
                           : '0 2px 8px rgba(0,0,0,0.04)',
-                      transition: 'transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease, border 0.2s ease',
+                      transition: 'transform 0.15s ease, opacity 0.15s ease, box-shadow 0.15s ease, border 0.15s ease',
                       cursor: 'grab'
                     }}
                   >
@@ -8125,62 +8126,64 @@ function App() {
                       </div>
                     )}
 
-                    <div style={{ height: '160px', overflow: 'hidden', position: 'relative' }}>
-                      <img src={blog.imageUrl ? (blog.imageUrl.startsWith('http') ? blog.imageUrl : `${API_URL}${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`) : 'https://placehold.co/600x400?text=No+Image'} alt={blog.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      
-                      {/* Drag handle & date badge */}
-                      <div style={{ position: 'absolute', top: '10px', left: '10px', display: 'flex', alignItems: 'center', gap: '0.35rem', background: '#3b82f6', color: 'white', padding: '0.25rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold', boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
-                        <GripVertical size={13} style={{ opacity: 0.9 }} />
-                        {blog.date ? new Date(blog.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase() : ''}
+                    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', pointerEvents: draggedAgencyBlogIndex !== null ? 'none' : 'auto' }}>
+                      <div style={{ height: '160px', overflow: 'hidden', position: 'relative' }}>
+                        <img src={blog.imageUrl ? (blog.imageUrl.startsWith('http') ? blog.imageUrl : `${API_URL}${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`) : 'https://placehold.co/600x400?text=No+Image'} alt={blog.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        
+                        {/* Drag handle & date badge */}
+                        <div style={{ position: 'absolute', top: '10px', left: '10px', display: 'flex', alignItems: 'center', gap: '0.35rem', background: '#3b82f6', color: 'white', padding: '0.25rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold', boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
+                          <GripVertical size={13} style={{ opacity: 0.9 }} />
+                          {blog.date ? new Date(blog.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase() : ''}
+                        </div>
+
+                        {/* Status badge */}
+                        <div 
+                          onClick={() => togglePublish(idx)}
+                          style={{ 
+                            position: 'absolute', 
+                            top: '10px', 
+                            right: '10px', 
+                            background: isPublished ? '#10b981' : '#64748b', 
+                            color: 'white', 
+                            padding: '0.25rem 0.6rem', 
+                            borderRadius: '4px', 
+                            fontSize: '0.75rem', 
+                            fontWeight: 'bold',
+                            cursor: 'pointer',
+                            userSelect: 'none',
+                            boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                          }}
+                          title="Click to toggle Published / Draft"
+                        >
+                          {isPublished ? 'PUBLISHED' : 'DRAFT'}
+                        </div>
                       </div>
 
-                      {/* Status badge */}
-                      <div 
-                        onClick={() => togglePublish(idx)}
-                        style={{ 
-                          position: 'absolute', 
-                          top: '10px', 
-                          right: '10px', 
-                          background: isPublished ? '#10b981' : '#64748b', 
-                          color: 'white', 
-                          padding: '0.25rem 0.6rem', 
-                          borderRadius: '4px', 
-                          fontSize: '0.75rem', 
-                          fontWeight: 'bold',
-                          cursor: 'pointer',
-                          userSelect: 'none',
-                          boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
-                        }}
-                        title="Click to toggle Published / Draft"
-                      >
-                        {isPublished ? 'PUBLISHED' : 'DRAFT'}
-                      </div>
-                    </div>
+                      <div style={{ padding: '1.2rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                        <h4 style={{ fontSize: '1rem', fontWeight: '700', margin: '0 0 0.5rem 0', color: '#0f172a', lineHeight: '1.4' }}>{blog.title}</h4>
+                        
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid #f1f5f9' }}>
+                          <div style={{ display: 'flex', gap: '0.5rem', width: '100%', justifyContent: 'space-between' }}>
+                            <button 
+                              type="button"
+                              className="btn-icon" 
+                              onClick={() => handleEditClick(blog, idx)}
+                              title="Edit Blog"
+                              style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', padding: '0.4rem 0.8rem', borderRadius: '6px', border: '1px solid #e2e8f0', background: '#f8fafc', color: '#334155', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer' }}
+                            >
+                              <Edit2 size={15} /> Edit
+                            </button>
 
-                    <div style={{ padding: '1.2rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                      <h4 style={{ fontSize: '1rem', fontWeight: '700', margin: '0 0 0.5rem 0', color: '#0f172a', lineHeight: '1.4' }}>{blog.title}</h4>
-                      
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid #f1f5f9' }}>
-                        <div style={{ display: 'flex', gap: '0.5rem', width: '100%', justifyContent: 'space-between' }}>
-                          <button 
-                            type="button"
-                            className="btn-icon" 
-                            onClick={() => handleEditClick(blog, idx)}
-                            title="Edit Blog"
-                            style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', padding: '0.4rem 0.8rem', borderRadius: '6px', border: '1px solid #e2e8f0', background: '#f8fafc', color: '#334155', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer' }}
-                          >
-                            <Edit2 size={15} /> Edit
-                          </button>
-
-                          <button 
-                            type="button"
-                            className="btn-icon" 
-                            onClick={() => removeBlog(idx)}
-                            title="Delete Blog"
-                            style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', padding: '0.4rem 0.8rem', borderRadius: '6px', border: '1px solid #fee2e2', background: '#fef2f2', color: '#ef4444', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer' }}
-                          >
-                            <Trash2 size={15} /> Delete
-                          </button>
+                            <button 
+                              type="button"
+                              className="btn-icon" 
+                              onClick={() => removeBlog(idx)}
+                              title="Delete Blog"
+                              style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', padding: '0.4rem 0.8rem', borderRadius: '6px', border: '1px solid #fee2e2', background: '#fef2f2', color: '#ef4444', fontSize: '0.85rem', fontWeight: '600', cursor: 'pointer' }}
+                            >
+                              <Trash2 size={15} /> Delete
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>

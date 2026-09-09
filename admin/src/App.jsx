@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import './App.css';
-import { Mail, Home, Film, Briefcase, Settings, LogOut, FileText, Image as ImageIcon, Layout, Phone, Info, Save, Eye, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Plus, Trash2, Edit2, PlayCircle, GripVertical, RefreshCw, Users, Upload, Flame, ToggleRight, ToggleLeft, ArrowRight, ExternalLink, CircleDollarSign, Brain, TrendingUp, Rocket, Target, Building, Lightbulb, Smartphone, Laptop, Globe, CheckCircle, MessageSquare, X } from 'lucide-react';
+import { Mail, Home, Film, Briefcase, Settings, LogOut, FileText, Image as ImageIcon, Layout, Phone, Info, Save, Eye, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Plus, Trash2, Edit2, PlayCircle, GripVertical, RefreshCw, Users, Upload, Flame, ToggleRight, ToggleLeft, ArrowRight, ArrowDown, ExternalLink, CircleDollarSign, Brain, TrendingUp, Rocket, Target, Building, Lightbulb, Smartphone, Laptop, Globe, CheckCircle, MessageSquare, X } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://redash-final-design.onrender.com';
 
@@ -8008,6 +8008,37 @@ function App() {
                 <Plus size={14} /> Add Blog
               </button>
             </h3>
+
+            {/* Active Drag Reorder Status Banner */}
+            {draggedAgencyBlogIndex !== null && (
+              <div style={{
+                background: '#eff6ff',
+                border: '1px solid #bfdbfe',
+                borderRadius: '8px',
+                padding: '0.75rem 1rem',
+                marginTop: '1rem',
+                marginBottom: '0.5rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                color: '#1e40af',
+                fontSize: '0.85rem',
+                fontWeight: '600',
+                boxShadow: '0 2px 6px rgba(59, 130, 246, 0.08)'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <GripVertical size={16} />
+                  <span>Dragging: <strong style={{ color: '#1d4ed8' }}>{blogs[draggedAgencyBlogIndex]?.title}</strong></span>
+                </div>
+                <span style={{ color: '#2563eb', fontWeight: '700', fontSize: '0.8rem', background: '#dbeafe', padding: '0.2rem 0.6rem', borderRadius: '4px' }}>
+                  {dragOverAgencyBlogIndex !== null 
+                    ? (dragOverAgencyBlogIndex >= blogs.length 
+                        ? `Dropping at End (Slot #${blogs.length})` 
+                        : `Dropping into Slot #${dragOverAgencyBlogIndex + 1}`) 
+                    : 'Hover over any card to see preview'}
+                </span>
+              </div>
+            )}
             
             <div 
               className="blogs-grid" 
@@ -8030,6 +8061,7 @@ function App() {
                     onDragEnd={handleBlogDragEnd}
                     className="blog-card" 
                     style={{ 
+                      position: 'relative',
                       border: isDragging 
                         ? '2px dashed #3b82f6' 
                         : isDragOver 
@@ -8051,6 +8083,48 @@ function App() {
                       cursor: 'grab'
                     }}
                   >
+                    {/* DROP PREVIEW OVERLAY */}
+                    {isDragOver && (
+                      <div style={{
+                        position: 'absolute',
+                        inset: 0,
+                        background: 'rgba(239, 246, 255, 0.95)',
+                        backdropFilter: 'blur(3px)',
+                        zIndex: 40,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: '1.25rem',
+                        textAlign: 'center',
+                        border: '2.5px dashed #2563eb',
+                        borderRadius: '10px',
+                        boxShadow: 'inset 0 0 20px rgba(37, 99, 235, 0.15)',
+                        pointerEvents: 'none'
+                      }}>
+                        <div style={{
+                          width: '46px',
+                          height: '46px',
+                          borderRadius: '50%',
+                          background: '#2563eb',
+                          color: '#fff',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          marginBottom: '0.6rem',
+                          boxShadow: '0 4px 12px rgba(37, 99, 235, 0.35)'
+                        }}>
+                          <ArrowDown size={24} />
+                        </div>
+                        <div style={{ fontSize: '1.05rem', fontWeight: '800', color: '#1e40af', marginBottom: '0.25rem' }}>
+                          Drop Here (Slot #{idx + 1})
+                        </div>
+                        <div style={{ fontSize: '0.8rem', color: '#3b82f6', fontWeight: '600', maxWidth: '240px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          Place: "{blogs[draggedAgencyBlogIndex]?.title || 'Blog'}"
+                        </div>
+                      </div>
+                    )}
+
                     <div style={{ height: '160px', overflow: 'hidden', position: 'relative' }}>
                       <img src={blog.imageUrl ? (blog.imageUrl.startsWith('http') ? blog.imageUrl : `${API_URL}${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`) : 'https://placehold.co/600x400?text=No+Image'} alt={blog.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       
@@ -8113,6 +8187,50 @@ function App() {
                   </div>
                 );
               })}
+
+              {/* Drop Target Box at the very end */}
+              {draggedAgencyBlogIndex !== null && (
+                <div 
+                  onDragOver={(e) => handleBlogDragOver(e, blogs.length)}
+                  onDrop={(e) => handleBlogDrop(e, blogs.length)}
+                  style={{
+                    border: dragOverAgencyBlogIndex === blogs.length ? '2.5px dashed #2563eb' : '2px dashed #cbd5e1',
+                    background: dragOverAgencyBlogIndex === blogs.length ? '#eff6ff' : '#f8fafc',
+                    borderRadius: '10px',
+                    minHeight: '280px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '1.5rem',
+                    color: dragOverAgencyBlogIndex === blogs.length ? '#2563eb' : '#64748b',
+                    boxShadow: dragOverAgencyBlogIndex === blogs.length ? '0 12px 28px -5px rgba(59, 130, 246, 0.3)' : 'none',
+                    transform: dragOverAgencyBlogIndex === blogs.length ? 'scale(1.02)' : 'scale(1)',
+                    transition: 'all 0.2s ease',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <div style={{
+                    width: '44px',
+                    height: '44px',
+                    borderRadius: '50%',
+                    background: dragOverAgencyBlogIndex === blogs.length ? '#dbeafe' : '#f1f5f9',
+                    color: dragOverAgencyBlogIndex === blogs.length ? '#2563eb' : '#94a3b8',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '0.6rem'
+                  }}>
+                    <ArrowDown size={22} />
+                  </div>
+                  <span style={{ fontWeight: '800', fontSize: '0.95rem', color: dragOverAgencyBlogIndex === blogs.length ? '#1e40af' : '#475569' }}>
+                    {dragOverAgencyBlogIndex === blogs.length ? 'Release to Drop at End' : 'Drop at the End'}
+                  </span>
+                  <span style={{ fontSize: '0.78rem', marginTop: '0.25rem', color: '#94a3b8' }}>
+                    Slot #{blogs.length}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>

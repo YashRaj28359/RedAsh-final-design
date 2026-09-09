@@ -100,7 +100,7 @@ const CombinedEntertainmentGrid = () => {
       const verticalCards = data?.entertainment?.projects?.verticalCards;
       if (verticalCards && verticalCards.length > 0) {
         setDynamicVerticalProjects(verticalCards.map((item, index) => {
-          let newUrl = item.link || item.url;
+          let newUrl = item.linkFilms || item.link || item.url;
           if (newUrl && newUrl.includes('kukutv.app') && index !== 1) {
             newUrl = newUrl.replace('/show/', '/watch/');
             if (!newUrl.includes('?')) newUrl += '?episode=trailer';

@@ -57,6 +57,19 @@ const extractYouTubeId = (url) => {
   return trimmed;
 };
 
+const getEntertainmentFilmsLink = (homepageLink) => {
+  if (!homepageLink || !homepageLink.includes('kukutv.app')) return '';
+  try {
+    const parsed = new URL(homepageLink.trim());
+    if (!parsed.pathname.includes('/show/')) return '';
+    parsed.pathname = parsed.pathname.replace('/show/', '/watch/');
+    parsed.search = '?episode=trailer';
+    return parsed.toString();
+  } catch (e) {
+    return '';
+  }
+};
+
 const renderIconPreview = (val) => {
   const match = CASE_STUDY_ICONS.find(i => i.value === val);
   if (!match) return <Briefcase size={18} style={{ color: '#1672EF' }} />;
@@ -526,15 +539,20 @@ function App() {
     { id: "v16", title: "DRAMA SERIES 16", subtitle: "ORIGINAL MICRO DRAMA", image: vp16, link: "https://premium.kukutv.app/show/2bb32b69-c8e3-4033-b26a-56ee5403e51a" },
     { id: "v17", title: "DRAMA SERIES 17", subtitle: "ORIGINAL MICRO DRAMA", image: vp17, link: "https://premium.kukutv.app/show/knock-do-not-open-the-door" },
     { id: "v18", title: "DRAMA SERIES 18", subtitle: "ORIGINAL MICRO DRAMA", image: vp18, link: "https://premium.kukutv.app/show/wheelchair-billionaire" },
-    { id: "v19", title: "DRAMA SERIES 19", subtitle: "ORIGINAL MICRO DRAMA", image: vp19, link: "#" },
-    { id: "v20", title: "DRAMA SERIES 20", subtitle: "ORIGINAL MICRO DRAMA", image: vp20, link: "#" },
-    { id: "v21", title: "DRAMA SERIES 21", subtitle: "ORIGINAL MICRO DRAMA", image: vp21, link: "#" },
-    { id: "v22", title: "DRAMA SERIES 22", subtitle: "ORIGINAL MICRO DRAMA", image: vp22, link: "#" },
-    { id: "v23", title: "DRAMA SERIES 23", subtitle: "ORIGINAL MICRO DRAMA", image: vp23, link: "#" },
-    { id: "v24", title: "DRAMA SERIES 24", subtitle: "ORIGINAL MICRO DRAMA", image: vp24, link: "#" },
-    { id: "v25", title: "DRAMA SERIES 25", subtitle: "ORIGINAL MICRO DRAMA", image: vp25, link: "#" },
-    { id: "v26", title: "DRAMA SERIES 26", subtitle: "ORIGINAL MICRO DRAMA", image: vp26, link: "#" }
+    { id: "v19", title: "DRAMA SERIES 19", subtitle: "ORIGINAL MICRO DRAMA", image: vp19, link: "https://premium.kukutv.app/show/death-notification" },
+    { id: "v20", title: "DRAMA SERIES 20", subtitle: "ORIGINAL MICRO DRAMA", image: vp20, link: "https://premium.kukutv.app/show/ek-anjana-rishta" },
+    { id: "v21", title: "DRAMA SERIES 21", subtitle: "ORIGINAL MICRO DRAMA", image: vp21, link: "https://premium.kukutv.app/show/metro-wala-panga" },
+    { id: "v22", title: "DRAMA SERIES 22", subtitle: "ORIGINAL MICRO DRAMA", image: vp22, link: "https://premium.kukutv.app/show/chaiwala-hero" },
+    { id: "v23", title: "DRAMA SERIES 23", subtitle: "ORIGINAL MICRO DRAMA", image: vp23, link: "https://premium.kukutv.app/show/born-to-rise" },
+    { id: "v24", title: "DRAMA SERIES 24", subtitle: "ORIGINAL MICRO DRAMA", image: vp24, link: "https://premium.kukutv.app/show/2bb32b69-c8e3-4033-b26a-56ee5403e51a" },
+    { id: "v25", title: "DRAMA SERIES 25", subtitle: "ORIGINAL MICRO DRAMA", image: vp25, link: "https://premium.kukutv.app/show/knock-do-not-open-the-door" },
+    { id: "v26", title: "DRAMA SERIES 26", subtitle: "ORIGINAL MICRO DRAMA", image: vp26, link: "https://premium.kukutv.app/show/wheelchair-billionaire" }
   ];
+
+  defaultVerticalProjects.forEach(card => {
+    card.linkHome = card.link || '';
+    card.linkFilms = getEntertainmentFilmsLink(card.link) || card.link || '';
+  });
 
   const [showAddCelebModal, setShowAddCelebModal] = useState(false);
   const [newCeleb, setNewCeleb] = useState({ rowKey: 'row1', name: '', img: '' });
@@ -571,6 +589,7 @@ function App() {
   const [projectCardType, setProjectCardType] = useState('horizontal'); // 'horizontal' or 'vertical'
   const [newProjectCard, setNewProjectCard] = useState({ title: '', subtitle: '', image: '', link: '', linkHome: '', linkFilms: '' });
   const [draggedProjectState, setDraggedProjectState] = useState({ type: null, index: null });
+  const [dragOverProjectState, setDragOverProjectState] = useState({ type: null, index: null });
 
   const handleUpdateProjectCard = (type, index, field, value) => {
     setContent(prev => {
@@ -584,7 +603,7 @@ function App() {
       }
       if (newState.entertainment.projects[key][index]) {
         const card = newState.entertainment.projects[key][index];
-        if (type === 'horizontal') {
+        if (type === 'horizontal' || type === 'vertical') {
           if (card.linkHome === undefined) card.linkHome = card.link || '';
           if (card.linkFilms === undefined) card.linkFilms = card.link || '';
         }
@@ -635,7 +654,11 @@ function App() {
         cardToAdd.linkHome = homeL;
         cardToAdd.linkFilms = filmsL;
       } else {
-        cardToAdd.link = (newProjectCard.link || '').trim() || '#';
+        const homeL = (newProjectCard.linkHome || newProjectCard.link || '').trim() || '#';
+        const filmsL = (newProjectCard.linkFilms || newProjectCard.link || '').trim() || '#';
+        cardToAdd.link = homeL;
+        cardToAdd.linkHome = homeL;
+        cardToAdd.linkFilms = filmsL;
       }
 
       newState.entertainment.projects[key].push(cardToAdd);
@@ -676,18 +699,25 @@ function App() {
 
   const handleProjectDragStart = (e, type, index) => {
     setDraggedProjectState({ type, index });
+    setDragOverProjectState({ type: null, index: null });
     e.dataTransfer.effectAllowed = 'move';
   };
 
   const handleProjectDragOver = (e, type, index) => {
     e.preventDefault();
+    e.stopPropagation();
     e.dataTransfer.dropEffect = 'move';
+    if (draggedProjectState.type === type && draggedProjectState.index !== index) {
+      setDragOverProjectState({ type, index });
+    }
     startAutoScrollIfNeeded(e.clientY);
   };
 
   const handleProjectDrop = (e, targetType, targetIndex) => {
     e.preventDefault();
+    e.stopPropagation();
     stopAutoScroll();
+    setDragOverProjectState({ type: null, index: null });
 
     if (draggedProjectState.index === null || draggedProjectState.type !== targetType || draggedProjectState.index === targetIndex) {
       setDraggedProjectState({ type: null, index: null });
@@ -708,7 +738,8 @@ function App() {
       const fromIdx = draggedProjectState.index;
       if (fromIdx >= 0 && fromIdx < items.length) {
         const [movedItem] = items.splice(fromIdx, 1);
-        items.splice(targetIndex, 0, movedItem);
+        const adjustedTargetIndex = fromIdx < targetIndex ? targetIndex - 1 : targetIndex;
+        items.splice(adjustedTargetIndex, 0, movedItem);
       }
 
       return newState;
@@ -1629,6 +1660,19 @@ function App() {
               linkHome: c.linkHome !== undefined ? c.linkHome : (c.link || ''),
               linkFilms: c.linkFilms !== undefined ? c.linkFilms : (c.link || '')
             }));
+          }
+          if (finalData.entertainment?.projects?.verticalCards) {
+            finalData.entertainment.projects.verticalCards = finalData.entertainment.projects.verticalCards.map((card, index) => {
+              const fallbackCard = defaultVerticalProjects[index] || {};
+              const homeLink = card.linkHome && card.linkHome !== '#'
+                ? card.linkHome
+                : (card.link && card.link !== '#' ? card.link : (fallbackCard.link || ''));
+              const generatedFilmsLink = getEntertainmentFilmsLink(homeLink);
+              const filmsLink = card.linkFilms && card.linkFilms !== '#'
+                ? card.linkFilms
+                : (generatedFilmsLink || homeLink);
+              return { ...card, link: homeLink, linkHome: homeLink, linkFilms: filmsLink };
+            });
           }
           setContent(prev => ({
             ...prev,
@@ -7097,34 +7141,44 @@ function App() {
               </h3>
               <span style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: '500' }}>Widescreen (16:9) Format</span>
             </div>
+            {draggedProjectState.type === 'horizontal' && (
+              <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '8px', padding: '0.75rem 1rem', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#1e40af', fontSize: '0.85rem', fontWeight: '600' }}>
+                <span><GripVertical size={16} style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} />Dragging: <strong>{hCards[draggedProjectState.index]?.title || 'Project'}</strong></span>
+                <span style={{ color: '#2563eb', background: '#dbeafe', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.8rem' }}>{dragOverProjectState.type === 'horizontal' ? `Dropping into Slot #${Math.min(dragOverProjectState.index + 1, hCards.length)}` : 'Hover over a card to preview'}</span>
+              </div>
+            )}
 
             <div 
               onDragOver={(e) => handleProjectDragOver(e, 'horizontal', hCards.length)}
               onDrop={(e) => handleProjectDrop(e, 'horizontal', hCards.length)}
               style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem', minHeight: '120px' }}
             >
-              {hCards.map((item, idx) => (
+              {hCards.map((item, idx) => {
+                const isHorizontalDragOver = dragOverProjectState.type === 'horizontal' && dragOverProjectState.index === idx && draggedProjectState.index !== idx;
+                return (
                 <div 
                   key={idx} 
                   draggable
                   onDragStart={(e) => handleProjectDragStart(e, 'horizontal', idx)}
                   onDragOver={(e) => handleProjectDragOver(e, 'horizontal', idx)}
                   onDrop={(e) => handleProjectDrop(e, 'horizontal', idx)}
-                  onDragEnd={() => stopAutoScroll()}
+                  onDragEnd={() => { stopAutoScroll(); setDragOverProjectState({ type: null, index: null }); setDraggedProjectState({ type: null, index: null }); }}
                   className="content-block-panel" 
                   style={{ 
                     padding: '1.2rem', 
                     background: '#ffffff', 
-                    border: (draggedProjectState.type === 'horizontal' && draggedProjectState.index === idx) ? '2px dashed #e20002' : '1px solid #e2e8f0', 
+                    position: 'relative',
+                    border: (draggedProjectState.type === 'horizontal' && draggedProjectState.index === idx) ? '2px dashed #e20002' : isHorizontalDragOver ? '2px solid #2563eb' : '1px solid #e2e8f0', 
                     opacity: (draggedProjectState.type === 'horizontal' && draggedProjectState.index === idx) ? 0.5 : 1,
                     borderRadius: '10px', 
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)', 
+                    boxShadow: isHorizontalDragOver ? '0 12px 28px -5px rgba(37, 99, 235, 0.35)' : '0 2px 8px rgba(0,0,0,0.04)', 
                     display: 'flex', 
                     flexDirection: 'column', 
                     gap: '1rem',
                     cursor: 'grab'
                   }}
                 >
+                  {isHorizontalDragOver && <div style={{ position: 'absolute', inset: 0, zIndex: 5, background: 'rgba(239, 246, 255, 0.95)', border: '2.5px dashed #2563eb', borderRadius: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none', color: '#1e40af' }}><ArrowDown size={28} /><strong>Drop Here (Slot #{idx + 1})</strong><span style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>Place: &quot;{hCards[draggedProjectState.index]?.title || 'Project'}&quot;</span></div>}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '0.6rem', borderBottom: '1px solid #f1f5f9' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                       <GripVertical size={18} style={{ color: '#94a3b8', cursor: 'grab' }} title="Drag to reorder" />
@@ -7236,7 +7290,8 @@ function App() {
                     </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
 
               <button 
                 type="button"
@@ -7273,34 +7328,44 @@ function App() {
               </h3>
               <span style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: '500' }}>Portrait (3:4) Poster Format</span>
             </div>
+            {draggedProjectState.type === 'vertical' && (
+              <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '8px', padding: '0.75rem 1rem', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#1e40af', fontSize: '0.85rem', fontWeight: '600' }}>
+                <span><GripVertical size={16} style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} />Dragging: <strong>{vCards[draggedProjectState.index]?.title || 'Project'}</strong></span>
+                <span style={{ color: '#2563eb', background: '#dbeafe', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.8rem' }}>{dragOverProjectState.type === 'vertical' ? `Dropping into Slot #${Math.min(dragOverProjectState.index + 1, vCards.length)}` : 'Hover over a card to preview'}</span>
+              </div>
+            )}
 
             <div 
               onDragOver={(e) => handleProjectDragOver(e, 'vertical', vCards.length)}
               onDrop={(e) => handleProjectDrop(e, 'vertical', vCards.length)}
               style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem', minHeight: '120px' }}
             >
-              {vCards.map((item, idx) => (
+              {vCards.map((item, idx) => {
+                const isVerticalDragOver = dragOverProjectState.type === 'vertical' && dragOverProjectState.index === idx && draggedProjectState.index !== idx;
+                return (
                 <div 
                   key={idx} 
                   draggable
                   onDragStart={(e) => handleProjectDragStart(e, 'vertical', idx)}
                   onDragOver={(e) => handleProjectDragOver(e, 'vertical', idx)}
                   onDrop={(e) => handleProjectDrop(e, 'vertical', idx)}
-                  onDragEnd={() => stopAutoScroll()}
+                  onDragEnd={() => { stopAutoScroll(); setDragOverProjectState({ type: null, index: null }); setDraggedProjectState({ type: null, index: null }); }}
                   className="content-block-panel" 
                   style={{ 
                     padding: '1.2rem', 
                     background: '#ffffff', 
-                    border: (draggedProjectState.type === 'vertical' && draggedProjectState.index === idx) ? '2px dashed #0f172a' : '1px solid #e2e8f0', 
+                    position: 'relative',
+                    border: (draggedProjectState.type === 'vertical' && draggedProjectState.index === idx) ? '2px dashed #0f172a' : isVerticalDragOver ? '2px solid #2563eb' : '1px solid #e2e8f0', 
                     opacity: (draggedProjectState.type === 'vertical' && draggedProjectState.index === idx) ? 0.5 : 1,
                     borderRadius: '10px', 
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.04)', 
+                    boxShadow: isVerticalDragOver ? '0 12px 28px -5px rgba(37, 99, 235, 0.35)' : '0 2px 8px rgba(0,0,0,0.04)', 
                     display: 'flex', 
                     flexDirection: 'column', 
                     gap: '1rem',
                     cursor: 'grab'
                   }}
                 >
+                  {isVerticalDragOver && <div style={{ position: 'absolute', inset: 0, zIndex: 5, background: 'rgba(239, 246, 255, 0.95)', border: '2.5px dashed #2563eb', borderRadius: '10px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none', color: '#1e40af' }}><ArrowDown size={28} /><strong>Drop Here (Slot #{idx + 1})</strong><span style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>Place: &quot;{vCards[draggedProjectState.index]?.title || 'Project'}&quot;</span></div>}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '0.6rem', borderBottom: '1px solid #f1f5f9' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                       <GripVertical size={18} style={{ color: '#94a3b8', cursor: 'grab' }} title="Drag to reorder" />
@@ -7375,25 +7440,47 @@ function App() {
                     </div>
                   </div>
 
-                  <div>
-                    <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Target Link / Video URL</label>
-                    <input 
-                      type="text" 
-                      className="form-control" 
-                      value={item.link || ''} 
-                      onChange={(e) => {
-                        const newLink = e.target.value;
-                        handleUpdateProjectCard('vertical', idx, 'link', newLink);
-                        const ytId = extractYouTubeId(newLink);
-                        if (ytId && !item.image) {
-                          handleUpdateProjectCard('vertical', idx, 'image', `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`);
-                        }
-                      }} 
-                      placeholder="https://... or #"
-                    />
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                    <div>
+                      <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Entertainment Home Page Link</label>
+                      <input 
+                        type="text" 
+                        className="form-control" 
+                        value={item.linkHome !== undefined ? item.linkHome : (item.link || '')} 
+                        onChange={(e) => {
+                          const newLink = e.target.value;
+                          handleUpdateProjectCard('vertical', idx, 'linkHome', newLink);
+                          const filmsLink = getEntertainmentFilmsLink(newLink);
+                          if (filmsLink) handleUpdateProjectCard('vertical', idx, 'linkFilms', filmsLink);
+                          const ytId = extractYouTubeId(newLink);
+                          if (ytId && !item.image) {
+                            handleUpdateProjectCard('vertical', idx, 'image', `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`);
+                          }
+                        }} 
+                        placeholder="Link for the Entertainment Homepage..."
+                      />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Entertainment Films Page Link</label>
+                      <input 
+                        type="text" 
+                        className="form-control" 
+                        value={item.linkFilms !== undefined ? item.linkFilms : (item.link || '')} 
+                        onChange={(e) => {
+                          const newLink = e.target.value;
+                          handleUpdateProjectCard('vertical', idx, 'linkFilms', newLink);
+                          const ytId = extractYouTubeId(newLink);
+                          if (ytId && !item.image) {
+                            handleUpdateProjectCard('vertical', idx, 'image', `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`);
+                          }
+                        }} 
+                        placeholder="Link for the Entertainment Films Page..."
+                      />
+                    </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
 
               <button 
                 type="button"
@@ -9258,24 +9345,36 @@ function App() {
                   </div>
                 </div>
               ) : (
-                <div>
-                  <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Target Link / Video URL</label>
-                  <input 
-                    type="text" 
-                    className="form-control" 
-                    value={newProjectCard.link} 
-                    onChange={(e) => {
-                      const newLink = e.target.value;
-                      const ytId = extractYouTubeId(newLink);
-                      if (ytId && !newProjectCard.image) {
-                        setNewProjectCard({ ...newProjectCard, link: newLink, image: `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg` });
-                      } else {
-                        setNewProjectCard({ ...newProjectCard, link: newLink });
-                      }
-                    }} 
-                    placeholder="https://... or #" 
-                    autoFocus
-                  />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                  <div>
+                    <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Entertainment Home Page Link</label>
+                    <input 
+                      type="text" 
+                      className="form-control" 
+                      value={newProjectCard.linkHome || ''} 
+                      onChange={(e) => {
+                        const newLink = e.target.value;
+                        const filmsLink = getEntertainmentFilmsLink(newLink);
+                        const ytId = extractYouTubeId(newLink);
+                        const nextCard = { ...newProjectCard, link: newLink, linkHome: newLink };
+                        if (filmsLink) nextCard.linkFilms = filmsLink;
+                        if (ytId && !newProjectCard.image) nextCard.image = `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+                        setNewProjectCard(nextCard);
+                      }} 
+                      placeholder="https://... (Home Page)" 
+                      autoFocus
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Entertainment Films Page Link</label>
+                    <input 
+                      type="text" 
+                      className="form-control" 
+                      value={newProjectCard.linkFilms || ''} 
+                      onChange={(e) => setNewProjectCard({ ...newProjectCard, linkFilms: e.target.value })} 
+                      placeholder="https://... (Films Page)" 
+                    />
+                  </div>
                 </div>
               )}
             </div>

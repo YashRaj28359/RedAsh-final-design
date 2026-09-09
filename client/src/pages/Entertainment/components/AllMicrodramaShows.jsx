@@ -42,12 +42,7 @@ const AllMicrodramaShows = () => {
       const verticalCards = data?.entertainment?.projects?.verticalCards;
       if (verticalCards && verticalCards.length > 0) {
         setShows(verticalCards.map((item, index) => {
-          let newUrl = item.link || item.url;
-          if (newUrl && newUrl.includes('kukutv.app') && index !== 1) {
-            newUrl = newUrl.replace('/show/', '/watch/');
-            if (!newUrl.includes('?')) newUrl += '?episode=trailer';
-            else if (!newUrl.includes('episode=trailer')) newUrl += '&episode=trailer';
-          }
+          const newUrl = item.linkHome || item.link || item.url;
           return { ...item, url: newUrl };
         }));
       }

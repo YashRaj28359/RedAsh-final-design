@@ -59,7 +59,7 @@ const BlogPost = () => {
           <Link key={suggested.id} to={`/ad-agency/blog/${suggested.slug}`} className="group flex gap-4 items-start bg-gray-50 p-3 rounded-xl hover:shadow-lg hover:bg-white border border-transparent transition-all duration-300">
             <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-200">
               {suggested.imageUrl ? (
-                <img src={suggested.imageUrl.startsWith('http') ? suggested.imageUrl : `https://redash-final-design.onrender.com${suggested.imageUrl.startsWith('/') ? '' : '/'}${suggested.imageUrl}`} alt={suggested.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
+                <img src={suggested.imageUrl.startsWith('http') ? suggested.imageUrl : `${import.meta.env.VITE_API_URL}${suggested.imageUrl.startsWith('/') ? '' : '/'}${suggested.imageUrl}`} alt={suggested.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
                   <span className="text-[10px] text-gray-400 font-bold text-center">NO IMG</span>
@@ -121,7 +121,7 @@ const BlogPost = () => {
           className="w-full max-w-7xl mx-auto px-4 md:px-8 relative z-10"
         >
           <img 
-            src={blog.imageUrl.startsWith('http') ? blog.imageUrl : `https://redash-final-design.onrender.com${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`} 
+            src={blog.imageUrl.startsWith('http') ? blog.imageUrl : `${import.meta.env.VITE_API_URL}${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`} 
             alt={blog.title} 
             className="w-full object-cover aspect-video md:aspect-[21/9]"
           />

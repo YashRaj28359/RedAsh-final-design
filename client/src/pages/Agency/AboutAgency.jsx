@@ -376,7 +376,7 @@ const AboutAgency = () => {
                         ? (imgSrc.startsWith('http') 
                             ? imgSrc 
                             : imgSrc.startsWith('/uploads') 
-                              ? `https://redash-final-design.onrender.com${imgSrc}` 
+                              ? `${import.meta.env.VITE_API_URL}${imgSrc}` 
                               : imgSrc)
                         : imgSrc
                     } 

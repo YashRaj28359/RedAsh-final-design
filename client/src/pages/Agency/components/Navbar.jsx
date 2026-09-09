@@ -123,7 +123,7 @@ const Navbar = () => {
         <div className="flex-shrink-0 z-20">
           <Link to="/ad-agency" className="block">
             <img 
-              src={serverLogo ? (serverLogo.startsWith('http') || serverLogo.startsWith('data:') ? serverLogo : `https://redash-final-design.onrender.com${serverLogo}`) : defaultLogo} 
+              src={serverLogo ? (serverLogo.startsWith('http') || serverLogo.startsWith('data:') ? serverLogo : `${import.meta.env.VITE_API_URL}${serverLogo}`) : defaultLogo} 
               alt="RedAsh Agency" 
               className={`w-auto object-contain transition-all duration-300 hover:scale-105 ${
                 isInVideoSection ? 'h-8 sm:h-10 md:h-12' : 'h-12 sm:h-16 md:h-[88px]'

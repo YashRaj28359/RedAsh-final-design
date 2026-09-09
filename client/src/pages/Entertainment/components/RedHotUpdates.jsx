@@ -110,7 +110,7 @@ const RedHotUpdates = () => {
   const [dbUpdates, setDbUpdates] = React.useState(null);
 
   React.useEffect(() => {
-    fetch('https://redash-final-design.onrender.com/api/content')
+    fetch(`${import.meta.env.VITE_API_URL}/api/content`)
       .then(res => res.json())
       .then(data => {
         if (data?.entertainment?.redHotCards && data.entertainment.redHotCards.length > 0) {

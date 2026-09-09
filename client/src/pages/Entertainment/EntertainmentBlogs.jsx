@@ -30,7 +30,7 @@ const EntertainmentBlogs = () => {
     animationFrameId = requestAnimationFrame(raf);
 
     // Fetch dynamic content
-    fetch('https://redash-final-design.onrender.com/api/content')
+    fetch(`${import.meta.env.VITE_API_URL}/api/content`)
       .then(res => res.json())
       .then(data => {
         const entData = data.entertainment || {};
@@ -76,7 +76,7 @@ const EntertainmentBlogs = () => {
   const getImageUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `https://redash-final-design.onrender.com${url.startsWith('/') ? '' : '/'}${url}`;
+    return `${import.meta.env.VITE_API_URL}${url.startsWith('/') ? '' : '/'}${url}`;
   };
 
   return (

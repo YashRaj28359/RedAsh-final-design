@@ -477,27 +477,8 @@ function AdminLogin({ onLogin }) {
         return;
       }
     } catch (err) {
-      console.warn('API login failed, falling back to environment variables:', err);
-
-      // Fallback to environment variables
-      const expectedEmail = import.meta.env.VITE_ADMIN_EMAIL;
-      const expectedPassword = import.meta.env.VITE_ADMIN_PASSWORD;
-
-      if (!expectedEmail || !expectedPassword) {
-        setError('Admin credentials are not configured. Add VITE_ADMIN_EMAIL and VITE_ADMIN_PASSWORD.');
-        setLoading(false);
-        return;
-      }
-
-      if (email.trim().toLowerCase() !== expectedEmail.trim().toLowerCase() || password !== expectedPassword) {
-        setError('Incorrect email or password.');
-        setLoading(false);
-        return;
-      }
-
-      sessionStorage.setItem('redash_admin_authenticated', 'true');
-      sessionStorage.setItem('redash_admin_email', email.trim().toLowerCase());
-      onLogin();
+      console.error('API login failed:', err);
+      setError('Unable to connect to server. If the server was idle, please try again in a few seconds.');
       setLoading(false);
     }
   };

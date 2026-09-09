@@ -30,7 +30,12 @@ const SelectedEntertainmentProjects = () => {
     fetchContent().then(data => {
       const horizontalCards = data?.entertainment?.projects?.horizontalCards;
       if (horizontalCards && horizontalCards.length > 0) {
-        setProjects(horizontalCards.map(item => ({...item, url: item.linkHome !== undefined ? item.linkHome : (item.link || item.url)})));
+        setProjects(horizontalCards.map(item => {
+          const finalUrl = (item.linkHome !== undefined && item.linkHome !== null && item.linkHome !== '') 
+            ? item.linkHome 
+            : (item.link || item.url);
+          return { ...item, url: finalUrl };
+        }));
       }
     }).catch(err => console.error("Error fetching horizontal projects:", err));
   }, []);

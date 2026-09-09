@@ -76,18 +76,27 @@ const TopGlobalClients = ({ customTitle, titleClass, layout = 'marquee' }) => {
   }, []);
 
   // Dynamic clients from DB — split by their chosen row
-  const extraRow1 = dynamicClients.filter(c => c.row !== 'row2').map(c => resolveImg(c.img)).filter(Boolean);
-  const extraRow2 = dynamicClients.filter(c => c.row === 'row2').map(c => resolveImg(c.img)).filter(Boolean);
-  const extraLogos = dynamicClients.map(c => resolveImg(c.img)).filter(Boolean);
+  const hasFullDynamic = dynamicClients && dynamicClients.length >= 20;
 
-  // Build combined logo lists: static base + extras appended to correct rows
+  let logosRow1 = staticLogosRow1;
+  let logosRow2 = staticLogosRow2;
+
+  if (hasFullDynamic) {
+    const dynRow1 = dynamicClients.filter(c => c.row !== 'row2').map(c => resolveImg(c.img)).filter(Boolean);
+    const dynRow2 = dynamicClients.filter(c => c.row === 'row2').map(c => resolveImg(c.img)).filter(Boolean);
+    logosRow1 = dynRow1.length > 0 ? dynRow1 : staticLogosRow1;
+    logosRow2 = dynRow2.length > 0 ? dynRow2 : staticLogosRow2;
+  } else if (dynamicClients && dynamicClients.length > 0) {
+    const extraRow1 = dynamicClients.filter(c => c.row !== 'row2').map(c => resolveImg(c.img)).filter(Boolean);
+    const extraRow2 = dynamicClients.filter(c => c.row === 'row2').map(c => resolveImg(c.img)).filter(Boolean);
+    logosRow1 = [...staticLogosRow1, ...extraRow1];
+    logosRow2 = [...staticLogosRow2, ...extraRow2];
+  }
+
   const allStaticLogos = layout === 'wall' ? staticWallLogos : [...staticLogosRow1, ...staticLogosRow2];
-  const combinedLogos = [...allStaticLogos, ...extraLogos];
-
-  const logosRow1 = [...staticLogosRow1, ...extraRow1];
-  const logosRow2 = [...staticLogosRow2, ...extraRow2];
-
-  const allLogos = layout === 'wall' ? combinedLogos : [...logosRow1, ...logosRow2];
+  const allLogos = layout === 'wall' 
+    ? (hasFullDynamic ? dynamicClients.map(c => resolveImg(c.img)).filter(Boolean) : [...allStaticLogos, ...dynamicClients.map(c => resolveImg(c.img)).filter(Boolean)])
+    : [...logosRow1, ...logosRow2];
 
   useGSAP(() => {
     if (layout === 'wall') {

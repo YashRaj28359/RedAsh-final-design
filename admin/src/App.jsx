@@ -395,30 +395,30 @@ const initialContent = {
 
 // Default agency clients — defined at module level so handlers can access it
 const defaultAgencyClients = [
-  { name: 'LG', img: agencyLogo1 },
-  { name: 'Samsung', img: agencyLogo2 },
-  { name: 'GE', img: agencyLogo3 },
-  { name: 'Mahindra', img: agencyLogo4 },
-  { name: 'Bajaj Finserv', img: agencyLogo5 },
-  { name: 'United Nations', img: agencyLogo6 },
-  { name: 'Castrol', img: agencyLogo7 },
-  { name: 'Client 8', img: agencyLogo8 },
-  { name: 'UK Govt', img: agencyLogo9 },
-  { name: 'The Smart Cube', img: agencyLogo10 },
-  { name: 'Schlumberger', img: agencyLogo11 },
-  { name: 'Govt of India', img: agencyLogo12 },
-  { name: 'Ek Step', img: agencyLogo13 },
-  { name: 'Wellness Forever', img: agencyLogo14 },
-  { name: 'Client 15', img: agencyLogo15 },
-  { name: 'FD Shots', img: agencyLogo16 },
-  { name: 'Govt of Gujarat', img: agencyLogo17 },
-  { name: 'Govt of Bihar', img: agencyLogo18 },
-  { name: 'Agnisys', img: agencyLogo19 },
-  { name: 'Sigmoid', img: agencyLogo20 },
-  { name: 'Client 21', img: agencyLogo21 },
-  { name: 'Client 22', img: agencyLogo22 },
-  { name: 'Client 23', img: agencyLogo23 },
-  { name: 'Savvy', img: agencyLogo24 }
+  { name: 'LG', img: agencyLogo1, row: 'row1' },
+  { name: 'Samsung', img: agencyLogo2, row: 'row1' },
+  { name: 'GE', img: agencyLogo3, row: 'row1' },
+  { name: 'Mahindra', img: agencyLogo4, row: 'row1' },
+  { name: 'Bajaj Finserv', img: agencyLogo5, row: 'row1' },
+  { name: 'United Nations', img: agencyLogo6, row: 'row1' },
+  { name: 'Castrol', img: agencyLogo7, row: 'row1' },
+  { name: 'Client 8', img: agencyLogo8, row: 'row1' },
+  { name: 'UK Govt', img: agencyLogo9, row: 'row1' },
+  { name: 'The Smart Cube', img: agencyLogo10, row: 'row1' },
+  { name: 'Schlumberger', img: agencyLogo11, row: 'row1' },
+  { name: 'Govt of India', img: agencyLogo12, row: 'row1' },
+  { name: 'Ek Step', img: agencyLogo13, row: 'row2' },
+  { name: 'Wellness Forever', img: agencyLogo14, row: 'row2' },
+  { name: 'Client 15', img: agencyLogo15, row: 'row2' },
+  { name: 'FD Shots', img: agencyLogo16, row: 'row2' },
+  { name: 'Govt of Gujarat', img: agencyLogo17, row: 'row2' },
+  { name: 'Govt of Bihar', img: agencyLogo18, row: 'row2' },
+  { name: 'Agnisys', img: agencyLogo19, row: 'row2' },
+  { name: 'Sigmoid', img: agencyLogo20, row: 'row2' },
+  { name: 'Client 21', img: agencyLogo21, row: 'row2' },
+  { name: 'Client 22', img: agencyLogo22, row: 'row2' },
+  { name: 'Client 23', img: agencyLogo23, row: 'row2' },
+  { name: 'Savvy', img: agencyLogo24, row: 'row2' }
 ];
 
 function App() {
@@ -496,15 +496,15 @@ function App() {
   ];
 
   const defaultHorizontalProjects = [
-    { id: "h1", title: "WITH LOVE, DELHI!", subtitle: "35 MONUMENTS... 1 3D SEARCH", image: poster1, link: "https://youtu.be/pIv7FFKm318?si=b_CUXqrAAxoaTjq0" },
-    { id: "h2", title: "THE CODPASTER", subtitle: "PRODUCED THE WORLD'S FIRST FICTION WEB SERIES", image: poster2, link: "https://www.mid-day.com/buzzfeed/article/ashish-lal-the-iit-delhi-engineer-turned-actor-teams-up-with-surbhi-jyoti-and-upendra-limaye-9809" },
-    { id: "h3", title: "MAIN TUMHARE BACHCHE...", subtitle: "HUMOROUS FAMILY DRAMA", image: poster3, link: "https://youtu.be/EhiWSgbQnQU?si=29Z1fEfaRTZqyo6G" },
-    { id: "h4", title: "NO MORE #METOO", subtitle: "A FILM ON SEXUAL ABUSE", image: poster4, link: "https://youtu.be/5AGZjsdfOio?si=2CgTqSXIUs0_a-Ua" },
-    { id: "h5", title: "I AM YOUR VOICE", subtitle: "A FILM BY ASHISH LAL", image: poster5, link: "https://youtu.be/BqGm3m3jyhI?si=K2jGDdZAKaOPKXnl" },
-    { id: "h6", title: "CORONA IS A CONSPIRACY", subtitle: "SHORT DRAMA THRILLER", image: poster6, link: "https://youtu.be/6NusataOZyU?si=xoLP93n-qeuhEqK6" },
-    { id: "h7", title: "HUM AZAAD HAIN", subtitle: "INDEPENDENT INDIE FILM", image: poster7, link: "https://youtu.be/-qHNIXVHT_4?si=rjrWz4zDIGye9Zhw" },
-    { id: "h8", title: "100 SHORT FILMS", subtitle: "EMERGING LEADERS SERIES", image: poster8, link: "https://youtu.be/Rz0El0ooOwM?si=1TkAE07Ek8dbJm1w" },
-    { id: "h9", title: "MUSIC VIDEOS", subtitle: "VISUALS THAT AMPLIFY SOUND", image: poster9, link: "https://youtu.be/6Q0mdzO9A4A?si=w_dZFv_p8FszDoDL" }
+    { id: "h1", title: "WITH LOVE, DELHI!", subtitle: "35 MONUMENTS... 1 3D SEARCH", image: poster1, link: "https://youtu.be/pIv7FFKm318?si=b_CUXqrAAxoaTjq0", linkHome: "https://youtu.be/pIv7FFKm318?si=b_CUXqrAAxoaTjq0", linkFilms: "https://youtu.be/pIv7FFKm318?si=b_CUXqrAAxoaTjq0" },
+    { id: "h2", title: "THE CODPASTER", subtitle: "PRODUCED THE WORLD'S FIRST FICTION WEB SERIES", image: poster2, link: "https://www.mid-day.com/buzzfeed/article/ashish-lal-the-iit-delhi-engineer-turned-actor-teams-up-with-surbhi-jyoti-and-upendra-limaye-9809", linkHome: "https://www.mid-day.com/buzzfeed/article/ashish-lal-the-iit-delhi-engineer-turned-actor-teams-up-with-surbhi-jyoti-and-upendra-limaye-9809", linkFilms: "https://www.mid-day.com/buzzfeed/article/ashish-lal-the-iit-delhi-engineer-turned-actor-teams-up-with-surbhi-jyoti-and-upendra-limaye-9809" },
+    { id: "h3", title: "MAIN TUMHARE BACHCHE...", subtitle: "HUMOROUS FAMILY DRAMA", image: poster3, link: "https://youtu.be/EhiWSgbQnQU?si=29Z1fEfaRTZqyo6G", linkHome: "https://youtu.be/EhiWSgbQnQU?si=29Z1fEfaRTZqyo6G", linkFilms: "https://youtu.be/EhiWSgbQnQU?si=29Z1fEfaRTZqyo6G" },
+    { id: "h4", title: "NO MORE #METOO", subtitle: "A FILM ON SEXUAL ABUSE", image: poster4, link: "https://youtu.be/5AGZjsdfOio?si=2CgTqSXIUs0_a-Ua", linkHome: "https://youtu.be/5AGZjsdfOio?si=2CgTqSXIUs0_a-Ua", linkFilms: "https://youtu.be/5AGZjsdfOio?si=2CgTqSXIUs0_a-Ua" },
+    { id: "h5", title: "I AM YOUR VOICE", subtitle: "A FILM BY ASHISH LAL", image: poster5, link: "https://youtu.be/BqGm3m3jyhI?si=K2jGDdZAKaOPKXnl", linkHome: "https://youtu.be/BqGm3m3jyhI?si=K2jGDdZAKaOPKXnl", linkFilms: "https://youtu.be/BqGm3m3jyhI?si=K2jGDdZAKaOPKXnl" },
+    { id: "h6", title: "CORONA IS A CONSPIRACY", subtitle: "SHORT DRAMA THRILLER", image: poster6, link: "https://youtu.be/6NusataOZyU?si=xoLP93n-qeuhEqK6", linkHome: "https://youtu.be/6NusataOZyU?si=xoLP93n-qeuhEqK6", linkFilms: "https://youtu.be/6NusataOZyU?si=xoLP93n-qeuhEqK6" },
+    { id: "h7", title: "HUM AZAAD HAIN", subtitle: "INDEPENDENT INDIE FILM", image: poster7, link: "https://youtu.be/-qHNIXVHT_4?si=rjrWz4zDIGye9Zhw", linkHome: "https://youtu.be/-qHNIXVHT_4?si=rjrWz4zDIGye9Zhw", linkFilms: "https://youtu.be/-qHNIXVHT_4?si=rjrWz4zDIGye9Zhw" },
+    { id: "h8", title: "100 SHORT FILMS", subtitle: "EMERGING LEADERS SERIES", image: poster8, link: "https://youtu.be/Rz0El0ooOwM?si=1TkAE07Ek8dbJm1w", linkHome: "https://youtu.be/Rz0El0ooOwM?si=1TkAE07Ek8dbJm1w", linkFilms: "https://youtu.be/Rz0El0ooOwM?si=1TkAE07Ek8dbJm1w" },
+    { id: "h9", title: "MUSIC VIDEOS", subtitle: "VISUALS THAT AMPLIFY SOUND", image: poster9, link: "https://youtu.be/6Q0mdzO9A4A?si=w_dZFv_p8FszDoDL", linkHome: "https://youtu.be/6Q0mdzO9A4A?si=w_dZFv_p8FszDoDL", linkFilms: "https://youtu.be/6Q0mdzO9A4A?si=w_dZFv_p8FszDoDL" }
   ];
 
   const defaultVerticalProjects = [
@@ -569,7 +569,7 @@ function App() {
   // Entertainment Projects State
   const [showAddProjectModal, setShowAddProjectModal] = useState(false);
   const [projectCardType, setProjectCardType] = useState('horizontal'); // 'horizontal' or 'vertical'
-  const [newProjectCard, setNewProjectCard] = useState({ title: '', subtitle: '', image: '', link: '' });
+  const [newProjectCard, setNewProjectCard] = useState({ title: '', subtitle: '', image: '', link: '', linkHome: '', linkFilms: '' });
   const [draggedProjectState, setDraggedProjectState] = useState({ type: null, index: null });
 
   const handleUpdateProjectCard = (type, index, field, value) => {
@@ -583,7 +583,12 @@ function App() {
         newState.entertainment.projects[key] = JSON.parse(JSON.stringify(defaultArr));
       }
       if (newState.entertainment.projects[key][index]) {
-        newState.entertainment.projects[key][index][field] = value;
+        const card = newState.entertainment.projects[key][index];
+        if (type === 'horizontal') {
+          if (card.linkHome === undefined) card.linkHome = card.link || '';
+          if (card.linkFilms === undefined) card.linkFilms = card.link || '';
+        }
+        card[field] = value;
       }
       return newState;
     });
@@ -601,7 +606,7 @@ function App() {
 
   const handleOpenAddProjectModal = (type) => {
     setProjectCardType(type);
-    setNewProjectCard({ title: '', subtitle: '', image: '', link: '' });
+    setNewProjectCard({ title: '', subtitle: '', image: '', link: '', linkHome: '', linkFilms: '' });
     setShowAddProjectModal(true);
   };
 
@@ -615,17 +620,29 @@ function App() {
       if (!newState.entertainment.projects[key]) {
         newState.entertainment.projects[key] = JSON.parse(JSON.stringify(defaultArr));
       }
-      newState.entertainment.projects[key].push({
+      
+      const cardToAdd = {
         id: `${projectCardType[0]}-${Date.now()}`,
         title: "",
         subtitle: "",
-        image: newProjectCard.image || 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?q=80&w=800&auto=format&fit=crop',
-        link: newProjectCard.link.trim() || '#'
-      });
+        image: newProjectCard.image || 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?q=80&w=800&auto=format&fit=crop'
+      };
+
+      if (projectCardType === 'horizontal') {
+        const homeL = (newProjectCard.linkHome || newProjectCard.link || '').trim() || '#';
+        const filmsL = (newProjectCard.linkFilms || newProjectCard.link || '').trim() || '#';
+        cardToAdd.link = homeL;
+        cardToAdd.linkHome = homeL;
+        cardToAdd.linkFilms = filmsL;
+      } else {
+        cardToAdd.link = (newProjectCard.link || '').trim() || '#';
+      }
+
+      newState.entertainment.projects[key].push(cardToAdd);
       return newState;
     });
     setShowAddProjectModal(false);
-    setToast({ show: true, message: `Added new project card. Click 'Save Section Changes' to publish!`, type: 'success' });
+    showToast(`Added new project card. Click 'Save Section Changes' to publish!`, 'success');
   };
 
   const handleRemoveProjectCard = (type, index) => {
@@ -983,24 +1000,26 @@ function App() {
       const newState = JSON.parse(JSON.stringify(prev));
       if (!newState.agency) newState.agency = {};
       if (!newState.agency.globalClients) {
-        // Initialize with empty array so existing DB/static logos still show separately
-        newState.agency.globalClients = [];
+        newState.agency.globalClients = JSON.parse(JSON.stringify(defaultAgencyClients));
       }
       newState.agency.globalClients.push({
-        name: `Logo ${newState.agency.globalClients.length + 1}`,
+        name: newAgencyClient.name?.trim() || `Logo ${newState.agency.globalClients.length + 1}`,
         img: newAgencyClient.img,
         row: newAgencyClient.row || 'row1'
       });
       return newState;
     });
     setShowAddAgencyClientModal(false);
-    setToast({ show: true, message: `Added new global client logo. Click 'Save Section Changes' to publish!`, type: 'success' });
+    showToast(`Added new global client logo. Click 'Save Section Changes' to publish!`, 'success');
   };
 
   const handleRemoveAgencyClient = (index) => {
     setContent(prev => {
       const newState = JSON.parse(JSON.stringify(prev));
-      if (!newState.agency?.globalClients) return prev;
+      if (!newState.agency) newState.agency = {};
+      if (!newState.agency.globalClients) {
+        newState.agency.globalClients = JSON.parse(JSON.stringify(defaultAgencyClients));
+      }
       newState.agency.globalClients.splice(index, 1);
       return newState;
     });
@@ -1601,6 +1620,13 @@ function App() {
               
               return v;
             });
+          }
+          if (finalData.entertainment?.projects?.horizontalCards) {
+            finalData.entertainment.projects.horizontalCards = finalData.entertainment.projects.horizontalCards.map(c => ({
+              ...c,
+              linkHome: c.linkHome !== undefined ? c.linkHome : (c.link || ''),
+              linkFilms: c.linkFilms !== undefined ? c.linkFilms : (c.link || '')
+            }));
           }
           setContent(prev => ({
             ...prev,
@@ -7166,7 +7192,6 @@ function App() {
                         onChange={(e) => {
                           const newLink = e.target.value;
                           handleUpdateProjectCard('horizontal', idx, 'linkHome', newLink);
-                          handleUpdateProjectCard('horizontal', idx, 'link', newLink);
                           const ytId = extractYouTubeId(newLink);
                           if (ytId && !item.image) {
                             handleUpdateProjectCard('horizontal', idx, 'image', `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`);
@@ -8934,26 +8959,67 @@ function App() {
                 </div>
               </div>
 
-              {/* Link */}
-              <div>
-                <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Target Link / Video URL</label>
-                <input 
-                  type="text" 
-                  className="form-control" 
-                  value={newProjectCard.link} 
-                  onChange={(e) => {
-                    const newLink = e.target.value;
-                    const ytId = extractYouTubeId(newLink);
-                    if (ytId && !newProjectCard.image) {
-                      setNewProjectCard({ ...newProjectCard, link: newLink, image: `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg` });
-                    } else {
-                      setNewProjectCard({ ...newProjectCard, link: newLink });
-                    }
-                  }} 
-                  placeholder="https://... or #" 
-                  autoFocus
-                />
-              </div>
+              {/* Links */}
+              {projectCardType === 'horizontal' ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                  <div>
+                    <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Entertainment Home Page Link</label>
+                    <input 
+                      type="text" 
+                      className="form-control" 
+                      value={newProjectCard.linkHome || ''} 
+                      onChange={(e) => {
+                        const newLink = e.target.value;
+                        const ytId = extractYouTubeId(newLink);
+                        if (ytId && !newProjectCard.image) {
+                          setNewProjectCard({ ...newProjectCard, linkHome: newLink, image: `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg` });
+                        } else {
+                          setNewProjectCard({ ...newProjectCard, linkHome: newLink });
+                        }
+                      }} 
+                      placeholder="https://... (Home Page)" 
+                    />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Entertainment Films Page Link</label>
+                    <input 
+                      type="text" 
+                      className="form-control" 
+                      value={newProjectCard.linkFilms || ''} 
+                      onChange={(e) => {
+                        const newLink = e.target.value;
+                        const ytId = extractYouTubeId(newLink);
+                        if (ytId && !newProjectCard.image) {
+                          setNewProjectCard({ ...newProjectCard, linkFilms: newLink, image: `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg` });
+                        } else {
+                          setNewProjectCard({ ...newProjectCard, linkFilms: newLink });
+                        }
+                      }} 
+                      placeholder="https://... (Films Page)" 
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Target Link / Video URL</label>
+                  <input 
+                    type="text" 
+                    className="form-control" 
+                    value={newProjectCard.link} 
+                    onChange={(e) => {
+                      const newLink = e.target.value;
+                      const ytId = extractYouTubeId(newLink);
+                      if (ytId && !newProjectCard.image) {
+                        setNewProjectCard({ ...newProjectCard, link: newLink, image: `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg` });
+                      } else {
+                        setNewProjectCard({ ...newProjectCard, link: newLink });
+                      }
+                    }} 
+                    placeholder="https://... or #" 
+                    autoFocus
+                  />
+                </div>
+              )}
             </div>
 
             <div className="modal-footer">

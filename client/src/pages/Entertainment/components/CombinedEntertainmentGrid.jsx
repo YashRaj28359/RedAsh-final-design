@@ -89,7 +89,12 @@ const CombinedEntertainmentGrid = () => {
     fetchContent().then(data => {
       const horizontalCards = data?.entertainment?.projects?.horizontalCards;
       if (horizontalCards && horizontalCards.length > 0) {
-        setDynamicHorizontalProjects(horizontalCards.map(item => ({...item, isHorizontal: true, url: item.linkFilms !== undefined ? item.linkFilms : (item.link || item.url)})));
+        setDynamicHorizontalProjects(horizontalCards.map(item => {
+          const finalUrl = (item.linkFilms !== undefined && item.linkFilms !== null && item.linkFilms !== '') 
+            ? item.linkFilms 
+            : (item.link || item.url);
+          return { ...item, isHorizontal: true, url: finalUrl };
+        }));
       }
       
       const verticalCards = data?.entertainment?.projects?.verticalCards;

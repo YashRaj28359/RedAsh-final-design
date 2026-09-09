@@ -127,11 +127,40 @@ const Testimonials = () => {
   useEffect(() => {
     if (activeVideo) {
       document.body.style.overflow = 'hidden';
+
+      const handleVisibilityChange = () => {
+        if (document.hidden || document.visibilityState === 'hidden') {
+          if (player && typeof player.pauseVideo === 'function') {
+            player.pauseVideo();
+          }
+        }
+      };
+
+      const handleBlur = () => {
+        // When clicking YouTube icon, browser opens a new tab and window loses focus
+        setTimeout(() => {
+          if (document.hidden || document.visibilityState === 'hidden') {
+            if (player && typeof player.pauseVideo === 'function') {
+              player.pauseVideo();
+            }
+          }
+        }, 100);
+      };
+
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+      window.addEventListener("pagehide", handleVisibilityChange);
+      window.addEventListener("blur", handleBlur);
+
+      return () => { 
+        document.body.style.overflow = 'unset'; 
+        document.removeEventListener("visibilitychange", handleVisibilityChange);
+        window.removeEventListener("pagehide", handleVisibilityChange);
+        window.removeEventListener("blur", handleBlur);
+      };
     } else {
       document.body.style.overflow = 'unset';
     }
-    return () => { document.body.style.overflow = 'unset'; };
-  }, [activeVideo]);
+  }, [activeVideo, player]);
 
   return (
     <>
@@ -238,7 +267,9 @@ const Testimonials = () => {
                   autoplay: 1, // Auto-play when opened
                   rel: 0,
                   modestbranding: 1,
-                  playsinline: 1
+                  playsinline: 1,
+                  enablejsapi: 1,
+                  origin: typeof window !== 'undefined' ? window.location.origin : ''
                 }
               }}
               className="w-full h-full relative z-10 rounded-2xl overflow-hidden bg-black"

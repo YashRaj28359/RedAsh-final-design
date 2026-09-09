@@ -4,6 +4,7 @@ import { MdClose } from 'react-icons/md';
 import { FaLayerGroup, FaFlag, FaChartBar, FaRocket } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { getCachedContent, fetchContent } from '../../../utils/api';
 
 const processData = [
   {
@@ -41,6 +42,23 @@ const workData = [
 const OurWork = () => {
   const navigate = useNavigate();
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [cards, setCards] = useState(workData);
+
+  React.useEffect(() => {
+    const loadContent = async () => {
+      let content = getCachedContent();
+      if (!content) {
+        content = await fetchContent();
+      }
+      if (content?.agency?.socialMediaCards && content.agency.socialMediaCards.length > 0) {
+        setCards(content.agency.socialMediaCards.map((c, i) => ({
+          ...workData[i],
+          title: c.title || workData[i].title
+        })));
+      }
+    };
+    loadContent();
+  }, []);
 
   return (
     <section className="w-full pt-24 pb-24 bg-[#fcfcfc] relative z-20 font-main overflow-hidden flex flex-col items-center">
@@ -171,7 +189,7 @@ const OurWork = () => {
           {/* Grid Container for Text Boxes */}
           <div className="relative z-10 w-full grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6 [@media(max-height:600px)_and_(orientation:landscape)]:grid-cols-3 [@media(max-height:600px)_and_(orientation:landscape)]:gap-2">
             
-            {workData.map((item, index) => (
+            {cards.map((item, index) => (
               <div 
                 key={index} 
                 className="w-full relative overflow-hidden bg-white/70 backdrop-blur-2xl rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group flex flex-col justify-center items-center text-center min-h-[80px] md:min-h-[100px] px-2 sm:px-6 py-4 md:py-5 hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(22,114,239,0.6)] [@media(max-height:600px)_and_(orientation:landscape)]:min-h-[50px] [@media(max-height:600px)_and_(orientation:landscape)]:py-2"

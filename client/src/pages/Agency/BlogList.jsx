@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { getCachedContent, fetchContent } from '../../utils/api';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
@@ -6,6 +7,31 @@ import AgencyFooter from './components/AgencyFooter';
 import blogsData from '../../data/blogs.json';
 
 const BlogList = () => {
+  const [heroText, setHeroText] = useState("Read our blogs full of useful insights on the creative and strategic aspects of marketing and film production.");
+  const [blogs, setBlogs] = useState(blogsData);
+
+  useEffect(() => {
+    const loadContent = async () => {
+      const applyContent = (data) => {
+        if (data?.agency?.blogHeroText) {
+          setHeroText(data.agency.blogHeroText);
+        }
+        if (data?.agency?.blogs && data.agency.blogs.length > 0) {
+          const dynamicBlogs = data.agency.blogs.filter(b => b.published !== false);
+          setBlogs([...dynamicBlogs, ...blogsData]);
+        }
+      };
+
+      const cached = getCachedContent();
+      if (cached) applyContent(cached);
+
+      const fresh = await fetchContent();
+      if (fresh) applyContent(fresh);
+    };
+
+    loadContent();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-main text-brand-black">
       <Navbar />
@@ -32,7 +58,7 @@ const BlogList = () => {
           </h1>
 
           <p className="text-gray-600 text-lg md:text-xl font-main mb-12">
-           Read our blogs full of useful insights on the creative and strategic aspects of marketing and film production.
+           {heroText}
           </p>
         </motion.div>
       </section>
@@ -40,7 +66,7 @@ const BlogList = () => {
       {/* Blog Grid */}
       <section className="flex-1 max-w-[1400px] mx-auto w-full px-4 md:px-8 py-12 relative z-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {blogsData.map((blog, index) => {
+          {blogs.map((blog, index) => {
             const date = new Date(blog.date);
             const formattedDate = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
             // Calculate a fake read time based on content length or default to 5
@@ -62,7 +88,7 @@ const BlogList = () => {
                   <div className="relative overflow-hidden rounded-none aspect-[1.5] w-full bg-gray-100">
                     {blog.imageUrl ? (
                       <img 
-                        src={blog.imageUrl} 
+                        src={blog.imageUrl.startsWith('http') ? blog.imageUrl : `http://localhost:5000${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`} 
                         alt={blog.title} 
                         className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
                       />
@@ -77,7 +103,7 @@ const BlogList = () => {
                     <div className="text-gray-500 font-main text-xs mb-3 font-medium flex items-center gap-2">
                       <span>{formattedDate}</span>
                       <span className="w-1 h-1 rounded-full bg-gray-300"></span>
-                      <span>{readTime} minute read</span>
+                      
                     </div>
                     
                     <h3 

@@ -5,29 +5,48 @@ import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import Navbar from './components/Navbar';
 import AgencyFooter from './components/AgencyFooter';
 import blogsData from '../../data/blogs.json';
+import { getCachedContent, fetchContent } from '../../utils/api';
 
 const BlogPost = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const [allBlogs, setAllBlogs] = useState(blogsData);
   const [blog, setBlog] = useState(null);
   const [prevBlog, setPrevBlog] = useState(null);
   const [nextBlog, setNextBlog] = useState(null);
 
   useEffect(() => {
-    const currentIndex = blogsData.findIndex(b => b.slug === slug);
+    const loadContent = async () => {
+      const applyContent = (data) => {
+        if (data?.agency?.blogs && data.agency.blogs.length > 0) {
+          const dynamicBlogs = data.agency.blogs.filter(b => b.published !== false);
+          setAllBlogs([...dynamicBlogs, ...blogsData]);
+        }
+      };
+
+      const cached = getCachedContent();
+      if (cached) applyContent(cached);
+
+      const fresh = await fetchContent();
+      if (fresh) applyContent(fresh);
+    };
+
+    loadContent();
+  }, []);
+
+  useEffect(() => {
+    const currentIndex = allBlogs.findIndex(b => b.slug === slug);
     if (currentIndex !== -1) {
-      setBlog(blogsData[currentIndex]);
-      setNextBlog(currentIndex > 0 ? blogsData[currentIndex - 1] : null);
-      setPrevBlog(currentIndex < blogsData.length - 1 ? blogsData[currentIndex + 1] : null);
-    } else {
-      navigate('/ad-agency/blog');
+      setBlog(allBlogs[currentIndex]);
+      setNextBlog(currentIndex > 0 ? allBlogs[currentIndex - 1] : null);
+      setPrevBlog(currentIndex < allBlogs.length - 1 ? allBlogs[currentIndex + 1] : null);
     }
-  }, [slug, navigate]);
+  }, [slug, allBlogs]);
 
   if (!blog) return null;
 
   // Get 4 suggested blogs (excluding the current one)
-  const suggestedBlogs = blogsData.filter(b => b.id !== blog.id).slice(0, 4);
+  const suggestedBlogs = allBlogs.filter(b => b.id !== blog.id).slice(0, 4);
 
   const renderSuggestedBlogs = () => (
     <>
@@ -40,7 +59,7 @@ const BlogPost = () => {
           <Link key={suggested.id} to={`/ad-agency/blog/${suggested.slug}`} className="group flex gap-4 items-start bg-gray-50 p-3 rounded-xl hover:shadow-lg hover:bg-white border border-transparent transition-all duration-300">
             <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-200">
               {suggested.imageUrl ? (
-                <img src={suggested.imageUrl} alt={suggested.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
+                <img src={suggested.imageUrl.startsWith('http') ? suggested.imageUrl : `http://localhost:5000${suggested.imageUrl.startsWith('/') ? '' : '/'}${suggested.imageUrl}`} alt={suggested.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
                   <span className="text-[10px] text-gray-400 font-bold text-center">NO IMG</span>
@@ -102,7 +121,7 @@ const BlogPost = () => {
           className="w-full max-w-7xl mx-auto px-4 md:px-8 relative z-10"
         >
           <img 
-            src={blog.imageUrl} 
+            src={blog.imageUrl.startsWith('http') ? blog.imageUrl : `http://localhost:5000${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`} 
             alt={blog.title} 
             className="w-full object-cover aspect-video md:aspect-[21/9]"
           />

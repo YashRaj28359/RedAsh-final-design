@@ -7,16 +7,17 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import YouTube from 'react-youtube';
+import { fetchContent } from '../../../utils/api';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const leftVideos = [
-  { id: 'b5hZr-8rSI4', label: 'TV ADS', rotation: '1deg', offsetX: '60px', scale: 1, number: '01' }, 
+const defaultLeftVideos = [
+  { id: 'b5hZr-8rSI4', url: 'https://youtu.be/b5hZr-8rSI4?si=lZXPjgcHddR0ZD-1', label: 'TV ADS', rotation: '1deg', offsetX: '60px', scale: 1, number: '01' }, 
   { id: 'IUwZoT_-gt4', label: 'BRAND FILMS', rotation: '-9deg', offsetX: '160px', scale: 0.85, number: '03' },
   { id: 'RvciiZb-k1U', label: 'PODCASTS', rotation: '7deg', offsetX: '80px', scale: 1.05, number: '05' },
 ];
 
-const rightVideos = [
+const defaultRightVideos = [
   { id: 'rqfTN_Fj1SA', label: 'DIGITAL ADS', rotation: '-7deg', offsetX: '-60px', scale: 0.9, number: '02' },
   { id: 'R_EAcTv-59o', label: 'EXPLAINERS', rotation: '-2deg', offsetX: '-150px', scale: 1.10, number: '04' },
   { id: 'l4XYMZzh7Tc', label: 'AI VIDEOS', rotation: '8deg', offsetX: '-30px', scale: 0.90, number: '06' },
@@ -41,7 +42,7 @@ const VideoCard = ({ video, className, onPlay, isMobile }) => {
         style={isMobile ? {} : { WebkitTransform: 'translateZ(0)', outline: '1px solid transparent' }}
       >
         <img 
-          src={`https://img.youtube.com/vi/${video.id}/hqdefault.jpg`} 
+          src={video.image || `https://img.youtube.com/vi/${video.id}/hqdefault.jpg`} 
           alt={video.label} 
           className="w-full h-full object-cover scale-[1.02]"
         />
@@ -93,6 +94,31 @@ const VideoCollage = () => {
   const [activeVideo, setActiveVideo] = useState(null);
   const [player, setPlayer] = useState(null);
   const navigate = useNavigate();
+  const [leftVideos, setLeftVideos] = useState(defaultLeftVideos);
+  const [rightVideos, setRightVideos] = useState(defaultRightVideos);
+
+  useEffect(() => {
+    fetchContent()
+      .then(data => {
+        if (data?.agency?.heroCards) {
+          const cards = data.agency.heroCards;
+          // Map 1, 3, 5 to left side and 2, 4, 6 to right side
+          const mergedLeft = [
+            { ...defaultLeftVideos[0], ...(cards[0] || {}) },
+            { ...defaultLeftVideos[1], ...(cards[2] || {}) },
+            { ...defaultLeftVideos[2], ...(cards[4] || {}) }
+          ];
+          const mergedRight = [
+            { ...defaultRightVideos[0], ...(cards[1] || {}) },
+            { ...defaultRightVideos[1], ...(cards[3] || {}) },
+            { ...defaultRightVideos[2], ...(cards[5] || {}) }
+          ];
+          setLeftVideos(mergedLeft);
+          setRightVideos(mergedRight);
+        }
+      })
+      .catch(err => console.error("Error fetching agency hero cards:", err));
+  }, []);
 
   const handlePlay = (videoId) => {
     setActiveVideo(videoId);

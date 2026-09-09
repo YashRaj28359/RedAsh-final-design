@@ -10,6 +10,8 @@
   --text-muted: #64748b;
   --accent-red: #e20002;
   --accent-red-hover: #b30002;
+  --accent-blue: #1672EF;
+  --accent-blue-hover: #115bc2;
   --bg-input: #ffffff;
 }
 
@@ -85,6 +87,12 @@ body {
 .top-nav-tab.active {
   background-color: rgba(226, 0, 2, 0.1);
   color: var(--accent-red);
+  font-weight: 600;
+}
+
+.top-nav-tab.agency.active {
+  background-color: rgba(22, 114, 239, 0.1);
+  color: var(--accent-blue);
   font-weight: 600;
 }
 
@@ -409,6 +417,14 @@ body {
 
 .btn-primary:hover {
   background: var(--accent-red-hover);
+}
+
+.btn-primary.agency {
+  background: var(--accent-blue);
+}
+
+.btn-primary.agency:hover {
+  background: var(--accent-blue-hover);
 }
 
 /* Editor Grid (Form | Preview) */
@@ -752,7 +768,8 @@ textarea.form-control {
   animation: fadeIn 0.2s ease-out;
 }
 
-.modal-card {
+.modal-card,
+.modal-content {
   background: #ffffff;
   border-radius: 12px;
   width: 100%;
@@ -788,3 +805,32 @@ textarea.form-control {
   justify-content: flex-end;
   gap: 0.8rem;
 }
+
+/* Fix Jodit Editor Styling Overrides */
+.jodit-wysiwyg ul {
+  list-style-type: disc !important;
+  margin-left: 30px !important;
+  margin-bottom: 1rem !important;
+}
+
+.jodit-wysiwyg ol {
+  list-style-type: decimal !important;
+  margin-left: 30px !important;
+  margin-bottom: 1rem !important;
+}
+
+.jodit-wysiwyg p {
+  margin-bottom: 1rem !important;
+  line-height: 1.6 !important;
+}
+
+.jodit-wysiwyg h1, .jodit-wysiwyg h2, .jodit-wysiwyg h3, .jodit-wysiwyg h4, .jodit-wysiwyg h5, .jodit-wysiwyg h6 {
+  font-weight: bold !important;
+  margin-bottom: 0.8rem !important;
+  margin-top: 1.5rem !important;
+}
+
+.jodit-wysiwyg h1 { font-size: 2.2em !important; }
+.jodit-wysiwyg h2 { font-size: 1.8em !important; }
+.jodit-wysiwyg h3 { font-size: 1.4em !important; }
+.jodit-wysiwyg h4 { font-size: 1.1em !important; }

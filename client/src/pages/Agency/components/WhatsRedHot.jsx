@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaFire, FaArrowRight } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-
+import { getCachedContent, fetchContent } from '../../../utils/api';
 import image1 from '../../../assets/Agency/RedHot section/Image 1.png';
 import image2 from '../../../assets/Agency/RedHot section/image2.png';
 import image3 from '../../../assets/Agency/RedHot section/image3.png';
@@ -65,6 +65,33 @@ const updatesData = [
 ];
 
 const WhatsRedHot = () => {
+  const [items, setItems] = useState(updatesData);
+
+  useEffect(() => {
+    const loadContent = async () => {
+      let content = getCachedContent();
+      if (!content) {
+        content = await fetchContent();
+      }
+      if (content?.agency?.whatsRedHot && content.agency.whatsRedHot.length > 0) {
+        setItems(content.agency.whatsRedHot);
+      }
+    };
+    loadContent();
+  }, []);
+
+  const parseHighlightText = (text) => {
+    // If text is already JSX (from default static data) or not string, return as is
+    if (!text || typeof text !== 'string') return text;
+    const parts = text.split(/\*(.*?)\*/g);
+    return parts.map((part, i) => {
+      if (i % 2 === 1) {
+        return <span key={i} className="text-blue-600">{part}</span>;
+      }
+      return part;
+    });
+  };
+
   return (
     <section className="w-full py-20 bg-white relative z-20 font-main overflow-x-hidden [@media(max-height:600px)_and_(orientation:landscape)]:py-4">
       <div className="w-full max-w-[1500px] mx-auto px-4 md:px-8">
@@ -92,7 +119,7 @@ const WhatsRedHot = () => {
 
         {/* Content Section: Alternating Rows */}
         <div className="flex flex-col gap-8 md:gap-10">
-          {updatesData.map((update, index) => (
+          {items.map((update, index) => (
             <motion.div 
               key={update.id} 
               initial="hidden"
@@ -137,7 +164,7 @@ const WhatsRedHot = () => {
                   variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } } }}
                   className="text-4xl md:text-5xl font-hero font-bold text-gray-900 mb-6 leading-tight [@media(max-height:600px)_and_(orientation:landscape)]:text-xl [@media(max-height:600px)_and_(orientation:landscape)]:mb-1"
                 >
-                  {update.title}
+                  {parseHighlightText(update.title)}
                 </motion.h3>
                 
                 <motion.p 
@@ -160,7 +187,7 @@ const WhatsRedHot = () => {
                     {update.sourceLabel}
                   </div>
                   <div className="flex flex-wrap items-center gap-6 md:gap-8 text-sm md:text-base font-bold text-gray-900 uppercase tracking-wider [@media(max-height:600px)_and_(orientation:landscape)]:text-[10px] [@media(max-height:600px)_and_(orientation:landscape)]:gap-4">
-                    {update.links.map((link, i) => (
+                    {update.links && update.links.map((link, i) => (
                       update.pill === "INSIGHTS" ? (
                         <Link key={i} to={link.url} className="flex items-center gap-2 hover:text-blue-600 transition-colors">
                           {link.text} <FaArrowRight className="text-blue-600" />

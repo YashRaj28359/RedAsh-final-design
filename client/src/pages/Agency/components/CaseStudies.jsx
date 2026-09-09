@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { getCachedContent, fetchContent } from '../../../utils/api';
 import { 
   FaBriefcase, 
   FaMoneyBillWave, 
@@ -7,11 +8,33 @@ import {
   FaRocket, 
   FaBullseye,
   FaBuilding,
-  FaArrowRight
+  FaArrowRight,
+  FaUsers,
+  FaLightbulb,
+  FaMobileAlt,
+  FaLaptopCode,
+  FaGlobe,
+  FaCheckCircle
 } from 'react-icons/fa';
 import imgWellness from '../../../assets/Agency/Casestudies/Wellness.png';
 import imgPharmacy from '../../../assets/Agency/Casestudies/Pharmacy.png';
 import imgMobileOTT from '../../../assets/Agency/Casestudies/Mobile OTT.png';
+
+const ICON_MAP = {
+  FaBriefcase,
+  FaMoneyBillWave,
+  FaBrain,
+  FaChartLine,
+  FaRocket,
+  FaBullseye,
+  FaBuilding,
+  FaUsers,
+  FaLightbulb,
+  FaMobileAlt,
+  FaLaptopCode,
+  FaGlobe,
+  FaCheckCircle
+};
 
 const caseStudiesData = [
   {
@@ -107,6 +130,22 @@ const caseStudiesData = [
 ];
 
 const CaseStudies = () => {
+  const [dynamicStudies, setDynamicStudies] = useState([]);
+
+  useEffect(() => {
+    const cached = getCachedContent();
+    if (cached?.agency?.caseStudies) {
+      setDynamicStudies(cached.agency.caseStudies);
+    }
+    fetchContent().then(data => {
+      if (data?.agency?.caseStudies) {
+        setDynamicStudies(data.agency.caseStudies);
+      }
+    }).catch(() => {});
+  }, []);
+
+  const displayStudies = dynamicStudies.length > 0 ? dynamicStudies : caseStudiesData;
+
   return (
     <section className="w-full pt-24 md:pt-32 pb-20 bg-gray-50 relative z-20 font-main">
       <div className="w-full max-w-[1400px] mx-auto px-4 md:px-8">
@@ -133,8 +172,10 @@ const CaseStudies = () => {
 
         {/* Grid Container */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 lg:gap-16 w-full mb-12 [@media(max-height:600px)_and_(orientation:landscape)]:grid-cols-3 [@media(max-height:600px)_and_(orientation:landscape)]:gap-4">
-          {caseStudiesData.map((study) => (
-            <div key={study.id} className="bg-white rounded-[2rem] p-4 shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col group relative border border-gray-100 [@media(max-height:600px)_and_(orientation:landscape)]:p-2 [@media(max-height:600px)_and_(orientation:landscape)]:rounded-xl">
+          {displayStudies.map((study, index) => {
+            const CurrentIcon = study.iconType ? ICON_MAP[study.iconType] : study.Icon || FaBriefcase;
+            return (
+            <div key={study.id || index} className="bg-white rounded-[2rem] p-4 shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col group relative border border-gray-100 [@media(max-height:600px)_and_(orientation:landscape)]:p-2 [@media(max-height:600px)_and_(orientation:landscape)]:rounded-xl">
               
               {/* Image Area */}
               <div className="relative w-full h-48 md:h-56 rounded-3xl overflow-hidden mb-6 bg-gray-100 [@media(max-height:600px)_and_(orientation:landscape)]:h-24 [@media(max-height:600px)_and_(orientation:landscape)]:mb-2 [@media(max-height:600px)_and_(orientation:landscape)]:rounded-xl">
@@ -152,7 +193,7 @@ const CaseStudies = () => {
 
                 {/* Right Icon Badge */}
                 <div className="absolute top-1/2 right-0 -translate-y-1/2 bg-white p-3 md:p-3.5 rounded-l-2xl shadow-lg z-10 text-brand-blue flex items-center justify-center [@media(max-height:600px)_and_(orientation:landscape)]:p-1.5 [@media(max-height:600px)_and_(orientation:landscape)]:rounded-l-lg [&>svg]:w-5 [&>svg]:h-5 [@media(max-height:600px)_and_(orientation:landscape)]:[&>svg]:w-3 [@media(max-height:600px)_and_(orientation:landscape)]:[&>svg]:h-3">
-                  <study.Icon className={`${study.tagColor.replace('bg-', 'text-')}`} />
+                  <CurrentIcon className={`${study.tagColor?.replace('bg-', 'text-') || 'text-blue-600'}`} />
                 </div>
 
                 {/* Bottom Stat pill */}
@@ -206,7 +247,7 @@ const CaseStudies = () => {
                       TYPE
                     </span>
                     <span className="text-xs font-bold text-gray-900">
-                      {study.type}
+                      {study.type || study.clientType}
                     </span>
                   </div>
 
@@ -214,7 +255,7 @@ const CaseStudies = () => {
               </div>
 
             </div>
-          ))}
+          )})}
         </div>
 
         {/* Explore Button */}

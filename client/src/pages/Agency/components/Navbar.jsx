@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FaLinkedinIn, FaYoutube, FaInstagram, FaFacebookF, FaBars, FaTimes } from 'react-icons/fa';
-import logo from "../../../assets/Agency/Logo/RedAsh Ad Agency_Logo.png";
+import defaultLogo from "../../../assets/Agency/Logo/RedAsh Ad Agency_Logo.png";
 import { AnimatePresence, motion } from 'framer-motion';
+import { fetchContent } from '../../../utils/api';
 
-const navLinks = [
-  { name: 'HOME', path: '/ad-agency' },
-  { name: 'ABOUT', path: '/ad-agency/about' },
-  { name: 'ENTERPRISE FILMS', path: '/ad-agency/films' },
-  { name: 'BLOG', path: '/ad-agency/blog' },
-  { name: 'MEDIA', path: '/ad-agency/media' },
-  { name: 'CONTACT', path: '/ad-agency/contact' },
+const defaultNavLinks = [
+  { key: 'home', defaultName: 'HOME', path: '/ad-agency' },
+  { key: 'about', defaultName: 'ABOUT', path: '/ad-agency/about' },
+  { key: 'films', defaultName: 'ENTERPRISE FILMS', path: '/ad-agency/films' },
+  { key: 'blog', defaultName: 'BLOG', path: '/ad-agency/blog' },
+  { key: 'media', defaultName: 'MEDIA', path: '/ad-agency/media' },
+  { key: 'contact', defaultName: 'CONTACT', path: '/ad-agency/contact' },
 ];
 
 const Navbar = () => {
@@ -28,12 +29,33 @@ const Navbar = () => {
   const [isInVideoSection, setIsInVideoSection] = useState(false);
   const [isHoveringTop, setIsHoveringTop] = useState(false);
   const [isVideoActive, setIsVideoActive] = useState(false);
+  const [serverLogo, setServerLogo] = useState(null);
+  const [navLinks, setNavLinks] = useState(defaultNavLinks.map(link => ({ name: link.defaultName, path: link.path })));
 
   useEffect(() => {
     const handleVideoStart = () => setIsVideoActive(true);
     const handleVideoStop = () => setIsVideoActive(false);
     window.addEventListener('videoPlaybackStarted', handleVideoStart);
     window.addEventListener('videoPlaybackStopped', handleVideoStop);
+    
+    // Fetch custom logo and navigation links
+    fetchContent()
+      .then(data => {
+        if (data?.agency) {
+          if (data.agency.logo?.url) {
+            setServerLogo(data.agency.logo.url);
+          }
+          if (data.agency.navigation) {
+            const navLabels = data.agency.navigation;
+            setNavLinks(defaultNavLinks.map(link => ({
+              name: navLabels[link.key] || link.defaultName,
+              path: link.path
+            })));
+          }
+        }
+      })
+      .catch(err => console.error("Error fetching agency navbar data:", err));
+      
     return () => {
       window.removeEventListener('videoPlaybackStarted', handleVideoStart);
       window.removeEventListener('videoPlaybackStopped', handleVideoStop);
@@ -101,7 +123,7 @@ const Navbar = () => {
         <div className="flex-shrink-0 z-20">
           <Link to="/ad-agency" className="block">
             <img 
-              src={logo} 
+              src={serverLogo ? (serverLogo.startsWith('http') || serverLogo.startsWith('data:') ? serverLogo : `http://localhost:5000${serverLogo}`) : defaultLogo} 
               alt="RedAsh Agency" 
               className={`w-auto object-contain transition-all duration-300 hover:scale-105 ${
                 isInVideoSection ? 'h-8 sm:h-10 md:h-12' : 'h-12 sm:h-16 md:h-[88px]'

@@ -74,7 +74,7 @@ const ThumbnailImage = ({ video, isLarge }) => {
   );
 };
 
-const VideoPlaylist = ({ videos, category, theme = 'blue' }) => {
+const VideoPlaylist = ({ videos, category, categoryName, categorySubtitle, theme = 'blue' }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isVideoPaused, setIsVideoPaused] = useState(false);
@@ -185,20 +185,24 @@ const VideoPlaylist = ({ videos, category, theme = 'blue' }) => {
           <div className={`w-16 h-16 lg:w-20 lg:h-20 rounded-full flex items-center justify-center flex-shrink-0 ${theme === 'red' ? 'bg-[#FEF2F2] text-brand-red' : 'bg-[#F0F5FF] text-[#1672EF]'}`}>
             {getCategoryIcon(category, theme)}
           </div>
-          <h2 className={`text-4xl md:text-5xl lg:text-6xl font-hero font-extrabold tracking-widest uppercase ${theme === 'red' ? 'text-brand-red' : 'text-[#1672EF]'}`}>{category}</h2>
+          <h2 className={`text-4xl md:text-5xl lg:text-6xl font-hero font-extrabold tracking-widest uppercase ${theme === 'red' ? 'text-brand-red' : 'text-[#1672EF]'}`}>
+            {categoryName || category}
+          </h2>
         </div>
-        <p className="text-[#6A6A6A] font-medium text-sm md:text-base ml-2">{getCategorySubtitle(category)}</p>
+        <p className="text-[#6A6A6A] font-medium text-sm md:text-base ml-2">{categorySubtitle || getCategorySubtitle(category)}</p>
       </div>
 
       {/* Category Heading (Mobile) */}
-      <div className={`${isMobile ? 'flex' : 'hidden'} flex-col items-center justify-center w-full mb-4 px-2 text-center`}>
+      <div className={`${isMobile ? 'flex' : 'hidden'} flex-col items-center w-full mt-2 mb-2`}>
         <div className="flex flex-col items-center gap-2 mb-2">
           <div className={`w-12 h-12 rounded-full flex items-center justify-center ${theme === 'red' ? 'bg-[#FEF2F2] text-brand-red' : 'bg-[#F0F5FF] text-[#1672EF]'}`}>
             {getCategoryIcon(category, theme)}
           </div>
-          <h2 className={`text-2xl sm:text-3xl font-hero font-extrabold tracking-widest uppercase text-center ${theme === 'red' ? 'text-brand-red' : 'text-[#1672EF]'}`}>{category}</h2>
+          <h2 className={`text-2xl sm:text-3xl font-hero font-extrabold tracking-widest uppercase text-center ${theme === 'red' ? 'text-brand-red' : 'text-[#1672EF]'}`}>
+            {categoryName || category}
+          </h2>
         </div>
-        <p className="text-[#6A6A6A] font-medium text-xs sm:text-sm text-center">{getCategorySubtitle(category)}</p>
+        <p className="text-[#6A6A6A] font-medium text-xs sm:text-sm text-center px-4">{categorySubtitle || getCategorySubtitle(category)}</p>
       </div>
 
       <div className="w-full flex-1 min-h-0 px-0 bg-white md:rounded-[2rem] overflow-hidden relative shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] border border-gray-100">
@@ -228,7 +232,7 @@ const VideoPlaylist = ({ videos, category, theme = 'blue' }) => {
               className="w-full py-4 border-b border-gray-200 flex justify-center items-center bg-white shadow-sm relative z-10 hover:bg-gray-50 transition-colors"
             >
                   <div className={`flex items-center gap-2 font-bold text-base uppercase ${theme === 'red' ? 'text-brand-red' : 'text-brand-blue'}`}>
-                    <span>View more {category}</span>
+                    <span>View more {categoryName || category}</span>
                     <motion.div
                       animate={{ rotate: isMobilePlaylistOpen ? 180 : 0 }}
                       transition={{ duration: 0.3 }}
@@ -326,7 +330,7 @@ const VideoPlaylist = ({ videos, category, theme = 'blue' }) => {
           <div className="flex-1 h-full flex flex-col bg-white overflow-hidden pr-2 rounded-2xl">
             {/* Header */}
             <div className="flex justify-between items-center mb-6 px-2 mt-2">
-              <h2 className="text-xl font-bold text-gray-900 font-main">{category}</h2>
+              <h2 className="text-xl font-bold text-gray-900 font-main">{categoryName || category}</h2>
               <span className="text-sm font-semibold text-gray-500">{videos.length} Videos</span>
             </div>
             
@@ -355,7 +359,7 @@ const VideoPlaylist = ({ videos, category, theme = 'blue' }) => {
                         <h4 className={`text-sm md:text-base font-bold truncate ${isActive ? 'text-gray-900' : 'text-gray-800'}`}>
                           {video.title}
                         </h4>
-                        <p className="text-xs text-gray-600 mt-1">{category}</p>
+                        <p className="text-xs text-gray-600 mt-1">{categoryName || category}</p>
                       </div>
                       <div className={`text-xs md:text-sm font-bold whitespace-nowrap ${isActive ? (theme === 'red' ? 'text-brand-red' : 'text-[#1672EF]') : 'text-gray-500'}`}>
                         {isActive ? 'Playing' : ''}

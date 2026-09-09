@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { getCachedContent, fetchContent } from '../../utils/api';
 import Navbar from './components/Navbar';
 import TopGlobalClients from './components/TopGlobalClients';
 import ContactForm from '../../components/ContactForm/ContactForm';
@@ -35,24 +36,25 @@ const RevealWord = ({ children, scrollYProgress, start, end, className }) => {
   );
 };
 
-const RevealText = () => {
+const RevealText = ({ data }) => {
   const targetRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: targetRef,
     offset: ["start 75%", "end 60%"]
   });
 
-  const words = [
-    "Join", "us", "on", "this", "<br/>",
-    "exciting", "journey", "of", "<br/>",
-    "success", "at", "<br/>",
-    "RedAsh", "Films,", "<br/>",
-    "where", "innovation", "<br/>",
-    "meets", "impact.", "<br/>",
-    "Together,", "let's", "<br/>",
-    "redefine", "<br/>",
-    "possibilities."
-  ];
+  const text = data?.text || "Join us on this\nexciting journey of\nsuccess at\nRedAsh Films,\nwhere innovation\nmeets impact.\nTogether, let's\nredefine\npossibilities.";
+  const highlightWords = (data?.highlightWords || "innovation, impact.").split(',').map(w => w.trim());
+
+  const words = [];
+  const lines = text.split('\n');
+  lines.forEach((line, index) => {
+    const lineWords = line.split(' ').filter(w => w !== '');
+    words.push(...lineWords);
+    if (index < lines.length - 1) {
+      words.push('<br/>');
+    }
+  });
 
   // We only count actual words for the progress calculation
   const totalWords = words.filter(w => w !== "<br/>").length;
@@ -87,7 +89,7 @@ const RevealText = () => {
         wordCount++;
         
         let specialClasses = "";
-        if (word === "innovation" || word === "impact.") {
+        if (highlightWords.includes(word)) {
           specialClasses = "text-brand-blue";
         }
 
@@ -146,22 +148,68 @@ const AboutAgency = () => {
   const containerRef = useRef(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [heroText, setHeroText] = useState('by Ashish Lal, an engineer from IIT Delhi, RedAsh has assembled a highly experienced and professional team of experts spanning filmmaking, advertising, strategy and data analytics.');
+  const [clientText, setClientText] = useState('Our portfolio proudly boasts collaborations with esteemed global government and corporate clients, such as');
+  const [catalystData, setCatalystData] = useState({
+    titlePart1: 'A Catalyst for',
+    highlightText: 'Exponential',
+    titlePart2: 'Growth',
+    paragraph1: 'Throughout the years in the industry, RedAsh Films has been a catalyst for exponential growth, thanks to our bespoke and imaginative strategies.',
+    paragraph2: 'Our mission is to continue empowering organizations to reach their full potential.',
+    images: []
+  });
+  const [joinUsData, setJoinUsData] = useState({
+    text: "Join us on this\nexciting journey of\nsuccess at\nRedAsh Films,\nwhere innovation\nmeets impact.\nTogether, let's\nredefine\npossibilities.",
+    highlightWords: "innovation, impact."
+  });
   const aboutImages = [pic1, pic2, pic3, pic4, pic5, pic6, pic7];
+  const displayImages = catalystData.images && catalystData.images.length > 0 ? catalystData.images : aboutImages;
+
+  useEffect(() => {
+    const loadContent = async () => {
+      let content = getCachedContent();
+      
+      const applyContent = (data) => {
+        if (data?.['agency-about']?.hero?.paraText) {
+          setHeroText(data['agency-about'].hero.paraText);
+        }
+        if (data?.['agency-about']?.clients?.title) {
+          setClientText(data['agency-about'].clients.title);
+        }
+        if (data?.['agency-about']?.catalyst) {
+          setCatalystData(prev => ({ ...prev, ...data['agency-about'].catalyst }));
+        }
+        if (data?.['agency-about']?.joinUs) {
+          setJoinUsData(prev => ({ ...prev, ...data['agency-about'].joinUs }));
+        }
+      };
+
+      if (content) {
+        applyContent(content);
+      }
+      
+      const freshContent = await fetchContent();
+      if (freshContent) {
+        applyContent(freshContent);
+      }
+    };
+    loadContent();
+  }, []);
 
   useEffect(() => {
     if (isHovered) return;
     const interval = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % aboutImages.length);
+      setCurrentImageIndex((prev) => (prev + 1) % displayImages.length);
     }, 4000);
     return () => clearInterval(interval);
-  }, [isHovered]);
+  }, [isHovered, displayImages.length]);
 
   const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + aboutImages.length) % aboutImages.length);
+    setCurrentImageIndex((prev) => (prev - 1 + displayImages.length) % displayImages.length);
   };
 
   const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % aboutImages.length);
+    setCurrentImageIndex((prev) => (prev + 1) % displayImages.length);
   };
 
   const { scrollYProgress } = useScroll({
@@ -265,7 +313,15 @@ const AboutAgency = () => {
                 className="flex flex-col md:flex-row items-end justify-end w-full mt-2 md:mt-0 gap-4 md:gap-8"
               >
                 <div className="text-left text-sm md:text-lg lg:text-xl font-medium text-gray-500 normal-case leading-snug tracking-normal max-w-[280px] md:max-w-sm pb-2 md:pb-6 mt-6 md:mt-0 self-start md:self-end">
-                  by <a href="https://www.linkedin.com/in/ashishlalreal/" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline transition-colors hover:text-blue-700">Ashish Lal</a>, an engineer from IIT Delhi, RedAsh has assembled a highly experienced and professional team of experts spanning filmmaking, advertising, strategy and data analytics.
+                  {heroText.split(/(Ashish Lal)/i).map((part, idx) => 
+                    part.toLowerCase() === 'ashish lal' ? (
+                      <a key={idx} href="https://www.linkedin.com/in/ashishlalreal/" target="_blank" rel="noopener noreferrer" className="text-brand-blue hover:underline transition-colors hover:text-blue-700">
+                        {part}
+                      </a>
+                    ) : (
+                      part
+                    )
+                  )}
                 </div>
                 <div className="flex items-baseline gap-4 md:gap-6 self-end">
                   <span className="text-brand-black text-[10vw] md:text-[7rem] leading-none mb-1 md:mb-5 [@media(max-height:600px)_and_(orientation:landscape)]:text-[5rem]">
@@ -285,7 +341,7 @@ const AboutAgency = () => {
           layout="wall"
           customTitle={
             <h2 className="text-xl md:text-2xl lg:text-3xl font-light text-gray-700 leading-relaxed font-main max-w-4xl mx-auto">
-              Our portfolio proudly boasts collaborations with esteemed global government and corporate clients, such as
+              {clientText}
             </h2>
           }
         />
@@ -305,7 +361,7 @@ const AboutAgency = () => {
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
               >
-                {aboutImages.map((imgSrc, index) => (
+                {displayImages.map((imgSrc, index) => (
                   <motion.img 
                     key={index}
                     initial={false}
@@ -315,7 +371,15 @@ const AboutAgency = () => {
                       zIndex: index === currentImageIndex ? 10 : 0
                     }}
                     transition={{ duration: 1.5, ease: "easeInOut" }}
-                    src={imgSrc} 
+                    src={
+                      typeof imgSrc === 'string' 
+                        ? (imgSrc.startsWith('http') 
+                            ? imgSrc 
+                            : imgSrc.startsWith('/uploads') 
+                              ? `http://localhost:5000${imgSrc}` 
+                              : imgSrc)
+                        : imgSrc
+                    } 
                     alt={`RedAsh Team ${index + 1}`} 
                     className="absolute inset-0 w-full h-full object-cover" 
                   />
@@ -351,19 +415,31 @@ const AboutAgency = () => {
               
               <div className="space-y-8 pl-6 md:pl-10 [@media(max-height:600px)_and_(orientation:landscape)]:space-y-3 [@media(max-height:600px)_and_(orientation:landscape)]:pl-4">
                 <h2 className="text-4xl md:text-5xl lg:text-6xl font-hero tracking-tight text-brand-black leading-tight [@media(max-height:600px)_and_(orientation:landscape)]:text-2xl">
-                  A Catalyst for <br />
+                  {catalystData.titlePart1} <br />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-red to-brand-blue">
-                    Exponential
-                  </span> Growth
+                    {catalystData.highlightText}
+                  </span> {catalystData.titlePart2}
                 </h2>
                 
                 <div className="w-20 h-1 bg-gray-200 rounded-full [@media(max-height:600px)_and_(orientation:landscape)]:h-0.5 [@media(max-height:600px)_and_(orientation:landscape)]:w-10"></div>
                 
                 <p className="text-xl md:text-2xl text-gray-600 leading-relaxed font-light [@media(max-height:600px)_and_(orientation:landscape)]:text-xs [@media(max-height:600px)_and_(orientation:landscape)]:leading-snug">
-                  Throughout the years in the industry, RedAsh Films has been a catalyst for exponential growth, thanks to our <span className="font-semibold text-brand-black">bespoke and imaginative strategies</span>. 
+                  {catalystData.paragraph1.split(/(bespoke and imaginative strategies)/i).map((part, idx) => 
+                    part.toLowerCase() === 'bespoke and imaginative strategies' ? (
+                      <span key={idx} className="font-semibold text-brand-black">{part}</span>
+                    ) : (
+                      part
+                    )
+                  )}
                 </p>
                 <p className="text-xl md:text-2xl text-gray-600 leading-relaxed font-light [@media(max-height:600px)_and_(orientation:landscape)]:text-xs [@media(max-height:600px)_and_(orientation:landscape)]:leading-snug">
-                  Our mission is to continue empowering organizations to reach their <span className="font-semibold text-brand-blue">full potential</span>.
+                  {catalystData.paragraph2.split(/(full potential)/i).map((part, idx) => 
+                    part.toLowerCase() === 'full potential' ? (
+                      <span key={idx} className="font-semibold text-brand-blue">{part}</span>
+                    ) : (
+                      part
+                    )
+                  )}
                 </p>
               </div>
             </motion.div>
@@ -386,7 +462,7 @@ const AboutAgency = () => {
             
             {/* Stacked Typographic Text with Scroll Reveal */}
             <div className="flex-1 mt-2 ml-8 md:ml-32 lg:ml-48">
-              <RevealText />
+              <RevealText data={joinUsData} />
             </div>
           </motion.div>
           

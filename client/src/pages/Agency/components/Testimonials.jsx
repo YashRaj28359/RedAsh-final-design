@@ -2,15 +2,52 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { FaStar, FaPlay, FaTimes } from 'react-icons/fa';
 import YouTube from 'react-youtube';
+import { getCachedContent, fetchContent } from '../../../utils/api';
+
+const staticTestimonialsData = [
+  {
+    type: "video",
+    name: "Kuljit Chadha",
+    title: "Co-Founder & COO",
+    company: "Disprz",
+    videoId: "1AUDTOK84ns",
+    rotationClass: "-rotate-2"
+  },
+  {
+    type: "video",
+    name: "Sudeep Rao",
+    title: "Associate Director, Marketing",
+    company: "Sigmoid",
+    videoId: "27Fip-3VgSU",
+    rotationClass: "rotate-1"
+  },
+  {
+    type: "text",
+    name: "XYZ",
+    title: "XYZ",
+    company: "XYZ",
+    text: "More video testimonials coming soon…",
+    avatar: "https://placehold.co/150x150/1672ef/1672ef.png",
+    rotationClass: "-rotate-1"
+  }
+];
+
+const extractYouTubeId = (url) => {
+  if (!url) return '';
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|shorts\/)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11) ? match[2] : url;
+};
 
 const VideoTestimonial = ({ name, title, company, videoId, rotationClass = "", onPlay }) => {
-  const thumbUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+  const parsedVideoId = extractYouTubeId(videoId);
+  const thumbUrl = `https://img.youtube.com/vi/${parsedVideoId}/hqdefault.jpg`;
 
   return (
     <div className={`w-full bg-white rounded-3xl overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-gray-100 flex flex-col group h-full transition-all duration-300 hover:rotate-0 hover:scale-[1.02] z-10 hover:z-20 ${rotationClass} [@media(max-height:600px)_and_(orientation:landscape)]:rounded-xl`}>
       {/* Thumbnail / Video Section */}
       <div className="relative w-full h-48 md:h-52 bg-gray-200 overflow-hidden [@media(max-height:600px)_and_(orientation:landscape)]:h-24">
-        <div className="w-full h-full relative cursor-pointer" onClick={() => onPlay(videoId)}>
+        <div className="w-full h-full relative cursor-pointer" onClick={() => onPlay(parsedVideoId)}>
           <img src={thumbUrl} alt={name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
 
           {/* Play Button */}
@@ -63,6 +100,22 @@ const TextTestimonial = ({ text, name, title, company, avatar, rotationClass = "
 const Testimonials = () => {
   const [activeVideo, setActiveVideo] = useState(null);
   const [player, setPlayer] = useState(null);
+  const [dynamicTestimonials, setDynamicTestimonials] = useState([]);
+
+  useEffect(() => {
+    const cached = getCachedContent();
+    if (cached?.agency?.testimonials) {
+      setDynamicTestimonials(cached.agency.testimonials);
+    }
+    
+    fetchContent().then(data => {
+      if (data?.agency?.testimonials) {
+        setDynamicTestimonials(data.agency.testimonials);
+      }
+    }).catch(console.error);
+  }, []);
+
+  const displayTestimonials = dynamicTestimonials.length > 0 ? dynamicTestimonials : staticTestimonialsData;
 
   const handlePlay = (videoId) => {
     setActiveVideo(videoId);
@@ -121,32 +174,33 @@ const Testimonials = () => {
 
           {/* Grid Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-12 [@media(max-height:600px)_and_(orientation:landscape)]:grid-cols-3 [@media(max-height:600px)_and_(orientation:landscape)]:gap-4">
-            
-            {/* Row 1 */}
-            <VideoTestimonial 
-              name="Kuljit Chadha" 
-              title="Co-Founder & COO" 
-              company="Disprz" 
-              videoId="1AUDTOK84ns" 
-              rotationClass="-rotate-2"
-              onPlay={handlePlay}
-            />
-            <VideoTestimonial 
-              name="Sudeep Rao" 
-              title="Associate Director, Marketing" 
-              company="Sigmoid" 
-              videoId="27Fip-3VgSU" 
-              rotationClass="rotate-1"
-              onPlay={handlePlay}
-            />
-            <TextTestimonial 
-              text="More video testimonials coming soon…"
-              name="XYZ"
-              title="XYZ"
-              company="XYZ"
-              avatar="https://placehold.co/150x150/1672ef/1672ef.png"
-              rotationClass="-rotate-1"
-            />
+            {displayTestimonials.map((testimonial, index) => {
+              if (testimonial.type === 'video') {
+                return (
+                  <VideoTestimonial 
+                    key={`testimonial-${index}`}
+                    name={testimonial.name}
+                    title={testimonial.title}
+                    company={testimonial.company}
+                    videoId={testimonial.videoId}
+                    rotationClass={testimonial.rotationClass || ""}
+                    onPlay={handlePlay}
+                  />
+                );
+              } else {
+                return (
+                  <TextTestimonial 
+                    key={`testimonial-${index}`}
+                    text={testimonial.text}
+                    name={testimonial.name}
+                    title={testimonial.title}
+                    company={testimonial.company}
+                    avatar={testimonial.avatar}
+                    rotationClass={testimonial.rotationClass || ""}
+                  />
+                );
+              }
+            })}
           </div>
         </div>
       </section>
@@ -176,12 +230,12 @@ const Testimonials = () => {
               ✕
             </button>
             <YouTube
-              videoId="1AUDTOK84ns"
+              videoId={activeVideo || ""}
               opts={{
                 width: '100%',
                 height: '100%',
                 playerVars: {
-                  autoplay: 0,
+                  autoplay: 1, // Auto-play when opened
                   rel: 0,
                   modestbranding: 1,
                   playsinline: 1

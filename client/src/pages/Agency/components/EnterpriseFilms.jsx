@@ -21,7 +21,7 @@ const enterpriseCategories = [
   { name: "ANY CREATIVE FILMS", icon: <FaLightbulb className="text-3xl text-brand-blue" /> }
 ];
 
-const EnterpriseFilms = () => {
+const EnterpriseFilms = ({ heroData = {}, catsData = {}, videosData = {} }) => {
   const sectionRefs = useRef({});
 
   const scrollToSection = (category) => {
@@ -30,6 +30,14 @@ const EnterpriseFilms = () => {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
+
+  const eyebrow = heroData.eyebrow || 'What We Create';
+  const headingWhite = heroData.headingWhite || 'watch our';
+  const headingBlue = heroData.headingBlue || 'Enterprise Films';
+  const paragraph1 = heroData.paragraph1 || 'RedAsh Ad Agency understands business challenges, designs growth strategies, and brings them to life through enterprise films, creative campaigns and digital content.';
+  const paragraph2 = heroData.paragraph2 || 'RedAsh was founded in 2007 by Ashish Lal, an IIT Delhi engineer. It has two divisions: Enterprise (RedAsh Ad Agency) and Entertainment (RedAsh Films).';
+  const thousandsLine = heroData.thousandsLine || 'We have produced thousands of Enterprise Films across a wide range of categories.';
+  const buttonText = heroData.buttonText || 'Get your free quotation today';
 
   return (
     <section id="enterprise-films" className="w-full pt-10 pb-16 bg-white relative z-20 overflow-hidden flex flex-col items-center font-main">
@@ -56,7 +64,7 @@ const EnterpriseFilms = () => {
               <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-brand-blue"></div>
             </div>
             <span className="text-brand-blue font-bold tracking-[0.2em] text-xs md:text-sm uppercase whitespace-nowrap">
-              What We Create
+              {eyebrow}
             </span>
             <div className="w-16 md:w-32 h-[1px] bg-brand-blue relative">
               <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-brand-blue"></div>
@@ -65,8 +73,8 @@ const EnterpriseFilms = () => {
 
           {/* Main Title */}
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-hero font-black tracking-widest mb-4 leading-none">
-            <span className="text-gray-800 uppercase">watch our</span>{' '}
-            <span className="text-[#1672ef] uppercase">Enterprise Films</span>
+            <span className="text-gray-800 uppercase">{headingWhite}</span>{' '}
+            <span className="text-[#1672ef] uppercase">{headingBlue}</span>
           </h2>
 
           {/* Camera Icon Divider */}
@@ -85,13 +93,19 @@ const EnterpriseFilms = () => {
           {/* Description Text */}
           <div className="max-w-4xl mx-auto px-4">
             <p className="font-main text-gray-600 text-sm md:text-base lg:text-lg leading-relaxed mb-3">
-              <Link to="/ad-agency" className="hover:opacity-80 transition-opacity"><strong><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-blue">Ad Agency</span></strong></Link> understands business challenges, designs growth strategies, and brings them to life through enterprise films, creative campaigns and digital content.
+              <Link to="/ad-agency" className="hover:opacity-80 transition-opacity"><strong><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-blue">Ad Agency</span></strong></Link> {paragraph1.replace(/^RedAsh Ad Agency\s*/, '')}
             </p>
             <p className="font-main text-gray-600 text-sm md:text-base lg:text-lg leading-relaxed mb-3">
               <Link to="/" className="hover:opacity-80 transition-opacity"><strong><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span></strong></Link> was founded in 2007 by <a href="https://www.linkedin.com/in/ashishlalreal/" target="_blank" rel="noopener noreferrer" className="text-brand-blue font-semibold hover:underline">Ashish Lal</a>, an <strong>IIT Delhi engineer</strong>. It has two divisions: <br /> <strong>Enterprise</strong> (<Link to="/ad-agency" className="hover:underline font-bold"><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-blue">Ad Agency</span></Link>) and <strong>Entertainment</strong> (<Link to="/entertainment" className="hover:underline font-bold"><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-red">Films</span></Link>).
             </p>
             <p className="font-subtitle text-gray-600 text-base md:text-xl lg:text-2xl leading-relaxed mb-6 flex flex-wrap justify-center items-center gap-2">
-              We have produced <span className="font-cursive text-brand-blue text-3xl md:text-4xl lg:text-5xl px-2 -rotate-2 transform translate-y-1">thousands</span> of <strong>Enterprise Films</strong> across a wide range of categories.
+              {(() => {
+                const parts = thousandsLine.split('thousands');
+                if (parts.length === 2) {
+                  return <>{parts[0]}<span className="font-cursive text-brand-blue text-3xl md:text-4xl lg:text-5xl px-2 -rotate-2 transform translate-y-1">thousands</span>{parts[1]}</>;
+                }
+                return thousandsLine;
+              })()}
             </p>
           </div>
 
@@ -109,46 +123,59 @@ const EnterpriseFilms = () => {
             className="flex items-center gap-2 bg-white text-brand-blue border-2 border-brand-blue font-bold text-xs md:text-sm py-2 px-6 rounded-full shadow-[0_4px_14px_rgba(22,114,239,0.15)] hover:bg-brand-blue hover:text-white transition-all duration-300 transform hover:-translate-y-1 group"
           >
             <FiFileText className="text-lg" />
-            <span>Get your free quotation today</span>
+            <span>{buttonText}</span>
           </button>
         </div>
 
         {/* Categories Grid (8 Cards) */}
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2 md:gap-3 mb-10 w-full px-2">
-          {enterpriseCategories.map((cat, index) => (
-            <motion.button
-              key={index}
-              onClick={() => scrollToSection(cat.name)}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.4, delay: index * 0.05, ease: "easeOut" }}
-              className="flex flex-col items-center bg-white border border-gray-100 rounded-xl p-3 shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(22,114,239,0.12)] hover:border-brand-blue/30 transition-all duration-300 group"
-            >
-              <div className="w-full flex justify-start mb-1">
-                <span className="text-brand-blue/40 font-bold text-base leading-none">{String(index + 1).padStart(2, '0')}</span>
-              </div>
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-blue-50/50 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-300">
-                {cat.icon}
-              </div>
-              <div className="w-5 h-0.5 bg-brand-blue mb-2"></div>
-              <span className="text-gray-800 font-bold text-[10px] md:text-xs text-center leading-tight min-h-[28px] mb-2">
-                {cat.name}
-              </span>
-              <div className="mt-auto w-5 h-5 rounded-full border border-gray-200 flex items-center justify-center text-gray-300 group-hover:border-brand-blue group-hover:bg-brand-blue group-hover:text-white transition-all duration-300">
-                <FiArrowRight size={10} />
-              </div>
-            </motion.button>
-          ))}
+          {enterpriseCategories.map((cat, index) => {
+            const catData = catsData?.[`cat${index + 1}`] || {};
+            const displayName = catData.name || cat.name;
+            
+            return (
+              <motion.button
+                key={index}
+                onClick={() => scrollToSection(cat.name)}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.4, delay: index * 0.05, ease: "easeOut" }}
+                className="flex flex-col items-center bg-white border border-gray-100 rounded-xl p-3 shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgba(22,114,239,0.12)] hover:border-brand-blue/30 transition-all duration-300 group"
+              >
+                <div className="w-full flex justify-start mb-1">
+                  <span className="text-brand-blue/40 font-bold text-base leading-none">{String(index + 1).padStart(2, '0')}</span>
+                </div>
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-blue-50/50 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-300">
+                  {cat.icon}
+                </div>
+                <div className="w-5 h-0.5 bg-brand-blue mb-2"></div>
+                <span className="text-gray-800 font-bold text-[10px] md:text-xs text-center leading-tight min-h-[28px] mb-2">
+                  {displayName}
+                </span>
+                <div className="mt-auto w-5 h-5 rounded-full border border-gray-200 flex items-center justify-center text-gray-300 group-hover:border-brand-blue group-hover:bg-brand-blue group-hover:text-white transition-all duration-300">
+                  <FiArrowRight size={10} />
+                </div>
+              </motion.button>
+            );
+          })}
         </div>
 
       </div> {/* Close the constrained max-w wrapper */}
 
       {/* Dynamic Video Sections (Edge to Edge) */}
       <div id="enterprise-video-playlists" className="flex flex-col w-full bg-white relative z-10 gap-0 snap-y snap-mandatory">
-        {enterpriseCategories.map((cat) => {
-          const categoryVideos = enterpriseVideos.filter(v => v.category === cat.name);
+        {enterpriseCategories.map((cat, index) => {
+          const cmsVideos = videosData?.[`cat${index + 1}`];
+          const categoryVideos = (cmsVideos && cmsVideos.length > 0)
+            ? cmsVideos
+            : enterpriseVideos.filter(v => v.category === cat.name);
+          
           if (categoryVideos.length === 0) return null;
+          
+          const catData = catsData?.[`cat${index + 1}`] || {};
+          const displayName = catData.name || cat.name;
+          const displaySubtitle = catData.subtitle || null;
 
           return (
             <motion.div 
@@ -161,7 +188,7 @@ const EnterpriseFilms = () => {
               className="w-full snap-start scroll-mt-[100px] md:scroll-mt-[30px]"
             >
               {/* Video Playlist Component */}
-              <VideoPlaylist videos={categoryVideos} category={cat.name} />
+              <VideoPlaylist videos={categoryVideos} category={cat.name} categoryName={displayName} categorySubtitle={displaySubtitle} />
             </motion.div>
           );
         })}

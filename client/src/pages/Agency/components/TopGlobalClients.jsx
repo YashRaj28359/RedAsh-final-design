@@ -1,6 +1,7 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { fetchContent, getCachedContent } from '../../../utils/api';
 
 // Row 1
 import logo2 from '../../../assets/Agency/Logo - Clients/Copy of LG logo.png';
@@ -30,8 +31,22 @@ import logo22 from '../../../assets/Agency/Logo - Clients/Screenshot 2026-07-23 
 import logo23 from '../../../assets/Agency/Logo - Clients/logo.png';
 import logoSavvy from '../../../assets/Agency/Logo - Clients/dspzr.png';
 
-const logosRow1 = [logo2, logo3, logo4, logo5, logo6, logo7, logo8, logo9, logo10, logo11, logo12, logoGov];
-const logosRow2 = [logo13, logo14, logo15, logo16, logo17, logo18, logo19, logo20, logo21, logo22, logo23, logoSavvy];
+const staticLogosRow1 = [logo2, logo3, logo4, logo5, logo6, logo7, logo8, logo9, logo10, logo11, logo12, logoGov];
+const staticLogosRow2 = [logo13, logo14, logo15, logo16, logo17, logo18, logo19, logo20, logo21, logo22, logo23, logoSavvy];
+
+const staticWallLogos = [
+  logoGov, logo10, logo7, logo17, logo18, // Govt of India, UK Govt, UN, Gujarat, Bihar
+  logo2, logo3, logo4, logo5, logo6, logo8, logo9, logo11, logo12,
+  logo13, logo14, logo15, logo16, logo19, logo20, logo21, logo22, logo23, logoSavvy
+];
+
+// Helper to resolve image URL
+const resolveImg = (img) => {
+  if (!img) return null;
+  if (img.startsWith('http') || img.startsWith('/') || img.startsWith('data:')) return img;
+  // local static import (object)
+  return img;
+};
 
 const TopGlobalClients = ({ customTitle, titleClass, layout = 'marquee' }) => {
   const row1Ref = useRef(null);
@@ -41,13 +56,35 @@ const TopGlobalClients = ({ customTitle, titleClass, layout = 'marquee' }) => {
   const tween2 = useRef(null);
   const wallRefs = useRef([]);
 
-  const allLogos = layout === 'wall' 
-    ? [
-        logoGov, logo10, logo7, logo17, logo18, // Govt of India, UK Govt, UN, Gujarat, Bihar
-        logo2, logo3, logo4, logo5, logo6, logo8, logo9, logo11, logo12, 
-        logo13, logo14, logo15, logo16, logo19, logo20, logo21, logo22, logo23, logoSavvy
-      ]
-    : [...logosRow1, ...logosRow2];
+  const [dynamicClients, setDynamicClients] = useState([]);
+
+  useEffect(() => {
+    // Set cache as initial value, then always fetch fresh
+    const cached = getCachedContent();
+    if (cached?.agency?.globalClients) {
+      setDynamicClients(cached.agency.globalClients);
+    }
+    // Always fetch fresh to pick up newly added clients
+    fetchContent().then(data => {
+      if (data?.agency?.globalClients) {
+        setDynamicClients(data.agency.globalClients);
+      }
+    }).catch(() => {});
+  }, []);
+
+  // Dynamic clients from DB — split by their chosen row
+  const extraRow1 = dynamicClients.filter(c => c.row !== 'row2').map(c => resolveImg(c.img)).filter(Boolean);
+  const extraRow2 = dynamicClients.filter(c => c.row === 'row2').map(c => resolveImg(c.img)).filter(Boolean);
+  const extraLogos = dynamicClients.map(c => resolveImg(c.img)).filter(Boolean);
+
+  // Build combined logo lists: static base + extras appended to correct rows
+  const allStaticLogos = layout === 'wall' ? staticWallLogos : [...staticLogosRow1, ...staticLogosRow2];
+  const combinedLogos = [...allStaticLogos, ...extraLogos];
+
+  const logosRow1 = [...staticLogosRow1, ...extraRow1];
+  const logosRow2 = [...staticLogosRow2, ...extraRow2];
+
+  const allLogos = layout === 'wall' ? combinedLogos : [...logosRow1, ...logosRow2];
 
   useGSAP(() => {
     if (layout === 'wall') {
@@ -67,19 +104,23 @@ const TopGlobalClients = ({ customTitle, titleClass, layout = 'marquee' }) => {
       });
       return;
     }
+
+    // Kill any existing tweens first
+    if (tween1.current) tween1.current.kill();
+    if (tween2.current) tween2.current.kill();
     
     // Row 1 goes right (starts at -50% goes to 0%)
     tween1.current = gsap.fromTo(row1Ref.current, 
       { xPercent: -50 }, 
-      { xPercent: 0, duration: 35, ease: "none", repeat: -1 }
+      { xPercent: 0, duration: 60, ease: "none", repeat: -1 }
     );
 
     // Row 2 goes left (starts at 0% goes to -50%)
     tween2.current = gsap.fromTo(row2Ref.current, 
       { xPercent: 0 }, 
-      { xPercent: -50, duration: 35, ease: "none", repeat: -1 }
+      { xPercent: -50, duration: 60, ease: "none", repeat: -1 }
     );
-  }, [layout]);
+  }, [layout, dynamicClients]);
 
   const handleMouseEnter = () => {
     if (layout === 'wall') return;
@@ -136,6 +177,7 @@ const TopGlobalClients = ({ customTitle, titleClass, layout = 'marquee' }) => {
           </>
         ) : (
           <div 
+            key={`marquee-${logosRow1.length}-${logosRow2.length}`}
             className="flex flex-col border-y border-gray-200/60 w-full overflow-hidden"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}

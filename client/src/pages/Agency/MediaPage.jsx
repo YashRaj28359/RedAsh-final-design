@@ -9,12 +9,16 @@ import { fetchContent } from '../../utils/api';
 
 const MediaPage = () => {
   const [dbMediaCards, setDbMediaCards] = React.useState([]);
+  const [subtitle, setSubtitle] = React.useState('Featured news articles on RedAsh');
 
   useEffect(() => {
     window.scrollTo(0, 0);
     fetchContent().then(data => {
       if (data && data.homepage && data.homepage.mediaCards) {
         setDbMediaCards(data.homepage.mediaCards);
+      }
+      if (data?.agency?.mediaConfig?.subtitle) {
+        setSubtitle(data.agency.mediaConfig.subtitle);
       }
     }).catch(console.error);
   }, []);
@@ -55,9 +59,8 @@ const MediaPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-gray-600 text-lg max-w-2xl mx-auto"
-            >
-              Featured news articles on RedAsh
-            </motion.p>
+              dangerouslySetInnerHTML={{ __html: subtitle }}
+            />
           </div>
 
           {/* Media Grid */}

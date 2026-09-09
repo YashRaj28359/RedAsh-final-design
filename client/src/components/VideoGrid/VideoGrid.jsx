@@ -23,8 +23,6 @@ const itemVariants = {
 import { flushSync } from 'react-dom';
 
 import { fetchContent } from '../../utils/api';
-import microDramaImg from '../../assets/Agency/Filmthumbnails/Micro drama.png';
-import webSeriesImg from '../../assets/Films/Cards/Card2.jpg';
 
 const VideoGrid = () => {
   const [selectedVideo, setSelectedVideo] = useState(null);
@@ -48,12 +46,9 @@ const VideoGrid = () => {
       .then(data => {
         if (data && data.homepage && data.homepage.video_tile && data.homepage.video_tile.videos) {
           const mappedVideos = data.homepage.video_tile.videos.map(v => {
-            if (v.id === 'web-series' && (!v.thumbnail || v.thumbnail === '')) {
-              v.thumbnail = webSeriesImg;
-            }
-            if (v.id === 'kukufm' && (!v.thumbnail || v.thumbnail === '')) {
-              v.thumbnail = microDramaImg;
-            }
+            // Always force correct thumbnails — DB may have stale Vite hash URLs
+            if (v.id === 'web-series') v.thumbnail = '/assets/web-series-thumb.jpg';
+            if (v.id === 'kukufm') v.thumbnail = '/assets/microdrama-thumb.png';
             return v;
           });
           setDynamicVideos(mappedVideos);
@@ -136,12 +131,15 @@ const VideoGrid = () => {
 
   const displayVideos = (dynamicVideos || []).map(v => {
     let finalThumbnail = v.thumbnail;
-    const localVideo = videos.find(lv => lv.category === v.category);
     
-    // Fallback to local imported image if the DB provides a generic youtube thumbnail 
-    // for a category that has a special local image (e.g. Microdrama, Web Series)
-    if (localVideo && localVideo.thumbnail && !localVideo.thumbnail.startsWith('http') && finalThumbnail && finalThumbnail.includes('img.youtube.com')) {
-      finalThumbnail = localVideo.thumbnail;
+    // Always force correct thumbnails for local-asset videos
+    if (v.id === 'web-series') finalThumbnail = '/assets/web-series-thumb.jpg';
+    else if (v.id === 'kukufm') finalThumbnail = '/assets/microdrama-thumb.png';
+    else if (!finalThumbnail || finalThumbnail.startsWith('[object') || finalThumbnail === 'undefined') {
+      const localVideo = videos.find(lv => lv.category === v.category);
+      if (localVideo?.thumbnail && !localVideo.thumbnail.startsWith('http')) {
+        finalThumbnail = localVideo.thumbnail;
+      }
     }
     
     return { ...v, uniqueId: v.uniqueId || v.id, thumbnail: finalThumbnail };

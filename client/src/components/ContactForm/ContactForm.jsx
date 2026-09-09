@@ -24,7 +24,7 @@ const ContactForm = ({
     text2: 'Actors, Film Crew Members & Vendors can email their profiles only at',
     email2: 'redash.films@gmail.com',
     officeText: 'RedAsh Office:',
-    officeAddress: '1101, Peninsula Park, Fun Republic Lane, Andheri West, Mumbai, 400053',
+    officeAddress: '1302-1305, Peninsula Park, Fun Republic Lane, Andheri West, Mumbai, 400053',
     mapLinkText: '(Google Location)',
     mapLinkUrl: 'https://share.google/Pxp4Tva4m3IyfrKAd'
   });

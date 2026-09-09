@@ -126,16 +126,16 @@ const CelebritiesSection = () => {
       </div>
 
       {/* Accordion Gallery Container */}
-      <div className="w-full max-w-[1920px] mx-auto px-0 md:px-8 flex flex-col gap-2 lg:gap-3">
+      <div className="w-full max-w-[1920px] mx-auto px-4 md:px-12 lg:px-8 flex flex-row lg:flex-col gap-2 lg:gap-3 h-[350px] landscape:h-[280px] lg:landscape:h-auto lg:h-auto overflow-x-auto lg:overflow-visible snap-x lg:snap-none snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         {/* Row 1: Celebrities */}
-        <div className="flex w-full h-[350px] landscape:h-[280px] lg:landscape:h-[600px] lg:h-[600px] gap-2 lg:gap-2 overflow-x-auto lg:overflow-hidden snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] px-4 lg:px-0">
+        <div className="contents lg:flex lg:w-full lg:h-[600px] lg:landscape:h-[600px] lg:gap-2">
           {row1.map((celeb, index) => {
             const isActive = activeCard === index;
             return (
               <div 
                 key={index}
                 onClick={() => handleCardClick(index)}
-                className={`celeb-card group relative flex-none w-[75vw] sm:w-[50vw] md:w-[40vw] lg:w-auto lg:flex-1 snap-center transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] lg:hover:flex-[6] cursor-pointer overflow-hidden rounded-md bg-[#1a1a1a] ${isActive ? 'is-active lg:!flex-[6]' : ''}`}
+                className={`celeb-card group relative flex-none h-full w-[75vw] sm:w-[50vw] md:w-[40vw] lg:w-auto lg:flex-1 snap-center transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] lg:hover:flex-[6] cursor-pointer overflow-hidden rounded-md bg-[#1a1a1a] ${isActive ? 'is-active lg:!flex-[6]' : ''}`}
               >
                 <img 
                   src={celeb.img} 
@@ -176,7 +176,7 @@ const CelebritiesSection = () => {
         </div>
 
         {/* Row 2: Celebrities - Centered */}
-        <div className="flex justify-center w-full h-[350px] landscape:h-[280px] lg:landscape:h-[600px] lg:h-[600px] gap-2 lg:gap-2 overflow-x-auto lg:overflow-hidden snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] px-4 lg:px-0">
+        <div className="contents lg:flex lg:justify-center lg:w-full lg:h-[600px] lg:landscape:h-[600px] lg:gap-2">
           {row2.map((celeb, idx) => {
             const index = idx + row1.length;
             const isActive = activeCard === index;
@@ -184,7 +184,7 @@ const CelebritiesSection = () => {
               <div 
                 key={index}
                 onClick={() => handleCardClick(index)}
-                className={`celeb-card group relative flex-none w-[75vw] sm:w-[50vw] md:w-[40vw] lg:w-[11.11%] snap-center transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] lg:hover:w-[42.85%] cursor-pointer overflow-hidden rounded-md bg-[#1a1a1a] ${isActive ? 'is-active lg:!w-[42.85%]' : ''}`}
+                className={`celeb-card group relative flex-none h-full w-[75vw] sm:w-[50vw] md:w-[40vw] lg:w-[11.11%] snap-center transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] lg:hover:w-[42.85%] cursor-pointer overflow-hidden rounded-md bg-[#1a1a1a] ${isActive ? 'is-active lg:!w-[42.85%]' : ''}`}
               >
                 <img 
                   src={celeb.img} 

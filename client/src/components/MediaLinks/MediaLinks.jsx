@@ -7,10 +7,14 @@ import mediaData from '../../data/media.json';
 
 const MediaLinks = () => {
   const [articles, setArticles] = useState([]);
+  const [subtitle, setSubtitle] = useState('Featured news articles on RedAsh');
 
   useEffect(() => {
     fetchContent()
       .then(data => {
+        if (data?.agency?.mediaConfig?.subtitle) {
+          setSubtitle(data.agency.mediaConfig.subtitle);
+        }
         const dbMediaCards = (data && data.homepage && data.homepage.mediaCards) ? data.homepage.mediaCards : [];
         const mergedStaticMedia = mediaData.map((sm, index) => {
           const override = dbMediaCards.find(dbm => dbm.id === sm.id);
@@ -81,9 +85,10 @@ const MediaLinks = () => {
           {/* Bottom Line: AS FEATURED IN LEADING PUBLICATIONS */}
           <div className="flex items-center w-full mb-4 md:mb-6">
             <div className="flex-1 border-t border-[#000]"></div>
-            <span className="text-[#000] font-libre font-bold text-xs md:text-base tracking-[3px] md:tracking-[6px] uppercase px-3 md:px-6 whitespace-nowrap">
-              Featured news articles on RedAsh
-            </span>
+            <span 
+              className="text-[#000] font-libre font-bold text-xs md:text-base tracking-[3px] md:tracking-[6px] uppercase px-3 md:px-6 whitespace-nowrap"
+              dangerouslySetInnerHTML={{ __html: subtitle }}
+            />
             <div className="flex-1 border-t border-[#000]"></div>
           </div>
 

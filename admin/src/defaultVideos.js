@@ -1,5 +1,3 @@
-import webSeriesImg from '../../client/src/assets/Films/Cards/Card2.jpg';
-import microDramaImg from '../../client/src/assets/Agency/Filmthumbnails/Micro drama.png';
 
 export const DEFAULT_VIDEOS = [
   {
@@ -23,7 +21,7 @@ export const DEFAULT_VIDEOS = [
     title: "Web Series",
     category: "Web Series",
     categoryColor: "red",
-    thumbnail: webSeriesImg,
+    thumbnail: "/assets/web-series-thumb.jpg",
     videoUrl: "https://timesofindia.indiatimes.com/entertainment/hindi/bollywood/news/ashish-lal-explores-friendship-and-loss-in-the-codpaster/articleshow/131854264.cms"
   },
   {
@@ -39,7 +37,7 @@ export const DEFAULT_VIDEOS = [
     title: "Microdrama Show",
     category: "Microdrama Show",
     categoryColor: "red",
-    thumbnail: microDramaImg,
+    thumbnail: "/assets/microdrama-thumb.png",
     videoUrl: "https://kukutv.app/show/billionaire-on-plane"
   },
   {

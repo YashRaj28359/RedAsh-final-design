@@ -1,9 +1,60 @@
 import React, { useState, useRef } from 'react';
 import './App.css';
-import { Mail, Home, Film, Briefcase, Settings, LogOut, FileText, Image as ImageIcon, Layout, Phone, Info, Save, Eye, ChevronDown, ChevronLeft, ChevronRight, Plus, Trash2, Edit2, PlayCircle, GripVertical, RefreshCw, Users, Upload, Flame, ToggleRight, ToggleLeft, ArrowRight, ExternalLink } from 'lucide-react';
+import { Mail, Home, Film, Briefcase, Settings, LogOut, FileText, Image as ImageIcon, Layout, Phone, Info, Save, Eye, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Plus, Trash2, Edit2, PlayCircle, GripVertical, RefreshCw, Users, Upload, Flame, ToggleRight, ToggleLeft, ArrowRight, ExternalLink, CircleDollarSign, Brain, TrendingUp, Rocket, Target, Building, Lightbulb, Smartphone, Laptop, Globe, CheckCircle, MessageSquare, X } from 'lucide-react';
+
+const CASE_STUDY_ICONS = [
+  { value: 'FaBriefcase', label: 'Briefcase', icon: Briefcase },
+  { value: 'FaMoneyBillWave', label: 'Money', icon: CircleDollarSign },
+  { value: 'FaBrain', label: 'Brain (AI)', icon: Brain },
+  { value: 'FaChartLine', label: 'Chart (Growth)', icon: TrendingUp },
+  { value: 'FaRocket', label: 'Rocket (Startup)', icon: Rocket },
+  { value: 'FaBullseye', label: 'Bullseye (Target)', icon: Target },
+  { value: 'FaBuilding', label: 'Building', icon: Building },
+  { value: 'FaUsers', label: 'Users / Team', icon: Users },
+  { value: 'FaLightbulb', label: 'Idea / Lightbulb', icon: Lightbulb },
+  { value: 'FaMobileAlt', label: 'Mobile App', icon: Smartphone },
+  { value: 'FaLaptopCode', label: 'Laptop / Tech', icon: Laptop },
+  { value: 'FaGlobe', label: 'Globe / Web', icon: Globe },
+  { value: 'FaCheckCircle', label: 'Success / Check', icon: CheckCircle }
+];
+
+const extractYouTubeId = (url) => {
+  if (!url) return '';
+  const trimmed = url.trim();
+  // If it's already an 11-char ID
+  if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
+    return trimmed;
+  }
+  // Match standard youtube URLs: watch?v=, embed/, v/, shorts/, live/, youtu.be/
+  const match = trimmed.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/|live\/))([\w-]{11})/);
+  if (match && match[1]) {
+    return match[1];
+  }
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.searchParams.has('v')) {
+      const v = parsed.searchParams.get('v');
+      if (v) return v;
+    }
+    const paths = parsed.pathname.split('/').filter(Boolean);
+    const last = paths[paths.length - 1];
+    if (last && last.length === 11) return last;
+  } catch (e) {
+    // not a valid URL
+  }
+  return trimmed;
+};
+
+const renderIconPreview = (val) => {
+  const match = CASE_STUDY_ICONS.find(i => i.value === val);
+  if (!match) return <Briefcase size={18} style={{ color: '#1672EF' }} />;
+  const IconComponent = match.icon;
+  return <IconComponent size={18} style={{ color: '#1672EF' }} />;
+};
 import JoditEditor from 'jodit-react';
 import { DEFAULT_VIDEOS } from './defaultVideos';
 import staticBlogs from '../../client/src/data/entertainmentBlogs.json';
+import staticAgencyBlogs from '../../client/src/data/blogs.json';
 import staticMedia from '../../client/src/data/media.json';
 import celeb1 from '../../client/src/assets/Films/celebs/Ashish - IMG_9131.jpg';
 import celeb2 from '../../client/src/assets/Films/celebs/Surbhi jyoti.png';
@@ -29,15 +80,206 @@ import clientImg7 from '../../client/src/assets/Films/ClientLogos/Pocket films.p
 import clientImg8 from '../../client/src/assets/Films/ClientLogos/2ndlast.png';
 import clientImg9 from '../../client/src/assets/Films/ClientLogos/Last.png';
 
+// Agency Global Clients Logos
+import agencyLogo1 from '../../client/src/assets/Agency/Logo - Clients/Copy of LG logo.png';
+import agencyLogo2 from '../../client/src/assets/Agency/Logo - Clients/Copy of Samsung logo.png';
+import agencyLogo3 from '../../client/src/assets/Agency/Logo - Clients/Copy of GE logo.png';
+import agencyLogo4 from '../../client/src/assets/Agency/Logo - Clients/Copy of Mahindra.png';
+import agencyLogo5 from '../../client/src/assets/Agency/Logo - Clients/Copy of bajaj finserv logo.png';
+import agencyLogo6 from '../../client/src/assets/Agency/Logo - Clients/Copy of United Nations.png';
+import agencyLogo7 from '../../client/src/assets/Agency/Logo - Clients/Copy of Castrol logo.png';
+import agencyLogo8 from '../../client/src/assets/Agency/Logo - Clients/8206742b-baaa-43f8-b90f-11d438ff9de1.jpg';
+import agencyLogo9 from '../../client/src/assets/Agency/Logo - Clients/Copy of UK Govt.png';
+import agencyLogo10 from '../../client/src/assets/Agency/Logo - Clients/Copy of The Smart Cube.png';
+import agencyLogo11 from '../../client/src/assets/Agency/Logo - Clients/Copy of Schlumberger.png';
+import agencyLogo12 from '../../client/src/assets/Agency/Logo - Clients/govtofindia.jpg';
+import agencyLogo13 from '../../client/src/assets/Agency/Logo - Clients/Copy of Ek step.png';
+import agencyLogo14 from '../../client/src/assets/Agency/Logo - Clients/Copy of Wellness forever.png';
+import agencyLogo15 from '../../client/src/assets/Agency/Logo - Clients/Screenshot 2026-07-23 155630.png';
+import agencyLogo16 from '../../client/src/assets/Agency/Logo - Clients/Copy of FD Shots.png';
+import agencyLogo17 from '../../client/src/assets/Agency/Logo - Clients/Copy of Government of Gujrat logo.png';
+import agencyLogo18 from '../../client/src/assets/Agency/Logo - Clients/bihar-logo-red.png';
+import agencyLogo19 from '../../client/src/assets/Agency/Logo - Clients/cropped-agnisys-logo-1-2.png';
+import agencyLogo20 from '../../client/src/assets/Agency/Logo - Clients/cropped-Sigmoid_logo_3x.png';
+import agencyLogo21 from '../../client/src/assets/Agency/Logo - Clients/Screenshot 2026-07-23 160357.png';
+import agencyLogo22 from '../../client/src/assets/Agency/Logo - Clients/Screenshot 2026-07-23 160521.png';
+import agencyLogo23 from '../../client/src/assets/Agency/Logo - Clients/logo.png';
+import agencyLogo24 from '../../client/src/assets/Agency/Logo - Clients/dspzr.png';
+
+// Case Studies default images
+import imgWellness from '../../client/src/assets/Agency/Casestudies/Wellness.png';
+import imgPharmacy from '../../client/src/assets/Agency/Casestudies/Pharmacy.png';
+import imgMobileOTT from '../../client/src/assets/Agency/Casestudies/Mobile OTT.png';
+
+// Red Hot default images
+import agencyRedHotImg2 from '../../client/src/assets/Agency/RedHot section/image2.png';
+import agencyRedHotImg4 from '../../client/src/assets/Agency/RedHot section/image4.png';
+import agencyRedHotImgFunding from '../../client/src/assets/Agency/RedHot section/Funding.png';
+import agencyRedHotImgInsight from '../../client/src/assets/Agency/RedHot section/Insight.png';
+
+const defaultTestimonials = [
+  {
+    type: "video",
+    name: "Kuljit Chadha",
+    title: "Co-Founder & COO",
+    company: "Disprz",
+    videoId: "1AUDTOK84ns",
+    rotationClass: "-rotate-2"
+  },
+  {
+    type: "video",
+    name: "Sudeep Rao",
+    title: "Associate Director, Marketing",
+    company: "Sigmoid",
+    videoId: "27Fip-3VgSU",
+    rotationClass: "rotate-1"
+  },
+  {
+    type: "text",
+    name: "XYZ",
+    title: "XYZ",
+    company: "XYZ",
+    text: "More video testimonials coming soon…",
+    avatar: "https://placehold.co/150x150/1672ef/1672ef.png",
+    rotationClass: "-rotate-1"
+  }
+];
+
+const defaultWhatsRedHot = [
+  {
+    id: 1,
+    pill: "MEDIA FEATURED",
+    title: "REDASH GROWS *EXPONENTIALLY*",
+    desc: "RedAsh has emerged as one of India's fastest-growing production houses and ad agencies",
+    sourceLabel: "FEATURED IN",
+    links: [ { text: "DNA", url: "https://www.dnaindia.com/insights/report-redash-films-led-by-iit-delhi-engineer-ashish-lal-scales-rapidly-with-1600-growth-over-two-years-3211714" } ],
+    image: agencyRedHotImg2,
+    imageLeft: true
+  },
+  {
+    id: 2,
+    pill: "FUNDING",
+    title: "Driving *$12M – $125M*\nIn Client Funding",
+    desc: "Our ad and video campaigns have played a significant role in helping our clients secure major investment rounds and fuel their growth.",
+    sourceLabel: "Mention",
+    links: [ { text: "LINKEDIN", url: "https://www.linkedin.com/posts/ashishlalreal_redashfilms-fy2023abr24-gratitude-activity-7180844012902248449-Pusz/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAADZgaUBjOsNCJyT8TTYQTmZbp30gD5h4DA" } ],
+    image: agencyRedHotImgFunding,
+    imageLeft: false
+  },
+  {
+    id: 3,
+    pill: "MEDIA COVERAGE",
+    title: "RedAsh Teams Up With Top Talent – *Mid-day* Feature",
+    desc: "Featured in Mid-day for our creative collaborations with top talent and innovative storytelling that connects with millions.",
+    sourceLabel: "FEATURED IN",
+    links: [ { text: "MID-DAY", url: "https://www.mid-day.com/buzzfeed/article/ashish-lal-the-iit-delhi-engineer-turned-actor-teams-up-with-surbhi-jyoti-and-upendra-limaye-9809" } ],
+    image: agencyRedHotImg4,
+    imageLeft: true
+  },
+  {
+    id: 4,
+    pill: "INSIGHTS",
+    title: "REDASH BRINGS DISRUPTIVE *INSIGHTS*",
+    desc: "Delve deep into understanding the science behind ad campaigns, digital marketing, brand-based microdrama shows, and more.",
+    sourceLabel: "",
+    links: [ { text: "READ MORE", url: "/ad-agency/blog" } ],
+    image: agencyRedHotImgInsight,
+    imageLeft: false
+  }
+];
+
+const defaultCaseStudies = [
+  {
+    id: 1,
+    tag: "Acquisition",
+    tagColor: "bg-blue-600",
+    stat: "$120 Million",
+    title: "Procurement & Business Consulting",
+    clientType: "MNC",
+    customers: "B2B",
+    domain: "Procurement & Consulting",
+    type: "MNC",
+    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=800&auto=format&fit=crop",
+    iconType: "FaBriefcase"
+  },
+  {
+    id: 2,
+    tag: "Funding",
+    tagColor: "bg-purple-500",
+    stat: "$30 Million",
+    title: "Learning Solutions",
+    clientType: "Start-Up",
+    customers: "B2B",
+    domain: "SAAS",
+    type: "Start-Up",
+    image: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=800&auto=format&fit=crop",
+    iconType: "FaMoneyBillWave"
+  },
+  {
+    id: 3,
+    tag: "Funding",
+    tagColor: "bg-blue-600",
+    stat: "$12 Million",
+    title: "ML & AI Data Solutions",
+    clientType: "Start-Up",
+    customers: "B2B",
+    domain: "ML & AI Data Solutions",
+    type: "Start-Up",
+    image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=800&auto=format&fit=crop",
+    iconType: "FaBrain"
+  },
+  {
+    id: 4,
+    tag: "Wellness",
+    tagColor: "bg-teal-500",
+    stat: "+3.2x Website Visits (8M)",
+    title: "Spiritual Wellness Programs",
+    clientType: "Trust",
+    customers: "B2C",
+    domain: "Wellness",
+    type: "Trust",
+    image: imgWellness,
+    iconType: "FaChartLine"
+  },
+  {
+    id: 5,
+    tag: "Retail Pharmacy",
+    tagColor: "bg-orange-500",
+    stat: "+350% Retention",
+    title: "L&D Training Growth",
+    clientType: "Franchise Brand",
+    customers: "B2C",
+    domain: "Retail",
+    type: "Brand",
+    image: imgPharmacy,
+    iconType: "FaRocket"
+  },
+  {
+    id: 6,
+    tag: "Mobile App",
+    tagColor: "bg-blue-600",
+    stat: "400M+ Total Views",
+    title: "Mobile OTT Platform",
+    clientType: "Start-up",
+    customers: "B2C",
+    domain: "Entertainment",
+    type: "Start-up",
+    image: imgMobileOTT,
+    iconType: "FaBullseye"
+  }
+];
+
 const JODIT_BLOG_CONFIG = {
   readonly: false,
+  height: 400,
+  toolbarSticky: false,
   minHeight: 400,
   toolbarAdaptive: false,
   placeholder: 'Write your blog post here...',
   askBeforePasteHTML: false,
   askBeforePasteFromWord: false,
   defaultActionOnPaste: 'insert_as_html',
-  buttons: ['fontsize', 'brush', 'font', 'bold', 'italic', 'underline', 'table', 'undo', 'redo']
+  buttons: ['source', '|', 'bold', 'italic', 'underline', 'strikethrough', '|', 'font', 'fontsize', 'brush', 'paragraph', '|', 'ul', 'ol', '|', 'align', 'outdent', 'indent', '|', 'link', 'image', 'video', 'table', '|', 'undo', 'redo']
 };
 
 const JODIT_MEDIA_CONFIG = {
@@ -48,7 +290,7 @@ const JODIT_MEDIA_CONFIG = {
   askBeforePasteHTML: false,
   askBeforePasteFromWord: false,
   defaultActionOnPaste: 'insert_as_html',
-  buttons: ['fontsize', 'brush', 'font', 'bold', 'italic', 'underline', 'table', 'undo', 'redo']
+  buttons: ['source', '|', 'bold', 'italic', 'underline', 'strikethrough', '|', 'font', 'fontsize', 'brush', 'paragraph', '|', 'ul', 'ol', '|', 'align', 'outdent', 'indent', '|', 'link', 'image', 'video', 'table', '|', 'undo', 'redo']
 };
 
 import redHotImg1 from '../../client/src/assets/Films/Cards/Card2.jpg';
@@ -133,6 +375,34 @@ const initialContent = {
     }
   }
 };
+
+// Default agency clients — defined at module level so handlers can access it
+const defaultAgencyClients = [
+  { name: 'LG', img: agencyLogo1 },
+  { name: 'Samsung', img: agencyLogo2 },
+  { name: 'GE', img: agencyLogo3 },
+  { name: 'Mahindra', img: agencyLogo4 },
+  { name: 'Bajaj Finserv', img: agencyLogo5 },
+  { name: 'United Nations', img: agencyLogo6 },
+  { name: 'Castrol', img: agencyLogo7 },
+  { name: 'Client 8', img: agencyLogo8 },
+  { name: 'UK Govt', img: agencyLogo9 },
+  { name: 'The Smart Cube', img: agencyLogo10 },
+  { name: 'Schlumberger', img: agencyLogo11 },
+  { name: 'Govt of India', img: agencyLogo12 },
+  { name: 'Ek Step', img: agencyLogo13 },
+  { name: 'Wellness Forever', img: agencyLogo14 },
+  { name: 'Client 15', img: agencyLogo15 },
+  { name: 'FD Shots', img: agencyLogo16 },
+  { name: 'Govt of Gujarat', img: agencyLogo17 },
+  { name: 'Govt of Bihar', img: agencyLogo18 },
+  { name: 'Agnisys', img: agencyLogo19 },
+  { name: 'Sigmoid', img: agencyLogo20 },
+  { name: 'Client 21', img: agencyLogo21 },
+  { name: 'Client 22', img: agencyLogo22 },
+  { name: 'Client 23', img: agencyLogo23 },
+  { name: 'Savvy', img: agencyLogo24 }
+];
 
 function App() {
   const [content, setContent] = useState(initialContent);
@@ -255,10 +525,17 @@ function App() {
   const [draggedTalentIndex, setDraggedTalentIndex] = useState(null);
   const [draggedRowKey, setDraggedRowKey] = useState(null);
   const autoScrollRef = useRef(null);
+  const mediaCardsRef = useRef([]);
 
   const [showAddClientModal, setShowAddClientModal] = useState(false);
   const [newClient, setNewClient] = useState({ name: '', img: '' });
   const [draggedClientIndex, setDraggedClientIndex] = useState(null);
+  const [draggedCatalystImageIndex, setDraggedCatalystImageIndex] = useState(null);
+
+  const [selectedVideoCategory, setSelectedVideoCategory] = useState('cat1');
+  const [showAddEnterpriseVideoModal, setShowAddEnterpriseVideoModal] = useState(false);
+  const [newEnterpriseVideo, setNewEnterpriseVideo] = useState({ title: '', id: '', thumbnail: '' });
+  const [draggedVideoIndex, setDraggedVideoIndex] = useState(null);
 
   const [showAddRedHotModal, setShowAddRedHotModal] = useState(false);
   const [newRedHotCard, setNewRedHotCard] = useState({
@@ -641,6 +918,487 @@ function App() {
     });
   };
 
+  const [showAddAgencyClientModal, setShowAddAgencyClientModal] = useState(false);
+  const [newAgencyClient, setNewAgencyClient] = useState({ name: '', img: '', row: 'row1' });
+  const [draggedAgencyClientIndex, setDraggedAgencyClientIndex] = useState(null);
+
+  const handleUpdateAgencyClient = (index, field, value) => {
+    setContent(prev => {
+      const newState = JSON.parse(JSON.stringify(prev));
+      if (!newState.agency) newState.agency = {};
+      if (!newState.agency.globalClients) {
+        newState.agency.globalClients = JSON.parse(JSON.stringify(defaultAgencyClients));
+      }
+      if (newState.agency.globalClients[index]) {
+        newState.agency.globalClients[index][field] = value;
+      }
+      return newState;
+    });
+  };
+
+  const handleAgencyClientFileUpload = async (e, index) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.url) {
+        handleUpdateAgencyClient(index, 'img', data.url);
+      }
+    } catch (err) {
+      console.error('Upload failed:', err);
+    }
+  };
+
+  const handleOpenAddAgencyClientModal = () => {
+    setNewAgencyClient({ name: '', img: '', row: 'row1' });
+    setShowAddAgencyClientModal(true);
+  };
+
+  const handleConfirmAddAgencyClientModal = () => {
+    if (!newAgencyClient.img) {
+      alert("Please upload or provide an image for the logo.");
+      return;
+    }
+    setContent(prev => {
+      const newState = JSON.parse(JSON.stringify(prev));
+      if (!newState.agency) newState.agency = {};
+      if (!newState.agency.globalClients) {
+        // Initialize with empty array so existing DB/static logos still show separately
+        newState.agency.globalClients = [];
+      }
+      newState.agency.globalClients.push({
+        name: `Logo ${newState.agency.globalClients.length + 1}`,
+        img: newAgencyClient.img,
+        row: newAgencyClient.row || 'row1'
+      });
+      return newState;
+    });
+    setShowAddAgencyClientModal(false);
+    setToast({ show: true, message: `Added new global client logo. Click 'Save Section Changes' to publish!`, type: 'success' });
+  };
+
+  const handleRemoveAgencyClient = (index) => {
+    setContent(prev => {
+      const newState = JSON.parse(JSON.stringify(prev));
+      if (!newState.agency?.globalClients) return prev;
+      newState.agency.globalClients.splice(index, 1);
+      return newState;
+    });
+  };
+
+  // --- CASE STUDIES HANDLERS ---
+  const [showAddCaseStudyModal, setShowAddCaseStudyModal] = useState(false);
+  const [newCaseStudy, setNewCaseStudy] = useState({ 
+    tag: '', tagColor: 'bg-blue-600', stat: '', title: '', clientType: '', customers: '', domain: '', type: '', image: '', iconType: 'FaBriefcase'
+  });
+  const [draggedCaseStudyIndex, setDraggedCaseStudyIndex] = useState(null);
+
+  // --- RED HOT (AGENCY) HANDLERS ---
+  const [showAddWhatsRedHotModal, setShowAddWhatsRedHotModal] = useState(false);
+  const [newWhatsRedHot, setNewWhatsRedHot] = useState({ 
+    pill: '', title: '', desc: '', sourceLabel: '', links: [{ text: '', url: '' }], image: '', imageLeft: true
+  });
+  const [draggedWhatsRedHotIndex, setDraggedWhatsRedHotIndex] = useState(null);
+
+  const handleUpdateAgencySocialMediaCard = (index, value) => {
+    setContent(prev => {
+      const newState = JSON.parse(JSON.stringify(prev));
+      if (!newState.agency) newState.agency = {};
+      if (!newState.agency.socialMediaCards || newState.agency.socialMediaCards.length === 0) {
+        newState.agency.socialMediaCards = [
+          { title: 'Creating videos and creatives' },
+          { title: 'Performance Marketing' },
+          { title: 'Creating ad campaigns' },
+          { title: 'Creating different types of corporate videos' },
+          { title: 'Creating viral content' },
+          { title: 'Increasing brand awareness and value' }
+        ];
+      }
+      newState.agency.socialMediaCards[index].title = value;
+      return newState;
+    });
+  };
+
+  const handleUpdateWhatsRedHot = (index, field, value) => {
+    setContent(prev => {
+      const newState = JSON.parse(JSON.stringify(prev));
+      if (!newState.agency) newState.agency = {};
+      if (!newState.agency.whatsRedHot || newState.agency.whatsRedHot.length === 0) {
+        newState.agency.whatsRedHot = JSON.parse(JSON.stringify(defaultWhatsRedHot));
+      }
+      if (newState.agency.whatsRedHot[index]) {
+        newState.agency.whatsRedHot[index][field] = value;
+      }
+      return newState;
+    });
+  };
+
+  const handleRemoveWhatsRedHot = (index) => {
+    setContent(prev => {
+      const newState = JSON.parse(JSON.stringify(prev));
+      if (!newState.agency?.whatsRedHot) return prev;
+      newState.agency.whatsRedHot.splice(index, 1);
+      return newState;
+    });
+  };
+
+  const handleUpdateWhatsRedHotLink = (index, linkIndex, field, value) => {
+    setContent(prev => {
+      const newState = JSON.parse(JSON.stringify(prev));
+      if (!newState.agency) newState.agency = {};
+      if (!newState.agency.whatsRedHot || newState.agency.whatsRedHot.length === 0) {
+        newState.agency.whatsRedHot = JSON.parse(JSON.stringify(defaultWhatsRedHot));
+      }
+      if (newState.agency.whatsRedHot[index] && newState.agency.whatsRedHot[index].links && newState.agency.whatsRedHot[index].links[linkIndex]) {
+        newState.agency.whatsRedHot[index].links[linkIndex][field] = value;
+      }
+      return newState;
+    });
+  };
+
+  const handleAddWhatsRedHotLink = (index) => {
+    setContent(prev => {
+      const newState = JSON.parse(JSON.stringify(prev));
+      if (!newState.agency) newState.agency = {};
+      if (!newState.agency.whatsRedHot || newState.agency.whatsRedHot.length === 0) {
+        newState.agency.whatsRedHot = JSON.parse(JSON.stringify(defaultWhatsRedHot));
+      }
+      if (newState.agency.whatsRedHot[index]) {
+        if (!newState.agency.whatsRedHot[index].links) {
+          newState.agency.whatsRedHot[index].links = [];
+        }
+        newState.agency.whatsRedHot[index].links.push({ text: '', url: '' });
+      }
+      return newState;
+    });
+  };
+
+  const handleRemoveWhatsRedHotLink = (index, linkIndex) => {
+    setContent(prev => {
+      const newState = JSON.parse(JSON.stringify(prev));
+      if (!newState.agency) newState.agency = {};
+      if (!newState.agency.whatsRedHot || newState.agency.whatsRedHot.length === 0) {
+        newState.agency.whatsRedHot = JSON.parse(JSON.stringify(defaultWhatsRedHot));
+      }
+      if (newState.agency.whatsRedHot[index] && newState.agency.whatsRedHot[index].links) {
+        newState.agency.whatsRedHot[index].links.splice(linkIndex, 1);
+      }
+      return newState;
+    });
+  };
+
+  const handleWhatsRedHotFileUpload = (e, index) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        handleUpdateWhatsRedHot(index, 'image', reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleOpenAddWhatsRedHotModal = () => {
+    setNewWhatsRedHot({ 
+      pill: '', title: '', desc: '', sourceLabel: '', links: [{ text: '', url: '' }], image: '', imageLeft: true 
+    });
+    setShowAddWhatsRedHotModal(true);
+  };
+
+  const handleConfirmAddWhatsRedHotModal = () => {
+    if (!newWhatsRedHot.title.trim()) {
+      alert("Title is required.");
+      return;
+    }
+    setContent(prev => {
+      const newState = JSON.parse(JSON.stringify(prev));
+      if (!newState.agency) newState.agency = {};
+      if (!newState.agency.whatsRedHot) {
+        newState.agency.whatsRedHot = JSON.parse(JSON.stringify(defaultWhatsRedHot));
+      }
+      newState.agency.whatsRedHot.push({
+        id: Date.now(),
+        pill: newWhatsRedHot.pill,
+        title: newWhatsRedHot.title,
+        desc: newWhatsRedHot.desc,
+        sourceLabel: newWhatsRedHot.sourceLabel,
+        links: JSON.parse(JSON.stringify(newWhatsRedHot.links || [])),
+        image: newWhatsRedHot.image || 'https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?q=80&w=800&auto=format&fit=crop',
+        imageLeft: newWhatsRedHot.imageLeft
+      });
+      return newState;
+    });
+    setShowAddWhatsRedHotModal(false);
+    setToast({ show: true, message: `Added new item. Click 'Save Section Changes' to publish!`, type: 'success' });
+  };
+
+  const handleWhatsRedHotDragStart = (e, index) => {
+    setDraggedWhatsRedHotIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleWhatsRedHotDragOver = (e, index) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    autoScroll(e);
+  };
+
+  const handleWhatsRedHotDrop = (e, targetIndex) => {
+    e.preventDefault();
+    stopAutoScroll();
+    if (draggedWhatsRedHotIndex === null || draggedWhatsRedHotIndex === targetIndex) return;
+    
+    setContent(prev => {
+      const newState = JSON.parse(JSON.stringify(prev));
+      if (!newState.agency) newState.agency = {};
+      if (!newState.agency.whatsRedHot || newState.agency.whatsRedHot.length === 0) {
+        newState.agency.whatsRedHot = JSON.parse(JSON.stringify(defaultWhatsRedHot));
+      }
+      const items = newState.agency.whatsRedHot;
+      if (draggedWhatsRedHotIndex >= 0 && draggedWhatsRedHotIndex < items.length) {
+        const [movedItem] = items.splice(draggedWhatsRedHotIndex, 1);
+        const actualTargetIndex = targetIndex > draggedWhatsRedHotIndex ? targetIndex - 1 : targetIndex;
+        items.splice(actualTargetIndex, 0, movedItem);
+      }
+      return newState;
+    });
+    setDraggedWhatsRedHotIndex(null);
+  };
+
+  const handleMoveWhatsRedHot = (index, direction) => {
+    setContent(prev => {
+      const newState = JSON.parse(JSON.stringify(prev));
+      if (!newState.agency) newState.agency = {};
+      if (!newState.agency.whatsRedHot || newState.agency.whatsRedHot.length === 0) {
+        newState.agency.whatsRedHot = JSON.parse(JSON.stringify(defaultWhatsRedHot));
+      }
+      const items = newState.agency.whatsRedHot;
+      const targetIndex = index + direction;
+      if (targetIndex >= 0 && targetIndex < items.length) {
+        const [movedItem] = items.splice(index, 1);
+        items.splice(targetIndex, 0, movedItem);
+      }
+      return newState;
+    });
+  };
+
+  // --- TESTIMONIALS HANDLERS ---
+  const [showAddTestimonialModal, setShowAddTestimonialModal] = useState(false);
+  const [newTestimonial, setNewTestimonial] = useState({ 
+    type: 'video', name: '', title: '', company: '', videoId: '', text: '', avatar: '', rotationClass: '-rotate-1'
+  });
+  const [draggedTestimonialIndex, setDraggedTestimonialIndex] = useState(null);
+  const [draggedAgencyHeroCardIndex, setDraggedAgencyHeroCardIndex] = useState(null);
+  const [draggedMediaCardIndex, setDraggedMediaCardIndex] = useState(null);
+
+  const handleUpdateTestimonial = (index, field, value) => {
+    setContent(prev => {
+      const newState = JSON.parse(JSON.stringify(prev));
+      if (!newState.agency) newState.agency = {};
+      if (!newState.agency.testimonials || newState.agency.testimonials.length === 0) {
+        newState.agency.testimonials = JSON.parse(JSON.stringify(defaultTestimonials));
+      }
+      if (newState.agency.testimonials[index]) {
+        newState.agency.testimonials[index][field] = value;
+      }
+      return newState;
+    });
+  };
+
+  const handleRemoveTestimonial = (index) => {
+    setContent(prev => {
+      const newState = JSON.parse(JSON.stringify(prev));
+      if (!newState.agency.testimonials) {
+        newState.agency.testimonials = JSON.parse(JSON.stringify(defaultTestimonials));
+      }
+      newState.agency.testimonials.splice(index, 1);
+      return newState;
+    });
+  };
+
+  const handleOpenAddTestimonialModal = () => {
+    setNewTestimonial({ type: 'video', name: '', title: '', company: '', videoId: '', text: '', avatar: '', rotationClass: '-rotate-1' });
+    setShowAddTestimonialModal(true);
+  };
+
+  const handleConfirmAddTestimonialModal = () => {
+    if (!newTestimonial.name) {
+      alert("Name is required!");
+      return;
+    }
+    setContent(prev => {
+      const newState = JSON.parse(JSON.stringify(prev));
+      if (!newState.agency) newState.agency = {};
+      if (!newState.agency.testimonials) {
+        newState.agency.testimonials = JSON.parse(JSON.stringify(defaultTestimonials));
+      }
+      newState.agency.testimonials.push({ ...newTestimonial });
+      return newState;
+    });
+    setShowAddTestimonialModal(false);
+  };
+
+  const handleTestimonialAvatarUpload = async (e, index) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.url) {
+        handleUpdateTestimonial(index, 'avatar', data.url);
+      }
+    } catch (err) {
+      console.error('Upload failed:', err);
+    }
+  };
+
+  const handleUpdateCaseStudy = (index, field, value) => {
+    setContent(prev => {
+      const newState = JSON.parse(JSON.stringify(prev));
+      if (!newState.agency) newState.agency = {};
+      if (!newState.agency.caseStudies || newState.agency.caseStudies.length === 0) {
+        newState.agency.caseStudies = JSON.parse(JSON.stringify(defaultCaseStudies));
+      }
+      if (newState.agency.caseStudies[index]) {
+        newState.agency.caseStudies[index][field] = value;
+      }
+      return newState;
+    });
+  };
+
+  const handleCaseStudyFileUpload = async (e, index) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.url) {
+        handleUpdateCaseStudy(index, 'image', data.url);
+      }
+    } catch (err) {
+      console.error('Upload failed:', err);
+    }
+  };
+
+  const handleOpenAddCaseStudyModal = () => {
+    setNewCaseStudy({ tag: '', tagColor: 'bg-blue-600', stat: '', title: '', clientType: '', customers: '', domain: '', type: '', image: '', iconType: 'FaBriefcase' });
+    setShowAddCaseStudyModal(true);
+  };
+
+  const handleConfirmAddCaseStudyModal = () => {
+    if (!newCaseStudy.title || !newCaseStudy.image) {
+      alert("Please provide at least a title and an image for the case study.");
+      return;
+    }
+    setContent(prev => {
+      const newState = JSON.parse(JSON.stringify(prev));
+      if (!newState.agency) newState.agency = {};
+      if (!newState.agency.caseStudies) {
+        newState.agency.caseStudies = [];
+      }
+      newState.agency.caseStudies.push({
+        id: Date.now(),
+        ...newCaseStudy
+      });
+      return newState;
+    });
+    setShowAddCaseStudyModal(false);
+    setToast({ show: true, message: `Added new case study. Click 'Save Section Changes' to publish!`, type: 'success' });
+  };
+
+  const handleRemoveCaseStudy = (index) => {
+    setContent(prev => {
+      const newState = JSON.parse(JSON.stringify(prev));
+      if (!newState.agency?.caseStudies) return prev;
+      newState.agency.caseStudies.splice(index, 1);
+      return newState;
+    });
+  };
+
+  // Drag and drop for case studies
+  const handleCaseStudyDragStart = (e, index) => {
+    setDraggedCaseStudyIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+    const rect = e.target.getBoundingClientRect();
+    e.dataTransfer.setDragImage(e.target, rect.width / 2, rect.height / 2);
+  };
+  const handleCaseStudyDragOver = (e, index) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+  const handleCaseStudyDrop = (e, index) => {
+    e.preventDefault();
+    if (draggedCaseStudyIndex === null || draggedCaseStudyIndex === index) return;
+    setContent(prev => {
+      const newState = JSON.parse(JSON.stringify(prev));
+      if (!newState.agency?.caseStudies) return prev;
+      const items = newState.agency.caseStudies;
+      const [movedItem] = items.splice(draggedCaseStudyIndex, 1);
+      items.splice(index, 0, movedItem);
+      return newState;
+    });
+    setDraggedCaseStudyIndex(null);
+  };
+
+  const handleAgencyClientDragStart = (e, index) => {
+    setDraggedAgencyClientIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleAgencyClientDragOver = (e, index) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    startAutoScrollIfNeeded(e.clientY);
+  };
+
+  const handleAgencyClientDrop = (e, targetIndex) => {
+    e.preventDefault();
+    stopAutoScroll();
+
+    if (draggedAgencyClientIndex === null || draggedAgencyClientIndex === targetIndex) return;
+
+    setContent(prev => {
+      const newState = JSON.parse(JSON.stringify(prev));
+      if (!newState.agency) newState.agency = {};
+      if (!newState.agency.globalClients) {
+        newState.agency.globalClients = JSON.parse(JSON.stringify(defaultAgencyClients));
+      }
+
+      const items = newState.agency.globalClients;
+      if (draggedAgencyClientIndex >= 0 && draggedAgencyClientIndex < items.length) {
+        const [movedItem] = items.splice(draggedAgencyClientIndex, 1);
+        items.splice(targetIndex, 0, movedItem);
+      }
+
+      return newState;
+    });
+
+    setDraggedAgencyClientIndex(null);
+  };
+
+  const handleMoveAgencyClient = (index, direction) => {
+    setContent(prev => {
+      const newState = JSON.parse(JSON.stringify(prev));
+      if (!newState.agency) newState.agency = {};
+      if (!newState.agency.globalClients) {
+        newState.agency.globalClients = JSON.parse(JSON.stringify(defaultAgencyClients));
+      }
+      const items = newState.agency.globalClients;
+      const targetIndex = index + direction;
+      if (targetIndex < 0 || targetIndex >= items.length) return prev;
+      const [movedItem] = items.splice(index, 1);
+      items.splice(targetIndex, 0, movedItem);
+      return newState;
+    });
+  };
+
   const stopAutoScroll = () => {
     if (autoScrollRef.current) {
       clearInterval(autoScrollRef.current);
@@ -806,19 +1564,7 @@ function App() {
     setToast({ show: true, message: `Added "${newCeleb.name}" to ${newCeleb.rowKey === 'row1' ? 'Row 1' : 'Row 2'}. Click 'Save Section Changes' to publish!`, type: 'success' });
   };
 
-  // Helper to extract YouTube ID
-  const extractYouTubeId = (url) => {
-    if (!url) return '';
-    // If it's exactly 11 chars (just the ID)
-    if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
-    // Extract from ID with query string like ID?si=...
-    const idMatch = url.match(/^([a-zA-Z0-9_-]{11})\?/);
-    if (idMatch) return idMatch[1];
-    
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=|\/shorts\/)([^#\&\?]*).*/;
-    const match = url.match(regExp);
-    return (match && match[2].length === 11) ? match[2] : '';
-  };
+
 
   // Fetch initial content from API
   React.useEffect(() => {
@@ -832,13 +1578,9 @@ function App() {
             finalData.homepage.video_tile.videos = finalData.homepage.video_tile.videos.map((v, i) => {
               if (!v.uniqueId) v.uniqueId = `vid-${Date.now()}-${i}`;
               
-              // Fallback for static thumbnails that might be empty in the DB
-              if (v.id === 'web-series' && (!v.thumbnail || v.thumbnail === '')) {
-                v.thumbnail = redHotImg1;
-              }
-              if (v.id === 'kukufm' && (!v.thumbnail || v.thumbnail === '')) {
-                v.thumbnail = microDramaImg;
-              }
+              // Always force correct thumbnails for local-asset videos — DB may have stale Vite hash URLs
+              if (v.id === 'web-series') v.thumbnail = '/assets/web-series-thumb.jpg';
+              if (v.id === 'kukufm') v.thumbnail = '/assets/microdrama-thumb.png';
               
               return v;
             });
@@ -882,8 +1624,9 @@ function App() {
       return;
     }
     const newState = JSON.parse(JSON.stringify(content));
-    if (!newState.entertainment) newState.entertainment = {};
-    if (!newState.entertainment.blogs) newState.entertainment.blogs = [];
+    const section = activeSidebar === 'agency-blog' ? 'agency' : 'entertainment';
+    if (!newState[section]) newState[section] = {};
+    if (!newState[section].blogs) newState[section].blogs = [];
     
     if (!newBlog.slug) {
       newBlog.slug = newBlog.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
@@ -895,12 +1638,12 @@ function App() {
 
     if (newBlog._idx !== null && newBlog._idx !== undefined) {
       if (typeof newBlog._idx === 'string' && newBlog._idx.startsWith('static_')) {
-        newState.entertainment.blogs.push(newBlog);
+        newState[section].blogs.unshift(newBlog);
       } else {
-        newState.entertainment.blogs[newBlog._idx] = newBlog;
+        newState[section].blogs[newBlog._idx] = newBlog;
       }
     } else {
-      newState.entertainment.blogs.push(newBlog);
+      newState[section].blogs.unshift(newBlog);
     }
     handleSave(newState);
     setShowAddBlogModal(false);
@@ -943,10 +1686,14 @@ function App() {
 
   const handleSave = async (dataToSave = null) => {
     try {
-      const stateToUse = dataToSave && typeof dataToSave === 'object' ? dataToSave : content;
+      const isEvent = dataToSave && dataToSave.nativeEvent;
+      const stateToUse = dataToSave && typeof dataToSave === 'object' && !isEvent ? dataToSave : content;
       let dbKey = activeSidebar;
       if (activeSidebar.startsWith('entertainment') && activeSidebar !== 'entertainment-films') {
         dbKey = 'entertainment';
+      }
+      if (activeSidebar.startsWith('agency') && activeSidebar !== 'agency-films') {
+        dbKey = 'agency';
       }
       if (activeSidebar === 'homepage-media') {
         dbKey = 'homepage';
@@ -967,6 +1714,7 @@ function App() {
       
       if (res.ok) {
         showToast('Changes saved successfully!', 'success');
+        setContent(stateToUse);
       } else {
         showToast('Failed to save changes.', 'error');
       }
@@ -996,7 +1744,7 @@ function App() {
             text2: 'Actors, Film Crew Members & Vendors can email their profiles only at',
             email2: 'redash.films@gmail.com',
             officeText: 'RedAsh Office:',
-            officeAddress: '1101, Peninsula Park, Fun Republic Lane, Andheri West, Mumbai, 400053',
+            officeAddress: '1302-1305, Peninsula Park, Fun Republic Lane, Andheri West, Mumbai, 400053',
             mapLinkText: '(Google Location)',
             mapLinkUrl: 'https://share.google/Pxp4Tva4m3IyfrKAd'
           };
@@ -1034,6 +1782,34 @@ function App() {
             line5_p3: 'FILMS',
             btnText: 'Watch More Entertainment Films'
           };
+        }
+      } else if (activeSidebar === 'agency') {
+        if (section === 'logo') {
+          defaultSection = { url: '' };
+        } else if (section === 'navigation') {
+          defaultSection = {
+            home: 'HOME', about: 'ABOUT', films: 'ENTERPRISE FILMS',
+            blog: 'BLOG', media: 'MEDIA', contact: 'CONTACT'
+          };
+        } else if (section === 'hero') {
+          defaultSection = {
+            line1: 'REDASH AD AGENCY.',
+            line2: 'MARKETING CAMPAIGNS.',
+            line3: 'DESIGN.',
+            line4: 'CREATE.',
+            line5: 'EXECUTE.',
+            line6: 'SINCE 2007.',
+            btnText: 'WATCH MORE ENTERPRISE FILMS'
+          };
+        } else if (section === 'hero_cards') {
+          defaultSection = [
+            { id: 'b5hZr-8rSI4', label: 'TV ADS', rotation: '1deg', offsetX: '60px', scale: 1, number: '01' },
+            { id: 'rqfTN_Fj1SA', label: 'DIGITAL ADS', rotation: '-7deg', offsetX: '-60px', scale: 0.9, number: '02' },
+            { id: 'IUwZoT_-gt4', label: 'BRAND FILMS', rotation: '-9deg', offsetX: '160px', scale: 0.85, number: '03' },
+            { id: 'R_EAcTv-59o', label: 'EXPLAINERS', rotation: '-2deg', offsetX: '-150px', scale: 1.10, number: '04' },
+            { id: 'RvciiZb-k1U', label: 'PODCASTS', rotation: '7deg', offsetX: '80px', scale: 1.05, number: '05' },
+            { id: 'l4XYMZzh7Tc', label: 'AI VIDEOS', rotation: '8deg', offsetX: '-30px', scale: 0.90, number: '06' }
+          ];
         }
       }
 
@@ -1137,6 +1913,106 @@ function App() {
         }
       };
     });
+  };
+
+  const handleAgencyHeroCardDragStart = (e, index) => {
+    setDraggedAgencyHeroCardIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleAgencyHeroCardDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleAgencyHeroCardDrop = (e, targetIndex) => {
+    e.preventDefault();
+    if (draggedAgencyHeroCardIndex === null || draggedAgencyHeroCardIndex === targetIndex) return;
+
+    setContent(prev => {
+      const defaultCards = [
+        { id: 'b5hZr-8rSI4', url: 'https://youtu.be/b5hZr-8rSI4?si=lZXPjgcHddR0ZD-1', label: 'TV ADS', rotation: '1deg', offsetX: '60px', scale: 1, number: '01', image: '' },
+        { id: 'rqfTN_Fj1SA', label: 'DIGITAL ADS', rotation: '-7deg', offsetX: '-60px', scale: 0.9, number: '02', image: '' },
+        { id: 'IUwZoT_-gt4', label: 'BRAND FILMS', rotation: '-9deg', offsetX: '160px', scale: 0.85, number: '03', image: '' },
+        { id: 'R_EAcTv-59o', label: 'EXPLAINERS', rotation: '-2deg', offsetX: '-150px', scale: 1.10, number: '04', image: '' },
+        { id: 'RvciiZb-k1U', label: 'PODCASTS', rotation: '7deg', offsetX: '80px', scale: 1.05, number: '05', image: '' },
+        { id: 'l4XYMZzh7Tc', label: 'AI VIDEOS', rotation: '8deg', offsetX: '-30px', scale: 0.90, number: '06', image: '' }
+      ];
+      const currentCards = prev.agency?.heroCards || defaultCards;
+      const newCards = [...currentCards];
+      
+      const [movedItem] = newCards.splice(draggedAgencyHeroCardIndex, 1);
+      newCards.splice(targetIndex, 0, movedItem);
+
+      return {
+        ...prev,
+        agency: {
+          ...prev.agency,
+          heroCards: newCards
+        }
+      };
+    });
+    setDraggedAgencyHeroCardIndex(null);
+  };
+
+  const handleUpdateAgencyHeroCard = (index, field, value) => {
+    setContent(prev => {
+      const defaultCards = [
+        { id: 'b5hZr-8rSI4', url: 'https://youtu.be/b5hZr-8rSI4?si=lZXPjgcHddR0ZD-1', label: 'TV ADS', rotation: '1deg', offsetX: '60px', scale: 1, number: '01', image: '' },
+        { id: 'rqfTN_Fj1SA', label: 'DIGITAL ADS', rotation: '-7deg', offsetX: '-60px', scale: 0.9, number: '02', image: '' },
+        { id: 'IUwZoT_-gt4', label: 'BRAND FILMS', rotation: '-9deg', offsetX: '160px', scale: 0.85, number: '03', image: '' },
+        { id: 'R_EAcTv-59o', label: 'EXPLAINERS', rotation: '-2deg', offsetX: '-150px', scale: 1.10, number: '04', image: '' },
+        { id: 'RvciiZb-k1U', label: 'PODCASTS', rotation: '7deg', offsetX: '80px', scale: 1.05, number: '05', image: '' },
+        { id: 'l4XYMZzh7Tc', label: 'AI VIDEOS', rotation: '8deg', offsetX: '-30px', scale: 0.90, number: '06', image: '' }
+      ];
+      
+      const currentCards = prev.agency?.heroCards || defaultCards;
+      const newCards = [...currentCards];
+      newCards[index] = { ...newCards[index], [field]: value };
+      
+      // Auto-fetch thumbnail if YouTube Video URL is entered
+      if (field === 'url') {
+        const videoId = extractYouTubeId(value);
+        if (videoId) {
+          newCards[index].id = videoId; // Save only the ID for the player
+          newCards[index].image = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+        } else {
+          newCards[index].id = ''; // Clear ID if URL is invalid or empty
+        }
+      }
+
+      return {
+        ...prev,
+        agency: {
+          ...prev.agency,
+          heroCards: newCards
+        }
+      };
+    });
+  };
+
+  const handleAgencyHeroCardUpload = async (e, index) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    const formData = new FormData();
+    formData.append('image', file);
+    
+    try {
+      const res = await fetch('http://localhost:5000/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (res.ok) {
+        handleUpdateAgencyHeroCard(index, 'image', `http://localhost:5000${data.url}`);
+      } else {
+        alert('Upload failed: ' + data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error uploading file');
+    }
   };
 
   const handleResetHeroCards = () => {
@@ -1457,7 +2333,7 @@ function App() {
       const newState = JSON.parse(JSON.stringify(prev));
       if (!newState.homepage) newState.homepage = {};
       if (!newState.homepage.mediaCards) newState.homepage.mediaCards = [];
-      newState.homepage.mediaCards.push({
+      newState.homepage.mediaCards.unshift({
         id: Date.now().toString(),
         source: '',
         title: '',
@@ -1468,6 +2344,42 @@ function App() {
       });
       return newState;
     });
+  };
+
+  const handleMediaCardDragStart = (e, index) => {
+    e.dataTransfer.effectAllowed = 'move';
+    setDraggedMediaCardIndex(index);
+  };
+
+  const handleMediaCardDragOver = (e, index) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    startAutoScrollIfNeeded(e.clientY);
+  };
+
+  const handleMediaCardDrop = (e, targetIndex) => {
+    e.preventDefault();
+    stopAutoScroll();
+    if (draggedMediaCardIndex === null || draggedMediaCardIndex === targetIndex) {
+      setDraggedMediaCardIndex(null);
+      return;
+    }
+
+    // Reorder the full merged array (static + dynamic)
+    const allCards = [...mediaCardsRef.current];
+    if (draggedMediaCardIndex >= 0 && draggedMediaCardIndex < allCards.length) {
+      const [movedItem] = allCards.splice(draggedMediaCardIndex, 1);
+      allCards.splice(targetIndex, 0, movedItem);
+    }
+
+    setContent(prev => {
+      const newState = JSON.parse(JSON.stringify(prev));
+      if (!newState.homepage) newState.homepage = {};
+      // Save the full reordered list (strip isStaticOrigin helper flag)
+      newState.homepage.mediaCards = allCards.map(({ isStaticOrigin, ...rest }) => rest);
+      return newState;
+    });
+    setDraggedMediaCardIndex(null);
   };
 
   const defaultFeaturedCelebs = {
@@ -1727,6 +2639,107 @@ function App() {
             </div>
           </>
         );
+      case 'agency':
+        return (
+          <>
+            <div className="section-header">
+              <h1>Agency Homepage</h1>
+              <p>Update content for the Ad Agency</p>
+            </div>
+            <div className="sub-nav">
+              <button className={`sub-nav-item ${activeSubMenu === 'logo' ? 'active' : ''}`} onClick={() => setActiveSubMenu('logo')}>
+                <div className="label-group"><Layout size={16} /> Logo</div>
+              </button>
+              <button className={`sub-nav-item ${activeSubMenu === 'navigation' ? 'active' : ''}`} onClick={() => setActiveSubMenu('navigation')}>
+                <div className="label-group"><Layout size={16} /> Navigation Menu</div>
+              </button>
+              <button className={`sub-nav-item ${activeSubMenu === 'hero' ? 'active' : ''}`} onClick={() => setActiveSubMenu('hero')}>
+                <div className="label-group"><Layout size={16} /> Hero Section</div>
+              </button>
+              <button className={`sub-nav-item ${activeSubMenu === 'hero_cards' ? 'active' : ''}`} onClick={() => setActiveSubMenu('hero_cards')}>
+                <div className="label-group"><Layout size={16} /> Hero Cards</div>
+              </button>
+              <button className={`sub-nav-item ${activeSubMenu === 'quotation' ? 'active' : ''}`} onClick={() => setActiveSubMenu('quotation')}>
+                <div className="label-group"><Layout size={16} /> Quotation Form</div>
+              </button>
+              <button className={`sub-nav-item ${activeSubMenu === 'global_client' ? 'active' : ''}`} onClick={() => setActiveSubMenu('global_client')}>
+                <div className="label-group"><Users size={16} /> Global Clients</div>
+              </button>
+              <button className={`sub-nav-item ${activeSubMenu === 'case_studies' ? 'active' : ''}`} onClick={() => setActiveSubMenu('case_studies')}>
+                <div className="label-group"><Briefcase size={16} /> Case Studies</div>
+              </button>
+              <button className={`sub-nav-item ${activeSubMenu === 'testimonials' ? 'active' : ''}`} onClick={() => setActiveSubMenu('testimonials')}>
+                <div className="label-group"><MessageSquare size={16} /> Testimonials</div>
+              </button>
+              <button className={`sub-nav-item ${activeSubMenu === 'red-hot' ? 'active' : ''}`} onClick={() => setActiveSubMenu('red-hot')}>
+                <div className="label-group"><Flame size={16} /> Red Hot</div>
+              </button>
+              <button className={`sub-nav-item ${activeSubMenu === 'social_media' ? 'active' : ''}`} onClick={() => setActiveSubMenu('social_media')}>
+                <div className="label-group"><Layout size={16} /> Social Media</div>
+              </button>
+            </div>
+          </>
+        );
+      case 'agency-about':
+        return (
+          <>
+            <div className="section-header">
+              <h1>Agency About Page</h1>
+              <p>Update content for the Ad Agency About page</p>
+            </div>
+            <div className="sub-nav">
+              <button className={`sub-nav-item ${activeSubMenu === 'aboutHero' ? 'active' : ''}`} onClick={() => setActiveSubMenu('aboutHero')}>
+                <div className="label-group"><Layout size={16} /> Hero Section</div>
+              </button>
+              <button className={`sub-nav-item ${activeSubMenu === 'clients' ? 'active' : ''}`} onClick={() => setActiveSubMenu('clients')}>
+                <div className="label-group"><Layout size={16} /> Client</div>
+              </button>
+              <button className={`sub-nav-item ${activeSubMenu === 'catalyst' ? 'active' : ''}`} onClick={() => setActiveSubMenu('catalyst')}>
+                <div className="label-group"><Layout size={16} /> About Content</div>
+              </button>
+              <button className={`sub-nav-item ${activeSubMenu === 'join-us' ? 'active' : ''}`} onClick={() => setActiveSubMenu('join-us')}>
+                <div className="label-group"><Layout size={16} /> Join Us Text</div>
+              </button>
+            </div>
+          </>
+        );
+      case 'agency-blog':
+        return (
+          <>
+            <div className="section-header">
+              <h1>Agency Blog Settings</h1>
+              <p>Manage blog posts and hero text</p>
+            </div>
+            <div className="sub-nav">
+              <button className={`sub-nav-item ${activeSubMenu === 'heroText' ? 'active' : ''}`} onClick={() => setActiveSubMenu('heroText')}>
+                <div className="label-group"><Layout size={16} /> Hero Text</div>
+              </button>
+              <button className={`sub-nav-item ${activeSubMenu === 'blog' ? 'active' : ''}`} onClick={() => setActiveSubMenu('blog')}>
+                <div className="label-group"><FileText size={16} /> Blog Posts</div>
+              </button>
+            </div>
+          </>
+        );
+      case 'agency-films':
+        return (
+          <>
+            <div className="section-header">
+              <h1>Enterprise Films Page</h1>
+              <p>Update content for the Enterprise Films page</p>
+            </div>
+            <div className="sub-nav">
+              <button className={`sub-nav-item ${activeSubMenu === 'filmsHero' ? 'active' : ''}`} onClick={() => setActiveSubMenu('filmsHero')}>
+                <div className="label-group"><Layout size={16} /> Hero Section</div>
+              </button>
+              <button className={`sub-nav-item ${activeSubMenu === 'categories' ? 'active' : ''}`} onClick={() => setActiveSubMenu('categories')}>
+                <div className="label-group"><Layout size={16} /> Video Categories</div>
+              </button>
+              <button className={`sub-nav-item ${activeSubMenu === 'videos' ? 'active' : ''}`} onClick={() => setActiveSubMenu('videos')}>
+                <div className="label-group"><Layout size={16} /> Upload Films</div>
+              </button>
+            </div>
+          </>
+        );
       case 'shared':
         return (
           <>
@@ -1778,7 +2791,7 @@ function App() {
   const renderEditor = () => {
     if (activeSidebar === 'global-contact') {
       const contactInfo = content.global?.contact || {
-        addressTitle: 'RedAsh, 1101, Peninsula Park',
+        addressTitle: 'RedAsh, 1302-1305, Peninsula Park',
         addressDesc: 'Fun Republic Lane, Near Yash Raj Studios, Andheri West, Mumbai 400053',
         mapLinkUrl: 'https://share.google/Pxp4Tva4m3IyfrKAd',
         mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3769.754702008323!2d72.83299317593922!3d19.118432350639912!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c9d90e067ba9%3A0x16268e5d6bbc70d9!2sPeninsula%20Park!5e0!3m2!1sen!2sin!4v1716388437021!5m2!1sen!2sin',
@@ -2146,9 +3159,22 @@ function App() {
                     <GripVertical size={16} />
                   </div>
                   
-                  <div style={{ width: '100%', aspectRatio: '16/9', backgroundColor: '#000', overflow: 'hidden', backgroundImage: `url(${video.thumbnail || `https://img.youtube.com/vi/${video.id}/mqdefault.jpg`})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-                    {!video.id && !video.thumbnail && <div style={{width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center', color:'#555'}}><PlayCircle size={20}/></div>}
-                  </div>
+                  {(() => {
+                    let thumb = video.thumbnail;
+                    // Catch broken serialized import references
+                    if (!thumb || thumb === '' || thumb.startsWith('[object') || thumb === 'undefined') {
+                      if (video.id === 'web-series') thumb = '/assets/web-series-thumb.jpg';
+                      else if (video.id === 'kukufm') thumb = '/assets/microdrama-thumb.png';
+                      else if (video.id) thumb = `https://img.youtube.com/vi/${video.id}/mqdefault.jpg`;
+                    }
+                    // Resolve /assets/ paths to client dev server since admin is on a different port
+                    if (thumb && thumb.startsWith('/assets/')) thumb = `http://localhost:5173${thumb}`;
+                    return (
+                      <div style={{ width: '100%', aspectRatio: '16/9', backgroundColor: '#000', overflow: 'hidden', backgroundImage: thumb ? `url(${thumb})` : 'none', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                        {!thumb && <div style={{width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center', color:'#555'}}><PlayCircle size={20}/></div>}
+                      </div>
+                    );
+                  })()}
                   
                   <div style={{ flex: 1, minWidth: 0, width: '100%', display: 'flex', flexDirection: 'column', padding: '0.8rem' }}>
                     <div style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginBottom: '0.2rem' }}>
@@ -2307,7 +3333,7 @@ function App() {
         text2: 'Actors, Film Crew Members & Vendors can email their profiles only at',
         email2: 'redash.films@gmail.com',
         officeText: 'RedAsh Office:',
-        officeAddress: '1101, Peninsula Park, Fun Republic Lane, Andheri West, Mumbai, 400053',
+        officeAddress: '1302-1305, Peninsula Park, Fun Republic Lane, Andheri West, Mumbai, 400053',
         mapLinkText: '(Google Location)',
         mapLinkUrl: 'https://share.google/Pxp4Tva4m3IyfrKAd',
         ...(content[activeSidebar]?.quotation || {})
@@ -2426,7 +3452,7 @@ function App() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
                 <div style={{ padding: '1rem', background: '#ffffff', borderRadius: '4px', border: '1px solid #e2e8f0', display: 'inline-block' }}>
                   {logo.url ? (
-                    <img src={logo.url} alt="Logo Preview" style={{ maxHeight: '60px', objectFit: 'contain' }} />
+                    <img src={logo.url.startsWith('http') || logo.url.startsWith('data:') ? logo.url : `http://localhost:5000${logo.url}`} alt="Logo Preview" style={{ maxHeight: '60px', objectFit: 'contain' }} />
                   ) : (
                     <span className="text-muted">No logo uploaded yet</span>
                   )}
@@ -2497,7 +3523,7 @@ function App() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
                 <div style={{ padding: '1rem', background: '#ffffff', borderRadius: '4px', border: '1px solid #e2e8f0', display: 'inline-block' }}>
                   {logo.url ? (
-                    <img src={logo.url} alt="Logo Preview" style={{ maxHeight: '60px', objectFit: 'contain' }} />
+                    <img src={logo.url.startsWith('http') || logo.url.startsWith('data:') ? logo.url : `http://localhost:5000${logo.url}`} alt="Logo Preview" style={{ maxHeight: '60px', objectFit: 'contain' }} />
                   ) : (
                     <span className="text-muted">No logo provided yet</span>
                   )}
@@ -2576,6 +3602,1801 @@ function App() {
               <Save size={16} /> Save Section Changes
             </button>
           </div>
+        </div>
+      );
+    }
+
+    if (activeSidebar === 'agency' && activeSubMenu === 'logo') {
+      const logo = content.agency?.logo || { url: '' };
+
+      const handleAgencyLogoUpload = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            handleUpdate('logo', 'url', reader.result);
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header">
+            <div>
+              <h2>Agency Subsite Logo</h2>
+              <p>Change the main logo for the Ad Agency website.</p>
+
+              <div style={{ marginTop: '1rem', padding: '1rem', backgroundColor: '#eff6ff', borderLeft: '4px solid #3b82f6', borderRadius: '4px' }}>
+                <h4 style={{ color: '#1e40af', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.9rem' }}>Logo Requirements & Recommendations</h4>
+                <ul style={{ fontSize: '0.85rem', color: '#334155', listStyleType: 'disc', paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                  <li><strong>Format:</strong> Use a <span className="font-bold">transparent WebP or PNG (no background)</span> for best results. We highly recommend WebP!</li>
+                  <li><strong>Dimensions:</strong> The website automatically scales any uploaded logo to fit the navigation bar perfectly.</li>
+                  <li><strong>Orientation:</strong> Both horizontal and vertical/square logos are fully supported.</li>
+                  <li><strong>File Size:</strong> Please keep your file under <span className="font-bold">500KB</span> for fast loading speeds.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          
+          <div className="content-block-panel mt-6">
+            <div className="block-header">
+              <span className="block-title">Website Logo Upload</span>
+            </div>
+            
+            <div className="form-group">
+              <label>Current Logo Preview</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+                <div style={{ padding: '1rem', background: '#ffffff', borderRadius: '4px', border: '1px solid #e2e8f0', display: 'inline-block' }}>
+                  {logo.url ? (
+                    <img src={logo.url.startsWith('http') || logo.url.startsWith('data:') ? logo.url : `http://localhost:5000${logo.url}`} alt="Logo Preview" style={{ maxHeight: '60px', objectFit: 'contain' }} />
+                  ) : (
+                    <span className="text-muted">No logo provided yet</span>
+                  )}
+                </div>
+                {logo.url && (
+                  <button className="btn-icon text-red" onClick={() => handleUpdate('logo', 'url', '')} title="Remove Logo">
+                    <Trash2 size={18} /> Remove Logo
+                  </button>
+                )}
+              </div>
+            </div>
+            
+            <div className="form-group">
+              <label>Upload New Logo Image</label>
+              <input type="file" className="form-control" accept="image/*" onChange={handleAgencyLogoUpload} />
+            </div>
+          </div>
+          
+          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <button className="btn-primary agency" onClick={handleSave}>
+              <Save size={16} /> Save Section Changes
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeSidebar === 'agency' && activeSubMenu === 'navigation') {
+      const nav = content.agency?.navigation || {
+        home: 'HOME', about: 'ABOUT', films: 'ENTERPRISE FILMS',
+        blog: 'BLOG', media: 'MEDIA', contact: 'CONTACT'
+      };
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header">
+            <div>
+              <h2>Agency Navbar Text</h2>
+              <p>Change the text labels for the navigation menu on the Ad Agency subsite.</p>
+            </div>
+          </div>
+          
+          <div className="content-block-panel mt-6">
+            <div className="block-header">
+              <span className="block-title">Navigation Links</span>
+            </div>
+            
+            <div className="form-group">
+              <label>Link 1 (Default: HOME)</label>
+              <input type="text" className="form-control" value={nav.home || ''} onChange={(e) => handleUpdate('navigation', 'home', e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>Link 2 (Default: ABOUT)</label>
+              <input type="text" className="form-control" value={nav.about || ''} onChange={(e) => handleUpdate('navigation', 'about', e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>Link 3 (Default: ENTERPRISE FILMS)</label>
+              <input type="text" className="form-control" value={nav.films || ''} onChange={(e) => handleUpdate('navigation', 'films', e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>Link 4 (Default: BLOG)</label>
+              <input type="text" className="form-control" value={nav.blog || ''} onChange={(e) => handleUpdate('navigation', 'blog', e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>Link 5 (Default: MEDIA)</label>
+              <input type="text" className="form-control" value={nav.media || ''} onChange={(e) => handleUpdate('navigation', 'media', e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>Link 6 (Default: CONTACT)</label>
+              <input type="text" className="form-control" value={nav.contact || ''} onChange={(e) => handleUpdate('navigation', 'contact', e.target.value)} />
+            </div>
+          </div>
+          
+          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <button className="btn-primary agency" onClick={handleSave}>
+              <Save size={16} /> Save Section Changes
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeSidebar === 'agency' && activeSubMenu === 'hero') {
+      const hero = content.agency?.hero || {
+        line1: 'REDASH AD AGENCY.',
+        line2: 'MARKETING CAMPAIGNS.',
+        line3: 'DESIGN.',
+        line4: 'CREATE.',
+        line5: 'EXECUTE.',
+        line6: 'SINCE 2007.',
+        btnText: 'WATCH MORE ENTERPRISE FILMS'
+      };
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header">
+            <div>
+              <h2>Agency Hero Section</h2>
+              <p>Change the main text in the center of the Ad Agency page.</p>
+            </div>
+          </div>
+          
+          <div className="content-block-panel mt-6">
+            <div className="block-header">
+              <span className="block-title">Hero Text</span>
+            </div>
+            
+            <div className="form-group">
+              <label>Red Line (Default: REDASH AD AGENCY.)</label>
+              <input type="text" className="form-control" value={hero.line1 || ''} onChange={(e) => handleUpdate('hero', 'line1', e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>Black Line 1 (Default: MARKETING CAMPAIGNS.)</label>
+              <input type="text" className="form-control" value={hero.line2 || ''} onChange={(e) => handleUpdate('hero', 'line2', e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>Blue Line 1 (Default: DESIGN.)</label>
+              <input type="text" className="form-control" value={hero.line3 || ''} onChange={(e) => handleUpdate('hero', 'line3', e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>Blue Line 2 (Default: CREATE.)</label>
+              <input type="text" className="form-control" value={hero.line4 || ''} onChange={(e) => handleUpdate('hero', 'line4', e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>Blue Line 3 (Default: EXECUTE.)</label>
+              <input type="text" className="form-control" value={hero.line5 || ''} onChange={(e) => handleUpdate('hero', 'line5', e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>Black Line 2 (Default: SINCE 2007.)</label>
+              <input type="text" className="form-control" value={hero.line6 || ''} onChange={(e) => handleUpdate('hero', 'line6', e.target.value)} />
+            </div>
+            <div className="form-group">
+              <label>Button Text (Default: WATCH MORE ENTERPRISE FILMS)</label>
+              <input type="text" className="form-control" value={hero.btnText || ''} onChange={(e) => handleUpdate('hero', 'btnText', e.target.value)} />
+            </div>
+          </div>
+          
+          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <button className="btn-primary agency" onClick={handleSave}>
+              <Save size={16} /> Save Section Changes
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeSidebar === 'agency' && activeSubMenu === 'hero_cards') {
+      const defaultCards = [
+        { id: 'b5hZr-8rSI4', label: 'TV ADS', rotation: '1deg', offsetX: '60px', scale: 1, number: '01' },
+        { id: 'rqfTN_Fj1SA', label: 'DIGITAL ADS', rotation: '-7deg', offsetX: '-60px', scale: 0.9, number: '02' },
+        { id: 'IUwZoT_-gt4', label: 'BRAND FILMS', rotation: '-9deg', offsetX: '160px', scale: 0.85, number: '03' },
+        { id: 'R_EAcTv-59o', label: 'EXPLAINERS', rotation: '-2deg', offsetX: '-150px', scale: 1.10, number: '04' },
+        { id: 'RvciiZb-k1U', label: 'PODCASTS', rotation: '7deg', offsetX: '80px', scale: 1.05, number: '05' },
+        { id: 'l4XYMZzh7Tc', label: 'AI VIDEOS', rotation: '8deg', offsetX: '-30px', scale: 0.90, number: '06' }
+      ];
+      const cards = content.agency?.heroCards || defaultCards;
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header">
+            <div>
+              <h2>Agency Hero Cards</h2>
+              <p>Update the 6 floating video cards on the Ad Agency landing page.</p>
+            </div>
+          </div>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem', marginTop: '2rem' }}>
+            {cards.map((card, index) => (
+              <div 
+                key={index} 
+                className="list-item" 
+                style={{ 
+                  flexDirection: 'column', 
+                  alignItems: 'stretch', 
+                  padding: '1.5rem',
+                  border: draggedAgencyHeroCardIndex === index ? '2px dashed #1672EF' : '1px solid #e2e8f0',
+                  opacity: draggedAgencyHeroCardIndex === index ? 0.5 : 1
+                }}
+                draggable
+                onDragStart={(e) => handleAgencyHeroCardDragStart(e, index)}
+                onDragOver={handleAgencyHeroCardDragOver}
+                onDrop={(e) => handleAgencyHeroCardDrop(e, index)}
+                onDragEnd={() => setDraggedAgencyHeroCardIndex(null)}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: '0 0 1rem 0', color: 'var(--text-main)', borderBottom: '1px solid #eee', paddingBottom: '0.5rem' }}>
+                  <GripVertical size={18} style={{ color: '#94a3b8', cursor: 'grab' }} />
+                  <h3 style={{ margin: 0 }}>Card 0{index + 1} <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 'normal', marginLeft: '0.5rem' }}>({index % 2 === 0 ? 'Left Column' : 'Right Column'})</span></h3>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1rem' }}>
+                  {/* Image Preview */}
+                  <div style={{ width: '100%', height: '220px', backgroundColor: '#f0f0f0', border: '1px solid #ddd', borderRadius: '4px', overflow: 'hidden', flexShrink: 0 }}>
+                    {card.image || card.id ? (
+                      <img src={card.image || `https://img.youtube.com/vi/${card.id}/hqdefault.jpg`} alt={card.label} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ) : (
+                      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999', fontSize: '0.8rem', textAlign: 'center', padding: '0.5rem' }}>
+                        No Image or YouTube Video ID
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Inputs */}
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label>Title</label>
+                      <input 
+                        type="text" 
+                        className="form-control" 
+                        value={card.label || ''} 
+                        onChange={(e) => handleUpdateAgencyHeroCard(index, 'label', e.target.value)}
+                        placeholder="e.g. MOVIES"
+                      />
+                    </div>
+                    <div className="form-group" style={{ marginBottom: 0 }}>
+                      <label>YouTube/Other URL</label>
+                      <input 
+                        type="text" 
+                        className="form-control" 
+                        value={card.url !== undefined ? card.url : (card.id ? `https://www.youtube.com/watch?v=${card.id}` : '')} 
+                        onChange={(e) => handleUpdateAgencyHeroCard(index, 'url', e.target.value)}
+                        placeholder="https://..."
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="form-group" style={{ marginBottom: '0.8rem' }}>
+                  <label>Image URL (Auto-filled from YouTube, or paste your own)</label>
+                  <input 
+                    type="text" 
+                    className="form-control" 
+                    value={card.image || ''}
+                    onChange={(e) => handleUpdateAgencyHeroCard(index, 'image', e.target.value)}
+                    placeholder="https://..."
+                  />
+                </div>
+
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label>Or Upload Image (Recommended: Portrait/Vertical aspect ratio, WebP under 500KB)</label>
+                  <input 
+                    type="file" 
+                    className="form-control" 
+                    accept="image/*" 
+                    onChange={(e) => handleAgencyHeroCardUpload(e, index)} 
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <button className="btn-primary agency" onClick={handleSave}>
+              <Save size={16} /> Save Section Changes
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeSidebar === 'agency' && activeSubMenu === 'global_client') {
+      const clientItems = content.agency?.globalClients || defaultAgencyClients;
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header" style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <h2>Global Client Logos</h2>
+              <p>Manage global client/partner logos shown on the Ad Agency site.</p>
+            </div>
+            <button className="btn-secondary agency" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }} onClick={handleOpenAddAgencyClientModal}>
+              <Plus size={16} /> Add Client
+            </button>
+          </div>
+
+          <div 
+            onDragOver={(e) => handleAgencyClientDragOver(e, clientItems.length)}
+            onDrop={(e) => handleAgencyClientDrop(e, clientItems.length)}
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem', minHeight: '120px' }}
+          >
+            {clientItems.map((item, idx) => (
+              <div 
+                key={idx} 
+                draggable
+                onDragStart={(e) => handleAgencyClientDragStart(e, idx)}
+                onDragOver={(e) => handleAgencyClientDragOver(e, idx)}
+                onDrop={(e) => handleAgencyClientDrop(e, idx)}
+                onDragEnd={() => stopAutoScroll()}
+                className="content-block-panel" 
+                style={{ 
+                  padding: '1.2rem', 
+                  background: '#ffffff', 
+                  border: draggedAgencyClientIndex === idx ? '2px dashed #1672EF' : '1px solid #e2e8f0', 
+                  opacity: draggedAgencyClientIndex === idx ? 0.5 : 1,
+                  borderRadius: '10px', 
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)', 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  gap: '1rem',
+                  cursor: 'grab'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '0.6rem', borderBottom: '1px solid #f1f5f9' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <GripVertical size={18} style={{ color: '#94a3b8', cursor: 'grab' }} title="Drag to reorder" />
+                    <span style={{ fontWeight: '700', fontSize: '0.95rem', color: '#0f172a' }}>#{idx + 1} Logo</span>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                    <button 
+                      type="button" 
+                      className="btn-icon" 
+                      disabled={idx === 0}
+                      onClick={(e) => { e.stopPropagation(); handleMoveAgencyClient(idx, -1); }} 
+                      title="Move Left"
+                      style={{ opacity: idx === 0 ? 0.3 : 1, color: '#475569', cursor: idx === 0 ? 'default' : 'pointer' }}
+                    >
+                      <ChevronLeft size={16} />
+                    </button>
+                    <button 
+                      type="button" 
+                      className="btn-icon" 
+                      disabled={idx === clientItems.length - 1}
+                      onClick={(e) => { e.stopPropagation(); handleMoveAgencyClient(idx, 1); }} 
+                      title="Move Right"
+                      style={{ opacity: idx === clientItems.length - 1 ? 0.3 : 1, color: '#475569', cursor: idx === clientItems.length - 1 ? 'default' : 'pointer' }}
+                    >
+                      <ChevronRight size={16} />
+                    </button>
+                    <button 
+                      type="button" 
+                      className="btn-icon" 
+                      style={{ color: '#ef4444', marginLeft: '0.2rem' }} 
+                      onClick={(e) => { e.stopPropagation(); handleRemoveAgencyClient(idx); }} 
+                      title="Delete Logo"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
+
+                <div style={{ width: '100%', height: '180px', background: '#f8fafc', borderRadius: '8px', overflow: 'hidden', border: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+                  {item.img ? (
+                    <img src={item.img} alt={`Logo ${idx + 1}`} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                  ) : (
+                    <div style={{ textAlign: 'center', color: '#94a3b8' }}>
+                      <ImageIcon size={36} style={{ margin: '0 auto 0.4rem', opacity: 0.5 }} />
+                      <span style={{ fontSize: '0.8rem', display: 'block', fontWeight: '500' }}>No Logo Selected</span>
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Upload Logo / Image URL</label>
+                  <div style={{ display: 'flex', gap: '0.5rem', flexDirection: 'column' }}>
+                    <input 
+                      type="text" 
+                      className="form-control" 
+                      style={{ fontSize: '0.85rem' }}
+                      value={item.img || ''} 
+                      onChange={(e) => handleUpdateAgencyClient(idx, 'img', e.target.value)} 
+                      placeholder="Image URL or upload..."
+                    />
+                    <label className="btn-secondary agency" style={{ padding: '0.6rem 1rem', fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: '#1672EF', color: '#ffffff', border: 'none', borderRadius: '6px', fontWeight: '600', textAlign: 'center' }}>
+                      <Upload size={16} /> Upload Logo File
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        style={{ display: 'none' }}
+                        onChange={(e) => handleAgencyClientFileUpload(e, idx)} 
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            <button 
+              type="button"
+              className="btn-outline-dashed" 
+              style={{ 
+                minHeight: '280px', 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                gap: '0.8rem', 
+                border: '2px dashed #cbd5e1', 
+                borderRadius: '10px', 
+                background: '#ffffff', 
+                color: '#475569', 
+                fontWeight: '600', 
+                cursor: 'pointer'
+              }} 
+              onClick={handleOpenAddAgencyClientModal}
+            >
+              <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#dbeafe', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1672EF' }}>
+                <Plus size={24} />
+              </div>
+              <span style={{ fontSize: '0.95rem', color: '#0f172a' }}>+ Add Client</span>
+            </button>
+          </div>
+
+          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <button className="btn-primary agency" onClick={handleSave}>
+              <Save size={16} /> Save Section Changes
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeSidebar === 'agency' && activeSubMenu === 'case_studies') {
+      let studyItems = content.agency?.caseStudies;
+      if (!studyItems || studyItems.length === 0) {
+        studyItems = defaultCaseStudies;
+      }
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header" style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <h2>Case Studies</h2>
+              <p>Manage the case studies shown on the Ad Agency site.</p>
+            </div>
+            <button className="btn-secondary agency" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }} onClick={handleOpenAddCaseStudyModal}>
+              <Plus size={16} /> Add Case Study
+            </button>
+          </div>
+
+          <div 
+            onDragOver={(e) => handleCaseStudyDragOver(e, studyItems.length)}
+            onDrop={(e) => handleCaseStudyDrop(e, studyItems.length)}
+            style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', minHeight: '120px' }}
+          >
+            {studyItems.map((study, idx) => (
+              <div 
+                key={study.id || idx} 
+                draggable
+                onDragStart={(e) => handleCaseStudyDragStart(e, idx)}
+                onDragOver={(e) => handleCaseStudyDragOver(e, idx)}
+                onDrop={(e) => handleCaseStudyDrop(e, idx)}
+                onDragEnd={() => stopAutoScroll()}
+                className="content-block-panel" 
+                style={{ 
+                  padding: '1.2rem', 
+                  background: '#ffffff', 
+                  border: draggedCaseStudyIndex === idx ? '2px dashed #1672EF' : '1px solid #e2e8f0', 
+                  opacity: draggedCaseStudyIndex === idx ? 0.5 : 1,
+                  borderRadius: '10px', 
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)', 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  gap: '1rem',
+                  cursor: 'grab'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '0.6rem', borderBottom: '1px solid #f1f5f9' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <GripVertical size={18} style={{ color: '#94a3b8', cursor: 'grab' }} title="Drag to reorder" />
+                    <span style={{ fontWeight: '700', fontSize: '0.95rem', color: '#0f172a' }}>Case Study #{idx + 1}</span>
+                  </div>
+                  <button type="button" className="btn-icon" onClick={(e) => { e.stopPropagation(); handleRemoveCaseStudy(idx); }} style={{ color: '#ef4444' }} title="Remove Case Study">
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '1rem' }}>
+                  <div>
+                    <label style={{ fontSize: '0.8rem', fontWeight: '600', marginBottom: '0.4rem', display: 'block', color: '#475569' }}>Image</label>
+                    <div style={{ width: '100%', height: '100px', background: '#f8fafc', borderRadius: '6px', border: '1px solid #e2e8f0', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {study.image ? <img src={study.image} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <ImageIcon size={24} style={{ color: '#cbd5e1' }} />}
+                    </div>
+                    <label style={{ display: 'block', marginTop: '0.5rem', cursor: 'pointer', textAlign: 'center', fontSize: '0.75rem', padding: '0.4rem', background: '#e0e7ff', color: '#4338ca', borderRadius: '4px', fontWeight: '600' }}>
+                      Change Image
+                      <input type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => handleCaseStudyFileUpload(e, idx)} />
+                    </label>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.8rem' }}>
+                      <div>
+                        <label style={{ fontSize: '0.8rem', fontWeight: '600', display: 'block', color: '#475569' }}>Tag Text</label>
+                        <input type="text" className="form-control" style={{ padding: '0.4rem 0.6rem', fontSize: '0.85rem' }} value={study.tag || ''} onChange={(e) => handleUpdateCaseStudy(idx, 'tag', e.target.value)} />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: '0.8rem', fontWeight: '600', display: 'block', color: '#475569', marginBottom: '0.4rem' }}>Icon</label>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                          <div style={{ minWidth: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f1f5f9', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+                            {renderIconPreview(study.iconType || 'FaBriefcase')}
+                          </div>
+                          <select className="form-control" style={{ padding: '0.4rem 0.6rem', fontSize: '0.85rem', flex: 1 }} value={study.iconType || 'FaBriefcase'} onChange={(e) => handleUpdateCaseStudy(idx, 'iconType', e.target.value)}>
+                            {CASE_STUDY_ICONS.map(icon => (
+                              <option key={icon.value} value={icon.value}>{icon.label}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                      <div>
+                        <label style={{ fontSize: '0.8rem', fontWeight: '600', display: 'block', color: '#475569' }}>Tag Color</label>
+                        <select className="form-control" style={{ padding: '0.4rem 0.6rem', fontSize: '0.85rem' }} value={study.tagColor || 'bg-blue-600'} onChange={(e) => handleUpdateCaseStudy(idx, 'tagColor', e.target.value)}>
+                          <option value="bg-blue-600">Blue</option>
+                          <option value="bg-purple-500">Purple</option>
+                          <option value="bg-teal-500">Teal</option>
+                          <option value="bg-orange-500">Orange</option>
+                          <option value="bg-red-500">Red</option>
+                          <option value="bg-green-500">Green</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
+                      <div>
+                        <label style={{ fontSize: '0.8rem', fontWeight: '600', display: 'block', color: '#475569' }}>Stat / Value</label>
+                        <input type="text" className="form-control" style={{ padding: '0.4rem 0.6rem', fontSize: '0.85rem' }} value={study.stat || ''} onChange={(e) => handleUpdateCaseStudy(idx, 'stat', e.target.value)} />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: '0.8rem', fontWeight: '600', display: 'block', color: '#475569' }}>Title</label>
+                        <input type="text" className="form-control" style={{ padding: '0.4rem 0.6rem', fontSize: '0.85rem' }} value={study.title || ''} onChange={(e) => handleUpdateCaseStudy(idx, 'title', e.target.value)} />
+                      </div>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.8rem' }}>
+                      <div>
+                        <label style={{ fontSize: '0.8rem', fontWeight: '600', display: 'block', color: '#475569' }}>Client Type</label>
+                        <input type="text" className="form-control" style={{ padding: '0.4rem 0.6rem', fontSize: '0.85rem' }} value={study.clientType || ''} onChange={(e) => handleUpdateCaseStudy(idx, 'clientType', e.target.value)} />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: '0.8rem', fontWeight: '600', display: 'block', color: '#475569' }}>Customers (e.g. B2B)</label>
+                        <input type="text" className="form-control" style={{ padding: '0.4rem 0.6rem', fontSize: '0.85rem' }} value={study.customers || ''} onChange={(e) => handleUpdateCaseStudy(idx, 'customers', e.target.value)} />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: '0.8rem', fontWeight: '600', display: 'block', color: '#475569' }}>Work Domain</label>
+                        <input type="text" className="form-control" style={{ padding: '0.4rem 0.6rem', fontSize: '0.85rem' }} value={study.domain || ''} onChange={(e) => handleUpdateCaseStudy(idx, 'domain', e.target.value)} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <button className="btn-primary agency" onClick={handleSave}>
+              <Save size={16} /> Save Section Changes
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeSidebar === 'agency' && activeSubMenu === 'testimonials') {
+      let tItems = content.agency?.testimonials;
+      if (!tItems || tItems.length === 0) {
+        tItems = defaultTestimonials;
+      }
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <h2>Testimonials</h2>
+              <p>Manage the testimonials shown on the Ad Agency site.</p>
+            </div>
+            <button className="btn-secondary agency" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }} onClick={handleOpenAddTestimonialModal}>
+              <Plus size={16} /> Add Testimonial
+            </button>
+          </div>
+
+          <div 
+            className="content-block-panel mt-6"
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem', background: 'transparent', padding: 0, border: 'none' }}
+          >
+            {tItems.map((testimonial, idx) => (
+              <div 
+                key={idx}
+                onDragOver={(e) => {
+                  e.preventDefault();
+                  e.dataTransfer.dropEffect = "move";
+                }}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  if (draggedTestimonialIndex === null || draggedTestimonialIndex === idx) return;
+                  const newItems = [...tItems];
+                  const draggedItem = newItems[draggedTestimonialIndex];
+                  newItems.splice(draggedTestimonialIndex, 1);
+                  newItems.splice(idx, 0, draggedItem);
+                  setContent(prev => ({
+                    ...prev,
+                    agency: { ...prev.agency, testimonials: newItems }
+                  }));
+                  setDraggedTestimonialIndex(null);
+                }}
+                style={{ 
+                  background: '#ffffff', 
+                  padding: '1.5rem', 
+                  borderRadius: '10px', 
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)', 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  gap: '1rem',
+                  border: draggedTestimonialIndex === idx ? '2px dashed #1672EF' : '1px solid #e2e8f0',
+                  opacity: draggedTestimonialIndex === idx ? 0.5 : 1
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '0.6rem', borderBottom: '1px solid #f1f5f9' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <div
+                      draggable
+                      onDragStart={(e) => {
+                        setDraggedTestimonialIndex(idx);
+                        e.dataTransfer.effectAllowed = "move";
+                      }}
+                      onDragEnd={() => setDraggedTestimonialIndex(null)}
+                      style={{ cursor: 'grab', display: 'flex', alignItems: 'center' }}
+                    >
+                      <GripVertical size={18} style={{ color: '#94a3b8' }} title="Drag to reorder" />
+                    </div>
+                    <span style={{ fontWeight: '700', fontSize: '0.95rem', color: '#0f172a' }}>Testimonial #{idx + 1}</span>
+                  </div>
+                  <button type="button" className="btn-icon" onClick={(e) => { e.stopPropagation(); handleRemoveTestimonial(idx); }} style={{ color: '#ef4444' }} title="Remove Testimonial">
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div>
+                    <label style={{ fontSize: '0.8rem', fontWeight: '600', display: 'block', color: '#475569' }}>Type</label>
+                    <select className="form-control" style={{ padding: '0.4rem 0.6rem', fontSize: '0.85rem' }} value={testimonial.type || 'video'} onChange={(e) => handleUpdateTestimonial(idx, 'type', e.target.value)}>
+                      <option value="video">Video</option>
+                      <option value="text">Text</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '0.8rem', fontWeight: '600', display: 'block', color: '#475569' }}>Name</label>
+                    <input type="text" className="form-control" style={{ padding: '0.4rem 0.6rem', fontSize: '0.85rem' }} value={testimonial.name || ''} onChange={(e) => handleUpdateTestimonial(idx, 'name', e.target.value)} />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '0.8rem', fontWeight: '600', display: 'block', color: '#475569' }}>Title / Role</label>
+                    <input type="text" className="form-control" style={{ padding: '0.4rem 0.6rem', fontSize: '0.85rem' }} value={testimonial.title || ''} onChange={(e) => handleUpdateTestimonial(idx, 'title', e.target.value)} />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '0.8rem', fontWeight: '600', display: 'block', color: '#475569' }}>Company</label>
+                    <input type="text" className="form-control" style={{ padding: '0.4rem 0.6rem', fontSize: '0.85rem' }} value={testimonial.company || ''} onChange={(e) => handleUpdateTestimonial(idx, 'company', e.target.value)} />
+                  </div>
+                  {testimonial.type === 'video' ? (
+                    <div>
+                      <label style={{ fontSize: '0.8rem', fontWeight: '600', display: 'block', color: '#475569' }}>YouTube Video URL or ID</label>
+                      <input type="text" className="form-control" style={{ padding: '0.4rem 0.6rem', fontSize: '0.85rem' }} value={testimonial.videoId || ''} onChange={(e) => handleUpdateTestimonial(idx, 'videoId', e.target.value)} placeholder="e.g. https://youtube.com/watch?v=... or 1AUDTOK84ns" />
+                      {testimonial.videoId && (
+                        <div style={{ marginTop: '0.8rem', width: '100%', height: '180px', borderRadius: '6px', overflow: 'hidden', background: '#e2e8f0' }}>
+                          <img src={`https://img.youtube.com/vi/${extractYouTubeId(testimonial.videoId)}/hqdefault.jpg`} alt="Video Thumbnail" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div>
+                      <label style={{ fontSize: '0.8rem', fontWeight: '600', display: 'block', color: '#475569' }}>Quote Text</label>
+                      <textarea className="form-control" style={{ padding: '0.4rem 0.6rem', fontSize: '0.85rem', minHeight: '80px' }} value={testimonial.text || ''} onChange={(e) => handleUpdateTestimonial(idx, 'text', e.target.value)} placeholder="Testimonial text..." />
+                    </div>
+                  )}
+                  {testimonial.type === 'text' && (
+                    <div>
+                      <label style={{ fontSize: '0.8rem', fontWeight: '600', display: 'block', color: '#475569' }}>Profile Image / Avatar</label>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#f8fafc', overflow: 'hidden', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          {testimonial.avatar ? <img src={testimonial.avatar} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <ImageIcon size={16} style={{ color: '#cbd5e1' }} />}
+                        </div>
+                        <label style={{ cursor: 'pointer', fontSize: '0.75rem', padding: '0.4rem 0.8rem', background: '#e0e7ff', color: '#4338ca', borderRadius: '4px', fontWeight: '600' }}>
+                          Upload Image
+                          <input type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => handleTestimonialAvatarUpload(e, idx)} />
+                        </label>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <button className="btn-primary agency" onClick={handleSave}>
+              <Save size={16} /> Save Section Changes
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeSidebar === 'agency' && activeSubMenu === 'red-hot') {
+      let redHotItems = content.agency?.whatsRedHot;
+      if (!redHotItems || redHotItems.length === 0) {
+        redHotItems = defaultWhatsRedHot;
+      }
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <h2>Red Hot</h2>
+              <p>Manage the "What's Red-Hot" items shown on the Ad Agency site.</p>
+            </div>
+            <button className="btn-secondary agency" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }} onClick={handleOpenAddWhatsRedHotModal}>
+              <Plus size={16} /> Add Red Hot Item
+            </button>
+          </div>
+
+          <div 
+            className="content-block-panel mt-6"
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem', background: 'transparent', padding: 0, border: 'none' }}
+          >
+            {redHotItems.map((item, idx) => (
+              <div 
+                key={idx}
+                onDragOver={(e) => handleWhatsRedHotDragOver(e, idx)}
+                onDrop={(e) => handleWhatsRedHotDrop(e, idx)}
+                style={{ 
+                  background: '#ffffff', 
+                  padding: '1.5rem', 
+                  borderRadius: '10px', 
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)', 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  gap: '1rem',
+                  border: draggedWhatsRedHotIndex === idx ? '2px dashed #1672EF' : '1px solid #e2e8f0',
+                  opacity: draggedWhatsRedHotIndex === idx ? 0.5 : 1
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '0.6rem', borderBottom: '1px solid #f1f5f9' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                    <div
+                      draggable
+                      onDragStart={(e) => handleWhatsRedHotDragStart(e, idx)}
+                      onDragEnd={() => setDraggedWhatsRedHotIndex(null)}
+                      style={{ cursor: 'grab', display: 'flex', alignItems: 'center' }}
+                    >
+                      <GripVertical size={18} style={{ color: '#94a3b8' }} title="Drag to reorder" />
+                    </div>
+                    <span style={{ fontWeight: '700', fontSize: '0.95rem', color: '#0f172a' }}>Red Hot Item #{idx + 1}</span>
+                  </div>
+                  <button type="button" className="btn-icon" onClick={(e) => { e.stopPropagation(); handleRemoveWhatsRedHot(idx); }} style={{ color: '#ef4444' }} title="Remove Item">
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
+                    <div>
+                      <label style={{ fontSize: '0.8rem', fontWeight: '600', display: 'block', color: '#475569' }}>Pill Tag (e.g. INSIGHTS)</label>
+                      <input type="text" className="form-control" style={{ padding: '0.4rem 0.6rem', fontSize: '0.85rem' }} value={item.pill || ''} onChange={(e) => handleUpdateWhatsRedHot(idx, 'pill', e.target.value)} />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: '0.8rem', fontWeight: '600', display: 'block', color: '#475569' }}>Source Label</label>
+                      <input type="text" className="form-control" style={{ padding: '0.4rem 0.6rem', fontSize: '0.85rem' }} value={item.sourceLabel || ''} onChange={(e) => handleUpdateWhatsRedHot(idx, 'sourceLabel', e.target.value)} />
+                    </div>
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '0.8rem', fontWeight: '600', display: 'block', color: '#475569' }}>Title (use *text* for blue highlight)</label>
+                    <input type="text" className="form-control" style={{ padding: '0.4rem 0.6rem', fontSize: '0.85rem' }} value={item.title || ''} onChange={(e) => handleUpdateWhatsRedHot(idx, 'title', e.target.value)} placeholder="e.g. REDASH GROWS *EXPONENTIALLY*" />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '0.8rem', fontWeight: '600', display: 'block', color: '#475569' }}>Description</label>
+                    <textarea className="form-control" style={{ padding: '0.4rem 0.6rem', fontSize: '0.85rem', minHeight: '80px' }} value={item.desc || ''} onChange={(e) => handleUpdateWhatsRedHot(idx, 'desc', e.target.value)} />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                    <label style={{ fontSize: '0.8rem', fontWeight: '600', display: 'block', color: '#475569' }}>Links</label>
+                    {(item.links || []).map((link, linkIdx) => (
+                      <div key={linkIdx} style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
+                        <input type="text" className="form-control" style={{ flex: 1, padding: '0.4rem 0.6rem', fontSize: '0.85rem' }} placeholder="Link Text" value={link.text || ''} onChange={(e) => handleUpdateWhatsRedHotLink(idx, linkIdx, 'text', e.target.value)} />
+                        <input type="text" className="form-control" style={{ flex: 1, padding: '0.4rem 0.6rem', fontSize: '0.85rem' }} placeholder="Link URL" value={link.url || ''} onChange={(e) => handleUpdateWhatsRedHotLink(idx, linkIdx, 'url', e.target.value)} />
+                        <button type="button" className="btn-icon" onClick={(e) => { e.stopPropagation(); handleRemoveWhatsRedHotLink(idx, linkIdx); }} style={{ color: '#ef4444' }} title="Remove Link">
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    ))}
+                    <button type="button" className="btn-secondary" style={{ alignSelf: 'flex-start', padding: '0.4rem 0.8rem', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }} onClick={(e) => { e.stopPropagation(); handleAddWhatsRedHotLink(idx); }}>
+                      <Plus size={14} /> Add Another Link
+                    </button>
+                  </div>
+                  
+                  <div>
+                    <label style={{ fontSize: '0.8rem', fontWeight: '600', display: 'block', color: '#475569' }}>Image</label>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <div style={{ width: '80px', height: '60px', borderRadius: '4px', background: '#f8fafc', overflow: 'hidden', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        {item.image ? <img src={item.image} style={{ width: '100%', height: '100%', objectFit: 'contain' }} /> : <ImageIcon size={20} style={{ color: '#cbd5e1' }} />}
+                      </div>
+                      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                        <input type="text" className="form-control" style={{ padding: '0.4rem 0.6rem', fontSize: '0.8rem' }} placeholder="Image URL" value={item.image || ''} onChange={(e) => handleUpdateWhatsRedHot(idx, 'image', e.target.value)} />
+                        <label style={{ cursor: 'pointer', fontSize: '0.75rem', padding: '0.4rem 0.8rem', background: '#e0e7ff', color: '#4338ca', borderRadius: '4px', fontWeight: '600', textAlign: 'center' }}>
+                          Upload New Image
+                          <input type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => handleWhatsRedHotFileUpload(e, idx)} />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem' }}>
+                    <input 
+                      type="checkbox" 
+                      id={`imageLeft-${idx}`} 
+                      checked={item.imageLeft !== false} 
+                      onChange={(e) => handleUpdateWhatsRedHot(idx, 'imageLeft', e.target.checked)}
+                    />
+                    <label htmlFor={`imageLeft-${idx}`} style={{ fontSize: '0.8rem', fontWeight: '600', color: '#475569', cursor: 'pointer' }}>Image on Left Side</label>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <button className="btn-primary agency" onClick={handleSave}>
+              <Save size={16} /> Save Section Changes
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeSidebar === 'agency' && activeSubMenu === 'social_media') {
+      const defaultSocialMediaCards = [
+        { title: 'Creating videos and creatives' },
+        { title: 'Performance Marketing' },
+        { title: 'Creating ad campaigns' },
+        { title: 'Creating different types of corporate videos' },
+        { title: 'Creating viral content' },
+        { title: 'Increasing brand awareness and value' }
+      ];
+      const cards = content.agency?.socialMediaCards || defaultSocialMediaCards;
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header">
+            <div>
+              <h2>Social Media Cards</h2>
+              <p>Update the text for the 6 cards in the Social Media Management section.</p>
+            </div>
+          </div>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginTop: '2rem' }}>
+            {cards.map((card, index) => (
+              <div key={index} className="list-item" style={{ flexDirection: 'column', alignItems: 'stretch', padding: '1.5rem' }}>
+                <h3 style={{ margin: '0 0 1rem 0', color: 'var(--text-main)', borderBottom: '1px solid #eee', paddingBottom: '0.5rem' }}>Card 0{index + 1}</h3>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label>Title Text</label>
+                  <textarea 
+                    className="form-control" 
+                    value={card.title || ''} 
+                    onChange={(e) => handleUpdateAgencySocialMediaCard(index, e.target.value)}
+                    style={{ minHeight: '80px', fontSize: '0.9rem' }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <button className="btn-primary agency" onClick={handleSave}>
+              <Save size={16} /> Save Section Changes
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeSidebar === 'agency-about' && activeSubMenu === 'aboutHero') {
+      const defaultPara = 'by Ashish Lal, an engineer from IIT Delhi, RedAsh has assembled a highly experienced and professional team of experts spanning filmmaking, advertising, strategy and data analytics.';
+      const paraText = content['agency-about']?.hero?.paraText || content['agency-about']?.hero?.paraHtml || defaultPara;
+
+      // Clean up HTML tags if any exist from previous save
+      const cleanParaText = paraText.replace(/<[^>]*>?/gm, '');
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header">
+            <div>
+              <h2>About Hero Text</h2>
+              <p>Update the paragraph text in the About Hero section.</p>
+            </div>
+          </div>
+          
+          <div className="content-block-panel mt-6">
+            <div className="form-group">
+              <label>Hero Paragraph</label>
+              <textarea 
+                className="form-control" 
+                value={cleanParaText} 
+                onChange={(e) => handleUpdate('hero', 'paraText', e.target.value)} 
+                style={{ minHeight: '150px' }}
+              />
+            </div>
+          </div>
+          
+          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <button className="btn-primary agency" onClick={handleSave}>
+              <Save size={16} /> Save Section Changes
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeSidebar === 'agency-about' && activeSubMenu === 'clients') {
+      const defaultTitle = 'Our portfolio proudly boasts collaborations with esteemed global government and corporate clients, such as';
+      const titleText = content['agency-about']?.clients?.title || defaultTitle;
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header">
+            <div>
+              <h2>Client Text</h2>
+              <p>Update the paragraph text above the clients marquee.</p>
+            </div>
+          </div>
+          
+          <div className="content-block-panel mt-6">
+            <div className="form-group">
+              <label>Client Paragraph</label>
+              <textarea 
+                className="form-control" 
+                value={titleText} 
+                onChange={(e) => handleUpdate('clients', 'title', e.target.value)} 
+                style={{ minHeight: '100px' }}
+              />
+            </div>
+          </div>
+
+          <div className="content-block-panel mt-6">
+            <div className="form-group">
+              <label>Add Client Logo</label>
+              <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '1rem' }}>Manage the client logos shown below the text.</p>
+              <button 
+                className="btn-secondary" 
+                onClick={() => { setActiveSidebar('agency'); setActiveSubMenu('global_client'); }}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', width: 'max-content' }}
+              >
+                <Edit2 size={14} /> Add Client Logos
+              </button>
+            </div>
+          </div>
+          
+          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <button className="btn-primary agency" onClick={handleSave}>
+              <Save size={16} /> Save Section Changes
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeSidebar === 'agency-about' && activeSubMenu === 'catalyst') {
+      const defaultCatalyst = {
+        titlePart1: 'A Catalyst for',
+        highlightText: 'Exponential',
+        titlePart2: 'Growth',
+        paragraph1: 'Throughout the years in the industry, RedAsh Films has been a catalyst for exponential growth, thanks to our bespoke and imaginative strategies.',
+        paragraph2: 'Our mission is to continue empowering organizations to reach their full potential.',
+        images: [
+          '/uploads/about/01.JPG',
+          '/uploads/about/02.jpg',
+          '/uploads/about/03.jpg',
+          '/uploads/about/04.JPG',
+          '/uploads/about/05.JPG',
+          '/uploads/about/06.JPG',
+          '/uploads/about/07.jpg'
+        ]
+      };
+      const catalystData = { ...defaultCatalyst, ...(content['agency-about']?.catalyst || {}) };
+      
+      const cleanPara1 = catalystData.paragraph1.replace(/<[^>]*>?/gm, '');
+      const cleanPara2 = catalystData.paragraph2.replace(/<[^>]*>?/gm, '');
+      const imagesList = Array.isArray(catalystData.images) ? catalystData.images : [];
+
+      const handleUpdateCatalyst = (field, value) => {
+        handleUpdate('catalyst', field, value);
+      };
+
+      const handleUpdateImage = (idx, val) => {
+        const newImages = [...imagesList];
+        newImages[idx] = val;
+        handleUpdateCatalyst('images', newImages);
+      };
+
+      const handleAddImage = () => {
+        handleUpdateCatalyst('images', [...imagesList, '']);
+      };
+
+      const handleRemoveImage = (idx) => {
+        const newImages = imagesList.filter((_, i) => i !== idx);
+        handleUpdateCatalyst('images', newImages);
+      };
+
+      const handleCatalystFileUpload = async (e, idx) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const formData = new FormData();
+        formData.append('image', file);
+        try {
+          const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: formData });
+          const data = await res.json();
+          if (data.url) handleUpdateImage(idx, data.url);
+        } catch (err) {
+          console.error("Upload error:", err);
+          alert('Error uploading file');
+        }
+      };
+
+      const handleCatalystImageDragStart = (e, index) => {
+        setDraggedCatalystImageIndex(index);
+        e.dataTransfer.effectAllowed = 'move';
+      };
+
+      const handleCatalystImageDragOver = (e, index) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+      };
+
+      const handleCatalystImageDrop = (e, targetIndex) => {
+        e.preventDefault();
+        if (draggedCatalystImageIndex === null || draggedCatalystImageIndex === targetIndex) return;
+        const newImages = [...imagesList];
+        const [movedItem] = newImages.splice(draggedCatalystImageIndex, 1);
+        newImages.splice(targetIndex, 0, movedItem);
+        handleUpdateCatalyst('images', newImages);
+        setDraggedCatalystImageIndex(null);
+      };
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header">
+            <div>
+              <h2>About Content Section</h2>
+              <p>Update the texts and images for the "A Catalyst for Exponential Growth" section.</p>
+            </div>
+          </div>
+          
+          <div className="content-block-panel mt-6">
+            <h3 style={{ fontSize: '1rem', fontWeight: '700', marginBottom: '1rem', color: '#1e293b', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem' }}>Text Content</h3>
+            
+            <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+              <label>Heading Part 1 (e.g., "A Catalyst for")</label>
+              <input 
+                type="text" 
+                className="form-control" 
+                value={catalystData.titlePart1} 
+                onChange={(e) => handleUpdateCatalyst('titlePart1', e.target.value)} 
+              />
+            </div>
+            
+            <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+              <label>Highlight Text (e.g., "Exponential")</label>
+              <input 
+                type="text" 
+                className="form-control" 
+                value={catalystData.highlightText} 
+                onChange={(e) => handleUpdateCatalyst('highlightText', e.target.value)} 
+              />
+            </div>
+
+            <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+              <label>Heading Part 2 (e.g., "Growth")</label>
+              <input 
+                type="text" 
+                className="form-control" 
+                value={catalystData.titlePart2} 
+                onChange={(e) => handleUpdateCatalyst('titlePart2', e.target.value)} 
+              />
+            </div>
+            
+            <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+              <label>Paragraph 1</label>
+              <textarea 
+                className="form-control" 
+                value={cleanPara1} 
+                onChange={(e) => handleUpdateCatalyst('paragraph1', e.target.value)} 
+                style={{ minHeight: '100px' }}
+              />
+            </div>
+
+            <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+              <label>Paragraph 2</label>
+              <textarea 
+                className="form-control" 
+                value={cleanPara2} 
+                onChange={(e) => handleUpdateCatalyst('paragraph2', e.target.value)} 
+                style={{ minHeight: '100px' }}
+              />
+            </div>
+          </div>
+
+          <div className="content-block-panel mt-6">
+            <h3 style={{ fontSize: '1rem', fontWeight: '700', marginBottom: '1rem', color: '#1e293b', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span>Slideshow Images</span>
+              <button className="btn-secondary" onClick={handleAddImage} style={{ padding: '0.4rem 0.8rem', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                <Plus size={14} /> Add Image
+              </button>
+            </h3>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem' }}>
+              {imagesList.map((imgUrl, idx) => (
+                <div 
+                  key={idx} 
+                  draggable
+                  onDragStart={(e) => handleCatalystImageDragStart(e, idx)}
+                  onDragOver={(e) => handleCatalystImageDragOver(e, idx)}
+                  onDrop={(e) => handleCatalystImageDrop(e, idx)}
+                  style={{ 
+                    background: draggedCatalystImageIndex === idx ? '#f1f5f9' : '#f8fafc', 
+                    borderRadius: '8px', 
+                    border: draggedCatalystImageIndex === idx ? '2px dashed #e20002' : '1px solid #e2e8f0', 
+                    opacity: draggedCatalystImageIndex === idx ? 0.5 : 1,
+                    cursor: 'grab',
+                    overflow: 'hidden'
+                  }}
+                >
+                  {/* Image Preview */}
+                  <div style={{ position: 'relative', width: '100%', height: '120px', background: '#e2e8f0', transform: 'translateZ(0)' }}>
+                    {imgUrl && (
+                      <img 
+                        src={imgUrl.startsWith('http') || imgUrl.startsWith('/uploads') ? (imgUrl.startsWith('/uploads') ? `http://localhost:5000${imgUrl}` : imgUrl) : `http://localhost:5000${imgUrl}`} 
+                        alt="preview" 
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    )}
+                    {/* Overlay controls */}
+                    <div style={{ position: 'absolute', top: '4px', left: '4px', color: '#fff', background: 'rgba(0,0,0,0.5)', borderRadius: '4px', padding: '2px', display: 'flex', alignItems: 'center' }}>
+                      <GripVertical size={16} />
+                      <span style={{ fontSize: '0.7rem', fontWeight: '600', marginRight: '4px' }}>{idx + 1}</span>
+                    </div>
+                    <button 
+                      className="btn-icon" 
+                      onClick={() => handleRemoveImage(idx)} 
+                      style={{ position: 'absolute', top: '4px', right: '4px', color: '#fff', background: 'rgba(239,68,68,0.8)', borderRadius: '4px', padding: '4px', lineHeight: 0 }} 
+                      title="Delete Image"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                  {/* Bottom controls */}
+                  <div style={{ padding: '0.5rem', display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                    <input 
+                      type="text" 
+                      className="form-control" 
+                      value={imgUrl} 
+                      onChange={(e) => handleUpdateImage(idx, e.target.value)} 
+                      placeholder="URL..."
+                      style={{ fontSize: '0.75rem', padding: '0.3rem 0.5rem' }}
+                    />
+                    <label className="btn-secondary" style={{ padding: '0.3rem 0.5rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem', whiteSpace: 'nowrap', fontSize: '0.75rem' }}>
+                      <Upload size={12} />
+                      <input type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => handleCatalystFileUpload(e, idx)} />
+                    </label>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {imagesList.length === 0 && (
+              <p style={{ color: '#64748b', fontSize: '0.9rem', fontStyle: 'italic' }}>No custom images added. Default images will be used.</p>
+            )}
+            
+            <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}>
+              <button className="btn-secondary" onClick={handleAddImage} style={{ padding: '0.5rem 1rem', fontSize: '0.85rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', border: '1px dashed #94a3b8' }}>
+                <Plus size={14} /> Add Image
+              </button>
+            </div>
+          </div>
+          
+          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <button className="btn-primary agency" onClick={handleSave}>
+              <Save size={16} /> Save Section Changes
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeSidebar === 'agency-about' && activeSubMenu === 'join-us') {
+      const defaultJoinUs = {
+        text: "Join us on this\nexciting journey of\nsuccess at\nRedAsh Films,\nwhere innovation\nmeets impact.\nTogether, let's\nredefine\npossibilities.",
+        highlightWords: "innovation, impact."
+      };
+      const joinUsData = { ...defaultJoinUs, ...(content['agency-about']?.joinUs || {}) };
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header">
+            <div>
+              <h2>Join Us Typography</h2>
+              <p>Update the scrolling reveal text section.</p>
+            </div>
+          </div>
+          
+          <div className="content-block-panel mt-6">
+            <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+              <label>Typography Text (Use Enter for line breaks)</label>
+              <textarea 
+                className="form-control" 
+                value={joinUsData.text} 
+                onChange={(e) => handleUpdate('joinUs', 'text', e.target.value)} 
+                style={{ minHeight: '200px' }}
+              />
+            </div>
+            <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+              <label>Highlight Words (Comma separated exact matches)</label>
+              <input 
+                type="text" 
+                className="form-control" 
+                value={joinUsData.highlightWords} 
+                onChange={(e) => handleUpdate('joinUs', 'highlightWords', e.target.value)} 
+                placeholder="e.g. innovation, impact."
+              />
+            </div>
+          </div>
+          
+          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <button className="btn-primary agency" onClick={handleSave}>
+              <Save size={16} /> Save Section Changes
+            </button>
+          </div>
+        </div>
+      );
+    }
+    if (activeSidebar === 'agency-films' && activeSubMenu === 'filmsHero') {
+      const defaultHero = {
+        eyebrow: 'What We Create',
+        headingWhite: 'watch our',
+        headingBlue: 'Enterprise Films',
+        paragraph1: 'RedAsh Ad Agency understands business challenges, designs growth strategies, and brings them to life through enterprise films, creative campaigns and digital content.',
+        paragraph2: 'RedAsh was founded in 2007 by Ashish Lal, an IIT Delhi engineer. It has two divisions: Enterprise (RedAsh Ad Agency) and Entertainment (RedAsh Films).',
+        thousandsLine: 'We have produced thousands of Enterprise Films across a wide range of categories.',
+        buttonText: 'Get your free quotation today',
+        link1Text: 'Ashish Lal',
+        link1Url: 'https://www.linkedin.com/in/ashishlalreal/',
+        link2Text: '',
+        link2Url: ''
+      };
+      const heroData = { ...defaultHero, ...(content['agency-films']?.hero || {}) };
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header">
+            <div>
+              <h2>Enterprise Films Hero</h2>
+              <p>Update the hero text section of the Enterprise Films page.</p>
+            </div>
+          </div>
+          
+          <div className="content-block-panel mt-6">
+            <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+              <label>Eyebrow Text</label>
+              <input 
+                type="text" 
+                className="form-control" 
+                value={heroData.eyebrow} 
+                onChange={(e) => handleUpdate('hero', 'eyebrow', e.target.value)} 
+              />
+            </div>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
+              <div className="form-group">
+                <label>Heading (White Part)</label>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  value={heroData.headingWhite} 
+                  onChange={(e) => handleUpdate('hero', 'headingWhite', e.target.value)} 
+                />
+              </div>
+              <div className="form-group">
+                <label>Heading (Blue Part)</label>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  value={heroData.headingBlue} 
+                  onChange={(e) => handleUpdate('hero', 'headingBlue', e.target.value)} 
+                />
+              </div>
+            </div>
+            
+            <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+              <label>Description Paragraph 1</label>
+              <textarea 
+                className="form-control" 
+                value={heroData.paragraph1} 
+                onChange={(e) => handleUpdate('hero', 'paragraph1', e.target.value)} 
+                style={{ minHeight: '80px' }}
+              />
+            </div>
+            
+            <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+              <label>Description Paragraph 2</label>
+              <textarea 
+                className="form-control" 
+                value={heroData.paragraph2} 
+                onChange={(e) => handleUpdate('hero', 'paragraph2', e.target.value)} 
+                style={{ minHeight: '80px' }}
+              />
+            </div>
+            
+            <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+              <label>Bottom Line (with "thousands" highlighted)</label>
+              <input 
+                type="text" 
+                className="form-control" 
+                value={heroData.thousandsLine} 
+                onChange={(e) => handleUpdate('hero', 'thousandsLine', e.target.value)} 
+              />
+            </div>
+            
+            <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+              <label>Quotation Button Text</label>
+              <input 
+                type="text" 
+                className="form-control" 
+                value={heroData.buttonText} 
+                onChange={(e) => handleUpdate('hero', 'buttonText', e.target.value)} 
+              />
+            </div>
+          </div>
+          
+          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <button className="btn-primary agency" onClick={handleSave}>
+              <Save size={16} /> Save Section Changes
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+
+    if (activeSidebar === 'agency-films' && activeSubMenu === 'categories') {
+      const defaultCategories = {
+        cat1: { name: "AD FILMS", subtitle: "Captivating commercials that tell your brand's story and drive action." },
+        cat2: { name: "PODCASTS", subtitle: "Inspiring conversations, expert insights, and real stories that drive impact." },
+        cat3: { name: "BRAND FILMS", subtitle: "Cinematic narratives that establish your identity and build lasting trust." },
+        cat4: { name: "ANIMATED EXPLAINERS", subtitle: "Simplifying complex ideas into engaging, easy-to-understand visual stories." },
+        cat5: { name: "L&D TRAINING FILMS", subtitle: "Effective, engaging educational content to upskill and empower your team." },
+        cat6: { name: "AI VIDEOS", subtitle: "Cutting-edge, AI-driven video content for the next generation of digital media." },
+        cat7: { name: "SHORT FILMS", subtitle: "Creative, compelling narratives that evoke emotion and leave a lasting impression." },
+        cat8: { name: "ANY CREATIVE FILMS", subtitle: "Unique, out-of-the-box video concepts tailored perfectly to your creative vision." }
+      };
+      
+      const catsData = { ...defaultCategories, ...(content['agency-films']?.categories || {}) };
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header">
+            <div>
+              <h2>Video Categories</h2>
+              <p>Update the names and subtitles of the 8 enterprise video categories.</p>
+            </div>
+          </div>
+          
+          <div className="content-block-panel mt-6">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map(num => {
+              const key = `cat${num}`;
+              return (
+                <div key={key} className="form-group" style={{ marginBottom: '2rem', padding: '1rem', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 'bold', marginBottom: '1rem' }}>Category {num}</h3>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <label>Category Name (shown on card and heading)</label>
+                    <input 
+                      type="text" 
+                      className="form-control" 
+                      value={catsData[key].name} 
+                      onChange={(e) => handleUpdate('categories', key, { ...catsData[key], name: e.target.value })} 
+                    />
+                  </div>
+                  <div>
+                    <label>Subtitle Description (shown below heading)</label>
+                    <input 
+                      type="text" 
+                      className="form-control" 
+                      value={catsData[key].subtitle} 
+                      onChange={(e) => handleUpdate('categories', key, { ...catsData[key], subtitle: e.target.value })} 
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          
+          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <button className="btn-primary agency" onClick={handleSave}>
+              <Save size={16} /> Save Section Changes
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeSidebar === 'agency-films' && activeSubMenu === 'videos') {
+      const defaultCategories = {
+        cat1: { name: "AD FILMS" }, cat2: { name: "PODCASTS" }, cat3: { name: "BRAND FILMS" }, cat4: { name: "ANIMATED EXPLAINERS" },
+        cat5: { name: "L&D TRAINING FILMS" }, cat6: { name: "AI VIDEOS" }, cat7: { name: "SHORT FILMS" }, cat8: { name: "ANY CREATIVE FILMS" }
+      };
+      const catsData = { ...defaultCategories, ...(content['agency-films']?.categories || {}) };
+      const videosData = content['agency-films']?.videos || {};
+      const currentVideos = videosData[selectedVideoCategory] || [];
+
+      const updateVideosStateAndSave = (updatedCategoryVideos) => {
+        const newVideosMap = {
+          ...videosData,
+          [selectedVideoCategory]: updatedCategoryVideos
+        };
+
+        const updatedAgencyFilms = {
+          ...(content['agency-films'] || {}),
+          videos: newVideosMap
+        };
+        delete updatedAgencyFilms['agency-films'];
+
+        const newContent = {
+          ...content,
+          'agency-films': updatedAgencyFilms
+        };
+
+        setContent(newContent);
+        handleSave(newContent);
+      };
+
+      const handleAddVideo = () => {
+        if (!newEnterpriseVideo.title?.trim() || !newEnterpriseVideo.id?.trim()) {
+          alert("Title and Video ID or URL are required");
+          return;
+        }
+        
+        const videoId = extractYouTubeId(newEnterpriseVideo.id);
+        if (!videoId) {
+          alert("Please enter a valid YouTube Video URL or 11-digit ID");
+          return;
+        }
+
+        const newVideoObj = {
+          id: videoId,
+          title: newEnterpriseVideo.title.trim(),
+          thumbnail: newEnterpriseVideo.thumbnail?.trim() || `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+        };
+
+        const updatedVideos = [...currentVideos, newVideoObj];
+        updateVideosStateAndSave(updatedVideos);
+        
+        setShowAddEnterpriseVideoModal(false);
+        setNewEnterpriseVideo({ title: '', id: '', thumbnail: '' });
+      };
+
+      const handleRemoveVideo = (indexToRemove) => {
+        const updatedVideos = currentVideos.filter((_, index) => index !== indexToRemove);
+        updateVideosStateAndSave(updatedVideos);
+      };
+
+      const handleMoveVideo = (index, direction) => {
+        if (
+          (direction === -1 && index === 0) || 
+          (direction === 1 && index === currentVideos.length - 1)
+        ) return;
+
+        const updatedVideos = [...currentVideos];
+        const temp = updatedVideos[index];
+        updatedVideos[index] = updatedVideos[index + direction];
+        updatedVideos[index + direction] = temp;
+        updateVideosStateAndSave(updatedVideos);
+      };
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header">
+            <div>
+              <h2>Upload Enterprise Films</h2>
+              <p>Manage videos for each category. Videos added here will replace the static site videos for that category. Drag items to reorder them.</p>
+            </div>
+          </div>
+          
+          <div className="content-block-panel mt-6">
+            <div className="form-group mb-6">
+              <label>Select Category to Manage</label>
+              <select 
+                className="form-control" 
+                value={selectedVideoCategory}
+                onChange={(e) => setSelectedVideoCategory(e.target.value)}
+              >
+                {[1, 2, 3, 4, 5, 6, 7, 8].map(num => (
+                  <option key={`cat${num}`} value={`cat${num}`}>
+                    {catsData[`cat${num}`].name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="block-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+              <span className="block-title">Videos in "{catsData[selectedVideoCategory]?.name}" ({currentVideos.length})</span>
+              <button className="btn-secondary" onClick={() => setShowAddEnterpriseVideoModal(true)}>
+                <Plus size={16} /> Add Video
+              </button>
+            </div>
+
+            {currentVideos.length === 0 ? (
+              <div style={{ padding: '2rem', textAlign: 'center', background: '#f8fafc', borderRadius: '8px', color: '#64748b' }}>
+                No videos uploaded for this category yet. The default static videos will be shown.
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                {currentVideos.map((video, idx) => (
+                  <div 
+                    key={idx} 
+                    draggable
+                    onDragStart={(e) => {
+                      setDraggedVideoIndex(idx);
+                      e.dataTransfer.effectAllowed = 'move';
+                    }}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      e.dataTransfer.dropEffect = 'move';
+                    }}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      if (draggedVideoIndex === null || draggedVideoIndex === idx) return;
+                      const updated = [...currentVideos];
+                      const [moved] = updated.splice(draggedVideoIndex, 1);
+                      updated.splice(idx, 0, moved);
+                      updateVideosStateAndSave(updated);
+                      setDraggedVideoIndex(null);
+                    }}
+                    onDragEnd={() => setDraggedVideoIndex(null)}
+                    style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      background: draggedVideoIndex === idx ? '#eff6ff' : 'white', 
+                      opacity: draggedVideoIndex === idx ? 0.5 : 1,
+                      border: draggedVideoIndex === idx ? '2px dashed #1672EF' : '1px solid #e2e8f0', 
+                      borderRadius: '8px', 
+                      padding: '0.75rem 1rem', 
+                      gap: '1rem',
+                      cursor: 'grab',
+                      transition: 'all 0.15s ease'
+                    }}
+                  >
+                    <div style={{ color: '#94a3b8', cursor: 'grab', display: 'flex', alignItems: 'center' }} title="Drag to reorder">
+                      <GripVertical size={18} />
+                    </div>
+                    <div style={{ width: '85px', height: '48px', background: '#0f172a', borderRadius: '4px', overflow: 'hidden', flexShrink: 0 }}>
+                      <img 
+                        src={video.thumbnail || `https://img.youtube.com/vi/${video.id}/hqdefault.jpg`} 
+                        alt="thumb" 
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                        onError={(e) => { 
+                          if (!e.target.dataset.triedMq) {
+                            e.target.dataset.triedMq = 'true';
+                            e.target.src = `https://img.youtube.com/vi/${video.id}/mqdefault.jpg`;
+                          } else {
+                            e.target.src = 'https://via.placeholder.com/85x48?text=Video';
+                          }
+                        }}
+                      />
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontWeight: '600', fontSize: '0.9rem', color: '#1e293b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {video.title}
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                        ID: <span style={{ fontFamily: 'monospace', color: '#0f172a' }}>{video.id}</span>
+                      </div>
+                    </div>
+                    
+                    <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                      <button 
+                        type="button"
+                        onClick={() => handleMoveVideo(idx, -1)} 
+                        disabled={idx === 0}
+                        title="Move Up"
+                        style={{ padding: '0.35rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '5px', cursor: idx === 0 ? 'not-allowed' : 'pointer', color: idx === 0 ? '#cbd5e1' : '#475569', display: 'flex', alignItems: 'center' }}
+                      >
+                        <ChevronUp size={16} />
+                      </button>
+                      <button 
+                        type="button"
+                        onClick={() => handleMoveVideo(idx, 1)} 
+                        disabled={idx === currentVideos.length - 1}
+                        title="Move Down"
+                        style={{ padding: '0.35rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '5px', cursor: idx === currentVideos.length - 1 ? 'not-allowed' : 'pointer', color: idx === currentVideos.length - 1 ? '#cbd5e1' : '#475569', display: 'flex', alignItems: 'center' }}
+                      >
+                        <ChevronDown size={16} />
+                      </button>
+                      <button 
+                        type="button"
+                        onClick={() => handleRemoveVideo(idx)} 
+                        title="Remove Video"
+                        style={{ padding: '0.35rem', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '5px', cursor: 'pointer', color: '#ef4444', display: 'flex', alignItems: 'center' }}
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          
+          <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <button className="btn-primary agency" onClick={handleSave}>
+              <Save size={16} /> Save Changes
+            </button>
+          </div>
+
+          {showAddEnterpriseVideoModal && (() => {
+            const parsedVideoId = extractYouTubeId(newEnterpriseVideo.id);
+            const liveThumbnail = newEnterpriseVideo.thumbnail?.trim() || (parsedVideoId ? `https://img.youtube.com/vi/${parsedVideoId}/hqdefault.jpg` : '');
+
+            return (
+              <div className="modal-overlay" onClick={() => setShowAddEnterpriseVideoModal(false)}>
+                <div className="modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '560px', background: '#ffffff', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}>
+                  <div className="modal-header" style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h3 style={{ fontSize: '1.15rem', fontWeight: '700', color: '#0f172a', margin: 0 }}>Add Video to {catsData[selectedVideoCategory]?.name}</h3>
+                    <button 
+                      type="button"
+                      onClick={() => setShowAddEnterpriseVideoModal(false)}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b', display: 'flex', alignItems: 'center', padding: '0.25rem' }}
+                    >
+                      <X size={20} />
+                    </button>
+                  </div>
+
+                  <div className="modal-body" style={{ background: '#ffffff', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.2rem', maxHeight: '78vh', overflowY: 'auto' }}>
+                    <div>
+                      <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Video Title</label>
+                      <input 
+                        type="text" 
+                        className="form-control" 
+                        value={newEnterpriseVideo.title} 
+                        onChange={(e) => setNewEnterpriseVideo({...newEnterpriseVideo, title: e.target.value})} 
+                        placeholder="e.g. LG TVC Commercial"
+                      />
+                    </div>
+
+                    <div>
+                      <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>YouTube Video ID or URL</label>
+                      <input 
+                        type="text" 
+                        className="form-control" 
+                        value={newEnterpriseVideo.id} 
+                        onChange={(e) => setNewEnterpriseVideo({...newEnterpriseVideo, id: e.target.value})} 
+                        placeholder="e.g. https://www.youtube.com/live/p5mopy0U_es or https://youtube.com/watch?v=..."
+                      />
+                      {parsedVideoId && (
+                        <div style={{ marginTop: '0.35rem', fontSize: '0.78rem', color: '#1672EF', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                          <CheckCircle size={14} style={{ color: '#1672EF' }} /> Detected YouTube ID: <strong>{parsedVideoId}</strong>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Live Thumbnail Preview Box */}
+                    <div>
+                      <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>
+                        Thumbnail Preview
+                      </label>
+                      <div style={{
+                        width: '100%',
+                        height: '210px',
+                        background: '#0f172a',
+                        borderRadius: '8px',
+                        border: '1px solid #cbd5e1',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        overflow: 'hidden',
+                        position: 'relative'
+                      }}>
+                        {liveThumbnail ? (
+                          <>
+                            <img 
+                              src={liveThumbnail} 
+                              alt="Thumbnail Preview" 
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                              onError={(e) => {
+                                if (parsedVideoId && !e.target.dataset.triedMq) {
+                                  e.target.dataset.triedMq = 'true';
+                                  e.target.src = `https://img.youtube.com/vi/${parsedVideoId}/mqdefault.jpg`;
+                                }
+                              }}
+                            />
+                            <div style={{
+                              position: 'absolute',
+                              bottom: '10px',
+                              right: '10px',
+                              background: 'rgba(15, 23, 42, 0.85)',
+                              backdropFilter: 'blur(4px)',
+                              color: '#ffffff',
+                              padding: '4px 10px',
+                              borderRadius: '6px',
+                              fontSize: '0.75rem',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '5px',
+                              boxShadow: '0 2px 4px rgba(0,0,0,0.3)'
+                            }}>
+                              <CheckCircle size={13} style={{ color: '#22c55e' }} />
+                              {newEnterpriseVideo.thumbnail ? 'Custom Thumbnail' : `YouTube: ${parsedVideoId}`}
+                            </div>
+                          </>
+                        ) : (
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: '#94a3b8', gap: '0.5rem', padding: '1rem', textAlign: 'center' }}>
+                            <PlayCircle size={42} style={{ strokeWidth: 1.5, color: '#64748b' }} />
+                            <span style={{ fontSize: '0.85rem', color: '#94a3b8' }}>Paste YouTube URL or ID above to view live thumbnail preview</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Custom Thumbnail URL (Optional)</label>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <input 
+                          type="text" 
+                          className="form-control" 
+                          value={newEnterpriseVideo.thumbnail} 
+                          onChange={(e) => setNewEnterpriseVideo({...newEnterpriseVideo, thumbnail: e.target.value})} 
+                          placeholder="Leave blank to use YouTube thumbnail, or paste image URL"
+                        />
+                        <label className="btn-secondary agency" style={{ padding: '0.55rem 1rem', fontSize: '0.85rem', cursor: 'pointer', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '0.4rem', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '6px', color: '#334155', fontWeight: '600' }}>
+                          <Upload size={14} /> Upload Image
+                          <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async (e) => {
+                            const file = e.target.files && e.target.files[0];
+                            if (file) {
+                              const formData = new FormData();
+                              formData.append('image', file);
+                              try {
+                                const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: formData });
+                                const data = await res.json();
+                                if (data.url) setNewEnterpriseVideo({ ...newEnterpriseVideo, thumbnail: data.url });
+                              } catch (err) {
+                                console.error('Upload failed:', err);
+                              }
+                            }
+                          }} />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="modal-footer" style={{ background: '#f8fafc', padding: '1rem 1.5rem', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
+                    <button type="button" className="btn-secondary" onClick={() => setShowAddEnterpriseVideoModal(false)}>
+                      Cancel
+                    </button>
+                    <button type="button" className="btn-primary agency" onClick={handleAddVideo} style={{ background: '#1672EF', border: 'none', color: '#ffffff', padding: '0.55rem 1.3rem', borderRadius: '6px', fontWeight: '600', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <Plus size={16} /> Add Video
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
         </div>
       );
     }
@@ -2828,6 +5649,7 @@ function App() {
       });
       const newDbMedia = dbMediaCards.filter(dbm => !staticMedia.some(sm => sm.id === dbm.id));
       const mediaCards = [...mergedStaticMedia, ...newDbMedia];
+      mediaCardsRef.current = mediaCards;
 
       return (
         <div className="editor-form-pane">
@@ -2842,9 +5664,19 @@ function App() {
             {mediaCards.length === 0 && <p style={{ color: '#94a3b8', gridColumn: '1 / -1' }}>No media cards added yet. Click the button below to add one.</p>}
             
             {mediaCards.map((card, index) => (
-              <div key={card.id || index} className="content-block-panel">
+              <div 
+                key={card.id || index} 
+                draggable
+                onDragStart={(e) => handleMediaCardDragStart(e, index)}
+                onDragOver={(e) => handleMediaCardDragOver(e, index)}
+                onDrop={(e) => handleMediaCardDrop(e, index)}
+                onDragEnd={() => { setDraggedMediaCardIndex(null); stopAutoScroll(); }}
+                className="content-block-panel"
+                style={{ cursor: 'grab', border: draggedMediaCardIndex === index ? '2px dashed #6366f1' : undefined, opacity: draggedMediaCardIndex === index ? 0.5 : 1 }}
+              >
                 <div className="block-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="block-title">
+                  <span className="block-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <GripVertical size={16} style={{ color: '#94a3b8', cursor: 'grab', flexShrink: 0 }} title="Drag to reorder" />
                     Media Card {index + 1}{card.source ? ` — ${card.source}` : ''}
                     {card.isStaticOrigin && <span style={{ marginLeft: '10px', fontSize: '0.75rem', background: '#e2e8f0', padding: '2px 6px', borderRadius: '4px' }}>Static</span>}
                   </span>
@@ -2884,7 +5716,11 @@ function App() {
                   <label>Upload Image</label>
                   {card.image && (
                     <div style={{ marginBottom: '1rem', height: '150px', overflow: 'hidden', borderRadius: '8px', border: '1px solid #ccc' }}>
-                      <img src={card.image.startsWith('/media') ? `http://localhost:5173${card.image}` : card.image} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img 
+                        src={card.image && card.image.startsWith('/') ? `http://localhost:5173${card.image}` : card.image} 
+                        alt="Preview" 
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                      />
                     </div>
                   )}
                   <input 
@@ -2903,7 +5739,7 @@ function App() {
                         });
                         const data = await res.json();
                         if (res.ok) {
-                          handleUpdateMediaCard(card.id, 'image', `http://localhost:5000${data.url}`);
+                          handleUpdateMediaCard(card.id, 'image', data.url);
                         } else {
                           alert('Upload failed: ' + data.message);
                         }
@@ -4888,7 +7724,7 @@ function App() {
                     <div style={{ height: '160px', overflow: 'hidden', position: 'relative' }}>
                       <img src={blog.imageUrl ? (blog.imageUrl.startsWith('http') ? blog.imageUrl : `http://localhost:5000${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`) : 'https://placehold.co/600x400?text=No+Image'} alt={blog.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       <div style={{ position: 'absolute', top: '10px', left: '10px', background: '#e20002', color: 'white', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold' }}>
-                        {blog.date ? new Date(blog.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }).toUpperCase() : ''}
+                        {blog.date ? new Date(blog.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase() : ''}
                       </div>
                       <div style={{ position: 'absolute', top: '10px', right: '10px', background: isPublished ? '#10b981' : '#64748b', color: 'white', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold' }}>
                         {isPublished ? 'PUBLISHED' : 'DRAFT'}
@@ -4921,6 +7757,199 @@ function App() {
                   </div>
                 );
               })}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeSidebar === 'agency-blog' && activeSubMenu === 'heroText') {
+      const heroText = content.agency?.blogHeroText || 'Read our blogs full of useful insights on the creative and strategic aspects of marketing and film production.';
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header">
+            <div>
+              <h2>Blog Hero Text</h2>
+              <p>Update the subtext shown on the Ad Agency Blog page</p>
+            </div>
+            <div className="header-actions">
+              <button type="button" className="btn-primary" onClick={() => handleSave(content)}>
+                <Save size={18} /> Save Changes
+              </button>
+            </div>
+          </div>
+          <div className="form-card">
+            <div className="form-group">
+              <label>Subtext Content</label>
+              <textarea 
+                className="form-control" 
+                rows="4"
+                value={heroText}
+                onChange={(e) => {
+                  const newState = JSON.parse(JSON.stringify(content));
+                  if (!newState.agency) newState.agency = {};
+                  newState.agency.blogHeroText = e.target.value;
+                  setContent(newState);
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeSidebar === 'agency-blog' && activeSubMenu === 'blog') {
+      const dbBlogs = content.agency?.blogs || [];
+      const mergedStaticBlogs = staticAgencyBlogs.map(sb => {
+        const override = dbBlogs.find(dbb => dbb.slug === sb.slug);
+        return override ? { ...override, isStaticOrigin: true } : { ...sb, isStaticOrigin: true };
+      });
+      const newDbBlogs = dbBlogs.filter(dbb => !staticAgencyBlogs.some(sb => sb.slug === dbb.slug));
+      const blogs = [...mergedStaticBlogs, ...newDbBlogs];
+
+      const removeBlog = (idx) => {
+        const blogToRemove = blogs[idx];
+        if (blogToRemove.isStaticOrigin) return; 
+        
+        const dbIdx = dbBlogs.findIndex(b => b.slug === blogToRemove.slug);
+        if (dbIdx === -1) return;
+
+        if (window.confirm('Are you sure you want to delete this blog post?')) {
+          const newState = JSON.parse(JSON.stringify(content));
+          newState.agency.blogs.splice(dbIdx, 1);
+          handleSave(newState);
+        }
+      };
+
+      const togglePublish = (idx) => {
+        const blogToToggle = blogs[idx];
+        const newState = JSON.parse(JSON.stringify(content));
+        
+        const dbIdx = (newState.agency.blogs || []).findIndex(b => b.slug === blogToToggle.slug);
+        
+        if (dbIdx !== -1) {
+          newState.agency.blogs[dbIdx].published = !newState.agency.blogs[dbIdx].published;
+        } else {
+          if (!newState.agency.blogs) newState.agency.blogs = [];
+          newState.agency.blogs.push({ ...blogToToggle, published: !blogToToggle.published });
+        }
+        handleSave(newState);
+      };
+
+      const handleEditClick = (blog, idx) => {
+        const dbIdx = (content.agency?.blogs || []).findIndex(b => b.slug === blog.slug);
+        handleOpenAddBlogModal(blog, dbIdx !== -1 ? dbIdx : `static_${blog.slug}`);
+      };
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header">
+            <div>
+              <h2>Ad Agency Blog Settings</h2>
+              <p>Manage agency blog posts and articles</p>
+            </div>
+            <div className="header-actions">
+              <button type="button" className="btn-primary" onClick={() => handleSave(content)} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#3b82f6' }}>
+                <Save size={18} /> Save Changes
+              </button>
+            </div>
+          </div>
+
+          <div className="form-card">
+            <h3 style={{ marginBottom: '1rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              Blog Posts
+              <button type="button" className="btn-secondary" onClick={() => handleOpenAddBlogModal(null, null)} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', padding: '0.4rem 0.8rem', color: '#3b82f6', borderColor: '#3b82f6' }}>
+                <Plus size={14} /> Add Blog
+              </button>
+            </h3>
+            
+            <div className="blogs-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem', marginTop: '1.5rem' }}>
+              {blogs.map((blog, idx) => {
+                const isStaticOrigin = blog.isStaticOrigin;
+                const isPublished = blog.published !== false;
+                
+                return (
+                  <div key={blog.slug || idx} className="blog-card" style={{ border: '1px solid #e2e8f0', borderRadius: '8px', overflow: 'hidden', background: '#fff', display: 'flex', flexDirection: 'column' }}>
+                    <div style={{ height: '160px', overflow: 'hidden', position: 'relative' }}>
+                      <img src={blog.imageUrl ? (blog.imageUrl.startsWith('http') ? blog.imageUrl : `http://localhost:5000${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`) : 'https://placehold.co/600x400?text=No+Image'} alt={blog.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <div style={{ position: 'absolute', top: '10px', left: '10px', background: '#3b82f6', color: 'white', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold' }}>
+                        {blog.date ? new Date(blog.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase() : ''}
+                      </div>
+                      <div style={{ position: 'absolute', top: '10px', right: '10px', background: isPublished ? '#10b981' : '#64748b', color: 'white', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold' }}>
+                        {isPublished ? 'PUBLISHED' : 'DRAFT'}
+                      </div>
+                    </div>
+                    <div style={{ padding: '1.2rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                      <h4 style={{ fontSize: '1rem', fontWeight: '700', margin: '0 0 0.5rem 0', color: '#0f172a', lineHeight: '1.4' }}>{blog.title}</h4>
+                      
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid #f1f5f9' }}>
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <button 
+                            className="btn-icon" 
+                            onClick={() => handleEditClick(blog, idx)}
+                            title="Edit Blog"
+                          >
+                            <Edit2 size={16} /> Edit
+                          </button>
+                          <button 
+                            className={`btn-icon ${isStaticOrigin ? 'disabled' : ''}`} 
+                            onClick={() => !isStaticOrigin && removeBlog(idx)}
+                            disabled={isStaticOrigin}
+                            title={isStaticOrigin ? "Cannot delete original static blogs" : "Delete Blog"}
+                            style={isStaticOrigin ? { opacity: 0.3, cursor: 'not-allowed' } : {}}
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      );
+    }
+    if (activeSidebar === 'agency-media' && activeSubMenu === 'media') {
+      const getVal = (key, defaultVal) => content.agency?.mediaConfig?.[key] !== undefined ? content.agency.mediaConfig[key] : defaultVal;
+      
+      const updateVal = (key, val) => {
+        setContent(prev => {
+          const newState = JSON.parse(JSON.stringify(prev));
+          if (!newState.agency) newState.agency = {};
+          if (!newState.agency.mediaConfig) newState.agency.mediaConfig = {};
+          newState.agency.mediaConfig[key] = val;
+          return newState;
+        });
+      };
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header">
+            <div>
+              <h2>Ad Agency Media Settings</h2>
+              <p>Manage the statement and coverage articles for the Agency Media page</p>
+            </div>
+            <div className="header-actions">
+              <button type="button" className="btn-primary" onClick={() => handleSave(content)} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#3b82f6' }}>
+                <Save size={18} /> Save Changes
+              </button>
+            </div>
+          </div>
+
+          <div className="form-card">
+            <h3 style={{ marginBottom: '1rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem' }}>Media Page Config</h3>
+            
+            <div className="form-group">
+              <label>Media Subtext (HTML allowed)</label>
+              <textarea 
+                className="form-control" 
+                rows="3"
+                value={getVal('subtitle', 'Featured news articles on RedAsh')}
+                onChange={(e) => updateVal('subtitle', e.target.value)}
+                placeholder="e.g. Featured news articles on RedAsh"
+              />
             </div>
           </div>
         </div>
@@ -4960,7 +7989,7 @@ function App() {
           }}>
             <Film size={16} /> Entertainment Films
           </button>
-          <button className={`top-nav-tab ${activeSidebar === 'agency' ? 'active' : ''}`} onClick={() => {
+          <button className={`top-nav-tab agency ${activeSidebar === 'agency' ? 'active' : ''}`} onClick={() => {
             setActiveSidebar('agency');
             setDomain('agency.redashfilms.com');
           }}>
@@ -5036,6 +8065,53 @@ function App() {
                   <button 
                     onClick={() => { setActiveSidebar('entertainment-contact'); setActiveSubMenu('contact'); }}
                     style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.5rem 0', color: activeSidebar === 'entertainment-contact' ? '#e20002' : '#0f172a', borderBottom: activeSidebar === 'entertainment-contact' ? '2px solid #e20002' : '2px solid transparent', fontSize: '0.9rem', fontWeight: '600', transition: 'all 0.2s' }}
+                  >
+                    Contact
+                  </button>
+                </div>
+              )}
+              {activeSidebar.startsWith('agency') && (
+                <div className="cms-quick-links" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+                  <span style={{ fontSize: '0.85rem', fontWeight: '600', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Navigate CMS:</span>
+                  
+                  <button 
+                    onClick={() => { setActiveSidebar('agency'); setActiveSubMenu('hero'); }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.5rem 0', color: activeSidebar === 'agency' ? '#3b82f6' : '#0f172a', borderBottom: activeSidebar === 'agency' ? '2px solid #3b82f6' : '2px solid transparent', fontSize: '0.9rem', fontWeight: '600', transition: 'all 0.2s' }}
+                  >
+                    Home
+                  </button>
+                  
+                  <button 
+                    onClick={() => { setActiveSidebar('agency-about'); setActiveSubMenu('aboutHero'); }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.5rem 0', color: activeSidebar === 'agency-about' ? '#3b82f6' : '#0f172a', borderBottom: activeSidebar === 'agency-about' ? '2px solid #3b82f6' : '2px solid transparent', fontSize: '0.9rem', fontWeight: '600', transition: 'all 0.2s' }}
+                  >
+                    About
+                  </button>
+                  
+                  <button 
+                    onClick={() => { setActiveSidebar('agency-films'); setActiveSubMenu('filmsHero'); }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.5rem 0', color: activeSidebar === 'agency-films' ? '#3b82f6' : '#0f172a', borderBottom: activeSidebar === 'agency-films' ? '2px solid #3b82f6' : '2px solid transparent', fontSize: '0.9rem', fontWeight: '600', transition: 'all 0.2s' }}
+                  >
+                    Enterprise Films
+                  </button>
+                  
+                  <button 
+                    onClick={() => { setActiveSidebar('agency-blog'); setActiveSubMenu('blog'); }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.5rem 0', color: activeSidebar === 'agency-blog' ? '#3b82f6' : '#0f172a', borderBottom: activeSidebar === 'agency-blog' ? '2px solid #3b82f6' : '2px solid transparent', fontSize: '0.9rem', fontWeight: '600', transition: 'all 0.2s' }}
+                  >
+                    Blog
+                  </button>
+                  
+                  <button 
+                    onClick={() => { setActiveSidebar('agency-media'); setActiveSubMenu('media'); }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.5rem 0', color: activeSidebar === 'agency-media' ? '#3b82f6' : '#0f172a', borderBottom: activeSidebar === 'agency-media' ? '2px solid #3b82f6' : '2px solid transparent', fontSize: '0.9rem', fontWeight: '600', transition: 'all 0.2s' }}
+                  >
+                    Media
+                  </button>
+                  
+                  <button 
+                    onClick={() => { setActiveSidebar('agency-contact'); setActiveSubMenu('contact'); }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.5rem 0', color: activeSidebar === 'agency-contact' ? '#3b82f6' : '#0f172a', borderBottom: activeSidebar === 'agency-contact' ? '2px solid #3b82f6' : '2px solid transparent', fontSize: '0.9rem', fontWeight: '600', transition: 'all 0.2s' }}
                   >
                     Contact
                   </button>
@@ -5215,6 +8291,402 @@ function App() {
               </button>
               <button type="button" className="btn-primary" onClick={handleConfirmAddClientModal} style={{ background: '#e20002', border: 'none', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                 <Plus size={16} /> Add Client
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Agency Client Modal Popup */}
+      {showAddWhatsRedHotModal && (
+        <div className="modal-overlay" onClick={() => setShowAddWhatsRedHotModal(false)}>
+          <div className="modal-card" onClick={e => e.stopPropagation()} style={{ maxWidth: '600px' }}>
+            <div className="modal-header">
+              <h3>Add New Red Hot Item</h3>
+              <button className="btn-icon" onClick={() => setShowAddWhatsRedHotModal(false)} style={{ color: '#64748b' }}>
+                <LogOut size={20} style={{ transform: 'rotate(180deg)' }} />
+              </button>
+            </div>
+            <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem' }}>
+                <div>
+                  <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.3rem' }}>Pill Tag</label>
+                  <input type="text" className="form-control" value={newWhatsRedHot.pill} onChange={(e) => setNewWhatsRedHot({ ...newWhatsRedHot, pill: e.target.value })} placeholder="e.g. INSIGHTS" />
+                </div>
+                <div>
+                  <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.3rem' }}>Source Label</label>
+                  <input type="text" className="form-control" value={newWhatsRedHot.sourceLabel} onChange={(e) => setNewWhatsRedHot({ ...newWhatsRedHot, sourceLabel: e.target.value })} placeholder="e.g. FEATURED IN" />
+                </div>
+              </div>
+              <div>
+                <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.3rem' }}>Title (use *text* for blue highlight)</label>
+                <input type="text" className="form-control" value={newWhatsRedHot.title} onChange={(e) => setNewWhatsRedHot({ ...newWhatsRedHot, title: e.target.value })} placeholder="e.g. REDASH GROWS *EXPONENTIALLY*" />
+              </div>
+              <div>
+                <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.3rem' }}>Description</label>
+                <textarea className="form-control" style={{ minHeight: '80px' }} value={newWhatsRedHot.desc} onChange={(e) => setNewWhatsRedHot({ ...newWhatsRedHot, desc: e.target.value })} />
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block' }}>Links</label>
+                {(newWhatsRedHot.links || []).map((link, linkIdx) => (
+                  <div key={linkIdx} style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
+                    <input type="text" className="form-control" style={{ flex: 1 }} placeholder="Link Text" value={link.text || ''} onChange={(e) => {
+                      const updatedLinks = [...(newWhatsRedHot.links || [])];
+                      updatedLinks[linkIdx].text = e.target.value;
+                      setNewWhatsRedHot({ ...newWhatsRedHot, links: updatedLinks });
+                    }} />
+                    <input type="text" className="form-control" style={{ flex: 1 }} placeholder="Link URL" value={link.url || ''} onChange={(e) => {
+                      const updatedLinks = [...(newWhatsRedHot.links || [])];
+                      updatedLinks[linkIdx].url = e.target.value;
+                      setNewWhatsRedHot({ ...newWhatsRedHot, links: updatedLinks });
+                    }} />
+                    <button type="button" className="btn-icon" onClick={() => {
+                      const updatedLinks = [...(newWhatsRedHot.links || [])];
+                      updatedLinks.splice(linkIdx, 1);
+                      setNewWhatsRedHot({ ...newWhatsRedHot, links: updatedLinks });
+                    }} style={{ color: '#ef4444' }}>
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                ))}
+                <button type="button" className="btn-secondary" style={{ alignSelf: 'flex-start', padding: '0.4rem 0.8rem', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }} onClick={() => {
+                  const updatedLinks = [...(newWhatsRedHot.links || [])];
+                  updatedLinks.push({ text: '', url: '' });
+                  setNewWhatsRedHot({ ...newWhatsRedHot, links: updatedLinks });
+                }}>
+                  <Plus size={14} /> Add Another Link
+                </button>
+              </div>
+              <div>
+                <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.3rem' }}>Image URL</label>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <input type="text" className="form-control" value={newWhatsRedHot.image} onChange={(e) => setNewWhatsRedHot({ ...newWhatsRedHot, image: e.target.value })} />
+                  <label className="btn-secondary" style={{ padding: '0.5rem 1rem', cursor: 'pointer', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>
+                    Upload
+                    <input type="file" accept="image/*" style={{ display: 'none' }} onChange={(e) => {
+                      const file = e.target.files && e.target.files[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => setNewWhatsRedHot({ ...newWhatsRedHot, image: reader.result });
+                        reader.readAsDataURL(file);
+                      }
+                    }} />
+                  </label>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <input 
+                  type="checkbox" 
+                  id={`new-imageLeft`} 
+                  checked={newWhatsRedHot.imageLeft !== false} 
+                  onChange={(e) => setNewWhatsRedHot({ ...newWhatsRedHot, imageLeft: e.target.checked })}
+                />
+                <label htmlFor={`new-imageLeft`} style={{ fontSize: '0.85rem', fontWeight: '600', color: '#475569', cursor: 'pointer' }}>Image on Left Side</label>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn-secondary" onClick={() => setShowAddWhatsRedHotModal(false)}>
+                Cancel
+              </button>
+              <button type="button" className="btn-primary" onClick={handleConfirmAddWhatsRedHotModal} style={{ background: '#1672EF', border: 'none', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <Plus size={16} /> Add Red Hot Item
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showAddAgencyClientModal && (
+        <div className="modal-overlay" onClick={() => setShowAddAgencyClientModal(false)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3 style={{ fontSize: '1.1rem', fontWeight: '700', color: '#0f172a', margin: 0 }}>Add New Global Client</h3>
+              <button className="btn-icon" onClick={() => setShowAddAgencyClientModal(false)} style={{ color: '#64748b' }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+
+            <div className="modal-body">
+              {/* Image Preview Box */}
+              <div>
+                <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Logo Preview</label>
+                <div style={{ width: '100%', height: '180px', background: '#f8fafc', borderRadius: '8px', overflow: 'hidden', border: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+                  {newAgencyClient.img ? (
+                    <img src={newAgencyClient.img} alt="Preview" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                  ) : (
+                    <div style={{ textAlign: 'center', color: '#94a3b8' }}>
+                      <ImageIcon size={36} style={{ margin: '0 auto 0.4rem', opacity: 0.5 }} />
+                      <span style={{ fontSize: '0.85rem', display: 'block' }}>No logo selected</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Row Selector */}
+              <div style={{ marginTop: '1rem' }}>
+                <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.6rem', color: '#334155' }}>Append to Row</label>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', fontWeight: newAgencyClient.row === 'row1' ? '700' : '500', color: newAgencyClient.row === 'row1' ? '#1672EF' : '#475569', background: newAgencyClient.row === 'row1' ? '#EFF6FF' : '#f8fafc', border: newAgencyClient.row === 'row1' ? '2px solid #1672EF' : '2px solid #e2e8f0', borderRadius: '8px', padding: '0.5rem 1.2rem', transition: 'all 0.15s' }}>
+                    <input type="radio" name="agency-row" value="row1" checked={newAgencyClient.row === 'row1'} onChange={() => setNewAgencyClient({ ...newAgencyClient, row: 'row1' })} style={{ display: 'none' }} />
+                    Row 1 (→)
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.9rem', fontWeight: newAgencyClient.row === 'row2' ? '700' : '500', color: newAgencyClient.row === 'row2' ? '#1672EF' : '#475569', background: newAgencyClient.row === 'row2' ? '#EFF6FF' : '#f8fafc', border: newAgencyClient.row === 'row2' ? '2px solid #1672EF' : '2px solid #e2e8f0', borderRadius: '8px', padding: '0.5rem 1.2rem', transition: 'all 0.15s' }}>
+                    <input type="radio" name="agency-row" value="row2" checked={newAgencyClient.row === 'row2'} onChange={() => setNewAgencyClient({ ...newAgencyClient, row: 'row2' })} style={{ display: 'none' }} />
+                    Row 2 (←)
+                  </label>
+                </div>
+              </div>
+
+              {/* Upload Image / Image URL */}
+              <div>
+                <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Upload Logo / Image URL</label>
+                <div style={{ display: 'flex', gap: '0.5rem', flexDirection: 'column' }}>
+                  <input 
+                    type="text" 
+                    className="form-control" 
+                    style={{ fontSize: '0.85rem' }}
+                    value={newAgencyClient.img} 
+                    onChange={(e) => setNewAgencyClient({ ...newAgencyClient, img: e.target.value })} 
+                    placeholder="Paste image URL here..."
+                  />
+                  <label className="btn-secondary agency" style={{ padding: '0.6rem 1rem', fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: '#1672EF', color: '#ffffff', border: 'none', borderRadius: '6px', fontWeight: '600' }}>
+                    <Upload size={16} /> Choose Logo File
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      style={{ display: 'none' }}
+                      onChange={async (e) => {
+                        const file = e.target.files && e.target.files[0];
+                        if (file) {
+                          const formData = new FormData();
+                          formData.append('image', file);
+                          try {
+                            const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: formData });
+                            const data = await res.json();
+                            if (data.url) setNewAgencyClient({ ...newAgencyClient, img: data.url });
+                          } catch (err) {
+                            console.error('Upload failed:', err);
+                          }
+                        }
+                      }} 
+                    />
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button type="button" className="btn-secondary" onClick={() => setShowAddAgencyClientModal(false)}>
+                Cancel
+              </button>
+              <button type="button" className="btn-primary agency" onClick={handleConfirmAddAgencyClientModal} style={{ background: '#1672EF', border: 'none', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <Plus size={16} /> Add Client
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Add Case Study Modal */}
+      {showAddCaseStudyModal && (
+        <div className="modal-overlay" onClick={() => setShowAddCaseStudyModal(false)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px', maxHeight: '90vh', overflowY: 'auto' }}>
+            <div className="modal-header">
+              <h3 style={{ fontSize: '1.1rem', fontWeight: '700', color: '#0f172a', margin: 0 }}>Add New Case Study</h3>
+              <button className="btn-icon" onClick={() => setShowAddCaseStudyModal(false)} style={{ color: '#64748b' }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+
+            <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {/* Image Preview & Upload */}
+              <div>
+                <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Case Study Image</label>
+                <div style={{ width: '100%', height: '160px', background: '#f8fafc', borderRadius: '8px', overflow: 'hidden', border: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', marginBottom: '0.5rem' }}>
+                  {newCaseStudy.image ? (
+                    <img src={newCaseStudy.image} alt="Preview" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    <div style={{ textAlign: 'center', color: '#94a3b8' }}>
+                      <ImageIcon size={36} style={{ margin: '0 auto 0.4rem', opacity: 0.5 }} />
+                      <span style={{ fontSize: '0.85rem', display: 'block' }}>No image uploaded</span>
+                    </div>
+                  )}
+                </div>
+                <label className="btn-secondary agency" style={{ padding: '0.6rem 1rem', fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: '#1672EF', color: '#ffffff', border: 'none', borderRadius: '6px', fontWeight: '600' }}>
+                  <Upload size={16} /> Choose Image File
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    style={{ display: 'none' }}
+                    onChange={async (e) => {
+                      const file = e.target.files && e.target.files[0];
+                      if (file) {
+                        const formData = new FormData();
+                        formData.append('image', file);
+                        try {
+                          const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: formData });
+                          const data = await res.json();
+                          if (data.url) setNewCaseStudy({ ...newCaseStudy, image: data.url });
+                        } catch (err) {
+                          console.error('Upload failed:', err);
+                        }
+                      }
+                    }} 
+                  />
+                </label>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+                <div>
+                  <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Tag Text</label>
+                  <input type="text" className="form-control" value={newCaseStudy.tag} onChange={(e) => setNewCaseStudy({ ...newCaseStudy, tag: e.target.value })} placeholder="e.g. Acquisition" />
+                </div>
+                <div>
+                  <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Icon</label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                    <div style={{ minWidth: '38px', height: '38px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f1f5f9', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+                      {renderIconPreview(newCaseStudy.iconType || 'FaBriefcase')}
+                    </div>
+                    <select className="form-control" value={newCaseStudy.iconType} onChange={(e) => setNewCaseStudy({ ...newCaseStudy, iconType: e.target.value })} style={{ flex: 1 }}>
+                      {CASE_STUDY_ICONS.map(icon => (
+                        <option key={icon.value} value={icon.value}>{icon.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Tag Color</label>
+                  <select className="form-control" value={newCaseStudy.tagColor} onChange={(e) => setNewCaseStudy({ ...newCaseStudy, tagColor: e.target.value })}>
+                    <option value="bg-blue-600">Blue</option>
+                    <option value="bg-purple-500">Purple</option>
+                    <option value="bg-teal-500">Teal</option>
+                    <option value="bg-orange-500">Orange</option>
+                    <option value="bg-red-500">Red</option>
+                    <option value="bg-green-500">Green</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div>
+                  <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Stat / Value</label>
+                  <input type="text" className="form-control" value={newCaseStudy.stat} onChange={(e) => setNewCaseStudy({ ...newCaseStudy, stat: e.target.value })} placeholder="e.g. $120 Million" />
+                </div>
+                <div>
+                  <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Title</label>
+                  <input type="text" className="form-control" value={newCaseStudy.title} onChange={(e) => setNewCaseStudy({ ...newCaseStudy, title: e.target.value })} placeholder="e.g. Procurement & Consulting" />
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+                <div>
+                  <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Client Type</label>
+                  <input type="text" className="form-control" value={newCaseStudy.clientType} onChange={(e) => setNewCaseStudy({ ...newCaseStudy, clientType: e.target.value })} placeholder="e.g. MNC" />
+                </div>
+                <div>
+                  <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Customers</label>
+                  <input type="text" className="form-control" value={newCaseStudy.customers} onChange={(e) => setNewCaseStudy({ ...newCaseStudy, customers: e.target.value })} placeholder="e.g. B2B" />
+                </div>
+                <div>
+                  <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Work Domain</label>
+                  <input type="text" className="form-control" value={newCaseStudy.domain} onChange={(e) => setNewCaseStudy({ ...newCaseStudy, domain: e.target.value })} placeholder="e.g. Consulting" />
+                </div>
+              </div>
+            </div>
+
+            <div className="modal-footer">
+              <button type="button" className="btn-secondary" onClick={() => setShowAddCaseStudyModal(false)}>
+                Cancel
+              </button>
+              <button type="button" className="btn-primary agency" onClick={handleConfirmAddCaseStudyModal} style={{ background: '#1672EF', border: 'none', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <Plus size={16} /> Add Case Study
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Add Testimonial Modal */}
+      {showAddTestimonialModal && (
+        <div className="modal-overlay" onClick={() => setShowAddTestimonialModal(false)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px' }}>
+            <div className="modal-header">
+              <h3 style={{ fontSize: '1.1rem', fontWeight: '700', color: '#0f172a', margin: 0 }}>Add New Testimonial</h3>
+              <button className="btn-icon" onClick={() => setShowAddTestimonialModal(false)} style={{ color: '#64748b' }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+
+            <div className="modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div>
+                <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Type</label>
+                <select className="form-control" value={newTestimonial.type} onChange={(e) => setNewTestimonial({ ...newTestimonial, type: e.target.value })}>
+                  <option value="video">Video</option>
+                  <option value="text">Text</option>
+                </select>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div>
+                  <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Name</label>
+                  <input type="text" className="form-control" value={newTestimonial.name} onChange={(e) => setNewTestimonial({ ...newTestimonial, name: e.target.value })} placeholder="e.g. John Doe" />
+                </div>
+                <div>
+                  <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Title / Role</label>
+                  <input type="text" className="form-control" value={newTestimonial.title} onChange={(e) => setNewTestimonial({ ...newTestimonial, title: e.target.value })} placeholder="e.g. CEO" />
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem' }}>
+                <div>
+                  <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Company</label>
+                  <input type="text" className="form-control" value={newTestimonial.company} onChange={(e) => setNewTestimonial({ ...newTestimonial, company: e.target.value })} placeholder="e.g. Acme Corp" />
+                </div>
+                {newTestimonial.type === 'video' ? (
+                  <div>
+                    <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>YouTube Video URL or ID</label>
+                    <input type="text" className="form-control" value={newTestimonial.videoId} onChange={(e) => setNewTestimonial({ ...newTestimonial, videoId: e.target.value })} placeholder="e.g. https://youtube.com/watch?v=... or 1AUDTOK84ns" />
+                  </div>
+                ) : (
+                  <div>
+                    <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Quote Text</label>
+                    <textarea className="form-control" value={newTestimonial.text} onChange={(e) => setNewTestimonial({ ...newTestimonial, text: e.target.value })} placeholder="Enter testimonial..." style={{ minHeight: '60px' }} />
+                  </div>
+                )}
+              </div>
+
+              {newTestimonial.type === 'text' && (
+                <div>
+                  <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Profile Image (Avatar)</label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                    <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: '#fff', overflow: 'hidden', border: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {newTestimonial.avatar ? <img src={newTestimonial.avatar} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <ImageIcon size={20} style={{ color: '#94a3b8' }} />}
+                    </div>
+                    <label className="btn-secondary agency" style={{ padding: '0.5rem 1rem', fontSize: '0.85rem', cursor: 'pointer', background: '#1672EF', color: 'white', border: 'none', borderRadius: '6px' }}>
+                      Upload Image
+                      <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async (e) => {
+                        const file = e.target.files && e.target.files[0];
+                        if (file) {
+                          const formData = new FormData();
+                          formData.append('image', file);
+                          try {
+                            const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: formData });
+                            const data = await res.json();
+                            if (data.url) setNewTestimonial({ ...newTestimonial, avatar: data.url });
+                          } catch (err) {
+                            console.error('Upload failed:', err);
+                          }
+                        }
+                      }} />
+                    </label>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="modal-footer" style={{ marginTop: '1rem' }}>
+              <button type="button" className="btn-secondary" onClick={() => setShowAddTestimonialModal(false)}>Cancel</button>
+              <button type="button" className="btn-primary agency" onClick={handleConfirmAddTestimonialModal} style={{ background: '#1672EF', border: 'none', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <Plus size={16} /> Add Testimonial
               </button>
             </div>
           </div>
@@ -5492,7 +8964,7 @@ function App() {
                     onChange={(e) => setNewBlog({ ...newBlog, imageUrl: e.target.value })} 
                     placeholder="Paste image URL or upload..."
                   />
-                  <label className="btn-secondary" style={{ padding: '0.6rem 1rem', fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: '#e20002', color: '#ffffff', border: 'none', borderRadius: '6px', fontWeight: '600' }}>
+                  <label className={`btn-secondary ${activeSidebar === 'agency-blog' ? 'agency' : ''}`} style={{ padding: '0.6rem 1rem', fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: activeSidebar === 'agency-blog' ? '#1672EF' : '#e20002', color: '#ffffff', border: 'none', borderRadius: '6px', fontWeight: '600' }}>
                     <Upload size={16} /> Choose Image File
                     <input 
                       type="file" 
@@ -5534,7 +9006,7 @@ function App() {
                     value={newBlog.content || ''}
                     config={JODIT_BLOG_CONFIG}
                     onBlur={newContent => setNewBlog({ ...newBlog, content: newContent })}
-                    onChange={() => {}}
+                    onChange={newContent => { blogContentRef.current = newContent; }}
                   />
                 </div>
               </div>
@@ -5543,7 +9015,7 @@ function App() {
               <button type="button" className="btn-secondary" onClick={() => setShowAddBlogModal(false)}>
                 Cancel
               </button>
-              <button type="button" className="btn-primary" onClick={handleConfirmAddBlogModal} style={{ background: '#e20002', border: 'none', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <button type="button" className={`btn-primary ${activeSidebar === 'agency-blog' ? 'agency' : ''}`} onClick={handleConfirmAddBlogModal} style={{ background: activeSidebar === 'agency-blog' ? '#1672EF' : '#e20002', border: 'none', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                 <Save size={16} /> Save Blog Post
               </button>
             </div>
@@ -5608,7 +9080,7 @@ function App() {
                     onChange={(e) => setNewMedia({ ...newMedia, image: e.target.value })} 
                     placeholder="Paste image URL or upload..."
                   />
-                  <label className="btn-secondary" style={{ padding: '0.6rem 1rem', fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: '#e20002', color: '#ffffff', border: 'none', borderRadius: '6px', fontWeight: '600' }}>
+                  <label className={`btn-secondary ${activeSidebar === 'agency-blog' ? 'agency' : ''}`} style={{ padding: '0.6rem 1rem', fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: activeSidebar === 'agency-blog' ? '#1672EF' : '#e20002', color: '#ffffff', border: 'none', borderRadius: '6px', fontWeight: '600' }}>
                     <Upload size={16} /> Choose Image File
                     <input 
                       type="file" 

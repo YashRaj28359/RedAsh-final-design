@@ -85,6 +85,7 @@ const EntertainmentBlogPost = () => {
   const getImageUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
+    if (url.startsWith('/media/')) return url;
     return `${import.meta.env.VITE_API_URL}${url.startsWith('/') ? '' : '/'}${url}`;
   };
 

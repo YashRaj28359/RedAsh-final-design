@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { fetchContent } from '../../utils/api';
+import { API_URL, fetchContent } from '../../utils/api';
 
 const ContactForm = ({ 
   linkColorClass = "", 
@@ -28,6 +28,37 @@ const ContactForm = ({
     mapLinkText: '(Google Location)',
     mapLinkUrl: 'https://share.google/Pxp4Tva4m3IyfrKAd'
   });
+  const [formValues, setFormValues] = useState({ name: '', email: '', phone: '', company: '', requirement: '' });
+  const [submitState, setSubmitState] = useState({ status: 'idle', message: '' });
+
+  const handleFieldChange = (field, value) => {
+    setFormValues(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setSubmitState({ status: 'sending', message: '' });
+
+    try {
+      const response = await fetch(`${API_URL}/api/quotation`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formValues)
+      });
+      const responseText = await response.text();
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch {
+        throw new Error(`Quotation service returned an invalid response (${response.status}). Check that the server is running at ${API_URL}.`);
+      }
+      if (!response.ok) throw new Error(result.message || 'Unable to send request.');
+      setFormValues({ name: '', email: '', phone: '', company: '', requirement: '' });
+      setSubmitState({ status: 'success', message: 'Thank you. Your quotation request has been sent.' });
+    } catch (error) {
+      setSubmitState({ status: 'error', message: error.message || 'Unable to send request. Please try again.' });
+    }
+  };
 
   useEffect(() => {
     fetchContent()
@@ -73,7 +104,7 @@ const ContactForm = ({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={handleSubmit}
           >
             <div className="flex flex-col xl:flex-row gap-4 w-full items-stretch">
               
@@ -86,6 +117,8 @@ const ContactForm = ({
                   placeholder="Name" 
                   required
                   className="soft-input"
+                  value={formValues.name}
+                  onChange={(e) => handleFieldChange('name', e.target.value)}
                 />
               </div>
               
@@ -98,6 +131,8 @@ const ContactForm = ({
                   placeholder="Email" 
                   required
                   className="soft-input"
+                  value={formValues.email}
+                  onChange={(e) => handleFieldChange('email', e.target.value)}
                 />
               </div>
               
@@ -110,6 +145,8 @@ const ContactForm = ({
                   placeholder="Phone Number" 
                   required
                   className="soft-input"
+                  value={formValues.phone}
+                  onChange={(e) => handleFieldChange('phone', e.target.value)}
                 />
               </div>
               
@@ -122,6 +159,8 @@ const ContactForm = ({
                   placeholder="Company" 
                   required
                   className="soft-input"
+                  value={formValues.company}
+                  onChange={(e) => handleFieldChange('company', e.target.value)}
                 />
               </div>
               
@@ -134,15 +173,18 @@ const ContactForm = ({
                   placeholder={input4Placeholder} 
                   required
                   className="soft-input"
+                  value={formValues.requirement}
+                  onChange={(e) => handleFieldChange('requirement', e.target.value)}
                 />
               </div>
 
               <div className="soft-input-wrapper !flex-none xl:!w-auto flex">
                 <button 
                   type="submit"
+                  disabled={submitState.status === 'sending'}
                   className={`soft-button ${buttonTheme === 'red' ? 'soft-button-red' : ''} w-full xl:w-auto`}
                 >
-                  <span className="text-xs uppercase tracking-wider">SUBMIT REQUEST</span>
+                  <span className="text-xs uppercase tracking-wider">{submitState.status === 'sending' ? 'SENDING...' : 'SUBMIT REQUEST'}</span>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
                   </svg>
@@ -150,6 +192,11 @@ const ContactForm = ({
               </div>
               
             </div>
+            {submitState.message && (
+              <p className={`mt-4 text-center text-sm font-medium ${submitState.status === 'success' ? 'text-green-600' : 'text-red-600'}`} role="status">
+                {submitState.message}
+              </p>
+            )}
           </motion.form>
 
           {/* Footer Text */}

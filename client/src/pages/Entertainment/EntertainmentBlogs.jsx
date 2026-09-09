@@ -77,6 +77,7 @@ const EntertainmentBlogs = () => {
   const getImageUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
+    if (url.startsWith('/media/')) return url;
     return `${API_URL}${url.startsWith('/') ? '' : '/'}${url}`;
   };
 

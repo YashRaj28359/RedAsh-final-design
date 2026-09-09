@@ -78,6 +78,7 @@ const renderIconPreview = (val) => {
 };
 import JoditEditor from 'jodit-react';
 import { DEFAULT_VIDEOS } from './defaultVideos';
+import redashAdminLogo from '../../client/src/assets/Logo/redash-admin-logo.webp';
 import staticBlogs from '../../client/src/data/entertainmentBlogs.json';
 import staticAgencyBlogs from '../../client/src/data/blogs.json';
 import staticMedia from '../../client/src/data/media.json';
@@ -434,7 +435,120 @@ const defaultAgencyClients = [
   { name: 'Savvy', img: agencyLogo24, row: 'row2' }
 ];
 
+function AdminLogin({ onLogin }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      // Try API-based authentication first
+      const response = await fetch(`${API_URL}/api/admin/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim().toLowerCase(), password })
+      });
+
+      const data = await response.json();
+      if (response.ok && data.success) {
+        sessionStorage.setItem('redash_admin_authenticated', 'true');
+        onLogin();
+        setLoading(false);
+        return;
+      }
+
+      // If API returns an error, show it
+      if (!response.ok) {
+        setError(data.message || 'Invalid email or password.');
+        setLoading(false);
+        return;
+      }
+    } catch (err) {
+      console.warn('API login failed, falling back to environment variables:', err);
+
+      // Fallback to environment variables
+      const expectedEmail = import.meta.env.VITE_ADMIN_EMAIL;
+      const expectedPassword = import.meta.env.VITE_ADMIN_PASSWORD;
+
+      if (!expectedEmail || !expectedPassword) {
+        setError('Admin credentials are not configured. Add VITE_ADMIN_EMAIL and VITE_ADMIN_PASSWORD.');
+        setLoading(false);
+        return;
+      }
+
+      if (email.trim().toLowerCase() !== expectedEmail.trim().toLowerCase() || password !== expectedPassword) {
+        setError('Incorrect email or password.');
+        setLoading(false);
+        return;
+      }
+
+      sessionStorage.setItem('redash_admin_authenticated', 'true');
+      onLogin();
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="admin-login-page">
+      <div className="admin-login-card">
+        <div className="admin-login-brand">
+          <img className="admin-login-logo" src={redashAdminLogo} alt="RedAsh" />
+          <div><h1>REDASH</h1><span>ADMIN CMS</span></div>
+        </div>
+        <h2>Welcome back</h2>
+        <p className="admin-login-subtitle">Sign in to manage your website content.</p>
+        <form onSubmit={handleSubmit} className="admin-login-form">
+          <label>Email<div className="admin-login-input-wrap"><Mail size={17} /><input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="admin@example.com" required disabled={loading} /></div></label>
+          <label>Password
+            <div className="admin-login-input-wrap" style={{ position: 'relative' }}>
+              <Settings size={17} />
+              <input 
+                type={showPassword ? 'text' : 'password'} 
+                value={password} 
+                onChange={(event) => setPassword(event.target.value)} 
+                placeholder="Enter your password" 
+                required 
+                disabled={loading}
+                style={{ paddingRight: '40px' }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: 'absolute',
+                  right: '10px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: '#64748b',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '5px'
+                }}
+              >
+                {showPassword ? <Eye size={18} /> : <Eye size={18} style={{ opacity: 0.5 }} />}
+              </button>
+            </div>
+          </label>
+          {error && <p className="admin-login-error" role="alert">{error}</p>}
+          <button type="submit" className="admin-login-button" disabled={loading}>{loading ? 'Signing in...' : 'Sign In'}</button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => sessionStorage.getItem('redash_admin_authenticated') === 'true');
   const [content, setContent] = useState(initialContent);
   const [activeSidebar, setActiveSidebar] = useState(() => localStorage.getItem('adminActiveSidebar') || 'homepage');
   const [activeSubMenu, setActiveSubMenu] = useState(() => localStorage.getItem('adminActiveSubMenu') || 'hero');
@@ -988,6 +1102,17 @@ function App() {
   const [draggedAgencyClientIndex, setDraggedAgencyClientIndex] = useState(null);
   const [draggedAgencyBlogIndex, setDraggedAgencyBlogIndex] = useState(null);
   const [dragOverAgencyBlogIndex, setDragOverAgencyBlogIndex] = useState(null);
+  const [draggedEntertainmentBlogIndex, setDraggedEntertainmentBlogIndex] = useState(null);
+  const [dragOverEntertainmentBlogIndex, setDragOverEntertainmentBlogIndex] = useState(null);
+
+  // Settings Modal States
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [settingsTab, setSettingsTab] = useState('password'); // 'password' or 'email'
+  const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [emailForm, setEmailForm] = useState({ currentPassword: '', newEmail: '', confirmEmail: '' });
+  const [showPasswords, setShowPasswords] = useState({ current: false, new: false, confirm: false, newEmail: false, confirmEmail: false });
+  const [settingsLoading, setSettingsLoading] = useState(false);
+  const [settingsError, setSettingsError] = useState('');
 
   const handleUpdateAgencyClient = (index, field, value) => {
     setContent(prev => {
@@ -2627,7 +2752,6 @@ function App() {
               </button>
               <button className={`sub-nav-item ${activeSubMenu === 'hero' ? 'active' : ''}`} onClick={() => setActiveSubMenu('hero')}>
                 <div className="label-group"><Layout size={16} /> Hero Section</div>
-                <div className="status-dot"></div>
               </button>
               <button className={`sub-nav-item ${activeSubMenu === 'video_tile' ? 'active' : ''}`} onClick={() => setActiveSubMenu('video_tile')}>
                 <div className="label-group"><Layout size={16} /> Video Tile</div>
@@ -2759,6 +2883,9 @@ function App() {
               <p>Manage blog posts and articles</p>
             </div>
             <div className="sub-nav">
+              <button className={`sub-nav-item ${activeSubMenu === 'heroText' ? 'active' : ''}`} onClick={() => setActiveSubMenu('heroText')}>
+                <div className="label-group"><Layout size={16} /> Hero Text</div>
+              </button>
               <button className={`sub-nav-item ${activeSubMenu === 'blog' ? 'active' : ''}`} onClick={() => setActiveSubMenu('blog')}>
                 <div className="label-group"><FileText size={16} /> Blog Posts</div>
               </button>
@@ -7823,25 +7950,73 @@ function App() {
       );
     }
 
-        if (activeSidebar === 'entertainment-blog' && activeSubMenu === 'blog') {
+        if (activeSidebar === 'entertainment-blog' && activeSubMenu === 'heroText') {
+      const heroSubtitle = content.entertainment?.blogsHero?.subtitle || 'Creative and industry insights from the world of movies, web series, TV serials, microdramas, AI filmmaking, music videos and new-age entertainment.';
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header">
+            <div>
+              <h2>Entertainment Blog Hero Text</h2>
+              <p>Update the subtitle shown on the Entertainment Blog page.</p>
+            </div>
+            <div className="header-actions">
+              <button type="button" className="btn-primary" onClick={() => handleSave(content)} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Save size={18} /> Save Changes
+              </button>
+            </div>
+          </div>
+
+          <div className="form-card">
+            <div className="form-group">
+              <label>Blog Page Subtitle</label>
+              <textarea
+                className="form-control"
+                rows="4"
+                value={heroSubtitle}
+                onChange={(e) => {
+                  setContent(prev => ({
+                    ...prev,
+                    entertainment: {
+                      ...(prev.entertainment || {}),
+                      blogsHero: {
+                        ...(prev.entertainment?.blogsHero || {}),
+                        subtitle: e.target.value
+                      }
+                    }
+                  }));
+                }}
+                placeholder="Enter the subtitle shown below the Entertainment Blog heading..."
+              />
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeSidebar === 'entertainment-blog' && activeSubMenu === 'blog') {
       const dbBlogs = content.entertainment?.blogs || [];
-      const mergedStaticBlogs = staticBlogs.map(sb => {
+      const deletedSlugs = content.entertainment?.deletedBlogSlugs || [];
+      const mergedStaticBlogs = staticBlogs.filter(sb => !deletedSlugs.includes(sb.slug)).map(sb => {
         const override = dbBlogs.find(dbb => dbb.slug === sb.slug);
         return override ? { ...override, isStaticOrigin: true } : { ...sb, isStaticOrigin: true };
       });
-      const newDbBlogs = dbBlogs.filter(dbb => !staticBlogs.some(sb => sb.slug === dbb.slug));
+      const newDbBlogs = dbBlogs.filter(dbb => !staticBlogs.some(sb => sb.slug === dbb.slug) && !deletedSlugs.includes(dbb.slug));
       const blogs = [...mergedStaticBlogs, ...newDbBlogs];
 
       const removeBlog = (idx) => {
         const blogToRemove = blogs[idx];
-        if (blogToRemove.isStaticOrigin) return; 
-        
-        const dbIdx = dbBlogs.findIndex(b => b.slug === blogToRemove.slug);
-        if (dbIdx === -1) return;
+        if (!blogToRemove) return;
 
         if (window.confirm('Are you sure you want to delete this blog post?')) {
           const newState = JSON.parse(JSON.stringify(content));
-          newState.entertainment.blogs.splice(dbIdx, 1);
+          if (!newState.entertainment) newState.entertainment = {};
+          newState.entertainment.blogs = (newState.entertainment.blogs || []).filter(blog => blog.slug !== blogToRemove.slug);
+          if (!newState.entertainment.deletedBlogSlugs) newState.entertainment.deletedBlogSlugs = [];
+          if (blogToRemove.slug && !newState.entertainment.deletedBlogSlugs.includes(blogToRemove.slug)) {
+            newState.entertainment.deletedBlogSlugs.push(blogToRemove.slug);
+          }
+          setContent(newState);
           handleSave(newState);
         }
       };
@@ -7866,6 +8041,52 @@ function App() {
         handleOpenAddBlogModal(blog, dbIdx !== -1 ? dbIdx : `static_${blog.slug}`);
       };
 
+      const handleEntertainmentBlogDragStart = (e, idx) => {
+        setDraggedEntertainmentBlogIndex(idx);
+        setDragOverEntertainmentBlogIndex(null);
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', String(idx));
+      };
+
+      const handleEntertainmentBlogDragOver = (e, idx) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.dataTransfer.dropEffect = 'move';
+        if (draggedEntertainmentBlogIndex !== null && draggedEntertainmentBlogIndex !== idx) {
+          setDragOverEntertainmentBlogIndex(idx);
+        }
+        startAutoScrollIfNeeded(e.clientY);
+      };
+
+      const handleEntertainmentBlogDrop = (e, targetIndex) => {
+        e.preventDefault();
+        e.stopPropagation();
+        stopAutoScroll();
+        setDragOverEntertainmentBlogIndex(null);
+
+        if (draggedEntertainmentBlogIndex === null || draggedEntertainmentBlogIndex === targetIndex) {
+          setDraggedEntertainmentBlogIndex(null);
+          return;
+        }
+
+        const newState = JSON.parse(JSON.stringify(content));
+        if (!newState.entertainment) newState.entertainment = {};
+        const updatedBlogs = [...blogs];
+        const [movedBlog] = updatedBlogs.splice(draggedEntertainmentBlogIndex, 1);
+        const adjustedTargetIndex = draggedEntertainmentBlogIndex < targetIndex ? targetIndex - 1 : targetIndex;
+        updatedBlogs.splice(adjustedTargetIndex, 0, movedBlog);
+        newState.entertainment.blogs = updatedBlogs;
+        setContent(newState);
+        handleSave(newState);
+        setDraggedEntertainmentBlogIndex(null);
+      };
+
+      const handleEntertainmentBlogDragEnd = () => {
+        setDraggedEntertainmentBlogIndex(null);
+        setDragOverEntertainmentBlogIndex(null);
+        stopAutoScroll();
+      };
+
       return (
         <div className="editor-form-pane">
           <div className="form-header">
@@ -7882,21 +8103,31 @@ function App() {
 
           <div className="form-card">
             <h3 style={{ marginBottom: '1rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              Blog Posts
+              Blog Posts ({blogs.length})
               <button type="button" className="btn-secondary" onClick={() => handleOpenAddBlogModal(null, null)} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', padding: '0.4rem 0.8rem' }}>
                 <Plus size={14} /> Add Blog
               </button>
             </h3>
+
+            {draggedEntertainmentBlogIndex !== null && (
+              <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '8px', padding: '0.75rem 1rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#1e40af', fontSize: '0.85rem', fontWeight: '600' }}>
+                <span><GripVertical size={16} style={{ verticalAlign: 'middle', marginRight: '0.5rem' }} />Dragging: <strong>{blogs[draggedEntertainmentBlogIndex]?.title || 'Blog'}</strong></span>
+                <span style={{ color: '#2563eb', background: '#dbeafe', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.8rem' }}>{dragOverEntertainmentBlogIndex !== null ? `Dropping into Slot #${Math.min(dragOverEntertainmentBlogIndex + 1, blogs.length)}` : 'Hover over any card to see preview'}</span>
+              </div>
+            )}
             
             <div className="blogs-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem', marginTop: '1.5rem' }}>
               {blogs.map((blog, idx) => {
                 const isStaticOrigin = blog.isStaticOrigin;
                 const isPublished = blog.published !== false;
+                const isDragging = draggedEntertainmentBlogIndex === idx;
+                const isDragOver = dragOverEntertainmentBlogIndex === idx && !isDragging;
                 
                 return (
-                  <div key={blog.slug || idx} className="blog-card" style={{ border: '1px solid #e2e8f0', borderRadius: '8px', overflow: 'hidden', background: '#fff', display: 'flex', flexDirection: 'column' }}>
+                  <div key={blog.slug || idx} draggable onDragStart={(e) => handleEntertainmentBlogDragStart(e, idx)} onDragOver={(e) => handleEntertainmentBlogDragOver(e, idx)} onDrop={(e) => handleEntertainmentBlogDrop(e, idx)} onDragEnd={handleEntertainmentBlogDragEnd} className="blog-card" style={{ position: 'relative', border: isDragging ? '2px dashed #e20002' : isDragOver ? '2px solid #2563eb' : '1px solid #e2e8f0', borderRadius: '10px', overflow: 'hidden', background: '#fff', display: 'flex', flexDirection: 'column', opacity: isDragging ? 0.35 : 1, transform: isDragging ? 'scale(0.97)' : isDragOver ? 'scale(1.02)' : 'scale(1)', boxShadow: isDragOver ? '0 12px 28px -5px rgba(37, 99, 235, 0.35)' : '0 2px 8px rgba(0,0,0,0.04)', transition: 'transform 0.15s ease, opacity 0.15s ease, box-shadow 0.15s ease, border 0.15s ease', cursor: 'grab' }}>
+                    {isDragOver && <div style={{ position: 'absolute', inset: 0, background: 'rgba(239, 246, 255, 0.95)', backdropFilter: 'blur(3px)', zIndex: 40, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', border: '2.5px dashed #2563eb', borderRadius: '10px', pointerEvents: 'none', color: '#1e40af' }}><ArrowDown size={28} /><strong>Drop Here (Slot #{idx + 1})</strong><span style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>Place: &quot;{blogs[draggedEntertainmentBlogIndex]?.title || 'Blog'}&quot;</span></div>}
                     <div style={{ height: '160px', overflow: 'hidden', position: 'relative' }}>
-                      <img src={blog.imageUrl ? (blog.imageUrl.startsWith('http') ? blog.imageUrl : `${API_URL}${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`) : 'https://placehold.co/600x400?text=No+Image'} alt={blog.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img src={blog.imageUrl ? (blog.imageUrl.startsWith('http') || blog.imageUrl.startsWith('/media/') ? blog.imageUrl : `${API_URL}${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`) : 'https://placehold.co/600x400?text=No+Image'} alt={blog.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       <div style={{ position: 'absolute', top: '10px', left: '10px', background: '#e20002', color: 'white', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold' }}>
                         {blog.date ? new Date(blog.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase() : ''}
                       </div>
@@ -7917,11 +8148,9 @@ function App() {
                             <Edit2 size={16} /> Edit
                           </button>
                           <button 
-                            className={`btn-icon ${isStaticOrigin ? 'disabled' : ''}`} 
-                            onClick={() => !isStaticOrigin && removeBlog(idx)}
-                            disabled={isStaticOrigin}
-                            title={isStaticOrigin ? "Cannot delete original static blogs" : "Delete Blog"}
-                            style={isStaticOrigin ? { opacity: 0.3, cursor: 'not-allowed' } : {}}
+                            className="btn-icon"
+                            onClick={() => removeBlog(idx)}
+                            title="Delete Blog"
                           >
                             <Trash2 size={16} />
                           </button>
@@ -7931,6 +8160,16 @@ function App() {
                   </div>
                 );
               })}
+              {draggedEntertainmentBlogIndex !== null && (
+                <div
+                  onDragOver={(e) => handleEntertainmentBlogDragOver(e, blogs.length)}
+                  onDrop={(e) => handleEntertainmentBlogDrop(e, blogs.length)}
+                  style={{ border: dragOverEntertainmentBlogIndex === blogs.length ? '2.5px dashed #2563eb' : '2px dashed #cbd5e1', background: dragOverEntertainmentBlogIndex === blogs.length ? '#eff6ff' : '#f8fafc', borderRadius: '10px', minHeight: '280px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '1.5rem', color: dragOverEntertainmentBlogIndex === blogs.length ? '#2563eb' : '#64748b', boxShadow: dragOverEntertainmentBlogIndex === blogs.length ? '0 12px 28px -5px rgba(59, 130, 246, 0.3)' : 'none', transform: dragOverEntertainmentBlogIndex === blogs.length ? 'scale(1.02)' : 'scale(1)', transition: 'all 0.2s ease' }}
+                >
+                  <ArrowDown size={28} />
+                  <strong>{dragOverEntertainmentBlogIndex === blogs.length ? `Drop Here (Slot #${blogs.length})` : 'Drop at end of list'}</strong>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -8367,6 +8606,23 @@ function App() {
               />
             </div>
           </div>
+
+          <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'center', gap: '1rem' }}>
+            <button
+              type="button"
+              onClick={() => setActiveSidebar('homepage-media')}
+              style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: '#3b82f6', color: '#ffffff', border: 'none', padding: '0.6rem 2.5rem', borderRadius: '6px', fontWeight: '600', fontSize: '0.95rem', cursor: 'pointer' }}
+            >
+              Edit Media
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveSidebar('global-contact')}
+              style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: '#3b82f6', color: '#ffffff', border: 'none', padding: '0.6rem 2.5rem', borderRadius: '6px', fontWeight: '600', fontSize: '0.95rem', cursor: 'pointer' }}
+            >
+              Edit Contact
+            </button>
+          </div>
         </div>
       );
     }
@@ -8379,6 +8635,10 @@ function App() {
       </div>
     );
   };
+
+  if (!isAuthenticated) {
+    return <AdminLogin onLogin={() => setIsAuthenticated(true)} />;
+  }
 
   return (
     <div className="cms-container">
@@ -8423,6 +8683,26 @@ function App() {
           <div className="user-info">
             <span className="name">Admin User</span>
           </div>
+          <button
+            type="button"
+            className="admin-logout-button"
+            onClick={() => setShowSettingsModal(true)}
+            title="Settings"
+            style={{ marginRight: '0.5rem' }}
+          >
+            <Settings size={16} />
+          </button>
+          <button
+            type="button"
+            className="admin-logout-button"
+            onClick={() => {
+              sessionStorage.removeItem('redash_admin_authenticated');
+              setIsAuthenticated(false);
+            }}
+            title="Sign out"
+          >
+            <LogOut size={16} />
+          </button>
         </div>
       </header>
 
@@ -9616,6 +9896,342 @@ function App() {
               </button>
               <button type="button" className="btn-primary" onClick={handleConfirmAddMediaModal} style={{ background: '#e20002', border: 'none', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                 <Save size={16} /> Save Media
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Settings Modal */}
+      {showSettingsModal && (
+        <div className="modal-overlay" onClick={() => setShowSettingsModal(false)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '500px' }}>
+            <div className="modal-header">
+              <h3 style={{ fontSize: '1.1rem', fontWeight: '700', color: '#0f172a', margin: 0 }}>Settings</h3>
+              <button className="btn-icon" onClick={() => setShowSettingsModal(false)} style={{ color: '#64748b' }}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+
+            {/* Tab Navigation */}
+            <div style={{ display: 'flex', gap: '1rem', padding: '1rem 1.5rem', borderBottom: '1px solid #e2e8f0', background: '#f8fafc' }}>
+              <button
+                onClick={() => { setSettingsTab('password'); setSettingsError(''); }}
+                style={{
+                  padding: '0.5rem 1rem',
+                  border: 'none',
+                  background: 'none',
+                  cursor: 'pointer',
+                  fontSize: '0.95rem',
+                  fontWeight: '600',
+                  color: settingsTab === 'password' ? '#e20002' : '#64748b',
+                  borderBottom: settingsTab === 'password' ? '2px solid #e20002' : '2px solid transparent',
+                  transition: 'all 0.2s'
+                }}
+              >
+                Change Password
+              </button>
+              <button
+                onClick={() => { setSettingsTab('email'); setSettingsError(''); }}
+                style={{
+                  padding: '0.5rem 1rem',
+                  border: 'none',
+                  background: 'none',
+                  cursor: 'pointer',
+                  fontSize: '0.95rem',
+                  fontWeight: '600',
+                  color: settingsTab === 'email' ? '#e20002' : '#64748b',
+                  borderBottom: settingsTab === 'email' ? '2px solid #e20002' : '2px solid transparent',
+                  transition: 'all 0.2s'
+                }}
+              >
+                Change Email
+              </button>
+            </div>
+
+            <div className="modal-body">
+              {settingsError && (
+                <div style={{ padding: '0.75rem 1rem', background: '#fee2e2', border: '1px solid #fca5a5', borderRadius: '6px', color: '#991b1b', fontSize: '0.9rem', marginBottom: '1rem' }}>
+                  {settingsError}
+                </div>
+              )}
+
+              {settingsLoading && (
+                <div style={{ textAlign: 'center', padding: '2rem', color: '#64748b' }}>
+                  <div style={{ animation: 'spin 1s linear infinite', display: 'inline-block' }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+                  </div>
+                  <p>Updating...</p>
+                </div>
+              )}
+
+              {!settingsLoading && settingsTab === 'password' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {/* Current Password */}
+                  <div>
+                    <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Current Password</label>
+                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                      <input
+                        type={showPasswords.current ? 'text' : 'password'}
+                        className="form-control"
+                        value={passwordForm.currentPassword}
+                        onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                        placeholder="Enter your current password"
+                        style={{ paddingRight: '40px' }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPasswords({ ...showPasswords, current: !showPasswords.current })}
+                        style={{
+                          position: 'absolute',
+                          right: '10px',
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          color: '#64748b',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                      >
+                        {showPasswords.current ? <Eye size={18} /> : <Eye size={18} style={{ opacity: 0.5 }} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* New Password */}
+                  <div>
+                    <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>New Password</label>
+                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                      <input
+                        type={showPasswords.new ? 'text' : 'password'}
+                        className="form-control"
+                        value={passwordForm.newPassword}
+                        onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                        placeholder="Enter your new password"
+                        style={{ paddingRight: '40px' }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPasswords({ ...showPasswords, new: !showPasswords.new })}
+                        style={{
+                          position: 'absolute',
+                          right: '10px',
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          color: '#64748b',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                      >
+                        {showPasswords.new ? <Eye size={18} /> : <Eye size={18} style={{ opacity: 0.5 }} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Confirm Password */}
+                  <div>
+                    <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Confirm Password</label>
+                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                      <input
+                        type={showPasswords.confirm ? 'text' : 'password'}
+                        className="form-control"
+                        value={passwordForm.confirmPassword}
+                        onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                        placeholder="Re-enter your new password"
+                        style={{ paddingRight: '40px' }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPasswords({ ...showPasswords, confirm: !showPasswords.confirm })}
+                        style={{
+                          position: 'absolute',
+                          right: '10px',
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          color: '#64748b',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                      >
+                        {showPasswords.confirm ? <Eye size={18} /> : <Eye size={18} style={{ opacity: 0.5 }} />}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {!settingsLoading && settingsTab === 'email' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {/* Current Password for Email Change */}
+                  <div>
+                    <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Current Password</label>
+                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                      <input
+                        type={showPasswords.current ? 'text' : 'password'}
+                        className="form-control"
+                        value={emailForm.currentPassword}
+                        onChange={(e) => setEmailForm({ ...emailForm, currentPassword: e.target.value })}
+                        placeholder="Enter your current password"
+                        style={{ paddingRight: '40px' }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPasswords({ ...showPasswords, current: !showPasswords.current })}
+                        style={{
+                          position: 'absolute',
+                          right: '10px',
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          color: '#64748b',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                      >
+                        {showPasswords.current ? <Eye size={18} /> : <Eye size={18} style={{ opacity: 0.5 }} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* New Email */}
+                  <div>
+                    <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>New Email Address</label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      value={emailForm.newEmail}
+                      onChange={(e) => setEmailForm({ ...emailForm, newEmail: e.target.value })}
+                      placeholder="Enter your new email address"
+                    />
+                  </div>
+
+                  {/* Confirm Email */}
+                  <div>
+                    <label style={{ fontSize: '0.85rem', fontWeight: '600', display: 'block', marginBottom: '0.4rem', color: '#334155' }}>Confirm Email Address</label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      value={emailForm.confirmEmail}
+                      onChange={(e) => setEmailForm({ ...emailForm, confirmEmail: e.target.value })}
+                      placeholder="Re-enter your new email address"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={() => {
+                  setShowSettingsModal(false);
+                  setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+                  setEmailForm({ currentPassword: '', newEmail: '', confirmEmail: '' });
+                  setSettingsError('');
+                }}
+                disabled={settingsLoading}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={async () => {
+                  try {
+                    setSettingsLoading(true);
+                    setSettingsError('');
+
+                    if (settingsTab === 'password') {
+                      if (!passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword) {
+                        setSettingsError('Please fill in all password fields');
+                        setSettingsLoading(false);
+                        return;
+                      }
+                      if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+                        setSettingsError('New passwords do not match');
+                        setSettingsLoading(false);
+                        return;
+                      }
+                      if (passwordForm.newPassword.length < 6) {
+                        setSettingsError('New password must be at least 6 characters long');
+                        setSettingsLoading(false);
+                        return;
+                      }
+
+                      const response = await fetch(`${API_URL}/api/admin/change-password`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          currentPassword: passwordForm.currentPassword,
+                          newPassword: passwordForm.newPassword
+                        })
+                      });
+
+                      const data = await response.json();
+                      if (!response.ok) {
+                        setSettingsError(data.message || 'Failed to change password');
+                        setSettingsLoading(false);
+                        return;
+                      }
+
+                      showToast('Password changed successfully!', 'success');
+                      setShowSettingsModal(false);
+                      setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+                    } else {
+                      if (!emailForm.currentPassword || !emailForm.newEmail || !emailForm.confirmEmail) {
+                        setSettingsError('Please fill in all email fields');
+                        setSettingsLoading(false);
+                        return;
+                      }
+                      if (emailForm.newEmail !== emailForm.confirmEmail) {
+                        setSettingsError('Email addresses do not match');
+                        setSettingsLoading(false);
+                        return;
+                      }
+                      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailForm.newEmail)) {
+                        setSettingsError('Please enter a valid email address');
+                        setSettingsLoading(false);
+                        return;
+                      }
+
+                      const response = await fetch(`${API_URL}/api/admin/change-email`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          currentPassword: emailForm.currentPassword,
+                          newEmail: emailForm.newEmail
+                        })
+                      });
+
+                      const data = await response.json();
+                      if (!response.ok) {
+                        setSettingsError(data.message || 'Failed to change email');
+                        setSettingsLoading(false);
+                        return;
+                      }
+
+                      showToast('Email changed successfully!', 'success');
+                      setShowSettingsModal(false);
+                      setEmailForm({ currentPassword: '', newEmail: '', confirmEmail: '' });
+                    }
+                  } catch (err) {
+                    console.error(err);
+                    setSettingsError('An error occurred. Please try again.');
+                  } finally {
+                    setSettingsLoading(false);
+                  }
+                }}
+                style={{ background: '#e20002', border: 'none', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+                disabled={settingsLoading}
+              >
+                {settingsTab === 'password' ? 'Update Password' : 'Update Email'}
               </button>
             </div>
           </div>

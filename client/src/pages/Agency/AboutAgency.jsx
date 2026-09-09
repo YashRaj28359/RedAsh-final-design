@@ -3,7 +3,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import { getCachedContent, fetchContent } from '../../utils/api';
+import { getCachedContent, fetchContent, API_URL } from '../../utils/api';
 import Navbar from './components/Navbar';
 import TopGlobalClients from './components/TopGlobalClients';
 import ContactForm from '../../components/ContactForm/ContactForm';
@@ -374,9 +374,9 @@ const AboutAgency = () => {
                     src={
                       typeof imgSrc === 'string' 
                         ? (imgSrc.startsWith('http') 
-                            ? imgSrc 
+                            ? imgSrc.replace('http://localhost:5000', API_URL)
                             : imgSrc.startsWith('/uploads') 
-                              ? `${import.meta.env.VITE_API_URL}${imgSrc}` 
+                              ? `${API_URL}${imgSrc}` 
                               : imgSrc)
                         : imgSrc
                     } 

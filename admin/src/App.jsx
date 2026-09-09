@@ -1742,7 +1742,7 @@ function App() {
       if (activeSidebar.startsWith('entertainment') && activeSidebar !== 'entertainment-films') {
         dbKey = 'entertainment';
       }
-      if (activeSidebar.startsWith('agency') && activeSidebar !== 'agency-films') {
+      if (activeSidebar.startsWith('agency') && activeSidebar !== 'agency-films' && activeSidebar !== 'agency-about') {
         dbKey = 'agency';
       }
       if (activeSidebar === 'homepage-media') {

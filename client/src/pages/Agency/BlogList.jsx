@@ -88,7 +88,7 @@ const BlogList = () => {
                   <div className="relative overflow-hidden rounded-none aspect-[1.5] w-full bg-gray-100">
                     {blog.imageUrl ? (
                       <img 
-                        src={blog.imageUrl.startsWith('http') ? blog.imageUrl : `http://localhost:5000${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`} 
+                        src={blog.imageUrl.startsWith('http') ? blog.imageUrl : `https://redash-final-design.onrender.com${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`} 
                         alt={blog.title} 
                         className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
                       />

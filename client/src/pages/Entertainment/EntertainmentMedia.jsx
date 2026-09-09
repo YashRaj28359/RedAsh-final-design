@@ -13,7 +13,7 @@ const EntertainmentMedia = () => {
   const [dbMediaCards, setDbMediaCards] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/content', { cache: 'no-store' })
+    fetch('https://redash-final-design.onrender.com/api/content', { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         setContent(data.entertainment);

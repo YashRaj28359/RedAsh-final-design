@@ -376,7 +376,7 @@ const AboutAgency = () => {
                         ? (imgSrc.startsWith('http') 
                             ? imgSrc 
                             : imgSrc.startsWith('/uploads') 
-                              ? `http://localhost:5000${imgSrc}` 
+                              ? `https://redash-final-design.onrender.com${imgSrc}` 
                               : imgSrc)
                         : imgSrc
                     } 

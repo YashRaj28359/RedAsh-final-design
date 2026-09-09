@@ -30,7 +30,7 @@ const EntertainmentBlogs = () => {
     animationFrameId = requestAnimationFrame(raf);
 
     // Fetch dynamic content
-    fetch('http://localhost:5000/api/content')
+    fetch('https://redash-final-design.onrender.com/api/content')
       .then(res => res.json())
       .then(data => {
         const entData = data.entertainment || {};
@@ -76,7 +76,7 @@ const EntertainmentBlogs = () => {
   const getImageUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
-    return `http://localhost:5000${url.startsWith('/') ? '' : '/'}${url}`;
+    return `https://redash-final-design.onrender.com${url.startsWith('/') ? '' : '/'}${url}`;
   };
 
   return (

@@ -109,7 +109,7 @@ app.post('/api/upload', upload.single('image'), (req, res) => {
       return res.status(400).json({ message: 'No file uploaded' });
     }
     // Return the URL path to access the file
-    const fileUrl = `http://localhost:5000/uploads/${req.file.filename}`;
+    const fileUrl = `https://redash-final-design.onrender.com/uploads/${req.file.filename}`;
     res.json({ url: fileUrl });
   } catch (error) {
     res.status(500).json({ message: 'Error uploading file', error: error.message });

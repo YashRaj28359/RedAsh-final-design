@@ -54,7 +54,7 @@ const ArtistCard = ({ artist }) => {
                     artist.id % 2 === 0 ? 'hover:rotate-2' : 'hover:-rotate-3';
 
   const imageUrl = artist.image ? 
-    (artist.image.startsWith('http') ? artist.image : `http://localhost:5000${artist.image.startsWith('/') ? '' : '/'}${artist.image}`) 
+    (artist.image.startsWith('http') ? artist.image : `https://redash-final-design.onrender.com${artist.image.startsWith('/') ? '' : '/'}${artist.image}`) 
     : staticImageMap[artist.name];
 
   return (

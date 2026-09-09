@@ -942,7 +942,7 @@ function App() {
     const formData = new FormData();
     formData.append('image', file);
     try {
-      const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: formData });
+      const res = await fetch('https://redash-final-design.onrender.com/api/upload', { method: 'POST', body: formData });
       const data = await res.json();
       if (data.url) {
         handleUpdateAgencyClient(index, 'img', data.url);
@@ -1247,7 +1247,7 @@ function App() {
     const formData = new FormData();
     formData.append('image', file);
     try {
-      const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: formData });
+      const res = await fetch('https://redash-final-design.onrender.com/api/upload', { method: 'POST', body: formData });
       const data = await res.json();
       if (data.url) {
         handleUpdateTestimonial(index, 'avatar', data.url);
@@ -1277,7 +1277,7 @@ function App() {
     const formData = new FormData();
     formData.append('image', file);
     try {
-      const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: formData });
+      const res = await fetch('https://redash-final-design.onrender.com/api/upload', { method: 'POST', body: formData });
       const data = await res.json();
       if (data.url) {
         handleUpdateCaseStudy(index, 'image', data.url);
@@ -1568,7 +1568,7 @@ function App() {
 
   // Fetch initial content from API
   React.useEffect(() => {
-    fetch('http://localhost:5000/api/content')
+    fetch('https://redash-final-design.onrender.com/api/content')
       .then(res => res.json())
       .then(data => {
         let finalData = data;
@@ -1706,7 +1706,7 @@ function App() {
       }
       
       const payload = stateToUse[dbKey] || (stateToUse.entertainment && dbKey === 'entertainment' ? stateToUse.entertainment : {});
-      const res = await fetch(`http://localhost:5000/api/content/${dbKey}`, {
+      const res = await fetch(`https://redash-final-design.onrender.com/api/content/${dbKey}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ data: payload })
@@ -1999,13 +1999,13 @@ function App() {
     formData.append('image', file);
     
     try {
-      const res = await fetch('http://localhost:5000/api/upload', {
+      const res = await fetch('https://redash-final-design.onrender.com/api/upload', {
         method: 'POST',
         body: formData
       });
       const data = await res.json();
       if (res.ok) {
-        handleUpdateAgencyHeroCard(index, 'image', `http://localhost:5000${data.url}`);
+        handleUpdateAgencyHeroCard(index, 'image', `https://redash-final-design.onrender.com${data.url}`);
       } else {
         alert('Upload failed: ' + data.message);
       }
@@ -2133,13 +2133,13 @@ function App() {
     formData.append('image', file);
     
     try {
-      const res = await fetch('http://localhost:5000/api/upload', {
+      const res = await fetch('https://redash-final-design.onrender.com/api/upload', {
         method: 'POST',
         body: formData
       });
       const data = await res.json();
       if (res.ok) {
-        handleUpdateVideo(editingVideoIndex, 'thumbnail', `http://localhost:5000${data.url}`);
+        handleUpdateVideo(editingVideoIndex, 'thumbnail', `https://redash-final-design.onrender.com${data.url}`);
       } else {
         alert('Upload failed: ' + data.message);
       }
@@ -2157,13 +2157,13 @@ function App() {
     formData.append('image', file);
     
     try {
-      const res = await fetch('http://localhost:5000/api/upload', {
+      const res = await fetch('https://redash-final-design.onrender.com/api/upload', {
         method: 'POST',
         body: formData
       });
       const data = await res.json();
       if (res.ok) {
-        handleUpdateHeroCard(index, 'image', `http://localhost:5000${data.url}`);
+        handleUpdateHeroCard(index, 'image', `https://redash-final-design.onrender.com${data.url}`);
       } else {
         alert('Upload failed: ' + data.message);
       }
@@ -3452,7 +3452,7 @@ function App() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
                 <div style={{ padding: '1rem', background: '#ffffff', borderRadius: '4px', border: '1px solid #e2e8f0', display: 'inline-block' }}>
                   {logo.url ? (
-                    <img src={logo.url.startsWith('http') || logo.url.startsWith('data:') ? logo.url : `http://localhost:5000${logo.url}`} alt="Logo Preview" style={{ maxHeight: '60px', objectFit: 'contain' }} />
+                    <img src={logo.url.startsWith('http') || logo.url.startsWith('data:') ? logo.url : `https://redash-final-design.onrender.com${logo.url}`} alt="Logo Preview" style={{ maxHeight: '60px', objectFit: 'contain' }} />
                   ) : (
                     <span className="text-muted">No logo uploaded yet</span>
                   )}
@@ -3523,7 +3523,7 @@ function App() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
                 <div style={{ padding: '1rem', background: '#ffffff', borderRadius: '4px', border: '1px solid #e2e8f0', display: 'inline-block' }}>
                   {logo.url ? (
-                    <img src={logo.url.startsWith('http') || logo.url.startsWith('data:') ? logo.url : `http://localhost:5000${logo.url}`} alt="Logo Preview" style={{ maxHeight: '60px', objectFit: 'contain' }} />
+                    <img src={logo.url.startsWith('http') || logo.url.startsWith('data:') ? logo.url : `https://redash-final-design.onrender.com${logo.url}`} alt="Logo Preview" style={{ maxHeight: '60px', objectFit: 'contain' }} />
                   ) : (
                     <span className="text-muted">No logo provided yet</span>
                   )}
@@ -3649,7 +3649,7 @@ function App() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
                 <div style={{ padding: '1rem', background: '#ffffff', borderRadius: '4px', border: '1px solid #e2e8f0', display: 'inline-block' }}>
                   {logo.url ? (
-                    <img src={logo.url.startsWith('http') || logo.url.startsWith('data:') ? logo.url : `http://localhost:5000${logo.url}`} alt="Logo Preview" style={{ maxHeight: '60px', objectFit: 'contain' }} />
+                    <img src={logo.url.startsWith('http') || logo.url.startsWith('data:') ? logo.url : `https://redash-final-design.onrender.com${logo.url}`} alt="Logo Preview" style={{ maxHeight: '60px', objectFit: 'contain' }} />
                   ) : (
                     <span className="text-muted">No logo provided yet</span>
                   )}
@@ -4642,7 +4642,7 @@ function App() {
         const formData = new FormData();
         formData.append('image', file);
         try {
-          const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: formData });
+          const res = await fetch('https://redash-final-design.onrender.com/api/upload', { method: 'POST', body: formData });
           const data = await res.json();
           if (data.url) handleUpdateImage(idx, data.url);
         } catch (err) {
@@ -4763,7 +4763,7 @@ function App() {
                   <div style={{ position: 'relative', width: '100%', height: '120px', background: '#e2e8f0', transform: 'translateZ(0)' }}>
                     {imgUrl && (
                       <img 
-                        src={imgUrl.startsWith('http') || imgUrl.startsWith('/uploads') ? (imgUrl.startsWith('/uploads') ? `http://localhost:5000${imgUrl}` : imgUrl) : `http://localhost:5000${imgUrl}`} 
+                        src={imgUrl.startsWith('http') || imgUrl.startsWith('/uploads') ? (imgUrl.startsWith('/uploads') ? `https://redash-final-design.onrender.com${imgUrl}` : imgUrl) : `https://redash-final-design.onrender.com${imgUrl}`} 
                         alt="preview" 
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
                         loading="lazy"
@@ -5372,7 +5372,7 @@ function App() {
                               const formData = new FormData();
                               formData.append('image', file);
                               try {
-                                const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: formData });
+                                const res = await fetch('https://redash-final-design.onrender.com/api/upload', { method: 'POST', body: formData });
                                 const data = await res.json();
                                 if (data.url) setNewEnterpriseVideo({ ...newEnterpriseVideo, thumbnail: data.url });
                               } catch (err) {
@@ -5733,7 +5733,7 @@ function App() {
                       const formData = new FormData();
                       formData.append('image', file);
                       try {
-                        const res = await fetch('http://localhost:5000/api/upload', {
+                        const res = await fetch('https://redash-final-design.onrender.com/api/upload', {
                           method: 'POST',
                           body: formData
                         });
@@ -6365,7 +6365,7 @@ function App() {
                       formData.append('image', file);
                       
                       try {
-                        const res = await fetch('http://localhost:5000/api/upload', {
+                        const res = await fetch('https://redash-final-design.onrender.com/api/upload', {
                           method: 'POST',
                           body: formData
                         });
@@ -6396,7 +6396,7 @@ function App() {
                 {content.entertainment?.about?.storyImage && (
                   <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <img 
-                      src={`http://localhost:5000${content.entertainment.about.storyImage}`} 
+                      src={`https://redash-final-design.onrender.com${content.entertainment.about.storyImage}`} 
                       alt="Story preview" 
                       style={{ height: '80px', borderRadius: '4px', objectFit: 'cover' }} 
                     />
@@ -6723,7 +6723,7 @@ function App() {
         const formData = new FormData();
         formData.append('image', file);
         try {
-          const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: formData });
+          const res = await fetch('https://redash-final-design.onrender.com/api/upload', { method: 'POST', body: formData });
           const data = await res.json();
           if (res.ok && data.url) {
             updateArtist(idx, 'image', data.url);
@@ -6884,7 +6884,7 @@ function App() {
                   <div style={{ width: '100%', height: '220px', background: '#f1f5f9', borderRadius: '8px', overflow: 'hidden', border: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                     {artist.image || staticImageMap[artist.name] ? (
                       <img 
-                        src={artist.image ? (artist.image.startsWith('http') || artist.image.startsWith('/uploads') ? (artist.image.startsWith('/uploads') ? `http://localhost:5000${artist.image}` : artist.image) : `http://localhost:5000${artist.image}`) : staticImageMap[artist.name]} 
+                        src={artist.image ? (artist.image.startsWith('http') || artist.image.startsWith('/uploads') ? (artist.image.startsWith('/uploads') ? `https://redash-final-design.onrender.com${artist.image}` : artist.image) : `https://redash-final-design.onrender.com${artist.image}`) : staticImageMap[artist.name]} 
                         alt={artist.name} 
                         style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} 
                       />
@@ -7722,7 +7722,7 @@ function App() {
                 return (
                   <div key={blog.slug || idx} className="blog-card" style={{ border: '1px solid #e2e8f0', borderRadius: '8px', overflow: 'hidden', background: '#fff', display: 'flex', flexDirection: 'column' }}>
                     <div style={{ height: '160px', overflow: 'hidden', position: 'relative' }}>
-                      <img src={blog.imageUrl ? (blog.imageUrl.startsWith('http') ? blog.imageUrl : `http://localhost:5000${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`) : 'https://placehold.co/600x400?text=No+Image'} alt={blog.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img src={blog.imageUrl ? (blog.imageUrl.startsWith('http') ? blog.imageUrl : `https://redash-final-design.onrender.com${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`) : 'https://placehold.co/600x400?text=No+Image'} alt={blog.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       <div style={{ position: 'absolute', top: '10px', left: '10px', background: '#e20002', color: 'white', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold' }}>
                         {blog.date ? new Date(blog.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase() : ''}
                       </div>
@@ -7871,7 +7871,7 @@ function App() {
                 return (
                   <div key={blog.slug || idx} className="blog-card" style={{ border: '1px solid #e2e8f0', borderRadius: '8px', overflow: 'hidden', background: '#fff', display: 'flex', flexDirection: 'column' }}>
                     <div style={{ height: '160px', overflow: 'hidden', position: 'relative' }}>
-                      <img src={blog.imageUrl ? (blog.imageUrl.startsWith('http') ? blog.imageUrl : `http://localhost:5000${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`) : 'https://placehold.co/600x400?text=No+Image'} alt={blog.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img src={blog.imageUrl ? (blog.imageUrl.startsWith('http') ? blog.imageUrl : `https://redash-final-design.onrender.com${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`) : 'https://placehold.co/600x400?text=No+Image'} alt={blog.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       <div style={{ position: 'absolute', top: '10px', left: '10px', background: '#3b82f6', color: 'white', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold' }}>
                         {blog.date ? new Date(blog.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase() : ''}
                       </div>
@@ -8461,7 +8461,7 @@ function App() {
                           const formData = new FormData();
                           formData.append('image', file);
                           try {
-                            const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: formData });
+                            const res = await fetch('https://redash-final-design.onrender.com/api/upload', { method: 'POST', body: formData });
                             const data = await res.json();
                             if (data.url) setNewAgencyClient({ ...newAgencyClient, img: data.url });
                           } catch (err) {
@@ -8523,7 +8523,7 @@ function App() {
                         const formData = new FormData();
                         formData.append('image', file);
                         try {
-                          const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: formData });
+                          const res = await fetch('https://redash-final-design.onrender.com/api/upload', { method: 'POST', body: formData });
                           const data = await res.json();
                           if (data.url) setNewCaseStudy({ ...newCaseStudy, image: data.url });
                         } catch (err) {
@@ -8669,7 +8669,7 @@ function App() {
                           const formData = new FormData();
                           formData.append('image', file);
                           try {
-                            const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: formData });
+                            const res = await fetch('https://redash-final-design.onrender.com/api/upload', { method: 'POST', body: formData });
                             const data = await res.json();
                             if (data.url) setNewTestimonial({ ...newTestimonial, avatar: data.url });
                           } catch (err) {
@@ -8976,7 +8976,7 @@ function App() {
                           const formData = new FormData();
                           formData.append('image', file);
                           try {
-                            const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: formData });
+                            const res = await fetch('https://redash-final-design.onrender.com/api/upload', { method: 'POST', body: formData });
                             const data = await res.json();
                             if (res.ok && data.url) {
                               setNewBlog({ ...newBlog, imageUrl: data.url });
@@ -8994,7 +8994,7 @@ function App() {
                 </div>
                 {newBlog.imageUrl && (
                   <div style={{ marginTop: '0.5rem', width: '100%', height: '120px', borderRadius: '6px', overflow: 'hidden' }}>
-                    <img src={newBlog.imageUrl.startsWith('http') ? newBlog.imageUrl : `http://localhost:5000${newBlog.imageUrl.startsWith('/') ? '' : '/'}${newBlog.imageUrl}`} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={newBlog.imageUrl.startsWith('http') ? newBlog.imageUrl : `https://redash-final-design.onrender.com${newBlog.imageUrl.startsWith('/') ? '' : '/'}${newBlog.imageUrl}`} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
                 )}
               </div>
@@ -9092,7 +9092,7 @@ function App() {
                           const formData = new FormData();
                           formData.append('image', file);
                           try {
-                            const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: formData });
+                            const res = await fetch('https://redash-final-design.onrender.com/api/upload', { method: 'POST', body: formData });
                             const data = await res.json();
                             if (res.ok && data.url) {
                               setNewMedia({ ...newMedia, image: data.url });
@@ -9110,7 +9110,7 @@ function App() {
                 </div>
                 {newMedia.image && (
                   <div style={{ marginTop: '0.5rem', width: '100%', height: '120px', borderRadius: '6px', overflow: 'hidden' }}>
-                    <img src={newMedia.image.startsWith('http') ? newMedia.image : `http://localhost:5000${newMedia.image.startsWith('/') ? '' : '/'}${newMedia.image}`} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={newMedia.image.startsWith('http') ? newMedia.image : `https://redash-final-design.onrender.com${newMedia.image.startsWith('/') ? '' : '/'}${newMedia.image}`} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
                 )}
               </div>

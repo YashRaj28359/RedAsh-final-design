@@ -91,7 +91,7 @@ const AboutEntertainment = () => {
   }
 
   const storyParagraph = contentData?.storyParagraph || 'has evolved into a Mumbai-based production house focused on creating compelling entertainment across films, web series, microdrama shows, television serials, AI fiction films, short films, music videos, and *emerging formats.*';
-  const storyImage = contentData?.storyImage ? `http://localhost:5000${contentData.storyImage}` : aboutPic;
+  const storyImage = contentData?.storyImage ? `https://redash-final-design.onrender.com${contentData.storyImage}` : aboutPic;
 
   const renderParagraph = (text) => {
     const parts = text.split(/(\*[^*]+\*)/g);

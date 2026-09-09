@@ -34,7 +34,7 @@ const TopGlobalClients = () => {
   const [dbClients, setDbClients] = React.useState(null);
 
   React.useEffect(() => {
-    fetch('http://localhost:5000/api/content')
+    fetch('https://redash-final-design.onrender.com/api/content')
       .then(res => res.json())
       .then(data => {
         if (data?.entertainment?.clients && data.entertainment.clients.length > 0) {

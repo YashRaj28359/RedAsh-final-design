@@ -16,7 +16,7 @@ export const getCachedContent = () => {
 };
 
 export const fetchContent = () => {
-  fetchPromise = fetch('http://localhost:5000/api/content')
+  fetchPromise = fetch('https://redash-final-design.onrender.com/api/content')
     .then(res => res.json())
     .then(data => {
       cachedData = data;

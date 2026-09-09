@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { fetchContent } from '../../../utils/api';
+import { fetchContent, API_URL } from '../../../utils/api';
 
 gsap.registerPlugin(ScrollTrigger);
 import img1 from '../../../assets/Films/celebs/Ashish - IMG_9131.jpg';
@@ -49,11 +49,36 @@ const CelebritiesSection = () => {
     fetchContent()
       .then(data => {
         if (data?.entertainment?.featuredCelebs) {
+          const resolveImg = (img, fallback) => {
+            if (!img || img.includes('/@fs/') || img.includes('localhost:5173') || (typeof img === 'string' && img.trim() === '')) return fallback;
+            let finalImg = img;
+            if (typeof finalImg === 'string') {
+              while (finalImg.includes('https://redash-final-design.onrender.comhttps://')) {
+                finalImg = finalImg.replace('https://redash-final-design.onrender.comhttps://', 'https://');
+              }
+              while (finalImg.includes('http://localhost:5000http')) {
+                finalImg = finalImg.replace(/http:\/\/localhost:5000(?=http)/g, '');
+              }
+              if (finalImg.startsWith('/uploads/')) {
+                finalImg = `${API_URL}${finalImg}`;
+              } else if (finalImg.startsWith('http://localhost:5000')) {
+                finalImg = finalImg.replace('http://localhost:5000', API_URL);
+              }
+            }
+            return finalImg;
+          };
+
           if (data.entertainment.featuredCelebs.row1 && data.entertainment.featuredCelebs.row1.length > 0) {
-            setRow1(data.entertainment.featuredCelebs.row1);
+            setRow1(data.entertainment.featuredCelebs.row1.map((c, i) => ({
+              ...c,
+              img: resolveImg(c.img, defaultRow1[i % defaultRow1.length]?.img)
+            })));
           }
           if (data.entertainment.featuredCelebs.row2 && data.entertainment.featuredCelebs.row2.length > 0) {
-            setRow2(data.entertainment.featuredCelebs.row2);
+            setRow2(data.entertainment.featuredCelebs.row2.map((c, i) => ({
+              ...c,
+              img: resolveImg(c.img, defaultRow2[i % defaultRow2.length]?.img)
+            })));
           }
         }
       })
@@ -187,7 +212,7 @@ const CelebritiesSection = () => {
                 className={`celeb-card group relative flex-none h-full w-[75vw] sm:w-[50vw] md:w-[40vw] lg:w-[11.11%] snap-center transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] lg:hover:w-[42.85%] cursor-pointer overflow-hidden rounded-md bg-[#1a1a1a] ${isActive ? 'is-active lg:!w-[42.85%]' : ''}`}
               >
                 <img 
-                  src={(celeb.img && !celeb.img.includes('/@fs/') && !celeb.img.includes('localhost:5173')) ? celeb.img : defaultRow2[index % defaultRow2.length]?.img} 
+                  src={celeb.img || defaultRow2[idx % defaultRow2.length]?.img} 
                   alt={celeb.name} 
                   className={`absolute inset-0 w-full h-full object-cover object-top grayscale-0 opacity-100 transition-all duration-700 lg:group-hover:grayscale-0 lg:group-hover:opacity-100 lg:group-hover:scale-105 ${isActive ? 'lg:grayscale-0 lg:opacity-100 lg:scale-105' : 'lg:grayscale lg:opacity-60'}`}
                 />

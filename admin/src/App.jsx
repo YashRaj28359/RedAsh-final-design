@@ -1619,9 +1619,13 @@ function App() {
   }, []);
 
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+  const toastTimeoutRef = useRef(null);
   const showToast = (message, type = 'success') => {
+    if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
     setToast({ show: true, message, type });
-    setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 3000);
+    toastTimeoutRef.current = setTimeout(() => {
+      setToast({ show: false, message: '', type: 'success' });
+    }, 4000);
   };
 
   const handleOpenAddBlogModal = (blog, idx = null) => {
@@ -1701,10 +1705,13 @@ function App() {
     setShowAddMediaModal(false);
   };
 
+  const [isSaving, setIsSaving] = useState(false);
+
   const handleSave = async (dataToSave = null) => {
     try {
-      const isEvent = dataToSave && dataToSave.nativeEvent;
-      const stateToUse = dataToSave && typeof dataToSave === 'object' && !isEvent ? dataToSave : content;
+      setIsSaving(true);
+      const isEvent = dataToSave && (dataToSave.nativeEvent || dataToSave.target || dataToSave._reactName || typeof dataToSave.preventDefault === 'function');
+      const stateToUse = (!isEvent && dataToSave && typeof dataToSave === 'object' && !Array.isArray(dataToSave)) ? dataToSave : content;
       let dbKey = activeSidebar;
       if (activeSidebar.startsWith('entertainment') && activeSidebar !== 'entertainment-films') {
         dbKey = 'entertainment';
@@ -1714,9 +1721,6 @@ function App() {
       }
       if (activeSidebar === 'homepage-media') {
         dbKey = 'homepage';
-      }
-      if (activeSidebar === 'global-contact') {
-        dbKey = 'global';
       }
       if (activeSidebar === 'global-contact') {
         dbKey = 'global';
@@ -1733,11 +1737,14 @@ function App() {
         showToast('Changes saved successfully!', 'success');
         setContent(stateToUse);
       } else {
-        showToast('Failed to save changes.', 'error');
+        const errJson = await res.json().catch(() => ({}));
+        showToast(`Failed to save: ${errJson.message || res.statusText}`, 'error');
       }
     } catch (err) {
       console.error(err);
-      showToast('Error saving changes.', 'error');
+      showToast(`Error saving changes: ${err.message}`, 'error');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -2462,14 +2469,29 @@ function App() {
     });
   };
 
-  const handleCelebFileUpload = (e, rowKey, index) => {
+  const handleCelebFileUpload = async (e, rowKey, index) => {
     const file = e.target.files && e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        handleUpdateCeleb(rowKey, index, 'img', reader.result);
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      showToast('Uploading celebrity image...', 'success');
+      const res = await fetch(`${API_URL}/api/upload`, {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (res.ok && data.url) {
+        handleUpdateCeleb(rowKey, index, 'img', resolveUploadedUrl(data.url));
+        showToast('Image uploaded! Click Save Section Changes to publish.', 'success');
+      } else {
+        showToast('Upload failed: ' + (data.message || 'Error'), 'error');
+      }
+    } catch (err) {
+      console.error('Celeb upload error:', err);
+      showToast('Error uploading file: ' + err.message, 'error');
     }
   };
 
@@ -8223,12 +8245,27 @@ function App() {
                       type="file" 
                       accept="image/*" 
                       style={{ display: 'none' }}
-                      onChange={(e) => {
+                      onChange={async (e) => {
                         const file = e.target.files && e.target.files[0];
-                        if (file) {
-                          const reader = new FileReader();
-                          reader.onloadend = () => setNewCeleb({ ...newCeleb, img: reader.result });
-                          reader.readAsDataURL(file);
+                        if (!file) return;
+                        const formData = new FormData();
+                        formData.append('image', file);
+                        try {
+                          showToast('Uploading image...', 'success');
+                          const res = await fetch(`${API_URL}/api/upload`, {
+                            method: 'POST',
+                            body: formData
+                          });
+                          const data = await res.json();
+                          if (res.ok && data.url) {
+                            setNewCeleb(prev => ({ ...prev, img: resolveUploadedUrl(data.url) }));
+                            showToast('Image uploaded successfully!', 'success');
+                          } else {
+                            showToast('Upload failed: ' + (data.message || 'Error'), 'error');
+                          }
+                        } catch (err) {
+                          console.error(err);
+                          showToast('Error uploading file', 'error');
                         }
                       }} 
                     />

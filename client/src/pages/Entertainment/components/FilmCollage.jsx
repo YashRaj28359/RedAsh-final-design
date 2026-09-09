@@ -150,7 +150,7 @@ const FilmCollage = ({ onVideoToggle }) => {
 
   useEffect(() => {
     fetchContent().then(data => {
-      const cmsCards = data?.entertainment?.projects?.horizontalCards || data?.entertainment?.heroCards;
+      const cmsCards = data?.entertainment?.heroCards;
       if (cmsCards && cmsCards.length > 0) {
         setDynamicFilms(prevFilms => 
           prevFilms.map((film, index) => {
@@ -172,7 +172,7 @@ const FilmCollage = ({ onVideoToggle }) => {
             }
             return {
               ...film,
-              id: cmsCard.id || film.id,
+              id: film.id,
               title: cmsCard.title || film.title,
               subtitle: cmsCard.subtitle || film.subtitle,
               image: finalImage,

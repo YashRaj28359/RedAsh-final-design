@@ -12,6 +12,7 @@ import ContactForm from '../../components/ContactForm/ContactForm';
 
 const EntertainmentFilms = () => {
   const [contentData, setContentData] = useState(null);
+  const [featuredCelebs, setFeaturedCelebs] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -20,6 +21,7 @@ const EntertainmentFilms = () => {
 
     fetchContent().then(data => {
       setContentData(data?.['entertainment-films'] || {});
+      setFeaturedCelebs(data?.entertainment?.featuredCelebs || null);
       setLoading(false);
     }).catch(err => {
       console.error("Error fetching content:", err);
@@ -92,7 +94,7 @@ const EntertainmentFilms = () => {
         <ProcessTimeline processData={contentData?.process} />
       </main>
 
-      <TalentShowcase talentData={contentData?.talent} />
+      <TalentShowcase talentData={contentData?.talent} featuredCelebs={featuredCelebs} />
       <CombinedEntertainmentGrid />
 
       {/* Invest In Or Sponsor Our Projects Form */}

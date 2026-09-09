@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { API_URL } from '../../../utils/api';
 
 import imgAshish from '../../../assets/Films/celebs/Ashish - IMG_9131.jpg';
 import imgSurbhi from '../../../assets/Films/celebs/Surbhi jyoti.png';
@@ -53,9 +54,21 @@ const ArtistCard = ({ artist }) => {
                     artist.id % 3 === 0 ? 'hover:-rotate-2' : 
                     artist.id % 2 === 0 ? 'hover:rotate-2' : 'hover:-rotate-3';
 
-  const imageUrl = artist.image ? 
-    (artist.image.startsWith('http') ? artist.image : `${import.meta.env.VITE_API_URL}${artist.image.startsWith('/') ? '' : '/'}${artist.image}`) 
-    : staticImageMap[artist.name];
+  let rawImg = artist.image || staticImageMap[artist.name];
+  if (rawImg && typeof rawImg === 'string') {
+    while (rawImg.includes('https://redash-final-design.onrender.comhttps://')) {
+      rawImg = rawImg.replace('https://redash-final-design.onrender.comhttps://', 'https://');
+    }
+    while (rawImg.includes('http://localhost:5000http')) {
+      rawImg = rawImg.replace(/http:\/\/localhost:5000(?=http)/g, '');
+    }
+    if (rawImg.startsWith('/uploads/')) {
+      rawImg = `${API_URL}${rawImg}`;
+    } else if (rawImg.startsWith('http://localhost:5000')) {
+      rawImg = rawImg.replace('http://localhost:5000', API_URL);
+    }
+  }
+  const imageUrl = rawImg || staticImageMap[artist.name];
 
   return (
     <motion.a 
@@ -85,9 +98,33 @@ const ArtistCard = ({ artist }) => {
   );
 };
 
-const TalentShowcase = ({ talentData }) => {
+const TalentShowcase = ({ talentData, featuredCelebs }) => {
   // Use DB artists if available and not empty, otherwise fallback to default artists
-  const displayArtists = talentData?.artists?.length > 0 ? talentData.artists : artists;
+  const baseArtists = talentData?.artists?.length > 0 ? talentData.artists : artists;
+  const allCelebs = [...(featuredCelebs?.row1 || []), ...(featuredCelebs?.row2 || [])];
+
+  // 1. Sync updated images/names from featuredCelebs
+  const displayArtists = baseArtists.map((artist) => {
+    const match = allCelebs.find(c => c.name && c.name.trim().toLowerCase() === artist.name.trim().toLowerCase());
+    return {
+      ...artist,
+      image: (match?.img && match.img.trim() !== '') ? match.img : (artist.image || '')
+    };
+  });
+
+  // 2. Automatically add any new celebrities added in featuredCelebs to the Acclaimed Artists row!
+  allCelebs.forEach((celeb, idx) => {
+    if (!celeb.name) return;
+    const exists = displayArtists.some(a => a.name.trim().toLowerCase() === celeb.name.trim().toLowerCase());
+    if (!exists) {
+      displayArtists.push({
+        id: 100 + idx,
+        name: celeb.name,
+        image: celeb.img || '',
+        imdb: celeb.link || '#'
+      });
+    }
+  });
 
   return (
     <section id="talent" className="w-full py-16 md:py-24 bg-white font-main relative overflow-hidden">

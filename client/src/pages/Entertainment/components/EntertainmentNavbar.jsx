@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaLinkedinIn, FaYoutube, FaInstagram, FaFacebookF, FaBars } from 'react-icons/fa';
+import { FaBars } from 'react-icons/fa';
 import logo from "../../../assets/Films/Logo/RedAsh Films Horizontal Logo_wo bg.png";
 import { AnimatePresence, motion } from 'framer-motion';
+import { NavbarSocials } from '../../../components/Footer/FooterSocials';
 
 import { fetchContent } from '../../../utils/api';
 
@@ -100,12 +101,10 @@ const EntertainmentNavbar = () => {
 
           {/* Right Side (Social Icons & Hamburger) */}
           <div className="flex-shrink-0 z-20 flex items-center gap-4 xl:gap-8">
-            <div className="hidden md:flex items-center gap-4 text-black text-sm">
-              <a href="https://www.linkedin.com/company/redashfilms/" target="_blank" rel="noreferrer" className="hover:text-red-600 transition-colors"><FaLinkedinIn /></a>
-              <a href="https://www.youtube.com/@RedAshFilms" target="_blank" rel="noreferrer" className="hover:text-red-600 transition-colors"><FaYoutube /></a>
-              <a href="https://www.instagram.com/redashfilms/" target="_blank" rel="noreferrer" className="hover:text-red-600 transition-colors"><FaInstagram /></a>
-              <a href="https://www.facebook.com/redashfilms" target="_blank" rel="noreferrer" className="hover:text-red-600 transition-colors"><FaFacebookF /></a>
-            </div>
+            <NavbarSocials 
+              className="hidden md:flex items-center gap-4 text-black text-sm" 
+              hoverClass="hover:text-red-600 transition-colors" 
+            />
             
             {/* Hamburger Icon */}
             <button 
@@ -158,12 +157,10 @@ const EntertainmentNavbar = () => {
                   {link.name}
                 </Link>
               ))}
-              <div className="flex items-center justify-center gap-6 mt-4 text-gray-800 text-xl">
-                <a href="https://www.linkedin.com/company/redashfilms/" target="_blank" rel="noreferrer" className="hover:text-red-600 transition-colors"><FaLinkedinIn /></a>
-                <a href="https://www.youtube.com/@RedAshFilms" target="_blank" rel="noreferrer" className="hover:text-red-600 transition-colors"><FaYoutube /></a>
-                <a href="https://www.instagram.com/redashfilms/" target="_blank" rel="noreferrer" className="hover:text-red-600 transition-colors"><FaInstagram /></a>
-                <a href="https://www.facebook.com/redashfilms" target="_blank" rel="noreferrer" className="hover:text-red-600 transition-colors"><FaFacebookF /></a>
-              </div>
+              <NavbarSocials 
+                className="flex items-center justify-center gap-6 mt-4 text-gray-800 text-xl" 
+                hoverClass="hover:text-red-600 transition-colors" 
+              />
             </div>
           </motion.div>
         )}

@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import './App.css';
-import { Mail, Home, Film, Briefcase, Settings, LogOut, FileText, Image as ImageIcon, Layout, Phone, Info, Save, Eye, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Plus, Trash2, Edit2, PlayCircle, GripVertical, RefreshCw, Users, Upload, Flame, ToggleRight, ToggleLeft, ArrowRight, ArrowDown, ExternalLink, CircleDollarSign, Brain, TrendingUp, Rocket, Target, Building, Lightbulb, Smartphone, Laptop, Globe, CheckCircle, MessageSquare, X } from 'lucide-react';
+import { Mail, Home, Film, Briefcase, Settings, LogOut, FileText, Image as ImageIcon, Layout, Phone, Info, Save, Eye, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Plus, Trash2, Edit2, PlayCircle, GripVertical, RefreshCw, Users, Upload, Flame, ToggleRight, ToggleLeft, ArrowRight, ArrowDown, ExternalLink, CircleDollarSign, Brain, TrendingUp, Rocket, Target, Building, Lightbulb, Smartphone, Laptop, Globe, CheckCircle, MessageSquare, X, Share2 } from 'lucide-react';
 
 const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 const API_URL = isLocal 
@@ -1764,6 +1764,22 @@ function App() {
               // Always force correct thumbnails for local-asset videos — DB may have stale Vite hash URLs
               if (v.id === 'web-series') v.thumbnail = '/assets/web-series-thumb.jpg';
               if (v.id === 'kukufm') v.thumbnail = '/assets/microdrama-thumb.png';
+
+              // Normalize categoryColor and color if missing
+              if (!v.categoryColor) {
+                if (v.color === '#ef4444' || v.color === 'red') {
+                  v.categoryColor = 'red';
+                } else if (v.color === '#3b82f6' || v.color === 'blue') {
+                  v.categoryColor = 'blue';
+                } else if (DEFAULT_VIDEOS[i]?.categoryColor) {
+                  v.categoryColor = DEFAULT_VIDEOS[i].categoryColor;
+                } else {
+                  v.categoryColor = 'red';
+                }
+              }
+              if (!v.color) {
+                v.color = v.categoryColor === 'red' ? '#ef4444' : '#3b82f6';
+              }
               
               return v;
             });
@@ -1923,7 +1939,7 @@ function App() {
       if (activeSidebar === 'homepage-media') {
         dbKey = 'homepage';
       }
-      if (activeSidebar === 'global-contact') {
+      if (activeSidebar === 'global-contact' || activeSidebar === 'global-footer') {
         dbKey = 'global';
       }
       
@@ -2331,6 +2347,7 @@ function App() {
         url: '',
         category: 'Bollywood Film',
         customCategory: '',
+        categoryColor: 'red',
         color: '#ef4444', // Brand Red default
         thumbnail: ''
       });
@@ -2531,23 +2548,7 @@ function App() {
           return prev;
         }
       }
-
-      if (field === 'showOnHomepage' && value === true) {
-        let currentlyChecked = 0;
-        staticMedia.forEach((sm, index) => {
-          const override = newState.homepage.mediaCards.find(c => c.id === sm.id);
-          if (override && override.showOnHomepage !== false) currentlyChecked++;
-          else if (!override && index < 3) currentlyChecked++;
-        });
-        const dynamicChecked = newState.homepage.mediaCards.filter(c => !staticMedia.some(sm => sm.id === c.id) && c.showOnHomepage !== false).length;
-        currentlyChecked += dynamicChecked;
-        
-        if (currentlyChecked >= 3) {
-          alert("You can only select up to 3 cards to display on the homepage.");
-          return prev;
-        }
-      }
-
+      
       newState.homepage.mediaCards[cardIndex][field] = value;
       return newState;
     });
@@ -3007,11 +3008,11 @@ function App() {
             <p>Manage contact info shown across the site</p>
           </div>
         );
-      case 'global-contact':
+      case 'global-footer':
         return (
           <div className="section-header">
-            <h1>Global Contact Info</h1>
-            <p>Manage contact info shown across the site</p>
+            <h1>Footer & Icons</h1>
+            <p>Manage social media icons for navbar & footer</p>
           </div>
         );
       case 'homepage-media':
@@ -3031,6 +3032,352 @@ function App() {
   };
 
   const renderEditor = () => {
+    if (activeSidebar === 'global-footer') {
+      const defaultIcons = [
+        { id: '1', platform: 'LinkedIn', icon: 'FaLinkedin', url: 'https://www.linkedin.com/company/redashfilms/', enabled: true },
+        { id: '2', platform: 'YouTube', icon: 'FaYoutube', url: 'https://www.youtube.com/@RedAshFilms', enabled: true },
+        { id: '3', platform: 'Instagram', icon: 'FaInstagram', url: 'https://www.instagram.com/redashfilms/', enabled: true },
+        { id: '4', platform: 'Facebook', icon: 'FaFacebookF', url: 'https://www.facebook.com/redashfilms', enabled: true }
+      ];
+
+      const footerData = content.global?.footer || {
+        socialIcons: defaultIcons,
+        copyrightText: 'Copyright © 2026 - RedAsh Films (since 2007)'
+      };
+
+      const socialIcons = (footerData.socialIcons && footerData.socialIcons.length > 0)
+        ? footerData.socialIcons
+        : defaultIcons;
+
+      const copyrightText = footerData.copyrightText !== undefined 
+        ? footerData.copyrightText 
+        : 'Copyright © 2026 - RedAsh Films (since 2007)';
+
+      const updateFooter = (updates) => {
+        setContent(prev => {
+          const newState = JSON.parse(JSON.stringify(prev));
+          if (!newState.global) newState.global = {};
+          newState.global.footer = {
+            ...footerData,
+            socialIcons: socialIcons,
+            copyrightText: copyrightText,
+            ...updates
+          };
+          return newState;
+        });
+      };
+
+      const handleIconChange = (index, field, value) => {
+        const updated = [...socialIcons];
+        updated[index] = { ...updated[index], [field]: value };
+        updateFooter({ socialIcons: updated });
+      };
+
+      const handleToggleEnabled = (index) => {
+        const updated = [...socialIcons];
+        updated[index] = { ...updated[index], enabled: !updated[index].enabled };
+        updateFooter({ socialIcons: updated });
+      };
+
+      const handleMove = (index, direction) => {
+        const targetIndex = index + direction;
+        if (targetIndex < 0 || targetIndex >= socialIcons.length) return;
+        const updated = [...socialIcons];
+        const temp = updated[index];
+        updated[index] = updated[targetIndex];
+        updated[targetIndex] = temp;
+        updateFooter({ socialIcons: updated });
+      };
+
+      const handleDelete = (index) => {
+        if (window.confirm('Are you sure you want to remove this social icon?')) {
+          const updated = socialIcons.filter((_, i) => i !== index);
+          updateFooter({ socialIcons: updated });
+        }
+      };
+
+      const handleAddIcon = (preset) => {
+        const newIcon = preset ? {
+          id: Date.now().toString() + Math.random().toString(36).substr(2, 4),
+          platform: preset.platform,
+          icon: preset.icon,
+          url: preset.url || 'https://',
+          enabled: true
+        } : {
+          id: Date.now().toString(),
+          platform: 'New Link',
+          icon: 'FaGlobe',
+          url: 'https://',
+          enabled: true
+        };
+        updateFooter({ socialIcons: [...socialIcons, newIcon] });
+      };
+
+      const AVAILABLE_ICONS = [
+        { label: 'LinkedIn (FaLinkedin)', value: 'FaLinkedin' },
+        { label: 'YouTube (FaYoutube)', value: 'FaYoutube' },
+        { label: 'Instagram (FaInstagram)', value: 'FaInstagram' },
+        { label: 'Facebook (FaFacebookF)', value: 'FaFacebookF' },
+        { label: 'X / Twitter (FaTwitter)', value: 'FaTwitter' },
+        { label: 'WhatsApp (FaWhatsapp)', value: 'FaWhatsapp' },
+        { label: 'Vimeo (FaVimeoV)', value: 'FaVimeoV' },
+        { label: 'Pinterest (FaPinterest)', value: 'FaPinterest' },
+        { label: 'TikTok (FaTiktok)', value: 'FaTiktok' },
+        { label: 'GitHub (FaGithub)', value: 'FaGithub' },
+        { label: 'Globe / Website (FaGlobe)', value: 'FaGlobe' },
+        { label: 'Email (FaEnvelope)', value: 'FaEnvelope' }
+      ];
+
+      const PRESETS = [
+        { platform: 'LinkedIn', icon: 'FaLinkedin', url: 'https://www.linkedin.com/company/redashfilms/' },
+        { platform: 'YouTube', icon: 'FaYoutube', url: 'https://www.youtube.com/@RedAshFilms' },
+        { platform: 'Instagram', icon: 'FaInstagram', url: 'https://www.instagram.com/redashfilms/' },
+        { platform: 'Facebook', icon: 'FaFacebookF', url: 'https://www.facebook.com/redashfilms' },
+        { platform: 'X (Twitter)', icon: 'FaTwitter', url: 'https://x.com/redashfilms' },
+        { platform: 'WhatsApp', icon: 'FaWhatsapp', url: 'https://wa.me/' }
+      ];
+
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header">
+            <div>
+              <h2>Footer & Icons Editor</h2>
+              <p>Configure social media icons, links, and footer copyright displayed in the top navbar and footers across all pages.</p>
+            </div>
+          </div>
+
+          {/* Social Icons Manager */}
+          <div className="content-block-panel">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.75rem' }}>
+              <div>
+                <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 600, color: '#0f172a' }}>Social Media Icons (Navbar & Footer)</h3>
+                <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.85rem', color: '#64748b' }}>Add, edit, reorder or toggle social icons shown in the top navbar and footer.</p>
+              </div>
+              <button 
+                type="button" 
+                onClick={() => handleAddIcon()}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: '#0f172a', color: '#fff', border: 'none', padding: '0.45rem 1rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer' }}
+              >
+                <Plus size={15} /> Add Custom Icon
+              </button>
+            </div>
+
+            {/* Quick add presets */}
+            <div style={{ marginBottom: '1.5rem', background: '#f8fafc', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', marginRight: '0.75rem' }}>Quick Add Presets:</span>
+              <div style={{ display: 'inline-flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '0.25rem' }}>
+                {PRESETS.map((p) => (
+                  <button
+                    key={p.platform}
+                    type="button"
+                    onClick={() => handleAddIcon(p)}
+                    style={{ background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '4px', padding: '0.25rem 0.6rem', fontSize: '0.8rem', fontWeight: 500, color: '#334155', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}
+                  >
+                    <Plus size={12} /> {p.platform}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Icon Cards List */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {socialIcons.map((item, idx) => (
+                <div 
+                  key={item.id || idx}
+                  style={{ 
+                    background: item.enabled ? '#ffffff' : '#f8fafc', 
+                    border: item.enabled ? '1px solid #cbd5e1' : '1px dashed #cbd5e1', 
+                    borderRadius: '8px', 
+                    padding: '1rem 1.25rem',
+                    boxShadow: item.enabled ? '0 1px 3px rgba(0,0,0,0.05)' : 'none',
+                    opacity: item.enabled ? 1 : 0.75,
+                    transition: 'all 0.2s'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                      <span style={{ background: '#f1f5f9', color: '#475569', fontWeight: 700, fontSize: '0.8rem', width: '24px', height: '24px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        {idx + 1}
+                      </span>
+                      <strong style={{ fontSize: '0.95rem', color: '#0f172a' }}>{item.platform || 'Social Icon'}</strong>
+                      <span style={{ fontSize: '0.75rem', padding: '0.15rem 0.5rem', borderRadius: '12px', background: item.enabled ? '#dcfce7' : '#f1f5f9', color: item.enabled ? '#166534' : '#64748b', fontWeight: 600 }}>
+                        {item.enabled ? 'Active' : 'Disabled'}
+                      </span>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <button
+                        type="button"
+                        onClick={() => handleToggleEnabled(idx)}
+                        title={item.enabled ? 'Disable Icon' : 'Enable Icon'}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: item.enabled ? '#16a34a' : '#94a3b8', padding: '0.25rem' }}
+                      >
+                        {item.enabled ? <ToggleRight size={22} /> : <ToggleLeft size={22} />}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleMove(idx, -1)}
+                        disabled={idx === 0}
+                        style={{ background: '#f1f5f9', border: '1px solid #e2e8f0', borderRadius: '4px', padding: '0.25rem 0.4rem', cursor: idx === 0 ? 'not-allowed' : 'pointer', opacity: idx === 0 ? 0.4 : 1 }}
+                        title="Move Up"
+                      >
+                        <ChevronUp size={15} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleMove(idx, 1)}
+                        disabled={idx === socialIcons.length - 1}
+                        style={{ background: '#f1f5f9', border: '1px solid #e2e8f0', borderRadius: '4px', padding: '0.25rem 0.4rem', cursor: idx === socialIcons.length - 1 ? 'not-allowed' : 'pointer', opacity: idx === socialIcons.length - 1 ? 0.4 : 1 }}
+                        title="Move Down"
+                      >
+                        <ChevronDown size={15} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(idx)}
+                        style={{ background: '#fee2e2', border: '1px solid #fca5a5', borderRadius: '4px', padding: '0.25rem 0.4rem', cursor: 'pointer', color: '#b91c1c' }}
+                        title="Remove Icon"
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 2fr auto', gap: '0.75rem', alignItems: 'flex-end' }}>
+                    <div className="form-group" style={{ margin: 0 }}>
+                      <label style={{ fontSize: '0.8rem', fontWeight: 600 }}>Platform / Label</label>
+                      <input 
+                        type="text" 
+                        className="form-control" 
+                        value={item.platform || ''} 
+                        onChange={(e) => handleIconChange(idx, 'platform', e.target.value)} 
+                        placeholder="e.g. LinkedIn"
+                        style={{ fontSize: '0.85rem' }}
+                      />
+                    </div>
+
+                    <div className="form-group" style={{ margin: 0 }}>
+                      <label style={{ fontSize: '0.8rem', fontWeight: 600 }}>Icon</label>
+                      <select 
+                        className="form-control" 
+                        value={item.icon || 'FaGlobe'} 
+                        onChange={(e) => handleIconChange(idx, 'icon', e.target.value)}
+                        style={{ fontSize: '0.85rem' }}
+                      >
+                        {AVAILABLE_ICONS.map((ic) => (
+                          <option key={ic.value} value={ic.value}>{ic.label}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="form-group" style={{ margin: 0 }}>
+                      <label style={{ fontSize: '0.8rem', fontWeight: 600 }}>Destination URL</label>
+                      <input 
+                        type="text" 
+                        className="form-control" 
+                        value={item.url || ''} 
+                        onChange={(e) => handleIconChange(idx, 'url', e.target.value)} 
+                        placeholder="https://..."
+                        style={{ fontSize: '0.85rem' }}
+                      />
+                    </div>
+
+                    {item.url && (
+                      <a 
+                        href={item.url} 
+                        target="_blank" 
+                        rel="noreferrer"
+                        style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', height: '38px', padding: '0 0.6rem', background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '6px', color: '#475569', textDecoration: 'none' }}
+                        title="Open Link to test"
+                      >
+                        <ExternalLink size={15} />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Copyright Section */}
+          <div className="content-block-panel" style={{ marginTop: '2rem' }}>
+            <h3 style={{ marginBottom: '1rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 600 }}>Footer Copyright & Attribution</h3>
+            <div className="form-group">
+              <label>Copyright Text</label>
+              <input 
+                type="text" 
+                className="form-control" 
+                value={copyrightText} 
+                onChange={(e) => updateFooter({ copyrightText: e.target.value })} 
+                placeholder="Copyright © 2026 - RedAsh Films (since 2007)"
+              />
+              <span style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.35rem', display: 'block' }}>This text appears at the very bottom of every page footer.</span>
+            </div>
+          </div>
+
+          {/* Live Previews */}
+          <div className="content-block-panel" style={{ marginTop: '2rem', background: '#0f172a', color: '#ffffff', borderRadius: '8px', border: '1px solid #334155' }}>
+            <h3 style={{ marginBottom: '1rem', borderBottom: '1px solid #334155', paddingBottom: '0.5rem', fontSize: '0.95rem', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              Live Previews (Navbar & Footer)
+            </h3>
+            
+            {/* Navbar Preview */}
+            <div style={{ marginBottom: '1.25rem', background: '#ffffff', color: '#000000', padding: '0.9rem 1.25rem', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>Navbar Social Icons:</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+                {socialIcons.filter(s => s.enabled).map((s, i) => (
+                  <span key={i} title={`${s.platform} (${s.url})`} style={{ fontSize: '0.85rem', background: '#f1f5f9', color: '#0f172a', padding: '0.25rem 0.6rem', borderRadius: '4px', fontWeight: 600, border: '1px solid #e2e8f0' }}>
+                    {s.platform}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Footer Preview */}
+            <div style={{ background: '#1c1c1c', padding: '1.25rem', borderRadius: '6px', border: '1px solid #333' }}>
+              <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', display: 'block', marginBottom: '0.75rem' }}>Footer Bar:</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+                {socialIcons.filter(s => s.enabled).map((s, i) => (
+                  <span key={i} title={`${s.platform} (${s.url})`} style={{ fontSize: '0.85rem', background: '#333', color: '#fff', padding: '0.3rem 0.65rem', borderRadius: '4px', fontWeight: 600, border: '1px solid #444' }}>
+                    {s.platform}
+                  </span>
+                ))}
+              </div>
+              <div style={{ borderTop: '1px solid #2a2a2a', paddingTop: '0.75rem', color: '#94a3b8', fontSize: '0.85rem' }}>
+                {copyrightText}
+              </div>
+            </div>
+          </div>
+
+          {/* Save Button */}
+          <div style={{ marginTop: '2.5rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+            <label style={{ fontSize: '0.95rem', fontWeight: '600', color: '#334155', textAlign: 'center' }}>Save Footer & Icons Settings</label>
+            <button 
+              type="button" 
+              className="btn-primary" 
+              onClick={() => {
+                const updatedGlobal = {
+                  ...(content.global || {}),
+                  footer: {
+                    socialIcons,
+                    copyrightText
+                  }
+                };
+                const updatedContent = {
+                  ...content,
+                  global: updatedGlobal
+                };
+                setContent(updatedContent);
+                handleSave(updatedContent);
+              }} 
+              style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: '#e20002', color: '#fff', border: 'none', padding: '0.6rem 2.5rem', borderRadius: '6px', fontWeight: '600', fontSize: '0.95rem', cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(226, 0, 2, 0.2), 0 2px 4px -1px rgba(226, 0, 2, 0.1)' }}
+            >
+              <Save size={16} /> Save Changes
+            </button>
+          </div>
+        </div>
+      );
+    }
     if (activeSidebar === 'global-contact') {
       const contactInfo = content.global?.contact || {
         addressTitle: 'RedAsh, 1302-1305, Peninsula Park',
@@ -3317,15 +3664,19 @@ function App() {
               )}
 
               <div className="form-group">
-                <label>Tile Brand Color</label>
+                <label>Tile Brand Theme / Color</label>
                 <select 
                   className="form-control custom-select" 
                   style={{ padding: '0.8rem 1rem', height: 'auto', cursor: 'pointer' }}
-                  value={video.color || '#ef4444'}
-                  onChange={(e) => handleUpdateVideo(editingVideoIndex, 'color', e.target.value)}
+                  value={(video.categoryColor === 'red' || video.color === '#ef4444' || video.color === 'red') ? 'red' : 'blue'}
+                  onChange={(e) => {
+                    const selectedColor = e.target.value;
+                    handleUpdateVideo(editingVideoIndex, 'categoryColor', selectedColor);
+                    handleUpdateVideo(editingVideoIndex, 'color', selectedColor === 'red' ? '#ef4444' : '#3b82f6');
+                  }}
                 >
-                  <option value="#ef4444">Brand Red</option>
-                  <option value="#3b82f6">Brand Blue</option>
+                  <option value="red">🔴 Red Theme (Entertainment)</option>
+                  <option value="blue">🔵 Blue Theme (Ad Agency / Enterprise)</option>
                 </select>
               </div>
             </div>
@@ -3372,58 +3723,73 @@ function App() {
                 <p>No videos added yet. Click below to add your first video.</p>
               </div>
             ) : (
-              videoData.map((video, index) => (
-                <div 
-                  key={video.uniqueId || index} 
-                  className="content-block-panel" 
-                  style={{ display: 'flex', flexDirection: 'column', padding: '0', cursor: 'move', position: 'relative', overflow: 'hidden', height: '100%' }}
-                  draggable
-                  onDragStart={(e) => {
-                    dragItem.current = index;
-                    e.dataTransfer.effectAllowed = 'move';
-                    e.dataTransfer.setData('text/plain', index.toString());
-                  }}
-                  onDragEnter={(e) => { 
-                    e.preventDefault();
-                    if (dragItem.current !== null && dragItem.current !== index) {
-                      handleSortVideoLive(dragItem.current, index);
-                    }
-                  }}
-                  onDragOver={(e) => { 
-                    e.preventDefault(); 
-                  }}
-                  onDrop={(e) => {
-                    e.preventDefault();
-                    dragItem.current = null;
-                  }}
-                >
-                  <div style={{ position: 'absolute', top: '0.5rem', left: '0.5rem', color: '#111827', cursor: 'grab', zIndex: 10, background: 'rgba(255,255,255,0.8)', borderRadius: '4px', padding: '2px' }}>
-                    <GripVertical size={16} />
-                  </div>
-                  
-                  {(() => {
-                    let thumb = video.thumbnail;
-                    // Catch broken serialized import references
-                    if (!thumb || thumb === '' || thumb.startsWith('[object') || thumb === 'undefined') {
-                      if (video.id === 'web-series') thumb = '/assets/web-series-thumb.jpg';
-                      else if (video.id === 'kukufm') thumb = '/assets/microdrama-thumb.png';
-                      else if (video.id) thumb = `https://img.youtube.com/vi/${video.id}/mqdefault.jpg`;
-                    }
-                    return (
-                      <div style={{ width: '100%', aspectRatio: '16/9', backgroundColor: '#000', overflow: 'hidden', backgroundImage: thumb ? `url(${thumb})` : 'none', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-                        {!thumb && <div style={{width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center', color:'#555'}}><PlayCircle size={20}/></div>}
+              videoData.map((video, index) => {
+                const isRed = (video.categoryColor === 'red' || video.color === '#ef4444' || video.color === 'red');
+                return (
+                  <div 
+                    key={video.uniqueId || index} 
+                    className="content-block-panel" 
+                    style={{ display: 'flex', flexDirection: 'column', padding: '0', cursor: 'move', position: 'relative', overflow: 'hidden', height: '100%' }}
+                    draggable
+                    onDragStart={(e) => {
+                      dragItem.current = index;
+                      e.dataTransfer.effectAllowed = 'move';
+                      e.dataTransfer.setData('text/plain', index.toString());
+                    }}
+                    onDragEnter={(e) => { 
+                      e.preventDefault();
+                      if (dragItem.current !== null && dragItem.current !== index) {
+                        handleSortVideoLive(dragItem.current, index);
+                      }
+                    }}
+                    onDragOver={(e) => { 
+                      e.preventDefault(); 
+                    }}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      dragItem.current = null;
+                    }}
+                  >
+                    <div style={{ position: 'absolute', top: '0.5rem', left: '0.5rem', color: '#111827', cursor: 'grab', zIndex: 10, background: 'rgba(255,255,255,0.8)', borderRadius: '4px', padding: '2px' }}>
+                      <GripVertical size={16} />
+                    </div>
+                    
+                    {(() => {
+                      let thumb = video.thumbnail;
+                      // Catch broken serialized import references
+                      if (!thumb || thumb === '' || thumb.startsWith('[object') || thumb === 'undefined') {
+                        if (video.id === 'web-series') thumb = '/assets/web-series-thumb.jpg';
+                        else if (video.id === 'kukufm') thumb = '/assets/microdrama-thumb.png';
+                        else if (video.id) thumb = `https://img.youtube.com/vi/${video.id}/mqdefault.jpg`;
+                      }
+                      return (
+                        <div style={{ width: '100%', aspectRatio: '16/9', backgroundColor: '#000', overflow: 'hidden', backgroundImage: thumb ? `url(${thumb})` : 'none', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+                          {!thumb && <div style={{width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center', color:'#555'}}><PlayCircle size={20}/></div>}
+                        </div>
+                      );
+                    })()}
+                    
+                    <div style={{ flex: 1, minWidth: 0, width: '100%', display: 'flex', flexDirection: 'column', padding: '0.8rem' }}>
+                      <div style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginBottom: '0.2rem' }}>
+                        {video.category === 'Custom' ? video.customCategory : video.category}
                       </div>
-                    );
-                  })()}
-                  
-                  <div style={{ flex: 1, minWidth: 0, width: '100%', display: 'flex', flexDirection: 'column', padding: '0.8rem' }}>
-                    <div style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--text-main)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', marginBottom: '0.2rem' }}>
-                      {video.category === 'Custom' ? video.customCategory : video.category}
+                      <div style={{ fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '5px', marginTop: '2px' }}>
+                        <span style={{
+                          display: 'inline-block',
+                          width: '8px',
+                          height: '8px',
+                          borderRadius: '50%',
+                          backgroundColor: isRed ? '#ef4444' : '#3b82f6',
+                          flexShrink: 0
+                        }} />
+                        <span style={{ 
+                          fontWeight: 600,
+                          color: isRed ? '#ef4444' : '#3b82f6' 
+                        }}>
+                          {isRed ? 'Red Theme' : 'Blue Theme'}
+                        </span>
+                      </div>
                     </div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      <span style={{ color: video.color }}>{video.color === '#ef4444' ? 'Red' : 'Blue'} Theme</span>
-                    </div>
-                  </div>
                   
                   <div style={{ display: 'flex', gap: '0.5rem', width: '100%', justifyContent: 'flex-end', marginTop: 'auto', padding: '0 0.8rem 0.8rem 0.8rem' }}>
                     <button className="btn-icon" onClick={() => setEditingVideoIndex(index)} title="Edit Video">
@@ -3434,8 +3800,9 @@ function App() {
                     </button>
                   </div>
                 </div>
-              ))
-            )}
+              );
+            })
+          )}
           </div>
 
           <button className="btn-outline-dashed mt-4" onClick={handleAddVideo}>
@@ -8664,6 +9031,9 @@ function App() {
           </button>
           <button className={`top-nav-tab ${activeSidebar === 'global-contact' ? 'active' : ''}`} onClick={() => setActiveSidebar('global-contact')}>
             <Mail size={16} /> Contact
+          </button>
+          <button className={`top-nav-tab ${activeSidebar === 'global-footer' ? 'active' : ''}`} onClick={() => setActiveSidebar('global-footer')}>
+            <Share2 size={16} /> Footer & Icons
           </button>
         </nav>
 

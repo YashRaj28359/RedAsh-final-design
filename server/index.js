@@ -7,7 +7,7 @@ import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 import Content from './models/Content.js';
 import Admin from './models/Admin.js';
 
@@ -231,45 +231,167 @@ const escapeHtml = (value = '') => String(value)
   .replace(/"/g, '&quot;')
   .replace(/'/g, '&#039;');
 
+const isValidEmail = (email) => {
+  if (!email || typeof email !== 'string') return false;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email.trim());
+};
+
+const createSmtpTransporter = () => {
+  const host = process.env.SMTP_HOST;
+  const port = parseInt(process.env.SMTP_PORT || '587', 10);
+  const secure = process.env.SMTP_SECURE === 'true' || port === 465;
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASSWORD;
+
+  if (!host || !user || !pass) {
+    throw new Error('SMTP credentials are not fully configured in environment variables.');
+  }
+
+  return nodemailer.createTransport({
+    host,
+    port,
+    secure,
+    auth: {
+      user,
+      pass
+    },
+    connectionTimeout: 15000,
+    greetingTimeout: 10000,
+    socketTimeout: 20000
+  });
+};
+
 app.post('/api/quotation', async (req, res) => {
-  const { name, email, phone, company, requirement } = req.body || {};
-  const fields = { name, email, phone, company, requirement };
-
-  if (Object.values(fields).some(value => !String(value || '').trim())) {
-    return res.status(400).json({ message: 'All quotation fields are required.' });
-  }
-
-  if (!process.env.RESEND_API_KEY || !process.env.QUOTATION_TO_EMAIL || !process.env.RESEND_FROM_EMAIL) {
-    return res.status(503).json({ message: 'Quotation email service is not configured.' });
-  }
-
   try {
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    const safeFields = Object.fromEntries(Object.entries(fields).map(([key, value]) => [key, escapeHtml(value)]));
-    const emailResult = await resend.emails.send({
-      from: process.env.RESEND_FROM_EMAIL,
-      to: [process.env.QUOTATION_TO_EMAIL],
-      replyTo: email,
-      subject: `New quotation request from ${safeFields.name}`,
-      html: `
-        <h2>New quotation request</h2>
-        <p><strong>Name:</strong> ${safeFields.name}</p>
-        <p><strong>Email:</strong> ${safeFields.email}</p>
-        <p><strong>Phone:</strong> ${safeFields.phone}</p>
-        <p><strong>Company:</strong> ${safeFields.company}</p>
-        <p><strong>Requirement:</strong> ${safeFields.requirement}</p>
-      `
-    });
+    const { name, email, phone, phoneNumber, company, requirement } = req.body || {};
+    const effectivePhone = phone || phoneNumber;
 
-    if (emailResult.error) {
-      console.error('Resend error:', emailResult.error);
-      return res.status(502).json({ message: 'Unable to send quotation request.' });
+    // Validate all required fields
+    if (
+      !name || !String(name).trim() ||
+      !email || !String(email).trim() ||
+      !effectivePhone || !String(effectivePhone).trim() ||
+      !company || !String(company).trim() ||
+      !requirement || !String(requirement).trim()
+    ) {
+      return res.status(400).json({ 
+        message: 'All fields (Name, Email, Phone Number, Company, Requirement) are required.' 
+      });
     }
 
-    return res.json({ message: 'Quotation request sent successfully.' });
+    // Validate email format
+    if (!isValidEmail(email)) {
+      return res.status(400).json({ 
+        message: 'Please provide a valid email address.' 
+      });
+    }
+
+    // Check SMTP configuration
+    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
+      console.error('Quotation error: Missing SMTP_HOST, SMTP_USER, or SMTP_PASSWORD in backend environment variables.');
+      return res.status(500).json({ 
+        message: 'Quotation email service is currently unavailable. Please contact info@redashfilms.com directly.' 
+      });
+    }
+
+    // Sanitize user inputs for safe HTML email rendering
+    const safeName = escapeHtml(String(name).trim());
+    const safeEmail = escapeHtml(String(email).trim());
+    const safePhone = escapeHtml(String(effectivePhone).trim());
+    const safeCompany = escapeHtml(String(company).trim());
+    const safeRequirement = escapeHtml(String(requirement).trim()).replace(/\n/g, '<br/>');
+
+    const transporter = createSmtpTransporter();
+    const recipientEmail = process.env.QUOTATION_TO_EMAIL || 'info@redashfilms.com';
+    const fromSender = process.env.SMTP_FROM || `RedAsh Quotation <${process.env.SMTP_USER}>`;
+
+    const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f5f7; margin: 0; padding: 20px; color: #1e293b; }
+    .email-container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; }
+    .header { background: linear-gradient(135deg, #111827 0%, #1e293b 100%); padding: 30px 24px; text-align: center; border-bottom: 3px solid #E20002; }
+    .header h1 { margin: 0; color: #ffffff; font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
+    .header p { margin: 6px 0 0 0; color: #94a3b8; font-size: 13px; }
+    .content { padding: 28px 24px; }
+    .badge { display: inline-block; background-color: #fee2e2; color: #dc2626; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px; text-transform: uppercase; margin-bottom: 18px; letter-spacing: 0.5px; }
+    .info-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+    .info-table td { padding: 10px 14px; background-color: #f8fafc; border-radius: 6px; font-size: 14px; vertical-align: top; }
+    .label { width: 32%; font-weight: 600; color: #64748b; }
+    .value { width: 68%; font-weight: 500; color: #0f172a; word-break: break-word; }
+    .req-box { margin-top: 16px; background-color: #f8fafc; border-left: 4px solid #E20002; border-radius: 0 6px 6px 0; padding: 14px 16px; font-size: 14px; line-height: 1.6; color: #0f172a; }
+    .footer { background-color: #f8fafc; border-top: 1px solid #e2e8f0; padding: 16px 20px; text-align: center; font-size: 12px; color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="header">
+      <h1>New Quotation Request</h1>
+      <p>Submitted via RedAsh Films Website</p>
+    </div>
+    <div class="content">
+      <div class="badge">Quotation Lead</div>
+      <table class="info-table">
+        <tr>
+          <td class="label">Name</td>
+          <td class="value">${safeName}</td>
+        </tr>
+        <tr>
+          <td class="label">Email Address</td>
+          <td class="value"><a href="mailto:${safeEmail}" style="color: #E20002; text-decoration: none; font-weight: 600;">${safeEmail}</a></td>
+        </tr>
+        <tr>
+          <td class="label">Phone Number</td>
+          <td class="value">${safePhone}</td>
+        </tr>
+        <tr>
+          <td class="label">Company</td>
+          <td class="value">${safeCompany}</td>
+        </tr>
+      </table>
+
+      <div style="margin-top: 20px;">
+        <div style="font-weight: 600; font-size: 13px; color: #64748b; margin-bottom: 6px;">Requirement:</div>
+        <div class="req-box">${safeRequirement}</div>
+      </div>
+    </div>
+    <div class="footer">
+      This email was generated automatically by the RedAsh website quotation system.<br>
+      Reply to this email to contact <strong>${safeName}</strong> directly at ${safeEmail}.
+    </div>
+  </div>
+</body>
+</html>
+`;
+
+    const plainTextContent = `New Quotation Request\n\n` +
+      `Name: ${String(name).trim()}\n` +
+      `Email: ${String(email).trim()}\n` +
+      `Phone: ${String(effectivePhone).trim()}\n` +
+      `Company: ${String(company).trim()}\n\n` +
+      `Requirement:\n${String(requirement).trim()}`;
+
+    await transporter.sendMail({
+      from: fromSender,
+      to: recipientEmail,
+      replyTo: `${String(name).trim()} <${String(email).trim()}>`,
+      subject: `New Quotation Request from ${String(name).trim()} (${String(company).trim()})`,
+      text: plainTextContent,
+      html: htmlContent
+    });
+
+    return res.status(200).json({ 
+      message: 'Thank you. Your quotation request has been sent.' 
+    });
   } catch (error) {
     console.error('Quotation email error:', error);
-    return res.status(500).json({ message: 'Unable to send quotation request.' });
+    return res.status(500).json({ 
+      message: 'Unable to send quotation request. Please try again later or contact info@redashfilms.com.' 
+    });
   }
 });
 

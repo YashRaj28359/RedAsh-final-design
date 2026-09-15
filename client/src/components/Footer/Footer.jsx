@@ -1,20 +1,47 @@
-import React from 'react';
-import { FaLinkedin, FaYoutube, FaInstagram, FaFacebook } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import FooterSocials, { useFooterData } from './FooterSocials';
+import { fetchContent, getCachedContent } from '../../utils/api';
+
+const defaultLinks = [
+  { key: 'home', name: 'HOME', path: '/ad-agency' },
+  { key: 'about', name: 'ABOUT', path: '/ad-agency/about' },
+  { key: 'films', name: 'ENTERPRISE FILMS', path: '/ad-agency/films' },
+  { key: 'blog', name: 'BLOG', path: '/ad-agency/blog' },
+  { key: 'media', name: 'MEDIA', path: '/ad-agency/media' },
+  { key: 'contact', name: 'CONTACT', path: '/ad-agency/contact' }
+];
 
 const Footer = ({ links }) => {
-  const currentYear = new Date().getFullYear(); // Or hardcode 2026 based on image
+  const footerData = useFooterData();
+  const cached = getCachedContent();
+  const [navLinks, setNavLinks] = useState(() => {
+    if (links) return links;
+    const apiNav = cached?.agency?.navigation;
+    if (apiNav) {
+      return defaultLinks.map(l => ({
+        ...l,
+        name: apiNav[l.key] || l.name
+      }));
+    }
+    return defaultLinks;
+  });
 
-  const defaultLinks = [
-    { name: 'HOME', path: '/ad-agency' },
-    { name: 'ABOUT', path: '/ad-agency/about' },
-    { name: 'ENTERPRISE FILMS', path: '/ad-agency/films' },
-    { name: 'BLOG', path: '/ad-agency/blog' },
-    { name: 'MEDIA', path: '/ad-agency/media' },
-    { name: 'CONTACT', path: '/ad-agency/contact' }
-  ];
+  useEffect(() => {
+    if (!links) {
+      fetchContent().then(data => {
+        if (data?.agency?.navigation) {
+          const apiNav = data.agency.navigation;
+          setNavLinks(defaultLinks.map(l => ({
+            ...l,
+            name: apiNav[l.key] || l.name
+          })));
+        }
+      }).catch(console.error);
+    }
+  }, [links]);
 
-  const displayLinks = links || defaultLinks;
+  const displayLinks = links || navLinks;
 
   return (
     <footer className="bg-brand-gray text-white py-12 px-6 md:px-12 w-full mt-auto relative z-50">
@@ -22,26 +49,13 @@ const Footer = ({ links }) => {
         {/* Top Section */}
         <div className="flex flex-col lg:flex-row justify-between items-center w-full gap-8 lg:gap-0 mb-8 lg:mb-12">
           {/* Social Icons */}
-          <div className="flex items-center gap-6 text-xl">
-            <a href="https://www.linkedin.com/company/redashfilms/" target="_blank" rel="noreferrer" className="hover:text-brand-black transition-colors">
-              <FaLinkedin />
-            </a>
-            <a href="https://www.youtube.com/@RedAshFilms" target="_blank" rel="noreferrer" className="hover:text-brand-black transition-colors">
-              <FaYoutube />
-            </a>
-            <a href="https://www.instagram.com/redashfilms/" target="_blank" rel="noreferrer" className="hover:text-brand-black transition-colors">
-              <FaInstagram />
-            </a>
-            <a href="https://www.facebook.com/redashfilms" target="_blank" rel="noreferrer" className="hover:text-brand-black transition-colors">
-              <FaFacebook />
-            </a>
-          </div>
+          <FooterSocials />
 
           {/* Navigation Links */}
           <nav className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm md:text-base font-semibold tracking-wider">
             {displayLinks.map(link => (
               <Link 
-                key={link.name} 
+                key={link.name || link.key} 
                 to={link.path} 
                 onClick={link.onClick} 
                 className="hover:text-brand-black transition-colors"
@@ -54,7 +68,7 @@ const Footer = ({ links }) => {
 
         {/* Bottom Section - Copyright */}
         <div className="text-center text-xs md:text-sm text-gray-200 mt-auto">
-          Copyright © 2026 - RedAsh Films (since 2007)
+          {footerData.copyrightText || 'Copyright © 2026 - RedAsh Films (since 2007)'}
         </div>
       </div>
     </footer>

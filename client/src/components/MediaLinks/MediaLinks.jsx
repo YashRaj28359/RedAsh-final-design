@@ -28,7 +28,7 @@ const MediaLinks = () => {
         const mediaCards = [...mergedStaticMedia, ...newDbMedia];
         
         const visibleCards = mediaCards.filter(card => card.showOnHomepage !== false);
-        setArticles(visibleCards.slice(0, 3));
+        setArticles(visibleCards);
       })
       .catch(err => {
         console.error('Failed to fetch media cards:', err);

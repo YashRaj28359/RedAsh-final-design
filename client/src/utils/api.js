@@ -15,10 +15,13 @@ export const getCachedContent = () => {
   return null;
 };
 
-export const API_URL = import.meta.env.VITE_API_URL || 'https://redash-final-design.onrender.com';
+const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+export const API_URL = import.meta.env.VITE_API_URL || (isLocal ? 'http://localhost:5000' : 'https://redash-final-design.onrender.com');
 
-export const fetchContent = () => {
-  fetchPromise = fetch(`${API_URL}/api/content`)
+export const fetchContent = (forceFresh = false) => {
+  if (fetchPromise && !forceFresh) return fetchPromise;
+  
+  fetchPromise = fetch(`${API_URL}/api/content?t=${Date.now()}`, { cache: 'no-store' })
     .then(res => res.json())
     .then(data => {
       cachedData = data;
@@ -35,3 +38,4 @@ export const fetchContent = () => {
     
   return fetchPromise;
 };
+

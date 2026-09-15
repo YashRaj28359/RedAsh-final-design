@@ -43,7 +43,11 @@ const ContactForm = ({
       const response = await fetch(`${API_URL}/api/quotation`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formValues)
+        body: JSON.stringify({
+          ...formValues,
+          source: dataSource === 'entertainment' ? 'Entertainment Division' : 'Ad Agency / Homepage',
+          formType: dataSource === 'entertainment' ? 'Investment / Sponsorship Query' : 'Quotation Request'
+        })
       });
       const responseText = await response.text();
       let result;

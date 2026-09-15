@@ -342,7 +342,7 @@ import poster7 from '../../client/src/assets/Films/Poster/6. Hum Azaad Hain.webp
 import poster8 from '../../client/src/assets/Films/Poster/9. 100 Short Films_Emerging Leaders.png';
 import poster9 from '../../client/src/assets/Films/Cards/Card6.png';
 
-import vp1 from '../../client/src/assets/Films/Poster/Micro drama Movie posters/1.webp';
+import vp1 from '../../client/src/assets/Films/Cards/Card3.png';
 import vp2 from '../../client/src/assets/Films/Poster/Micro drama Movie posters/2.webp';
 import vp3 from '../../client/src/assets/Films/Poster/Micro drama Movie posters/3.webp';
 import vp4 from '../../client/src/assets/Films/Poster/Micro drama Movie posters/4.webp';
@@ -627,29 +627,29 @@ function App() {
     { id: "v1", title: "BILLIONAIRE ON PLANE", subtitle: "150M+ VIEWS MICRODRAMA", image: vp1, link: "https://premium.kukutv.app/show/billionaire-on-plane" },
     { id: "v2", title: "RACE AGAINST TIME", subtitle: "ACTION THRILLER SERIES", image: vp2, link: "https://www.instagram.com/reels/DVjKK5YSD3G/" },
     { id: "v3", title: "BAAZIGAAR BAAZ", subtitle: "HIGH STAKES DRAMA", image: vp3, link: "https://premium.kukutv.app/show/baazigaar-baaz" },
-    { id: "v4", title: "BLUE DRUM HONEYMOON", subtitle: "MYSTERY DRAMA", image: vp4, link: "https://premium.kukutv.app/show/secret-boss-mera-baap" },
-    { id: "v5", title: "BAAP BETA AUR BILLION", subtitle: "FAMILY ENTERTAINER", image: vp5, link: "https://premium.kukutv.app/show/billionaire-ki-waapsi" },
-    { id: "v6", title: "THE CROREPATI SWEEPER WALA", subtitle: "TANGY TV ORIGINAL", image: vp6, link: "http://premium.kukutv.app/show/mrs-by-mistake" },
-    { id: "v7", title: "FAMILY SECRET", subtitle: "EMOTIONAL DRAMA", image: vp7, link: "https://premium.kukutv.app/show/jobless-ghar-jamai-16" },
-    { id: "v8", title: "DACAIT AUR DEVI", subtitle: "ACTION ADVENTURE", image: vp8, link: "https://premium.kukutv.app/show/ek-mehenga-divorce" },
-    { id: "v9", title: "MRS. BY...", subtitle: "ROMANTIC DRAMA", image: vp9, link: "https://premium.kukutv.app/show/the-little-pool-master" },
-    { id: "v10", title: "THE ROYAL...", subtitle: "ROYAL SAGA", image: vp10, link: "https://premium.kukutv.app/show/fake-girlfriend" },
-    { id: "v11", title: "RED SAREE RIDER", subtitle: "MICRO DRAMA THRILLER", image: vp11, link: "https://premium.kukutv.app/show/death-notification" },
-    { id: "v12", title: "NIGHT RIDER", subtitle: "ACTION THRILLER", image: vp12, link: "https://premium.kukutv.app/show/ek-anjana-rishta" },
-    { id: "v13", title: "DRAMA SERIES 13", subtitle: "ORIGINAL MICRO DRAMA", image: vp13, link: "https://premium.kukutv.app/show/metro-wala-panga" },
-    { id: "v14", title: "DRAMA SERIES 14", subtitle: "ORIGINAL MICRO DRAMA", image: vp14, link: "https://premium.kukutv.app/show/chaiwala-hero" },
-    { id: "v15", title: "DRAMA SERIES 15", subtitle: "ORIGINAL MICRO DRAMA", image: vp15, link: "https://premium.kukutv.app/show/born-to-rise" },
-    { id: "v16", title: "DRAMA SERIES 16", subtitle: "ORIGINAL MICRO DRAMA", image: vp16, link: "https://premium.kukutv.app/show/2bb32b69-c8e3-4033-b26a-56ee5403e51a" },
-    { id: "v17", title: "DRAMA SERIES 17", subtitle: "ORIGINAL MICRO DRAMA", image: vp17, link: "https://premium.kukutv.app/show/knock-do-not-open-the-door" },
-    { id: "v18", title: "DRAMA SERIES 18", subtitle: "ORIGINAL MICRO DRAMA", image: vp18, link: "https://premium.kukutv.app/show/wheelchair-billionaire" },
-    { id: "v19", title: "DRAMA SERIES 19", subtitle: "ORIGINAL MICRO DRAMA", image: vp19, link: "https://premium.kukutv.app/show/death-notification" },
-    { id: "v20", title: "DRAMA SERIES 20", subtitle: "ORIGINAL MICRO DRAMA", image: vp20, link: "https://premium.kukutv.app/show/ek-anjana-rishta" },
-    { id: "v21", title: "DRAMA SERIES 21", subtitle: "ORIGINAL MICRO DRAMA", image: vp21, link: "https://premium.kukutv.app/show/metro-wala-panga" },
-    { id: "v22", title: "DRAMA SERIES 22", subtitle: "ORIGINAL MICRO DRAMA", image: vp22, link: "https://premium.kukutv.app/show/chaiwala-hero" },
-    { id: "v23", title: "DRAMA SERIES 23", subtitle: "ORIGINAL MICRO DRAMA", image: vp23, link: "https://premium.kukutv.app/show/born-to-rise" },
-    { id: "v24", title: "DRAMA SERIES 24", subtitle: "ORIGINAL MICRO DRAMA", image: vp24, link: "https://premium.kukutv.app/show/2bb32b69-c8e3-4033-b26a-56ee5403e51a" },
-    { id: "v25", title: "DRAMA SERIES 25", subtitle: "ORIGINAL MICRO DRAMA", image: vp25, link: "https://premium.kukutv.app/show/knock-do-not-open-the-door" },
-    { id: "v26", title: "DRAMA SERIES 26", subtitle: "ORIGINAL MICRO DRAMA", image: vp26, link: "https://premium.kukutv.app/show/wheelchair-billionaire" }
+    { id: "v4", title: "BLUE DRUM HONEYMOON", subtitle: "MYSTERY DRAMA", image: vp4, link: "" },
+    { id: "v5", title: "BAAP BETA AUR BILLION", subtitle: "FAMILY ENTERTAINER", image: vp5, link: "https://premium.kukutv.app/show/secret-boss-mera-baap" },
+    { id: "v6", title: "THE CROREPATI SWEEPER WALA", subtitle: "TANGY TV ORIGINAL", image: vp6, link: "" },
+    { id: "v7", title: "BILLIONAIRE KI WAPASI", subtitle: "AUGUST'25 RELEASE", image: vp7, link: "https://premium.kukutv.app/show/billionaire-ki-waapsi" },
+    { id: "v8", title: "DACAIT AUR DEVI", subtitle: "ACTION ADVENTURE", image: vp8, link: "" },
+    { id: "v9", title: "MRS. BY MISTAKE", subtitle: "ROMANTIC DRAMA", image: vp9, link: "http://premium.kukutv.app/show/mrs-by-mistake" },
+    { id: "v10", title: "THE ROYAL TREATMENT", subtitle: "ROYAL SAGA", image: vp10, link: "" },
+    { id: "v11", title: "JOBLESS GHAR JAMAI", subtitle: "DRAMA SERIES", image: vp11, link: "https://premium.kukutv.app/show/jobless-ghar-jamai-16" },
+    { id: "v12", title: "THE ROAD RAGER", subtitle: "ACTION THRILLER", image: vp12, link: "" },
+    { id: "v13", title: "EK MEHENGA DIVORCE", subtitle: "DECEMBER'25 RELEASE", image: vp13, link: "https://premium.kukutv.app/show/ek-mehenga-divorce" },
+    { id: "v14", title: "THE GOOD SISTERS", subtitle: "VERTICAL TV ORIGINAL", image: vp14, link: "" },
+    { id: "v15", title: "THE LITTLE POOL MASTER", subtitle: "DRAMA SERIES", image: vp15, link: "https://premium.kukutv.app/show/the-little-pool-master" },
+    { id: "v16", title: "HUM FIR MILE", subtitle: "ROMANTIC DRAMA", image: vp16, link: "" },
+    { id: "v17", title: "FAKE GIRLFRIEND", subtitle: "ROMANTIC COMEDY", image: vp17, link: "https://premium.kukutv.app/show/fake-girlfriend" },
+    { id: "v18", title: "LOOP LAFDA LANDING", subtitle: "STORIZZ ORIGINAL", image: vp18, link: "" },
+    { id: "v19", title: "DEATH NOTIFICATION", subtitle: "SUSPENSE THRILLER", image: vp19, link: "https://premium.kukutv.app/show/death-notification" },
+    { id: "v20", title: "EK ANJANA RISHTA", subtitle: "EMOTIONAL DRAMA", image: vp20, link: "https://premium.kukutv.app/show/ek-anjana-rishta" },
+    { id: "v21", title: "METRO WALA PANGA", subtitle: "URBAN DRAMA", image: vp21, link: "https://premium.kukutv.app/show/metro-wala-panga" },
+    { id: "v22", title: "CHAIWALA HERO", subtitle: "JANUARY'26 RELEASE", image: vp22, link: "https://premium.kukutv.app/show/chaiwala-hero" },
+    { id: "v23", title: "BORN TO RISE", subtitle: "INSPIRATIONAL DRAMA", image: vp23, link: "https://premium.kukutv.app/show/born-to-rise" },
+    { id: "v24", title: "A COMMANDO'S COUNTDOWN", subtitle: "MAY'26 RELEASE", image: vp24, link: "https://premium.kukutv.app/show/2bb32b69-c8e3-4033-b26a-56ee5403e51a" },
+    { id: "v25", title: "KNOCK! DO NOT OPEN THE DOOR", subtitle: "JUNE'26 RELEASE", image: vp25, link: "https://premium.kukutv.app/show/knock-do-not-open-the-door" },
+    { id: "v26", title: "WHEELCHAIR BILLIONAIRE", subtitle: "DRAMA SERIES", image: vp26, link: "https://premium.kukutv.app/show/wheelchair-billionaire" }
   ];
 
   defaultVerticalProjects.forEach(card => {
@@ -5509,7 +5509,8 @@ function App() {
           </div>
           
           <div className="content-block-panel mt-6">
-            <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '1rem', color: '#0f172a' }}>1. Eyebrow & Heading</h3>
+            <div className="form-group" style={{ marginBottom: '1rem' }}>
               <label>Eyebrow Text</label>
               <input 
                 type="text" 
@@ -5521,7 +5522,7 @@ function App() {
             
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
               <div className="form-group">
-                <label>Heading (White Part)</label>
+                <label>Heading (First Part)</label>
                 <input 
                   type="text" 
                   className="form-control" 
@@ -5530,7 +5531,7 @@ function App() {
                 />
               </div>
               <div className="form-group">
-                <label>Heading (Blue Part)</label>
+                <label>Heading (Blue Highlighted Part)</label>
                 <input 
                   type="text" 
                   className="form-control" 
@@ -5539,28 +5540,129 @@ function App() {
                 />
               </div>
             </div>
-            
+
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '1rem', marginTop: '1.5rem', color: '#0f172a' }}>2. Paragraph 1 (Agency Introduction)</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+              <div className="form-group">
+                <label>Prefix Link Text</label>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  value={heroData.p1LinkText !== undefined ? heroData.p1LinkText : 'RedAsh Ad Agency'} 
+                  onChange={(e) => handleUpdate('hero', 'p1LinkText', e.target.value)} 
+                />
+              </div>
+              <div className="form-group">
+                <label>Prefix Link URL</label>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  placeholder="/ad-agency"
+                  value={heroData.p1LinkUrl !== undefined ? heroData.p1LinkUrl : '/ad-agency'} 
+                  onChange={(e) => handleUpdate('hero', 'p1LinkUrl', e.target.value)} 
+                />
+              </div>
+            </div>
             <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-              <label>Description Paragraph 1</label>
+              <label>Paragraph 1 Text (After Link)</label>
               <textarea 
                 className="form-control" 
                 value={heroData.paragraph1} 
                 onChange={(e) => handleUpdate('hero', 'paragraph1', e.target.value)} 
-                style={{ minHeight: '80px' }}
+                style={{ minHeight: '70px' }}
               />
             </div>
-            
-            <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-              <label>Description Paragraph 2</label>
-              <textarea 
-                className="form-control" 
-                value={heroData.paragraph2} 
-                onChange={(e) => handleUpdate('hero', 'paragraph2', e.target.value)} 
-                style={{ minHeight: '80px' }}
-              />
+
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '1rem', marginTop: '1.5rem', color: '#0f172a' }}>3. Paragraph 2 (Founder & Division Links)</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+              <div className="form-group">
+                <label>Company Link Text</label>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  value={heroData.p2CompanyText !== undefined ? heroData.p2CompanyText : 'RedAsh'} 
+                  onChange={(e) => handleUpdate('hero', 'p2CompanyText', e.target.value)} 
+                />
+              </div>
+              <div className="form-group">
+                <label>Company Link URL</label>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  placeholder="/"
+                  value={heroData.p2CompanyUrl !== undefined ? heroData.p2CompanyUrl : '/'} 
+                  onChange={(e) => handleUpdate('hero', 'p2CompanyUrl', e.target.value)} 
+                />
+              </div>
             </div>
-            
-            <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+              <div className="form-group">
+                <label>Founder Link Text</label>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  value={heroData.link1Text !== undefined ? heroData.link1Text : 'Ashish Lal'} 
+                  onChange={(e) => handleUpdate('hero', 'link1Text', e.target.value)} 
+                />
+              </div>
+              <div className="form-group">
+                <label>Founder Link URL (e.g. LinkedIn)</label>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  value={heroData.link1Url !== undefined ? heroData.link1Url : 'https://www.linkedin.com/in/ashishlalreal/'} 
+                  onChange={(e) => handleUpdate('hero', 'link1Url', e.target.value)} 
+                />
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+              <div className="form-group">
+                <label>Enterprise Link Text</label>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  value={heroData.enterpriseLinkText !== undefined ? heroData.enterpriseLinkText : 'RedAsh Ad Agency'} 
+                  onChange={(e) => handleUpdate('hero', 'enterpriseLinkText', e.target.value)} 
+                />
+              </div>
+              <div className="form-group">
+                <label>Enterprise Link URL</label>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  placeholder="/ad-agency"
+                  value={heroData.enterpriseLinkUrl !== undefined ? heroData.enterpriseLinkUrl : '/ad-agency'} 
+                  onChange={(e) => handleUpdate('hero', 'enterpriseLinkUrl', e.target.value)} 
+                />
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+              <div className="form-group">
+                <label>Entertainment Link Text</label>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  value={heroData.entertainmentLinkText !== undefined ? heroData.entertainmentLinkText : 'RedAsh Films'} 
+                  onChange={(e) => handleUpdate('hero', 'entertainmentLinkText', e.target.value)} 
+                />
+              </div>
+              <div className="form-group">
+                <label>Entertainment Link URL</label>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  placeholder="/entertainment"
+                  value={heroData.entertainmentLinkUrl !== undefined ? heroData.entertainmentLinkUrl : '/entertainment'} 
+                  onChange={(e) => handleUpdate('hero', 'entertainmentLinkUrl', e.target.value)} 
+                />
+              </div>
+            </div>
+
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '1rem', marginTop: '1.5rem', color: '#0f172a' }}>4. Bottom Highlight & Button</h3>
+            <div className="form-group" style={{ marginBottom: '1rem' }}>
               <label>Bottom Line (with "thousands" highlighted)</label>
               <input 
                 type="text" 
@@ -7209,31 +7311,111 @@ function App() {
             </div>
           </div>
           <div className="section-card" style={{ marginTop: '2rem' }}>
-            <div className="form-group">
-              <label>Eyebrow Heading</label>
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '1rem', color: '#0f172a' }}>1. Eyebrow Top Heading</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="form-group">
+                <label>Prefix Link Text</label>
+                <input 
+                  type="text"
+                  className="form-control"
+                  value={getVal('eyebrowLinkText', 'RedAsh')} 
+                  onChange={(e) => updateVal('eyebrowLinkText', e.target.value)} 
+                />
+              </div>
+              <div className="form-group">
+                <label>Prefix Link URL</label>
+                <input 
+                  type="text"
+                  className="form-control"
+                  placeholder="/"
+                  value={getVal('eyebrowLinkUrl', '/')} 
+                  onChange={(e) => updateVal('eyebrowLinkUrl', e.target.value)} 
+                />
+              </div>
+            </div>
+            <div className="form-group" style={{ marginTop: '1rem' }}>
+              <label>Eyebrow Statement Text</label>
               <textarea 
-                className="form-control" rows="3"
+                className="form-control" rows="2"
                 value={getVal('eyebrow', 'began as an IIT Delhi engineer’s venture in 2007')} 
                 onChange={(e) => updateVal('eyebrow', e.target.value)} 
               />
-              <p style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.5rem' }}>Note: "RedAsh" link and "IIT Delhi" link are styled manually on the frontend.</p>
             </div>
-            <div className="form-group" style={{ marginTop: '1.5rem' }}>
-              <label>Main Statement</label>
+          </div>
+
+          <div className="section-card" style={{ marginTop: '1.5rem' }}>
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '1rem', color: '#0f172a' }}>2. Main Hero Statement</h3>
+            <div className="form-group">
+              <label>Prefix Text (Before Link)</label>
+              <input 
+                type="text"
+                className="form-control"
+                value={getVal('mainPrefix', 'Its entertainment division,')} 
+                onChange={(e) => updateVal('mainPrefix', e.target.value)} 
+              />
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
+              <div className="form-group">
+                <label>Highlighted Link Text</label>
+                <input 
+                  type="text"
+                  className="form-control"
+                  value={getVal('mainLinkText', 'RedAsh Films')} 
+                  onChange={(e) => updateVal('mainLinkText', e.target.value)} 
+                />
+              </div>
+              <div className="form-group">
+                <label>Highlighted Link URL</label>
+                <input 
+                  type="text"
+                  className="form-control"
+                  placeholder="/entertainment"
+                  value={getVal('mainLinkUrl', '/entertainment')} 
+                  onChange={(e) => updateVal('mainLinkUrl', e.target.value)} 
+                />
+              </div>
+            </div>
+            <div className="form-group" style={{ marginTop: '1rem' }}>
+              <label>Main Statement Text (After Link)</label>
               <textarea 
-                className="form-control" rows="4"
+                className="form-control" rows="3"
                 value={getVal('mainStatement', 'creates movies, web series, microdramas, television shows, AI films, music videos, and emerging formats.')} 
                 onChange={(e) => updateVal('mainStatement', e.target.value)} 
               />
-              <p style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '0.5rem' }}>Note: "Its entertainment division, RedAsh Films," prefix is styled manually.</p>
             </div>
-            <div className="form-group" style={{ marginTop: '1.5rem' }}>
-              <label>Sub Statement</label>
-              <textarea 
-                className="form-control" rows="2"
+          </div>
+
+          <div className="section-card" style={{ marginTop: '1.5rem' }}>
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 700, marginBottom: '1rem', color: '#0f172a' }}>3. Sub Statement & Enterprise Division Link</h3>
+            <div className="form-group">
+              <label>Prefix Text (Before Link)</label>
+              <input 
+                type="text"
+                className="form-control"
                 value={getVal('subStatement', 'Its enterprise division is')} 
                 onChange={(e) => updateVal('subStatement', e.target.value)} 
               />
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
+              <div className="form-group">
+                <label>Enterprise Division Link Text</label>
+                <input 
+                  type="text"
+                  className="form-control"
+                  value={getVal('subLinkText', 'RedAsh Ad Agency')} 
+                  onChange={(e) => updateVal('subLinkText', e.target.value)} 
+                />
+              </div>
+              <div className="form-group">
+                <label>Enterprise Division Link URL</label>
+                <input 
+                  type="text"
+                  className="form-control"
+                  placeholder="/ad-agency"
+                  value={getVal('subLinkUrl', '/ad-agency')} 
+                  onChange={(e) => updateVal('subLinkUrl', e.target.value)} 
+                />
+              </div>
             </div>
           </div>
           <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>

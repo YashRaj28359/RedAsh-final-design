@@ -3,3 +3,7 @@ dist/
 build/
 .env
 .DS_Store
+*.zip
+email_preview.html
+
+

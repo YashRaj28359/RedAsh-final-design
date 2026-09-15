@@ -39,12 +39,21 @@ const TopGlobalClients = () => {
     fetchContent()
       .then(data => {
         if (data?.entertainment?.clients && data.entertainment.clients.length > 0) {
-          const valid = data.entertainment.clients.filter(c => c && c.img && !c.img.includes('/@fs/') && !c.img.includes('localhost:5173'));
+          const valid = data.entertainment.clients.filter(c => c && c.img && !c.img.includes('/@fs/') && !c.img.includes('localhost:5173') && !c.img.startsWith('/assets/'));
           if (valid.length > 0) setDbClients(valid);
         }
       })
       .catch(err => console.error(err));
   }, []);
+
+  const getClientImg = (client, idx) => {
+    if (client?.img && (client.img.startsWith('data:') || client.img.startsWith('http')) && !client.img.includes('localhost:5173')) {
+      return client.img;
+    }
+    // Match by name or index
+    const matched = clients.find(c => c.alt?.toLowerCase() === (client?.name || client?.alt || '').toLowerCase());
+    return matched?.img || clients[idx % clients.length]?.img;
+  };
 
   const activeClients = dbClients || clients;
 
@@ -157,8 +166,9 @@ const TopGlobalClients = () => {
                 {/* Circular White Floating Logo Badge with Soft Drop Shadow */}
                 <div className="bg-white p-4 shadow-[0px_20px_45px_rgba(0,0,0,0.12)] border-2 border-gray-100 flex items-center justify-center overflow-hidden rounded-full w-28 h-28 lg:w-32 lg:h-32 transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0px_25px_50px_rgba(226,0,2,0.25)] group-hover:border-[#E20002]/30">
                   <img 
-                    src={(client.img && !client.img.includes('/@fs/') && !client.img.includes('localhost:5173')) ? client.img : clients[idx % clients.length]?.img} 
+                    src={getClientImg(client, idx)} 
                     alt={client.name || client.alt} 
+                    onError={(e) => { e.currentTarget.src = clients[idx % clients.length]?.img; }}
                     className="w-full h-full object-contain transition-all duration-300 scale-90 group-hover:scale-105" 
                   />
                 </div>
@@ -173,8 +183,9 @@ const TopGlobalClients = () => {
                 {/* Circular White Floating Logo Badge with Soft Drop Shadow */}
                 <div className="bg-white p-4 shadow-[0px_20px_45px_rgba(0,0,0,0.12)] border-2 border-gray-100 flex items-center justify-center overflow-hidden rounded-full w-28 h-28 lg:w-32 lg:h-32 transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0px_25px_50px_rgba(226,0,2,0.25)] group-hover:border-[#E20002]/30">
                   <img 
-                    src={(client.img && !client.img.includes('/@fs/') && !client.img.includes('localhost:5173')) ? client.img : clients[idx % clients.length]?.img} 
+                    src={getClientImg(client, idx)} 
                     alt={client.name || client.alt} 
+                    onError={(e) => { e.currentTarget.src = clients[idx % clients.length]?.img; }}
                     className="w-full h-full object-contain transition-all duration-300 scale-90 group-hover:scale-105" 
                   />
                 </div>
@@ -194,7 +205,12 @@ const TopGlobalClients = () => {
                 key={`r1-${idx}`}
                 className="bg-white p-3 shadow-lg border border-gray-100 flex items-center justify-center aspect-square w-28 sm:w-32 overflow-hidden flex-none rounded-full"
               >
-                <img src={(client.img && !client.img.includes('/@fs/') && !client.img.includes('localhost:5173')) ? client.img : clients[idx % clients.length]?.img} alt={client.name || client.alt} className="w-full h-full object-contain transition-transform duration-300 hover:scale-110" />
+                <img 
+                  src={getClientImg(client, idx)} 
+                  alt={client.name || client.alt} 
+                  onError={(e) => { e.currentTarget.src = clients[idx % clients.length]?.img; }}
+                  className="w-full h-full object-contain transition-transform duration-300 hover:scale-110" 
+                />
               </div>
             ))}
           </div>
@@ -205,7 +221,12 @@ const TopGlobalClients = () => {
                 key={`r2-${idx}`}
                 className="bg-white p-3 shadow-lg border border-gray-100 flex items-center justify-center aspect-square w-28 sm:w-32 overflow-hidden flex-none rounded-full"
               >
-                <img src={(client.img && !client.img.includes('/@fs/') && !client.img.includes('localhost:5173')) ? client.img : clients[idx % clients.length]?.img} alt={client.name || client.alt} className="w-full h-full object-contain transition-transform duration-300 hover:scale-110" />
+                <img 
+                  src={getClientImg(client, idx + Math.ceil(activeClients.length / 2))} 
+                  alt={client.name || client.alt} 
+                  onError={(e) => { e.currentTarget.src = clients[(idx + Math.ceil(activeClients.length / 2)) % clients.length]?.img; }}
+                  className="w-full h-full object-contain transition-transform duration-300 hover:scale-110" 
+                />
               </div>
             ))}
           </div>

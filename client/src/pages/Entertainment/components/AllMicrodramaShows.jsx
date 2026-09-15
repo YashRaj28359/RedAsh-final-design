@@ -5,14 +5,31 @@ import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
+import { microdramaShows } from '../../../data/microdramaShows';
 import { fetchContent } from '../../../utils/api';
 
 const VerticalCard = ({ project, cardRef }) => {
+  const hasValidLink = Boolean(
+    project.url && 
+    project.url !== '#' && 
+    project.url !== 'null' && 
+    !project.url.includes('/browse')
+  );
+
   return (
-    <div ref={cardRef} className="relative w-full aspect-[2/3] rounded-md overflow-hidden group cursor-pointer bg-black shadow-lg border border-gray-800 hover:shadow-2xl transition-all duration-300">
+    <div ref={cardRef} className={`relative w-full aspect-[2/3] rounded-md overflow-hidden group ${hasValidLink ? 'cursor-pointer' : 'cursor-default'} bg-black shadow-lg border border-gray-800 hover:shadow-2xl transition-all duration-300`}>
       {/* Background Image Placeholder */}
       {project.image ? (
-        <img src={project.image} alt={project.title} className={`absolute inset-0 w-full h-full object-cover ${project.objectPos || 'object-center'} ${project.scaleClass || 'scale-100'} ${project.hoverScaleClass || 'group-hover:scale-105'} transition-transform duration-500`} />
+        <img 
+          src={project.image} 
+          alt={project.title} 
+          onError={(e) => {
+            if (project.fallbackImage && e.target.src !== project.fallbackImage) {
+              e.target.src = project.fallbackImage;
+            }
+          }}
+          className={`absolute inset-0 w-full h-full object-cover ${project.objectPos || 'object-center'} ${project.scaleClass || 'scale-100'} ${hasValidLink ? (project.hoverScaleClass || 'group-hover:scale-105') : ''} transition-transform duration-500`} 
+        />
       ) : (
         <div className="w-full aspect-[3/4] bg-gray-800 flex items-center justify-center group-hover:scale-105 transition-all duration-500">
            <span className="text-gray-500 text-[10px] md:text-xs uppercase tracking-widest font-bold text-center px-2">Poster Placeholder</span>
@@ -23,7 +40,7 @@ const VerticalCard = ({ project, cardRef }) => {
       {/* Titles removed per user request */}
 
       {/* Link Overlay */}
-      {project.url && project.url !== '#' && (
+      {hasValidLink && (
         <a href={project.url} target="_blank" rel="noopener noreferrer" className="absolute inset-0 z-20">
           <span className="sr-only">View {project.title}</span>
         </a>
@@ -35,18 +52,41 @@ const VerticalCard = ({ project, cardRef }) => {
 const AllMicrodramaShows = () => {
   const containerRef = useRef(null);
   const cardsRef = useRef([]);
-  const [shows, setShows] = useState([]);
+  const [shows, setShows] = useState(microdramaShows);
 
   useEffect(() => {
     fetchContent().then(data => {
       const verticalCards = data?.entertainment?.projects?.verticalCards;
       if (verticalCards && verticalCards.length > 0) {
         setShows(verticalCards.map((item, index) => {
-          const newUrl = item.linkHome || item.link || item.url;
-          return { ...item, url: newUrl };
+          const fallback = microdramaShows[index] || {};
+          let customLink = item.linkHome || item.link || item.url;
+          if (customLink === '#' || customLink === 'null' || (customLink && customLink.includes('/browse'))) {
+            customLink = null;
+          }
+          const finalUrl = fallback.url !== undefined ? (customLink || fallback.url) : customLink;
+          let img = item.image;
+          if (index === 0 || !img || img.includes('1.webp') || img.includes('/@fs/') || img.includes('/src/assets/')) {
+            img = fallback.image || img;
+          }
+          return { 
+            ...fallback, 
+            ...item, 
+            objectPos: fallback.objectPos || item.objectPos || 'object-center',
+            scaleClass: fallback.scaleClass || item.scaleClass || '',
+            hoverScaleClass: fallback.hoverScaleClass || item.hoverScaleClass || 'group-hover:scale-105',
+            image: img, 
+            fallbackImage: fallback.image, 
+            url: finalUrl 
+          };
         }));
+      } else {
+        setShows(microdramaShows);
       }
-    }).catch(err => console.error("Error fetching vertical projects:", err));
+    }).catch(err => {
+      console.error("Error fetching vertical projects:", err);
+      setShows(microdramaShows);
+    });
   }, []);
 
   useGSAP(() => {

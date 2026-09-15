@@ -93,10 +93,54 @@ const EnterpriseFilms = ({ heroData = {}, catsData = {}, videosData = {} }) => {
           {/* Description Text */}
           <div className="max-w-4xl mx-auto px-4">
             <p className="font-main text-gray-600 text-sm md:text-base lg:text-lg leading-relaxed mb-3">
-              <Link to="/ad-agency" className="hover:opacity-80 transition-opacity"><strong><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-blue">Ad Agency</span></strong></Link> {paragraph1.replace(/^RedAsh Ad Agency\s*/, '')}
+              <Link to={heroData.p1LinkUrl || "/ad-agency"} className="hover:opacity-80 transition-opacity">
+                <strong>
+                  {heroData.p1LinkText === 'RedAsh Ad Agency' || !heroData.p1LinkText ? (
+                    <><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-blue">Ad Agency</span></>
+                  ) : (
+                    <span className="text-brand-blue">{heroData.p1LinkText}</span>
+                  )}
+                </strong>
+              </Link>{" "}
+              {paragraph1.replace(/^RedAsh Ad Agency\s*/, '')}
             </p>
             <p className="font-main text-gray-600 text-sm md:text-base lg:text-lg leading-relaxed mb-3">
-              <Link to="/" className="hover:opacity-80 transition-opacity"><strong><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span></strong></Link> was founded in 2007 by <a href="https://www.linkedin.com/in/ashishlalreal/" target="_blank" rel="noopener noreferrer" className="text-brand-blue font-semibold hover:underline">Ashish Lal</a>, an <strong>IIT Delhi engineer</strong>. It has two divisions: <br /> <strong>Enterprise</strong> (<Link to="/ad-agency" className="hover:underline font-bold"><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-blue">Ad Agency</span></Link>) and <strong>Entertainment</strong> (<Link to="/entertainment" className="hover:underline font-bold"><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-red">Films</span></Link>).
+              <Link to={heroData.p2CompanyUrl || "/"} className="hover:opacity-80 transition-opacity">
+                <strong>
+                  {heroData.p2CompanyText === 'RedAsh' || !heroData.p2CompanyText ? (
+                    <><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span></>
+                  ) : (
+                    <span className="text-brand-red">{heroData.p2CompanyText}</span>
+                  )}
+                </strong>
+              </Link>{" "}
+              was founded in 2007 by{" "}
+              <a 
+                href={heroData.link1Url || "https://www.linkedin.com/in/ashishlalreal/"} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-brand-blue font-semibold hover:underline"
+              >
+                {heroData.link1Text || "Ashish Lal"}
+              </a>
+              , an <strong>IIT Delhi engineer</strong>. It has two divisions: <br />{" "}
+              <strong>Enterprise</strong> (
+              <Link to={heroData.enterpriseLinkUrl || "/ad-agency"} className="hover:underline font-bold">
+                {heroData.enterpriseLinkText === 'RedAsh Ad Agency' || !heroData.enterpriseLinkText ? (
+                  <><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-blue">Ad Agency</span></>
+                ) : (
+                  <span className="text-brand-blue">{heroData.enterpriseLinkText}</span>
+                )}
+              </Link>
+              ) and <strong>Entertainment</strong> (
+              <Link to={heroData.entertainmentLinkUrl || "/entertainment"} className="hover:underline font-bold">
+                {heroData.entertainmentLinkText === 'RedAsh Films' || !heroData.entertainmentLinkText ? (
+                  <><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-red">Films</span></>
+                ) : (
+                  <span className="text-brand-red">{heroData.entertainmentLinkText}</span>
+                )}
+              </Link>
+              ).
             </p>
             <p className="font-subtitle text-gray-600 text-base md:text-xl lg:text-2xl leading-relaxed mb-6 flex flex-wrap justify-center items-center gap-2">
               {(() => {

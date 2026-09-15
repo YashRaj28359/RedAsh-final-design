@@ -44,8 +44,8 @@ const staticWallLogos = [
 const resolveImg = (img) => {
   if (!img) return null;
   if (typeof img === 'string') {
-    if (img.includes('/@fs/') || img.includes('localhost:5173') || img.trim() === '') return null;
-    if (img.startsWith('http') || img.startsWith('/') || img.startsWith('data:')) return img;
+    if (img.includes('/@fs/') || img.includes('localhost:5173') || img.startsWith('/assets/') || img.trim() === '') return null;
+    if (img.startsWith('http') || img.startsWith('data:')) return img;
   }
   // local static import (object)
   return img;

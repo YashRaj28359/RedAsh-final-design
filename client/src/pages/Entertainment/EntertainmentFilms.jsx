@@ -75,19 +75,45 @@ const EntertainmentFilms = () => {
           <div className="inline-flex items-center justify-center gap-4">
              <div className="h-[2px] w-8 md:w-12 bg-brand-red hidden sm:block"></div>
              <p className="text-sm md:text-base lg:text-lg font-bold text-neutral-800 tracking-[0.1em] uppercase">
-               <Link to="/" className="hover:opacity-75 transition-opacity duration-300"><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span></Link> {heroData.eyebrow || "began as an IIT Delhi engineer’s venture in 2007"}
+               <Link to={heroData.eyebrowLinkUrl || "/"} className="hover:opacity-75 transition-opacity duration-300">
+                 {heroData.eyebrowLinkText === 'RedAsh' || !heroData.eyebrowLinkText ? (
+                   <><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span></>
+                 ) : (
+                   <span className="text-brand-red">{heroData.eyebrowLinkText}</span>
+                 )}
+               </Link> {heroData.eyebrow || "began as an IIT Delhi engineer’s venture in 2007"}
              </p>
              <div className="h-[2px] w-8 md:w-12 bg-brand-red hidden sm:block"></div>
           </div>
 
           {/* Main Statement */}
           <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-light text-neutral-800 leading-tight md:leading-snug tracking-tight">
-            Its entertainment division, <Link to="/entertainment" className="hover:opacity-75 transition-opacity duration-300"><strong className="font-bold cursor-pointer"><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-red">Films</span></strong></Link>, {heroData.mainStatement || "creates movies, web series, microdramas, television shows, AI films, music videos, and emerging formats."}
+            {heroData.mainPrefix !== undefined ? heroData.mainPrefix : "Its entertainment division,"}{" "}
+            <Link to={heroData.mainLinkUrl || "/entertainment"} className="hover:opacity-75 transition-opacity duration-300">
+              <strong className="font-bold cursor-pointer">
+                {heroData.mainLinkText === 'RedAsh Films' || !heroData.mainLinkText ? (
+                  <><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-red">Films</span></>
+                ) : (
+                  <span className="text-brand-red">{heroData.mainLinkText}</span>
+                )}
+              </strong>
+            </Link>
+            {", "}
+            {heroData.mainStatement || "creates movies, web series, microdramas, television shows, AI films, music videos, and emerging formats."}
           </p>
           
           {/* Sub Statement */}
           <p className="text-sm md:text-base text-neutral-500 font-medium">
-            {heroData.subStatement || "Its enterprise division is"} <Link to="/ad-agency" target="_blank" rel="noopener noreferrer" className="hover:opacity-75 transition-opacity duration-300"><strong className="font-bold cursor-pointer"><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-blue">Ad Agency</span></strong></Link>.
+            {heroData.subStatement || "Its enterprise division is"}{" "}
+            <Link to={heroData.subLinkUrl || "/ad-agency"} target="_blank" rel="noopener noreferrer" className="hover:opacity-75 transition-opacity duration-300">
+              <strong className="font-bold cursor-pointer">
+                {heroData.subLinkText === 'RedAsh Ad Agency' || !heroData.subLinkText ? (
+                  <><span className="text-brand-red">Red</span><span className="text-brand-gray">Ash</span> <span className="text-brand-blue">Ad Agency</span></>
+                ) : (
+                  <span className="text-brand-blue">{heroData.subLinkText}</span>
+                )}
+              </strong>
+            </Link>.
           </p>
         </motion.div>
 

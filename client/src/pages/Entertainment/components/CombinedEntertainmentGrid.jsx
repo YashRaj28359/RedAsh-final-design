@@ -89,27 +89,62 @@ const CombinedEntertainmentGrid = () => {
     fetchContent().then(data => {
       const horizontalCards = data?.entertainment?.projects?.horizontalCards;
       if (horizontalCards && horizontalCards.length > 0) {
-        setDynamicHorizontalProjects(horizontalCards.map(item => {
+        setDynamicHorizontalProjects(horizontalCards.map((item, index) => {
+          const fallback = horizontalProjects[index] || {};
           const finalUrl = (item.linkFilms !== undefined && item.linkFilms !== null && item.linkFilms !== '') 
             ? item.linkFilms 
-            : (item.link || item.url);
-          return { ...item, isHorizontal: true, url: finalUrl };
+            : (item.link || item.url || fallback.url);
+          let img = item.image;
+          if (!img || img.includes('/@fs/') || img.includes('/src/assets/')) {
+            img = fallback.image || img;
+          }
+          return { 
+            ...fallback, 
+            ...item, 
+            isHorizontal: true, 
+            image: img, 
+            fallbackImage: fallback.image, 
+            url: finalUrl 
+          };
         }));
       }
       
       const verticalCards = data?.entertainment?.projects?.verticalCards;
       if (verticalCards && verticalCards.length > 0) {
         setDynamicVerticalProjects(verticalCards.map((item, index) => {
-          let newUrl = item.linkFilms || item.link || item.url;
+          const fallback = microdramaShows[index] || {};
+          let customLink = item.linkFilms || item.link || item.url;
+          if (customLink === '#' || customLink === 'null' || (customLink && customLink.includes('/browse'))) {
+            customLink = null;
+          }
+          let newUrl = fallback.url !== undefined ? (customLink || fallback.url) : customLink;
           if (newUrl && newUrl.includes('kukutv.app') && index !== 1) {
             newUrl = newUrl.replace('/show/', '/watch/');
             if (!newUrl.includes('?')) newUrl += '?episode=trailer';
             else if (!newUrl.includes('episode=trailer')) newUrl += '&episode=trailer';
           }
-          return { ...item, url: newUrl, isHorizontal: false };
+          let img = item.image;
+          if (index === 0 || !img || img.includes('1.webp') || img.includes('/@fs/') || img.includes('/src/assets/')) {
+            img = fallback.image || img;
+          }
+          return { 
+            ...fallback, 
+            ...item, 
+            objectPos: fallback.objectPos || item.objectPos || 'object-center',
+            scaleClass: fallback.scaleClass || item.scaleClass || '',
+            hoverScaleClass: fallback.hoverScaleClass || item.hoverScaleClass || 'group-hover:scale-105',
+            image: img, 
+            fallbackImage: fallback.image,
+            url: newUrl, 
+            isHorizontal: false 
+          };
         }));
       }
-    }).catch(err => console.error("Error fetching entertainment projects:", err));
+    }).catch(err => {
+      console.error("Error fetching entertainment projects:", err);
+      setDynamicHorizontalProjects(horizontalProjects);
+      setDynamicVerticalProjects(verticalProjects);
+    });
   }, []);
 
   useEffect(() => {
@@ -232,7 +267,7 @@ const CombinedEntertainmentGrid = () => {
   }, { scope: containerRef });
 
   const handleItemClick = (url) => {
-    if (!url || url === '#') return;
+    if (!url || url === '#' || url === 'null' || url.includes('/browse')) return;
     if (url.includes('youtu')) {
       setSelectedVideoUrl(url);
     } else {
@@ -306,6 +341,13 @@ const CombinedEntertainmentGrid = () => {
                 );
               }
               
+              const hasValidLink = Boolean(
+                item.url && 
+                item.url !== '#' && 
+                item.url !== 'null' && 
+                !item.url.includes('/browse')
+              );
+
               return (
               <div 
                 key={`${item.id}-${colIdx}`}
@@ -318,8 +360,8 @@ const CombinedEntertainmentGrid = () => {
                     cardsRef.current[absIdx] = el;
                   }
                 }}
-                onClick={() => handleItemClick(item.url)}
-                className="relative rounded-md overflow-hidden group cursor-pointer bg-black shadow-lg hover:shadow-2xl transition-all duration-300 flex-shrink-0"
+                onClick={() => hasValidLink ? handleItemClick(item.url) : null}
+                className={`relative rounded-md overflow-hidden group ${hasValidLink ? 'cursor-pointer' : 'cursor-default'} bg-black shadow-lg hover:shadow-2xl transition-all duration-300 flex-shrink-0`}
                 style={{
                   flex: item.isHorizontal ? 1.777 : 0.666,
                   aspectRatio: item.isHorizontal ? '16/9' : '2/3'
@@ -330,6 +372,11 @@ const CombinedEntertainmentGrid = () => {
                   <img 
                     src={item.image} 
                     alt={item.title} 
+                    onError={(e) => {
+                      if (item.fallbackImage && e.target.src !== item.fallbackImage) {
+                        e.target.src = item.fallbackImage;
+                      }
+                    }}
                     className={`absolute inset-0 w-full h-full transition-transform duration-500 
                       ${item.containImage ? 'object-contain' : 'object-cover'}
                       ${item.scaleClass || ''} 

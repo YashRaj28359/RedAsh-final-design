@@ -256,16 +256,168 @@ const createSmtpTransporter = () => {
       user,
       pass
     },
+    tls: {
+      rejectUnauthorized: false,
+      checkServerIdentity: () => undefined
+    },
     connectionTimeout: 15000,
     greetingTimeout: 10000,
     socketTimeout: 20000
   });
 };
 
+app.get('/api/quotation/preview', (req, res) => {
+  const safeName = 'Rohit Sharma';
+  const safeEmail = 'rohit.sharma@example.com';
+  const safePhone = '+91 98765 43210';
+  const safeCompany = 'Apex Brand Media Pvt Ltd';
+  const safeRequirement = 'We are looking for a complete end-to-end production of a 60-second digital brand commercial for our upcoming product launch in Mumbai.<br/><br/>Scope includes scriptwriting, cast & crew, 2 days of shoot, and full post-production (color grading, VFX, sound design).';
+
+  const previewHtmlContent = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RedAsh Quotation Email Preview</title>
+</head>
+<body style="margin: 0; padding: 20px 10px; background-color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; color: #1e293b;">
+  <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 580px; margin: 0 auto;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 18px rgba(0,0,0,0.05);">
+          <tr>
+            <td style="height: 4px; background: linear-gradient(90deg, #1672ef 0%, #E20002 100%);"></td>
+          </tr>
+          <tr>
+            <td style="background-color: #ffffff; padding: 28px 20px 20px 20px; text-align: center; border-bottom: 1px solid #f1f5f9;">
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td align="center">
+                    <span style="display: inline-block; background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px;">
+                      💼 Ad Agency Division Lead
+                    </span>
+                    <h1 style="margin: 6px 0 4px 0; color: #0f172a; font-size: 22px; font-weight: 800; letter-spacing: -0.3px;">
+                      New <span style="color: #1672ef;">Quotation</span> Request
+                    </h1>
+                    <p style="margin: 0; color: #64748b; font-size: 13px;">
+                      Submitted via RedAsh Agency Quotation Portal
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 22px 18px;">
+              <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px;">
+                Client Information
+              </div>
+
+              <!-- Item 1: Name -->
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 10px;">
+                <tr>
+                  <td style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px;">
+                      👤 Client Name
+                    </div>
+                    <div style="font-size: 15px; font-weight: 700; color: #0f172a;">
+                      ${safeName}
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Item 2: Company -->
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 10px;">
+                <tr>
+                  <td style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px;">
+                      🏢 Company
+                    </div>
+                    <div style="font-size: 15px; font-weight: 700; color: #0f172a;">
+                      ${safeCompany}
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Item 3: Email -->
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 10px;">
+                <tr>
+                  <td style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px;">
+                      ✉️ Email Address
+                    </div>
+                    <div style="font-size: 14px; font-weight: 600;">
+                      <a href="mailto:${safeEmail}" style="color: #1672ef; text-decoration: none;">
+                        ${safeEmail}
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Item 4: Phone -->
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 14px;">
+                <tr>
+                  <td style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px;">
+                      📞 Phone Number
+                    </div>
+                    <div style="font-size: 15px; font-weight: 600; color: #0f172a;">
+                      <a href="tel:${safePhone}" style="color: #0f172a; text-decoration: none;">
+                        ${safePhone}
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Item 5: Requirement Box -->
+              <div>
+                <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;">
+                  📋 Project Requirement
+                </div>
+                <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #1672ef; border-radius: 0 8px 8px 0; padding: 16px 18px;">
+                  <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #334155;">
+                    ${safeRequirement}
+                  </p>
+                </div>
+              </div>
+
+              <div style="margin-top: 22px; text-align: center;">
+                <a href="mailto:${safeEmail}?subject=Re:%20RedAsh%20Quotation%20Request" style="display: inline-block; background-color: #1672ef; color: #ffffff; font-size: 14px; font-weight: 700; text-decoration: none; padding: 12px 28px; border-radius: 8px; box-shadow: 0 3px 10px rgba(22, 114, 239, 0.2);">
+                  ✉️ Reply to ${safeName}
+                </a>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color: #f8fafc; border-top: 1px solid #e2e8f0; padding: 18px 20px; text-align: center;">
+              <p style="margin: 0 0 4px 0; font-size: 12px; color: #64748b;">
+                This lead was generated automatically by the <strong>RedAsh</strong> website quotation system.
+              </p>
+              <p style="margin: 0; font-size: 11px; color: #94a3b8;">
+                You can directly reply to this email to get in touch with the client.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
+  res.send(previewHtmlContent);
+});
+
 app.post('/api/quotation', async (req, res) => {
   try {
-    const { name, email, phone, phoneNumber, company, requirement } = req.body || {};
+    const { name, email, phone, phoneNumber, company, requirement, source, formType } = req.body || {};
     const effectivePhone = phone || phoneNumber;
+    const isEntertainment = (source === 'Entertainment Division' || formType === 'Investment / Sponsorship Query');
 
     // Validate all required fields
     if (
@@ -302,84 +454,176 @@ app.post('/api/quotation', async (req, res) => {
     const safeCompany = escapeHtml(String(company).trim());
     const safeRequirement = escapeHtml(String(requirement).trim()).replace(/\n/g, '<br/>');
 
+    const emailTitle = isEntertainment ? 'New Investment / Sponsorship Query' : 'New Quotation Request';
+    const emailSubtitle = isEntertainment ? 'Submitted via RedAsh Entertainment Division' : 'Submitted via RedAsh Ad Agency Division';
+    const badgeText = isEntertainment ? '🎬 Entertainment Division Lead' : '💼 Ad Agency Division Lead';
+    const badgeBg = isEntertainment ? '#fef2f2' : '#eff6ff';
+    const badgeColor = isEntertainment ? '#dc2626' : '#1d4ed8';
+    const badgeBorder = isEntertainment ? '#fecaca' : '#bfdbfe';
+    const accentColor = isEntertainment ? '#E20002' : '#1672ef';
+    const requirementTitle = isEntertainment ? 'Investment Query / Proposal' : 'Project Requirement';
+
     const transporter = createSmtpTransporter();
     const recipientEmail = process.env.QUOTATION_TO_EMAIL || 'info@redashfilms.com';
-    const fromSender = process.env.SMTP_FROM || `RedAsh Quotation <${process.env.SMTP_USER}>`;
+    const senderDisplayName = process.env.SMTP_FROM_NAME || (isEntertainment ? 'RedAsh Films Lead' : 'Quotation Form');
+    const fromSender = process.env.SMTP_FROM || `"${senderDisplayName}" <${process.env.SMTP_USER || 'quotes@redashfilms.com'}>`;
 
     const htmlContent = `
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f5f7; margin: 0; padding: 20px; color: #1e293b; }
-    .email-container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; }
-    .header { background: linear-gradient(135deg, #111827 0%, #1e293b 100%); padding: 30px 24px; text-align: center; border-bottom: 3px solid #E20002; }
-    .header h1 { margin: 0; color: #ffffff; font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
-    .header p { margin: 6px 0 0 0; color: #94a3b8; font-size: 13px; }
-    .content { padding: 28px 24px; }
-    .badge { display: inline-block; background-color: #fee2e2; color: #dc2626; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 9999px; text-transform: uppercase; margin-bottom: 18px; letter-spacing: 0.5px; }
-    .info-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
-    .info-table td { padding: 10px 14px; background-color: #f8fafc; border-radius: 6px; font-size: 14px; vertical-align: top; }
-    .label { width: 32%; font-weight: 600; color: #64748b; }
-    .value { width: 68%; font-weight: 500; color: #0f172a; word-break: break-word; }
-    .req-box { margin-top: 16px; background-color: #f8fafc; border-left: 4px solid #E20002; border-radius: 0 6px 6px 0; padding: 14px 16px; font-size: 14px; line-height: 1.6; color: #0f172a; }
-    .footer { background-color: #f8fafc; border-top: 1px solid #e2e8f0; padding: 16px 20px; text-align: center; font-size: 12px; color: #94a3b8; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${emailTitle}</title>
 </head>
-<body>
-  <div class="email-container">
-    <div class="header">
-      <h1>New Quotation Request</h1>
-      <p>Submitted via RedAsh Films Website</p>
-    </div>
-    <div class="content">
-      <div class="badge">Quotation Lead</div>
-      <table class="info-table">
-        <tr>
-          <td class="label">Name</td>
-          <td class="value">${safeName}</td>
-        </tr>
-        <tr>
-          <td class="label">Email Address</td>
-          <td class="value"><a href="mailto:${safeEmail}" style="color: #E20002; text-decoration: none; font-weight: 600;">${safeEmail}</a></td>
-        </tr>
-        <tr>
-          <td class="label">Phone Number</td>
-          <td class="value">${safePhone}</td>
-        </tr>
-        <tr>
-          <td class="label">Company</td>
-          <td class="value">${safeCompany}</td>
-        </tr>
-      </table>
+<body style="margin: 0; padding: 20px 10px; background-color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; color: #1e293b;">
+  <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 580px; margin: 0 auto;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 18px rgba(0,0,0,0.05);">
+          <tr>
+            <td style="height: 4px; background: linear-gradient(90deg, ${accentColor} 0%, #111827 100%);"></td>
+          </tr>
+          <tr>
+            <td style="background-color: #ffffff; padding: 28px 20px 20px 20px; text-align: center; border-bottom: 1px solid #f1f5f9;">
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td align="center">
+                    <span style="display: inline-block; background-color: ${badgeBg}; color: ${badgeColor}; border: 1px solid ${badgeBorder}; font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px;">
+                      ${badgeText}
+                    </span>
+                    <h1 style="margin: 6px 0 4px 0; color: #0f172a; font-size: 22px; font-weight: 800; letter-spacing: -0.3px;">
+                      ${emailTitle}
+                    </h1>
+                    <p style="margin: 0; color: #64748b; font-size: 13px;">
+                      ${emailSubtitle}
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
 
-      <div style="margin-top: 20px;">
-        <div style="font-weight: 600; font-size: 13px; color: #64748b; margin-bottom: 6px;">Requirement:</div>
-        <div class="req-box">${safeRequirement}</div>
-      </div>
-    </div>
-    <div class="footer">
-      This email was generated automatically by the RedAsh website quotation system.<br>
-      Reply to this email to contact <strong>${safeName}</strong> directly at ${safeEmail}.
-    </div>
-  </div>
+          <tr>
+            <td style="padding: 22px 18px;">
+              <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px;">
+                Client Information
+              </div>
+
+              <!-- Item 1: Name -->
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 10px;">
+                <tr>
+                  <td style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px;">
+                      👤 Client Name
+                    </div>
+                    <div style="font-size: 15px; font-weight: 700; color: #0f172a;">
+                      ${safeName}
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Item 2: Company -->
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 10px;">
+                <tr>
+                  <td style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px;">
+                      🏢 Company
+                    </div>
+                    <div style="font-size: 15px; font-weight: 700; color: #0f172a;">
+                      ${safeCompany}
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Item 3: Email -->
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 10px;">
+                <tr>
+                  <td style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px;">
+                      ✉️ Email Address
+                    </div>
+                    <div style="font-size: 14px; font-weight: 600;">
+                      <a href="mailto:${safeEmail}" style="color: ${accentColor}; text-decoration: none;">
+                        ${safeEmail}
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Item 4: Phone -->
+              <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 14px;">
+                <tr>
+                  <td style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px;">
+                      📞 Phone Number
+                    </div>
+                    <div style="font-size: 15px; font-weight: 600; color: #0f172a;">
+                      <a href="tel:${safePhone}" style="color: #0f172a; text-decoration: none;">
+                        ${safePhone}
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Item 5: Requirement Box -->
+              <div>
+                <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;">
+                  📋 ${requirementTitle}
+                </div>
+                <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid ${accentColor}; border-radius: 0 8px 8px 0; padding: 16px 18px;">
+                  <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #334155;">
+                    ${safeRequirement}
+                  </p>
+                </div>
+              </div>
+
+              <div style="margin-top: 22px; text-align: center;">
+                <a href="mailto:${safeEmail}?subject=Re:%20${encodeURIComponent(emailTitle)}" style="display: inline-block; background-color: ${accentColor}; color: #ffffff; font-size: 14px; font-weight: 700; text-decoration: none; padding: 12px 28px; border-radius: 8px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+                  ✉️ Reply to ${safeName}
+                </a>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="background-color: #f8fafc; border-top: 1px solid #e2e8f0; padding: 18px 20px; text-align: center;">
+              <p style="margin: 0 0 4px 0; font-size: 12px; color: #64748b;">
+                This lead was generated automatically by the <strong>RedAsh</strong> website quotation system.
+              </p>
+              <p style="margin: 0; font-size: 11px; color: #94a3b8;">
+                You can directly reply to this email to get in touch with <strong>${safeName}</strong> at ${safeEmail}.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>
 `;
 
-    const plainTextContent = `New Quotation Request\n\n` +
+    const plainTextContent = `${emailTitle}\n${emailSubtitle}\n\n` +
       `Name: ${String(name).trim()}\n` +
       `Email: ${String(email).trim()}\n` +
       `Phone: ${String(effectivePhone).trim()}\n` +
       `Company: ${String(company).trim()}\n\n` +
-      `Requirement:\n${String(requirement).trim()}`;
+      `${requirementTitle}\n${String(requirement).trim()}`;
+
+    const emailSubject = isEntertainment
+      ? `[RedAsh Films] New Investment Query from ${String(name).trim()} (${String(company).trim()})`
+      : `[RedAsh Agency] New Quotation Request from ${String(name).trim()} (${String(company).trim()})`;
 
     await transporter.sendMail({
       from: fromSender,
       to: recipientEmail,
       replyTo: `${String(name).trim()} <${String(email).trim()}>`,
-      subject: `New Quotation Request from ${String(name).trim()} (${String(company).trim()})`,
+      subject: emailSubject,
       text: plainTextContent,
       html: htmlContent
     });

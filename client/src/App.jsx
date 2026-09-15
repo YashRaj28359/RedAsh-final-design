@@ -18,11 +18,67 @@ import EntertainmentMedia from './pages/Entertainment/EntertainmentMedia';
 import EntertainmentContact from './pages/Entertainment/EntertainmentContact';
 import { AnimatePresence } from 'framer-motion';
 
+import { isFilmsSubdomain, isAgencySubdomain } from './utils/subdomain';
+
 function AnimatedRoutes() {
   const location = useLocation();
+  const filmsMode = isFilmsSubdomain();
+  const agencyMode = isAgencySubdomain();
+
+  if (filmsMode) {
+    return (
+      <Routes location={location} key={location.pathname}>
+        {/* films.redash.in Root & Subpages */}
+        <Route path="/" element={<EntertainmentLanding />} />
+        <Route path="/about" element={<AboutEntertainment />} />
+        <Route path="/films" element={<EntertainmentFilms />} />
+        <Route path="/blog" element={<EntertainmentBlogs />} />
+        <Route path="/blog/:slug" element={<EntertainmentBlogPost />} />
+        <Route path="/media" element={<EntertainmentMedia />} />
+        <Route path="/contact" element={<EntertainmentContact />} />
+
+        {/* Fallback path matches */}
+        <Route path="/entertainment" element={<EntertainmentLanding />} />
+        <Route path="/entertainment/about" element={<AboutEntertainment />} />
+        <Route path="/entertainment/films" element={<EntertainmentFilms />} />
+        <Route path="/entertainment/blog" element={<EntertainmentBlogs />} />
+        <Route path="/entertainment/blog/:slug" element={<EntertainmentBlogPost />} />
+        <Route path="/entertainment/media" element={<EntertainmentMedia />} />
+        <Route path="/entertainment/contact" element={<EntertainmentContact />} />
+      </Routes>
+    );
+  }
+
+  if (agencyMode) {
+    return (
+      <Routes location={location} key={location.pathname}>
+        {/* agency.redash.in Root & Subpages */}
+        <Route path="/" element={<AgencyLanding />} />
+        <Route path="/about" element={<AboutAgency />} />
+        <Route path="/films" element={<AgencyFilms />} />
+        <Route path="/blog" element={<BlogList />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="/media" element={<MediaPage />} />
+        <Route path="/contact" element={<Contact />} />
+
+        {/* Fallback path matches */}
+        <Route path="/ad-agency" element={<AgencyLanding />} />
+        <Route path="/ad-agency/about" element={<AboutAgency />} />
+        <Route path="/ad-agency/films" element={<AgencyFilms />} />
+        <Route path="/ad-agency/blog" element={<BlogList />} />
+        <Route path="/ad-agency/blog/:slug" element={<BlogPost />} />
+        <Route path="/ad-agency/media" element={<MediaPage />} />
+        <Route path="/ad-agency/contact" element={<Contact />} />
+      </Routes>
+    );
+  }
+
+  // Default / redash.in Main Domain (and localhost)
   return (
     <Routes location={location} key={location.pathname}>
       <Route path="/" element={<Home />} />
+      
+      {/* Agency Division */}
       <Route path="/ad-agency" element={<AgencyLanding />} />
       <Route path="/ad-agency/about" element={<AboutAgency />} />
       <Route path="/ad-agency/blog" element={<BlogList />} />
@@ -30,6 +86,8 @@ function AnimatedRoutes() {
       <Route path="/ad-agency/media" element={<MediaPage />} />
       <Route path="/ad-agency/contact" element={<Contact />} />
       <Route path="/ad-agency/films" element={<AgencyFilms />} />
+
+      {/* Entertainment Division */}
       <Route path="/entertainment" element={<EntertainmentLanding />} />
       <Route path="/entertainment/about" element={<AboutEntertainment />} />
       <Route path="/entertainment/films" element={<EntertainmentFilms />} />

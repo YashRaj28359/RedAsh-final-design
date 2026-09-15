@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import logo from '../../assets/Logo/Redash Logo_PNG.png';
 import { fetchContent } from '../../utils/api';
 
+import { getEntertainmentUrl, getAgencyUrl } from '../../utils/subdomain';
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [serverLogo, setServerLogo] = useState(null);
@@ -69,8 +71,8 @@ const Navbar = () => {
       {/* Desktop Menu */}
       <div className="hidden md:flex gap-10 items-center">
         <Link to="/" className="font-main font-semibold text-[15px] uppercase tracking-wide text-brand-gray transition-colors duration-300">HOME</Link>
-        <Link to="/entertainment" className="font-main font-semibold text-[15px] uppercase tracking-wide text-brand-red transition-colors duration-300">ENTERTAINMENT FILMS</Link>
-        <Link to="/ad-agency" className="font-main font-semibold text-[15px] uppercase tracking-wide text-brand-blue transition-colors duration-300">AD AGENCY</Link>
+        <a href={getEntertainmentUrl('/')} className="font-main font-semibold text-[15px] uppercase tracking-wide text-brand-red transition-colors duration-300">ENTERTAINMENT FILMS</a>
+        <a href={getAgencyUrl('/')} className="font-main font-semibold text-[15px] uppercase tracking-wide text-brand-blue transition-colors duration-300">AD AGENCY</a>
       </div>
 
       {/* Mobile Menu */}
@@ -84,8 +86,8 @@ const Navbar = () => {
             transition={{ duration: 0.3 }}
           >
             <Link to="/" onClick={closeMenu} className="font-main font-semibold text-lg uppercase tracking-wide text-brand-gray transition-colors duration-300">HOME</Link>
-            <Link to="/entertainment" onClick={closeMenu} className="font-main font-semibold text-lg uppercase tracking-wide text-brand-red transition-colors duration-300">ENTERTAINMENT FILMS</Link>
-            <Link to="/ad-agency" onClick={closeMenu} className="font-main font-semibold text-lg uppercase tracking-wide text-brand-blue transition-colors duration-300">AD AGENCY</Link>
+            <a href={getEntertainmentUrl('/')} onClick={closeMenu} className="font-main font-semibold text-lg uppercase tracking-wide text-brand-red transition-colors duration-300">ENTERTAINMENT FILMS</a>
+            <a href={getAgencyUrl('/')} onClick={closeMenu} className="font-main font-semibold text-lg uppercase tracking-wide text-brand-blue transition-colors duration-300">AD AGENCY</a>
           </motion.div>
         )}
       </AnimatePresence>

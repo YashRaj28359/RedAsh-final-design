@@ -38,19 +38,49 @@ const TopGlobalClients = () => {
   React.useEffect(() => {
     fetchContent()
       .then(data => {
-        if (data?.entertainment?.clients && data.entertainment.clients.length > 0) {
-          const valid = data.entertainment.clients.filter(c => c && c.img && !c.img.includes('/@fs/') && !c.img.includes('localhost:5173') && !c.img.startsWith('/assets/'));
-          if (valid.length > 0) setDbClients(valid);
+        const rawDbClients = data?.entertainment?.clients;
+        if (rawDbClients && Array.isArray(rawDbClients) && rawDbClients.length > 0) {
+          const merged = clients.map((defaultClient, idx) => {
+            const dbItem = rawDbClients[idx] || rawDbClients.find(c => (c.name || c.alt)?.toLowerCase() === defaultClient.alt?.toLowerCase());
+            if (dbItem) {
+              const hasValidImg = dbItem.img && (dbItem.img.startsWith('data:') || dbItem.img.startsWith('http')) && !dbItem.img.includes('localhost:5173') && !dbItem.img.includes('/@fs/');
+              return {
+                ...defaultClient,
+                alt: dbItem.name || dbItem.alt || defaultClient.alt,
+                name: dbItem.name || dbItem.alt || defaultClient.alt,
+                img: hasValidImg ? dbItem.img : defaultClient.img
+              };
+            }
+            return defaultClient;
+          });
+
+          if (rawDbClients.length > clients.length) {
+            const extra = rawDbClients.slice(clients.length).map((c, i) => {
+              const hasValidImg = c.img && (c.img.startsWith('data:') || c.img.startsWith('http')) && !c.img.includes('localhost:5173') && !c.img.includes('/@fs/');
+              return {
+                alt: c.name || c.alt || `Partner ${clients.length + i + 1}`,
+                name: c.name || c.alt || `Partner ${clients.length + i + 1}`,
+                img: hasValidImg ? c.img : clients[i % clients.length].img
+              };
+            });
+            setDbClients([...merged, ...extra]);
+          } else {
+            setDbClients(merged);
+          }
         }
       })
       .catch(err => console.error(err));
   }, []);
 
   const getClientImg = (client, idx) => {
-    if (client?.img && (client.img.startsWith('data:') || client.img.startsWith('http')) && !client.img.includes('localhost:5173')) {
-      return client.img;
+    if (client?.img) {
+      if (typeof client.img === 'string' && (client.img.startsWith('data:') || client.img.startsWith('http')) && !client.img.includes('localhost:5173') && !client.img.includes('/@fs/')) {
+        return client.img;
+      }
+      if (typeof client.img !== 'string') {
+        return client.img;
+      }
     }
-    // Match by name or index
     const matched = clients.find(c => c.alt?.toLowerCase() === (client?.name || client?.alt || '').toLowerCase());
     return matched?.img || clients[idx % clients.length]?.img;
   };

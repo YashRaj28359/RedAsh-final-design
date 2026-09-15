@@ -27,7 +27,18 @@ import { fetchContent, API_URL } from '../../utils/api';
 const VideoGrid = () => {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [player, setPlayer] = useState(null);
-  const [dynamicVideos, setDynamicVideos] = useState(null);
+  const [dynamicVideos, setDynamicVideos] = useState(() => {
+    try {
+      const cached = localStorage.getItem('redash_content');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed?.homepage?.video_tile?.videos?.length) {
+          return parsed.homepage.video_tile.videos;
+        }
+      }
+    } catch (e) {}
+    return videos;
+  });
   const [visibleCount, setVisibleCount] = useState(24);
   const [topButtons, setTopButtons] = useState({
     entertainment: { text: 'GO TO REDASH ENTERTAINMENT FILMS', link: '/entertainment' },
@@ -44,7 +55,7 @@ const VideoGrid = () => {
   useEffect(() => {
     fetchContent()
       .then(data => {
-        if (data && data.homepage && data.homepage.video_tile && data.homepage.video_tile.videos) {
+        if (data && data.homepage && data.homepage.video_tile && data.homepage.video_tile.videos && data.homepage.video_tile.videos.length > 0) {
           const mappedVideos = data.homepage.video_tile.videos.map(v => {
             // Always force correct thumbnails — DB may have stale Vite hash URLs
             if (v.id === 'web-series') v.thumbnail = '/assets/web-series-thumb.jpg';
@@ -53,7 +64,7 @@ const VideoGrid = () => {
           });
           setDynamicVideos(mappedVideos);
         } else {
-          setDynamicVideos(videos); // empty
+          setDynamicVideos(prev => (prev && prev.length > 0 ? prev : videos));
         }
         
         if (data?.homepage?.divisions?.topButtons) {
@@ -61,8 +72,8 @@ const VideoGrid = () => {
         }
       })
       .catch(err => {
-        console.error('Failed to fetch videos:', err);
-        setDynamicVideos([]);
+        console.warn('Failed to fetch videos, using local fallback:', err);
+        setDynamicVideos(prev => (prev && prev.length > 0 ? prev : videos));
       });
   }, []);
 
@@ -161,8 +172,8 @@ const VideoGrid = () => {
       }
     }
     if (finalThumbnail && typeof finalThumbnail === 'string') {
-      while (finalThumbnail.includes('https://redash-final-design.onrender.comhttps://')) {
-        finalThumbnail = finalThumbnail.replace('https://redash-final-design.onrender.comhttps://', 'https://');
+      if (finalThumbnail.includes('redash-final-design.onrender.com')) {
+        finalThumbnail = finalThumbnail.replace(/https:\/\/redash-final-design\.onrender\.com/g, API_URL);
       }
       while (finalThumbnail.includes('http://localhost:5000http')) {
         finalThumbnail = finalThumbnail.replace(/http:\/\/localhost:5000(?=http)/g, '');
@@ -177,13 +188,7 @@ const VideoGrid = () => {
     return { ...v, uniqueId: v.uniqueId || v.id, thumbnail: finalThumbnail };
   });
 
-  if (dynamicVideos === null) {
-    return <div className="w-full h-[200px] flex items-center justify-center">Loading Videos...</div>;
-  }
-  
-  if (dynamicVideos.length === 0) {
-    return <div className="w-full h-[200px] flex items-center justify-center text-gray-500">No videos added yet.</div>;
-  }
+  const finalVideoList = (displayVideos && displayVideos.length > 0) ? displayVideos : videos;
 
   return (
     <>
@@ -228,7 +233,7 @@ const VideoGrid = () => {
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
         >
-          {displayVideos.map((video) => (
+          {finalVideoList.map((video) => (
             <motion.div 
               key={video.uniqueId} 
               variants={itemVariants}

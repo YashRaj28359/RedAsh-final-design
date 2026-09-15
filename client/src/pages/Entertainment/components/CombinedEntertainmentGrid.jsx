@@ -8,9 +8,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Import Data
 import { microdramaShows } from '../../../data/microdramaShows';
-import { fetchContent } from '../../../utils/api';
+import { fetchContent, resolveClientImage } from '../../../utils/api';
+
 
 // Import horizontal images directly
 import p1 from '../../../assets/Films/Poster/1. Copy of Movie Poster_20x10.webp';
@@ -39,20 +39,12 @@ const horizontalProjects = [
 // The 26 Vertical Posters
 const verticalProjects = microdramaShows.map((item, index) => {
   let newUrl = item.url;
-  
-  // Update url for kukutv links, except the second video (index 1)
-  if (newUrl && newUrl.includes('kukutv.app') && index !== 1) {
-    // Replace '/show/' with '/watch/' as per the example format
-    newUrl = newUrl.replace('/show/', '/watch/');
-    
-    // Append '?episode=trailer'
-    if (!newUrl.includes('?')) {
-      newUrl += '?episode=trailer';
-    } else if (!newUrl.includes('episode=trailer')) {
-      newUrl += '&episode=trailer';
+  // Ensure kukutv links open the trailer tab
+  if (newUrl && newUrl.includes('kukutv.app')) {
+    if (!newUrl.includes('episode=trailer')) {
+      newUrl += (newUrl.includes('?') ? '&' : '?') + 'episode=trailer';
     }
   }
-
   return { 
     ...item, 
     url: newUrl, 
@@ -94,10 +86,7 @@ const CombinedEntertainmentGrid = () => {
           const finalUrl = (item.linkFilms !== undefined && item.linkFilms !== null && item.linkFilms !== '') 
             ? item.linkFilms 
             : (item.link || item.url || fallback.url);
-          let img = item.image;
-          if (!img || img.includes('/@fs/') || img.includes('/src/assets/')) {
-            img = fallback.image || img;
-          }
+          const img = resolveClientImage(item.image, fallback.image);
           return { 
             ...fallback, 
             ...item, 
@@ -113,20 +102,9 @@ const CombinedEntertainmentGrid = () => {
       if (verticalCards && verticalCards.length > 0) {
         setDynamicVerticalProjects(verticalCards.map((item, index) => {
           const fallback = microdramaShows[index] || {};
-          let customLink = item.linkFilms || item.link || item.url;
-          if (customLink === '#' || customLink === 'null' || (customLink && customLink.includes('/browse'))) {
-            customLink = null;
-          }
-          let newUrl = fallback.url !== undefined ? (customLink || fallback.url) : customLink;
-          if (newUrl && newUrl.includes('kukutv.app') && index !== 1) {
-            newUrl = newUrl.replace('/show/', '/watch/');
-            if (!newUrl.includes('?')) newUrl += '?episode=trailer';
-            else if (!newUrl.includes('episode=trailer')) newUrl += '&episode=trailer';
-          }
-          let img = item.image;
-          if (index === 0 || !img || img.includes('1.webp') || img.includes('/@fs/') || img.includes('/src/assets/')) {
-            img = fallback.image || img;
-          }
+          // Always use static microdramaShows URL — DB link data may be stale/wrong
+          const staticUrl = fallback.url || null;
+          const img = resolveClientImage(item.image, fallback.image);
           return { 
             ...fallback, 
             ...item, 
@@ -135,11 +113,12 @@ const CombinedEntertainmentGrid = () => {
             hoverScaleClass: fallback.hoverScaleClass || item.hoverScaleClass || 'group-hover:scale-105',
             image: img, 
             fallbackImage: fallback.image,
-            url: newUrl, 
+            url: staticUrl, 
             isHorizontal: false 
           };
         }));
       }
+
     }).catch(err => {
       console.error("Error fetching entertainment projects:", err);
       setDynamicHorizontalProjects(horizontalProjects);

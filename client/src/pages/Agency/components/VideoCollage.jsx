@@ -105,8 +105,8 @@ const VideoCollage = () => {
             if (!c) return c;
             let img = c.image;
             if (img && typeof img === 'string') {
-              while (img.includes('https://redash-final-design.onrender.comhttps://')) {
-                img = img.replace('https://redash-final-design.onrender.comhttps://', 'https://');
+              if (img.includes('redash-final-design.onrender.com')) {
+                img = img.replace(/https:\/\/redash-final-design\.onrender\.com/g, API_URL);
               }
               while (img.includes('http://localhost:5000http')) {
                 img = img.replace(/http:\/\/localhost:5000(?=http)/g, '');

@@ -6,6 +6,8 @@ import Lenis from 'lenis';
 import EntertainmentNavbar from './components/EntertainmentNavbar';
 import EntertainmentFooter from './components/EntertainmentFooter';
 import blogsData from '../../data/entertainmentBlogs.json';
+import { fetchContent, resolveClientImage, API_URL } from '../../utils/api';
+
 
 const EntertainmentBlogPost = () => {
   const { slug } = useParams();
@@ -32,19 +34,14 @@ const EntertainmentBlogPost = () => {
     }
     animationFrameId = requestAnimationFrame(raf);
 
-    // Fetch dynamic content
-    fetch(`${import.meta.env.VITE_API_URL}/api/content`)
-      .then(res => res.json())
+    // Fetch dynamic content — use fetchContent() for cache-busting (no-store)
+    fetchContent(true)
       .then(data => {
         const entData = data.entertainment || {};
-        if (entData.blogs && Array.isArray(entData.blogs)) {
+        if (entData.blogs && Array.isArray(entData.blogs) && entData.blogs.length > 0) {
+          // DB is authoritative — only show DB blogs (respects deletes)
           const dbBlogs = entData.blogs.filter(b => b.published !== false);
-          const mergedStaticBlogs = blogsData.map(sb => {
-            const override = dbBlogs.find(dbb => dbb.slug === sb.slug);
-            return override ? { ...override } : sb;
-          });
-          const newDbBlogs = dbBlogs.filter(dbb => !blogsData.some(sb => sb.slug === dbb.slug));
-          setBlogs([...mergedStaticBlogs, ...newDbBlogs]);
+          setBlogs(dbBlogs);
         } else {
           setBlogs(blogsData);
         }
@@ -53,6 +50,7 @@ const EntertainmentBlogPost = () => {
         console.error("Error fetching blogs content:", err);
         setBlogs(blogsData);
       });
+
 
     return () => {
       cancelAnimationFrame(animationFrameId);
@@ -83,10 +81,7 @@ const EntertainmentBlogPost = () => {
   const suggestedBlogs = blogs.filter(b => b.id !== blog.id && b.published !== false).slice(0, 4);
 
   const getImageUrl = (url) => {
-    if (!url) return '';
-    if (url.startsWith('http')) return url;
-    if (url.startsWith('/media/')) return url;
-    return `${import.meta.env.VITE_API_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+    return resolveClientImage(url, url);
   };
 
   const renderSuggestedBlogs = () => {

@@ -5,7 +5,7 @@ import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import Navbar from './components/Navbar';
 import AgencyFooter from './components/AgencyFooter';
 import blogsData from '../../data/blogs.json';
-import { getCachedContent, fetchContent } from '../../utils/api';
+import { getCachedContent, fetchContent, resolveClientImage } from '../../utils/api';
 
 const BlogPost = () => {
   const { slug } = useParams();
@@ -127,8 +127,9 @@ const BlogPost = () => {
           className="w-full max-w-7xl mx-auto px-4 md:px-8 relative z-10"
         >
           <img 
-            src={blog.imageUrl.startsWith('http') ? blog.imageUrl : `${import.meta.env.VITE_API_URL}${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`} 
+            src={resolveClientImage(blog.imageUrl, blog.imageUrl)} 
             alt={blog.title} 
+            onError={(e) => { e.currentTarget.src = 'https://placehold.co/1200x600?text=RedAsh+Agency'; }}
             className="w-full object-cover aspect-video md:aspect-[21/9]"
           />
         </motion.div>

@@ -26,7 +26,8 @@ const clients = [
   { img: lastImg, alt: 'Alright TV', rotate: 'rotate-[-15deg]', pos: 'md:-top-[10%] md:-right-[5%]', size: 'w-24 h-24 lg:w-32 lg:h-32', shape: 'rounded-full' },
 ];
 
-import { fetchContent } from '../../../utils/api';
+import { fetchContent, resolveClientImage } from '../../../utils/api';
+
 
 const TopGlobalClients = () => {
   const containerRef = useRef(null);
@@ -43,26 +44,22 @@ const TopGlobalClients = () => {
           const merged = clients.map((defaultClient, idx) => {
             const dbItem = rawDbClients[idx] || rawDbClients.find(c => (c.name || c.alt)?.toLowerCase() === defaultClient.alt?.toLowerCase());
             if (dbItem) {
-              const hasValidImg = dbItem.img && (dbItem.img.startsWith('data:') || dbItem.img.startsWith('http')) && !dbItem.img.includes('localhost:5173') && !dbItem.img.includes('/@fs/');
               return {
                 ...defaultClient,
                 alt: dbItem.name || dbItem.alt || defaultClient.alt,
                 name: dbItem.name || dbItem.alt || defaultClient.alt,
-                img: hasValidImg ? dbItem.img : defaultClient.img
+                img: resolveClientImage(dbItem.img, defaultClient.img)
               };
             }
             return defaultClient;
           });
 
           if (rawDbClients.length > clients.length) {
-            const extra = rawDbClients.slice(clients.length).map((c, i) => {
-              const hasValidImg = c.img && (c.img.startsWith('data:') || c.img.startsWith('http')) && !c.img.includes('localhost:5173') && !c.img.includes('/@fs/');
-              return {
-                alt: c.name || c.alt || `Partner ${clients.length + i + 1}`,
-                name: c.name || c.alt || `Partner ${clients.length + i + 1}`,
-                img: hasValidImg ? c.img : clients[i % clients.length].img
-              };
-            });
+            const extra = rawDbClients.slice(clients.length).map((c, i) => ({
+              alt: c.name || c.alt || `Partner ${clients.length + i + 1}`,
+              name: c.name || c.alt || `Partner ${clients.length + i + 1}`,
+              img: resolveClientImage(c.img, clients[i % clients.length].img)
+            }));
             setDbClients([...merged, ...extra]);
           } else {
             setDbClients(merged);
@@ -72,18 +69,14 @@ const TopGlobalClients = () => {
       .catch(err => console.error(err));
   }, []);
 
+
   const getClientImg = (client, idx) => {
-    if (client?.img) {
-      if (typeof client.img === 'string' && (client.img.startsWith('data:') || client.img.startsWith('http')) && !client.img.includes('localhost:5173') && !client.img.includes('/@fs/')) {
-        return client.img;
-      }
-      if (typeof client.img !== 'string') {
-        return client.img;
-      }
-    }
+    const resolved = resolveClientImage(client?.img, null);
+    if (resolved) return resolved;
     const matched = clients.find(c => c.alt?.toLowerCase() === (client?.name || client?.alt || '').toLowerCase());
     return matched?.img || clients[idx % clients.length]?.img;
   };
+
 
   const activeClients = dbClients || clients;
 

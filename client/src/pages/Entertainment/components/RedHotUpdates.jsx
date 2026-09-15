@@ -105,7 +105,8 @@ const getFoldConfig = (corner) => {
   }
 };
 
-import { fetchContent } from '../../../utils/api';
+import { fetchContent, resolveClientImage } from '../../../utils/api';
+
 
 const RedHotUpdates = () => {
   const containerRef = useRef(null);
@@ -127,11 +128,12 @@ const RedHotUpdates = () => {
               id: `db-${idx}`,
               title: card.title,
               subtitle: card.subtitle,
-              image: (card.image && !card.image.includes('/@fs/') && !card.image.includes('localhost:5173') && card.image.trim() !== '') ? card.image : updates[idx % updates.length]?.image,
+              image: resolveClientImage(card.image, updates[idx % updates.length]?.image),
               style: { zIndex: 20 + idx, width: '280px', height: '380px', transform: defaultRotations[idx % 4] },
               foldCorner: defaultFold,
               links: links
             };
+
           });
           setDbUpdates(formatted);
         }

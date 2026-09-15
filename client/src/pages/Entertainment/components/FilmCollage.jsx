@@ -158,8 +158,8 @@ const FilmCollage = ({ onVideoToggle }) => {
             if (!cmsCard) return film;
             let finalImage = (cmsCard.image && !cmsCard.image.includes('/@fs/') && !cmsCard.image.includes('localhost:5173') && cmsCard.image.trim() !== "") ? cmsCard.image : film.image;
             if (finalImage && typeof finalImage === 'string') {
-              while (finalImage.includes('https://redash-final-design.onrender.comhttps://')) {
-                finalImage = finalImage.replace('https://redash-final-design.onrender.comhttps://', 'https://');
+              if (finalImage.includes('redash-final-design.onrender.com')) {
+                finalImage = finalImage.replace(/https:\/\/redash-final-design\.onrender\.com/g, API_URL);
               }
               while (finalImage.includes('http://localhost:5000http')) {
                 finalImage = finalImage.replace(/http:\/\/localhost:5000(?=http)/g, '');

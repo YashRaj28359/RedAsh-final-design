@@ -1,5 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { fetchContent } from '../../../utils/api';
+import { fetchContent, resolveClientImage } from '../../../utils/api';
+
+// Static fallback images for horizontal project cards
+import fp1 from '../../../assets/Films/Poster/1. Copy of Movie Poster_20x10.webp';
+import fp2 from '../../../assets/Films/Poster/2. Copy of Horizontal Poster_Main Tumhare Bachche.webp';
+import fp3 from '../../../assets/Films/Poster/3. Copy of Final Poster_No More MeToo.webp';
+import fp4 from '../../../assets/Films/Poster/4. Copy of IAYV_Horizontal Poster.webp';
+import fp5 from '../../../assets/Films/Poster/5. Corona is a Conspiracy.webp';
+import fp6 from '../../../assets/Films/Poster/6. Hum Azaad Hain.webp';
+import fp7 from '../../../assets/Films/Cards/Card6.png';
+import fp8 from '../../../assets/Films/Cards/Card2.jpg';
+import fp9 from '../../../assets/Films/Poster/9. 100 Short Films_Emerging Leaders.png';
+
+const FALLBACK_POSTERS = [fp1, fp2, fp3, fp4, fp5, fp6, fp7, fp8, fp9];
+
 
 const HorizontalCard = ({ project }) => {
   return (
@@ -30,15 +44,21 @@ const SelectedEntertainmentProjects = () => {
     fetchContent().then(data => {
       const horizontalCards = data?.entertainment?.projects?.horizontalCards;
       if (horizontalCards && horizontalCards.length > 0) {
-        setProjects(horizontalCards.map(item => {
+        setProjects(horizontalCards.map((item, idx) => {
           const finalUrl = (item.linkHome !== undefined && item.linkHome !== null && item.linkHome !== '') 
             ? item.linkHome 
             : (item.link || item.url);
-          return { ...item, url: finalUrl };
+          return {
+            ...item,
+            url: finalUrl,
+            image: resolveClientImage(item.image, FALLBACK_POSTERS[idx % FALLBACK_POSTERS.length])
+          };
         }));
       }
     }).catch(err => console.error("Error fetching horizontal projects:", err));
   }, []);
+
+
 
   if (!projects || projects.length === 0) return null;
 

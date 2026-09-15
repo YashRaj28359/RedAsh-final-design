@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getCachedContent, fetchContent } from '../../utils/api';
+import { getCachedContent, fetchContent, resolveClientImage } from '../../utils/api';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
@@ -94,8 +94,9 @@ const BlogList = () => {
                   <div className="relative overflow-hidden rounded-none aspect-[1.5] w-full bg-gray-100">
                     {blog.imageUrl ? (
                       <img 
-                        src={blog.imageUrl.startsWith('http') ? blog.imageUrl : `${import.meta.env.VITE_API_URL}${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`} 
+                        src={resolveClientImage(blog.imageUrl, blog.imageUrl)} 
                         alt={blog.title} 
+                        onError={(e) => { e.currentTarget.src = 'https://placehold.co/600x400?text=RedAsh+Agency'; }}
                         className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
                       />
                     ) : (

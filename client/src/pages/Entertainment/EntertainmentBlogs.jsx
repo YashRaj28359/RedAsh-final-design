@@ -5,7 +5,9 @@ import Lenis from 'lenis';
 import EntertainmentNavbar from './components/EntertainmentNavbar';
 import EntertainmentFooter from './components/EntertainmentFooter';
 import blogsData from '../../data/entertainmentBlogs.json';
-import { API_URL } from '../../utils/api';
+import { fetchContent, resolveClientImage, API_URL } from '../../utils/api';
+import { getEntertainmentPath } from '../../utils/subdomain';
+
 
 const EntertainmentBlogs = () => {
   const [blogs, setBlogs] = useState([]);
@@ -30,22 +32,17 @@ const EntertainmentBlogs = () => {
     }
     animationFrameId = requestAnimationFrame(raf);
 
-    // Fetch dynamic content
-    fetch(`${API_URL}/api/content`)
-      .then(res => res.json())
+    // Fetch dynamic content — use fetchContent() for cache-busting (no-store)
+    fetchContent(true)
       .then(data => {
         const entData = data.entertainment || {};
         if (entData.blogsHero && entData.blogsHero.subtitle) {
           setHero(prev => ({ ...prev, subtitle: entData.blogsHero.subtitle }));
         }
-        if (entData.blogs && Array.isArray(entData.blogs)) {
+        if (entData.blogs && Array.isArray(entData.blogs) && entData.blogs.length > 0) {
+          // DB is authoritative — only show DB blogs (respects deletes)
           const dbBlogs = entData.blogs.filter(b => b.published !== false);
-          const mergedStaticBlogs = blogsData.map(sb => {
-            const override = dbBlogs.find(dbb => dbb.slug === sb.slug);
-            return override ? { ...override } : sb;
-          });
-          const newDbBlogs = dbBlogs.filter(dbb => !blogsData.some(sb => sb.slug === dbb.slug));
-          setBlogs([...mergedStaticBlogs, ...newDbBlogs]);
+          setBlogs(dbBlogs);
         } else {
           setBlogs(blogsData); // fallback to static data if no blogs in db
         }
@@ -54,6 +51,7 @@ const EntertainmentBlogs = () => {
         console.error("Error fetching blogs content:", err);
         setBlogs(blogsData);
       });
+
 
     return () => {
       cancelAnimationFrame(animationFrameId);
@@ -75,10 +73,7 @@ const EntertainmentBlogs = () => {
   };
 
   const getImageUrl = (url) => {
-    if (!url) return '';
-    if (url.startsWith('http')) return url;
-    if (url.startsWith('/media/')) return url;
-    return `${API_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+    return resolveClientImage(url, url);
   };
 
   return (
@@ -111,39 +106,42 @@ const EntertainmentBlogs = () => {
         <div className="w-full py-16 md:py-24 bg-white">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1920px]">
             <div className="grid grid-cols-1 md:grid-cols-2 landscape:grid-cols-3 md:landscape:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 xl:landscape:grid-cols-4 gap-6 lg:gap-8">
-              {blogs.map((blog, index) => (
-                <motion.div
-                  key={blog.id || index}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.5, delay: (index % 4) * 0.1 }}
-                  className="group relative flex flex-col h-[400px] landscape:h-[300px] md:h-[450px] md:landscape:h-[350px] lg:landscape:h-[450px] xl:landscape:h-[450px] overflow-hidden rounded-xl bg-neutral-950 cursor-pointer shadow-lg hover:shadow-brand-red/20 transition-all duration-500"
-                >
-                  <Link to={`/entertainment/blog/${blog.slug || blog.id}`} className="absolute inset-0 z-0">
-                    {blog.imageUrl ? (
-                      <img 
-                        src={getImageUrl(blog.imageUrl)} 
-                        alt={blog.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-neutral-900" />
-                    )}
-                    {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent transition-opacity duration-300"></div>
-                  </Link>
+              {blogs.map((blog, index) => {
+                const blogLink = getEntertainmentPath(`/blog/${blog.slug || blog.id}`);
+                return (
+                  <motion.div
+                    key={blog.id || index}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ duration: 0.5, delay: (index % 4) * 0.1 }}
+                    className="group relative flex flex-col h-[400px] landscape:h-[300px] md:h-[450px] md:landscape:h-[350px] lg:landscape:h-[450px] xl:landscape:h-[450px] overflow-hidden rounded-xl bg-neutral-950 cursor-pointer shadow-lg hover:shadow-brand-red/20 transition-all duration-500"
+                  >
+                    <Link to={blogLink} className="absolute inset-0 z-0">
+                      {blog.imageUrl ? (
+                        <img 
+                          src={getImageUrl(blog.imageUrl)} 
+                          alt={blog.title}
+                          onError={(e) => { e.currentTarget.src = 'https://placehold.co/600x400?text=RedAsh+Films'; }}
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-40"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-neutral-900" />
+                      )}
+                      {/* Gradient Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent transition-opacity duration-300"></div>
+                    </Link>
 
-                  <div className="relative z-10 flex flex-col flex-grow p-6 pointer-events-none">
-                    {/* Top Section: Date Badge */}
-                    <div className="flex justify-end">
-                      <span className="bg-brand-red text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-sm shadow-md">
-                        {formatDate(blog.date || Date.now())}
-                      </span>
-                    </div>
+                    <div className="relative z-10 flex flex-col flex-grow p-6 pointer-events-none">
+                      {/* Top Section: Date Badge */}
+                      <div className="flex justify-end">
+                        <span className="bg-brand-red text-white text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded-sm shadow-md">
+                          {formatDate(blog.date || Date.now())}
+                        </span>
+                      </div>
 
-                    <div className="mt-auto flex flex-col">
-                      <Link to={`/entertainment/blog/${blog.slug || blog.id}`} className="pointer-events-auto">
+                      <div className="mt-auto flex flex-col">
+                        <Link to={blogLink} className="pointer-events-auto">
                         <h3 
                           className="text-2xl font-bold text-white mb-3 leading-snug line-clamp-3 group-hover:text-brand-red transition-colors duration-300"
                           dangerouslySetInnerHTML={{ __html: blog.title }}
@@ -169,7 +167,8 @@ const EntertainmentBlogs = () => {
                     </div>
                   </div>
                 </motion.div>
-              ))}
+              );
+            })}
             </div>
           </div>
         </div>

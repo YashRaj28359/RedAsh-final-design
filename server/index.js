@@ -167,6 +167,10 @@ mongoose.connect(MONGO_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
+app.get('/', (req, res) => {
+  res.status(200).send('RedAsh API Server is running');
+});
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server is running' });
 });
@@ -646,33 +650,27 @@ app.post('/api/upload', upload.single('image'), (req, res) => {
       return res.status(400).json({ message: 'No file uploaded' });
     }
     // Return the URL path to access the file
-    const fileUrl = `https://redash-final-design.onrender.com/uploads/${req.file.filename}`;
+    const fileUrl = `/uploads/${req.file.filename}`;
     res.json({ url: fileUrl });
   } catch (error) {
     res.status(500).json({ message: 'Error uploading file', error: error.message });
   }
 });
 
-// Initialize admin credentials from environment variables if not already in DB
+// Initialize admin credentials from environment variables ONLY if no admin exists in DB
 async function initializeAdminCredentials() {
   try {
-    const adminEmail = process.env.VITE_ADMIN_EMAIL || process.env.ADMIN_EMAIL;
-    const adminPassword = process.env.VITE_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD;
+    const adminCount = await Admin.countDocuments();
+    if (adminCount === 0) {
+      const adminEmail = process.env.ADMIN_EMAIL || 'admin@redash.in';
+      const adminPassword = process.env.ADMIN_PASSWORD || 'Admin@123';
 
-    if (!adminEmail || !adminPassword) {
-      console.warn('Admin credentials not configured in environment variables');
-      return;
-    }
-
-    // Check if admin exists
-    const existingAdmin = await Admin.findOne({ email: adminEmail.toLowerCase() });
-    if (!existingAdmin) {
       const newAdmin = new Admin({
-        email: adminEmail.toLowerCase(),
+        email: adminEmail.toLowerCase().trim(),
         password: hashPassword(adminPassword)
       });
       await newAdmin.save();
-      console.log('Admin credentials securely initialized from environment variables');
+      console.log('Admin credentials securely initialized in database.');
     }
   } catch (error) {
     console.error('Error initializing admin credentials:', error);
@@ -707,25 +705,40 @@ app.post('/api/admin/login', async (req, res) => {
     // 2. Lookup Admin in DB
     const admin = await Admin.findOne({ email: emailLower });
 
-    if (admin && verifyPassword(password, admin.password)) {
-      // If legacy unhashed password, automatically upgrade to salted hash
-      if (!admin.password.startsWith('scrypt:')) {
-        admin.password = hashPassword(password);
-        await admin.save();
+    if (admin) {
+      if (verifyPassword(password, admin.password)) {
+        // If legacy unhashed password, automatically upgrade to salted hash
+        if (!admin.password.startsWith('scrypt:')) {
+          admin.password = hashPassword(password);
+          await admin.save();
+        }
+        clearFailedLogin(clientIp);
+        const token = generateAuthToken(admin.email);
+        return res.json({ success: true, token, email: admin.email, message: 'Login successful' });
       }
-      clearFailedLogin(clientIp);
-      const token = generateAuthToken(admin.email);
-      return res.json({ success: true, token, email: admin.email, message: 'Login successful' });
+      
+      // Admin found with this email, but password does not match DB!
+      recordFailedLogin(clientIp);
+      return res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
 
-    // Fall back to environment variables for backward compatibility
-    const defaultEmail = process.env.VITE_ADMIN_EMAIL || process.env.ADMIN_EMAIL;
-    const defaultPassword = process.env.VITE_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD;
+    // 3. Fallback ONLY if database is completely empty (first-time bootstrapping)
+    const adminCount = await Admin.countDocuments();
+    if (adminCount === 0) {
+      const defaultEmail = process.env.ADMIN_EMAIL || 'admin@redash.in';
+      const defaultPassword = process.env.ADMIN_PASSWORD || 'Admin@123';
 
-    if (defaultEmail && defaultPassword && emailLower === defaultEmail.trim().toLowerCase() && password === defaultPassword) {
-      clearFailedLogin(clientIp);
-      const token = generateAuthToken(defaultEmail.trim().toLowerCase());
-      return res.json({ success: true, token, email: defaultEmail.trim().toLowerCase(), message: 'Login successful' });
+      if (emailLower === defaultEmail.trim().toLowerCase() && password === defaultPassword) {
+        const newAdmin = new Admin({
+          email: defaultEmail.trim().toLowerCase(),
+          password: hashPassword(defaultPassword)
+        });
+        await newAdmin.save();
+
+        clearFailedLogin(clientIp);
+        const token = generateAuthToken(newAdmin.email);
+        return res.json({ success: true, token, email: newAdmin.email, message: 'Login successful' });
+      }
     }
 
     // Record failed attempt
@@ -750,35 +763,21 @@ app.post('/api/admin/change-password', async (req, res) => {
       return res.status(400).json({ message: 'New password must be at least 6 characters long' });
     }
 
-    const defaultEmail = process.env.VITE_ADMIN_EMAIL || process.env.ADMIN_EMAIL;
-    const defaultPassword = process.env.VITE_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD;
-
-    // Find admin by provided email, configured default email, or existing admin document
+    // Find admin by provided email, or find the single admin document
     let admin = null;
     if (email) {
       admin = await Admin.findOne({ email: String(email).trim().toLowerCase() });
-    }
-    if (!admin && defaultEmail) {
-      admin = await Admin.findOne({ email: String(defaultEmail).trim().toLowerCase() });
     }
     if (!admin) {
       admin = await Admin.findOne();
     }
 
     if (!admin) {
-      if (!defaultEmail) {
-        return res.status(500).json({ message: 'Admin email not configured' });
-      }
-      admin = new Admin({
-        email: String(defaultEmail).trim().toLowerCase(),
-        password: hashPassword(defaultPassword || currentPassword)
-      });
-      await admin.save();
+      return res.status(404).json({ message: 'Admin account not found in database' });
     }
 
-    // Validate current password against DB password or default password
-    const isCurrentValid = verifyPassword(currentPassword, admin.password) ||
-      (defaultPassword && currentPassword === defaultPassword);
+    // Validate current password ONLY against DB stored password
+    const isCurrentValid = verifyPassword(currentPassword, admin.password);
 
     if (!isCurrentValid) {
       return res.status(401).json({ message: 'Current password is incorrect' });
@@ -809,52 +808,38 @@ app.post('/api/admin/change-email', async (req, res) => {
       return res.status(400).json({ message: 'Invalid email address' });
     }
 
-    const defaultEmail = process.env.VITE_ADMIN_EMAIL || process.env.ADMIN_EMAIL;
-    const defaultPassword = process.env.VITE_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD;
-
-    // Find admin by provided email, configured default email, or existing admin document
+    // Find admin by provided email, or find the single admin document
     let admin = null;
     if (email) {
       admin = await Admin.findOne({ email: String(email).trim().toLowerCase() });
-    }
-    if (!admin && defaultEmail) {
-      admin = await Admin.findOne({ email: String(defaultEmail).trim().toLowerCase() });
     }
     if (!admin) {
       admin = await Admin.findOne();
     }
 
     if (!admin) {
-      if (!defaultEmail) {
-        return res.status(500).json({ message: 'Admin email not configured' });
-      }
-      admin = new Admin({
-        email: String(defaultEmail).trim().toLowerCase(),
-        password: hashPassword(defaultPassword || currentPassword)
-      });
-      await admin.save();
+      return res.status(404).json({ message: 'Admin account not found in database' });
     }
 
-    // Validate current password against DB password or default password
-    const isCurrentValid = verifyPassword(currentPassword, admin.password) ||
-      (defaultPassword && currentPassword === defaultPassword);
+    // Validate current password ONLY against DB stored password
+    const isCurrentValid = verifyPassword(currentPassword, admin.password);
 
     if (!isCurrentValid) {
       return res.status(401).json({ message: 'Current password is incorrect' });
     }
 
     // Check if new email already exists (for a different admin)
-    const existingAdmin = await Admin.findOne({ email: newEmail.toLowerCase() });
+    const existingAdmin = await Admin.findOne({ email: newEmail.toLowerCase().trim() });
     if (existingAdmin && existingAdmin._id.toString() !== admin._id.toString()) {
       return res.status(400).json({ message: 'Email address is already in use' });
     }
 
     // Update email and timestamp
-    admin.email = newEmail.toLowerCase();
+    admin.email = newEmail.toLowerCase().trim();
     admin.updatedAt = new Date();
     await admin.save();
 
-    res.json({ success: true, message: 'Email updated successfully' });
+    res.json({ success: true, message: 'Email updated successfully', email: admin.email });
   } catch (error) {
     console.error('Error changing email:', error);
     res.status(500).json({ message: 'Error changing email', error: error.message });

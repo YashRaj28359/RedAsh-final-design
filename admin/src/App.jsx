@@ -3,18 +3,35 @@ import './App.css';
 import { Mail, Home, Film, Briefcase, Settings, LogOut, FileText, Image as ImageIcon, Layout, Phone, Info, Save, Eye, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Plus, Trash2, Edit2, PlayCircle, GripVertical, RefreshCw, Users, Upload, Flame, ToggleRight, ToggleLeft, ArrowRight, ArrowDown, ExternalLink, CircleDollarSign, Brain, TrendingUp, Rocket, Target, Building, Lightbulb, Smartphone, Laptop, Globe, CheckCircle, MessageSquare, X, Share2 } from 'lucide-react';
 
 const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-const API_URL = isLocal 
-  ? (import.meta.env.VITE_API_URL || 'http://localhost:5000') 
-  : 'https://redash-final-design.onrender.com';
+const API_URL = (() => {
+  if (isLocal) return import.meta.env.VITE_API_URL || 'http://localhost:5000';
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (envUrl && !envUrl.includes('localhost') && !envUrl.includes('127.0.0.1')) return envUrl;
+  return 'https://api.redash.in';
+})();
 
 const resolveUploadedUrl = (url) => {
   if (!url) return '';
-  if (url.startsWith('http://') || url.startsWith('https://')) {
-    let cleaned = url.replace(/https:\/\/redash-final-design\.onrender\.comhttps:\/\//g, 'https://');
-    cleaned = cleaned.replace(/http:\/\/localhost:5000(?=http)/g, '');
-    return cleaned;
+  if (typeof url !== 'string') return url;
+  if (url.startsWith('data:') || url.startsWith('blob:')) return url;
+  let s = url.trim();
+  if (s.includes('redash-final-design.onrender.com')) {
+    s = s.replace(/https:\/\/redash-final-design\.onrender\.com/g, API_URL);
   }
-  return `${API_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+  if (s.includes('http://localhost:5000') && !isLocal) {
+    s = s.replace(/http:\/\/localhost:5000/g, API_URL);
+  }
+  if (s.startsWith('/uploads/')) {
+    return `${API_URL}${s}`;
+  }
+  if (s.startsWith('uploads/')) {
+    return `${API_URL}/${s}`;
+  }
+  if (s.startsWith('/media/')) return s;
+  if (s.startsWith('http://') || s.startsWith('https://')) {
+    return s;
+  }
+  return `${API_URL}/${s.replace(/^\//, '')}`;
 };
 
 const CASE_STUDY_ICONS = [
@@ -369,6 +386,56 @@ import vp24 from '../../client/src/assets/Films/Poster/Micro drama Movie posters
 import vp25 from '../../client/src/assets/Films/Poster/Micro drama Movie posters/25.webp';
 import vp26 from '../../client/src/assets/Films/Poster/Micro drama Movie posters/26.webp';
 
+export const CELEB_STATIC_MAP = {
+  'Ashish Lal': celeb1,
+  'Surbhi Jyoti': celeb2,
+  'Upendra Limaye': celeb3,
+  'Updendra limaye': celeb3,
+  'Vidya Malavade': celeb4,
+  'Zakir Hussain': celeb5,
+  'Navni Parihar': celeb6,
+  'Durgesh Kumar': celeb7,
+  'Pariva Pranati': celeb8,
+  'Tom Alter': celeb9,
+  'Seema Biswas': celeb10,
+  'Kiran Kumar': celeb11,
+  'Nibeditaa Paal': celeb12,
+  'Piyush Sahdev': celeb13,
+};
+
+export const CLIENT_STATIC_MAP = [
+  clientImg1, clientImg2, clientImg3, clientImg4, clientImg5, clientImg6, clientImg7, clientImg8, clientImg9
+];
+
+export const REDHOT_STATIC_MAP = [
+  redHotImg1, microDramaImg, redHotImg2, redHotImg3
+];
+
+export const HORIZONTAL_POSTER_MAP = [
+  poster1, poster2, poster3, poster4, poster5, poster6, poster7, poster8, poster9
+];
+
+export const VERTICAL_POSTER_MAP = [
+  vp1, vp2, vp3, vp4, vp5, vp6, vp7, vp8, vp9, vp10, vp11, vp12, vp13, vp14, vp15, vp16, vp17, vp18, vp19, vp20, vp21, vp22, vp23, vp24, vp25, vp26
+];
+
+export const resolvePreviewUrl = (src, fallback) => {
+  if (!src && !fallback) return '';
+  if (typeof src !== 'string') return src || fallback;
+  const s = src.trim();
+  if (s.startsWith('data:') || s.startsWith('blob:')) return s;
+  if (s.startsWith('http://') || s.startsWith('https://')) {
+    if (!s.includes('localhost:5173') && !s.includes('/@fs/')) {
+      return s;
+    }
+  }
+  if (s.startsWith('/uploads/')) {
+    return `${API_URL}${s}`;
+  }
+  if (fallback) return fallback;
+  return s;
+};
+
 // Mock Data State
 const initialContent = {
   homepage: {
@@ -493,7 +560,7 @@ function AdminLogin({ onLogin }) {
         <h2>Welcome back</h2>
         <p className="admin-login-subtitle">Sign in to manage your website content.</p>
         <form onSubmit={handleSubmit} className="admin-login-form">
-          <label>Email<div className="admin-login-input-wrap"><Mail size={17} /><input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="admin@example.com" required disabled={loading} /></div></label>
+          <label>Email<div className="admin-login-input-wrap"><Mail size={17} /><input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="admin@redash.in" required disabled={loading} /></div></label>
           <label>Password
             <div className="admin-login-input-wrap" style={{ position: 'relative' }}>
               <Settings size={17} />
@@ -2979,6 +3046,34 @@ function App() {
               </button>
               <button className={`sub-nav-item ${activeSubMenu === 'videos' ? 'active' : ''}`} onClick={() => setActiveSubMenu('videos')}>
                 <div className="label-group"><Layout size={16} /> Upload Films</div>
+              </button>
+            </div>
+          </>
+        );
+      case 'agency-media':
+        return (
+          <>
+            <div className="section-header">
+              <h1>Agency Media Settings</h1>
+              <p>Manage media articles and statement</p>
+            </div>
+            <div className="sub-nav">
+              <button className={`sub-nav-item ${activeSubMenu === 'media' ? 'active' : ''}`} onClick={() => setActiveSubMenu('media')}>
+                <div className="label-group"><FileText size={16} /> Media Settings</div>
+              </button>
+            </div>
+          </>
+        );
+      case 'agency-contact':
+        return (
+          <>
+            <div className="section-header">
+              <h1>Agency Contact</h1>
+              <p>Manage contact settings for the Agency page</p>
+            </div>
+            <div className="sub-nav">
+              <button className={`sub-nav-item ${activeSubMenu === 'contact' ? 'active' : ''}`} onClick={() => setActiveSubMenu('contact')}>
+                <div className="label-group"><FileText size={16} /> Contact Details</div>
               </button>
             </div>
           </>
@@ -6580,16 +6675,31 @@ function App() {
                 </div>
 
                 {/* 1. Image Preview (Top) */}
-                <div style={{ width: '100%', height: '220px', background: '#f1f5f9', borderRadius: '8px', overflow: 'hidden', border: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                  {item.img ? (
-                    <img src={item.img} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} />
-                  ) : (
-                    <div style={{ textAlign: 'center', color: '#94a3b8' }}>
-                      <ImageIcon size={36} style={{ margin: '0 auto 0.4rem', opacity: 0.5 }} />
-                      <span style={{ fontSize: '0.8rem', display: 'block', fontWeight: '500' }}>No Image Selected</span>
+                {(() => {
+                  const celebFallback = (item.name && CELEB_STATIC_MAP[item.name]) || defaultFeaturedCelebs?.[rowKey]?.[idx]?.img || '';
+                  const previewSrc = resolvePreviewUrl(item.img, celebFallback);
+                  return (
+                    <div style={{ width: '100%', height: '220px', background: '#f1f5f9', borderRadius: '8px', overflow: 'hidden', border: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                      {previewSrc ? (
+                        <img 
+                          src={previewSrc} 
+                          alt={item.name || 'Celebrity'} 
+                          onError={(e) => {
+                            if (celebFallback && e.currentTarget.src !== celebFallback) {
+                              e.currentTarget.src = celebFallback;
+                            }
+                          }}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} 
+                        />
+                      ) : (
+                        <div style={{ textAlign: 'center', color: '#94a3b8' }}>
+                          <ImageIcon size={36} style={{ margin: '0 auto 0.4rem', opacity: 0.5 }} />
+                          <span style={{ fontSize: '0.8rem', display: 'block', fontWeight: '500' }}>No Image Selected</span>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
+                  );
+                })()}
 
                 {/* 2. Celebrity Name Input (Below Image) */}
                 <div>
@@ -6765,16 +6875,31 @@ function App() {
                 </div>
 
                 {/* 1. Image Preview Box */}
-                <div style={{ width: '100%', height: '200px', background: '#f8fafc', borderRadius: '8px', overflow: 'hidden', border: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                  {item.image ? (
-                    <img src={item.image} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  ) : (
-                    <div style={{ textAlign: 'center', color: '#94a3b8' }}>
-                      <ImageIcon size={36} style={{ margin: '0 auto 0.4rem', opacity: 0.5 }} />
-                      <span style={{ fontSize: '0.8rem', display: 'block', fontWeight: '500' }}>No Image Selected</span>
+                {(() => {
+                  const redHotFallback = REDHOT_STATIC_MAP[idx % REDHOT_STATIC_MAP.length] || redHotImg1;
+                  const previewSrc = resolvePreviewUrl(item.image, redHotFallback);
+                  return (
+                    <div style={{ width: '100%', height: '200px', background: '#f8fafc', borderRadius: '8px', overflow: 'hidden', border: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                      {previewSrc ? (
+                        <img 
+                          src={previewSrc} 
+                          alt={item.title || 'Red Hot Poster'} 
+                          onError={(e) => {
+                            if (redHotFallback && e.currentTarget.src !== redHotFallback) {
+                              e.currentTarget.src = redHotFallback;
+                            }
+                          }}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                        />
+                      ) : (
+                        <div style={{ textAlign: 'center', color: '#94a3b8' }}>
+                          <ImageIcon size={36} style={{ margin: '0 auto 0.4rem', opacity: 0.5 }} />
+                          <span style={{ fontSize: '0.8rem', display: 'block', fontWeight: '500' }}>No Image Selected</span>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
+                  );
+                })()}
 
                 {/* 2. Image URL & File Upload */}
                 <div>
@@ -7883,16 +8008,31 @@ function App() {
                   </div>
 
                   {/* Horizontal Image Preview */}
-                  <div style={{ width: '100%', height: '170px', background: '#f8fafc', borderRadius: '8px', overflow: 'hidden', border: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {item.image ? (
-                      <img src={item.image} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    ) : (
-                      <div style={{ textAlign: 'center', color: '#94a3b8' }}>
-                        <ImageIcon size={36} style={{ margin: '0 auto 0.4rem', opacity: 0.5 }} />
-                        <span style={{ fontSize: '0.8rem', display: 'block', fontWeight: '500' }}>No Image Selected</span>
+                  {(() => {
+                    const hFallback = HORIZONTAL_POSTER_MAP[idx % HORIZONTAL_POSTER_MAP.length] || poster1;
+                    const previewSrc = resolvePreviewUrl(item.image, hFallback);
+                    return (
+                      <div style={{ width: '100%', height: '170px', background: '#f8fafc', borderRadius: '8px', overflow: 'hidden', border: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        {previewSrc ? (
+                          <img 
+                            src={previewSrc} 
+                            alt={item.title || 'Horizontal Project'} 
+                            onError={(e) => {
+                              if (hFallback && e.currentTarget.src !== hFallback) {
+                                e.currentTarget.src = hFallback;
+                              }
+                            }}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                          />
+                        ) : (
+                          <div style={{ textAlign: 'center', color: '#94a3b8' }}>
+                            <ImageIcon size={36} style={{ margin: '0 auto 0.4rem', opacity: 0.5 }} />
+                            <span style={{ fontSize: '0.8rem', display: 'block', fontWeight: '500' }}>No Image Selected</span>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
+                    );
+                  })()}
 
                   {/* Image URL & Upload */}
                   <div>
@@ -8070,16 +8210,31 @@ function App() {
                   </div>
 
                   {/* Vertical Image Preview */}
-                  <div style={{ width: '100%', height: '220px', background: '#f8fafc', borderRadius: '8px', overflow: 'hidden', border: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {item.image ? (
-                      <img src={item.image} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    ) : (
-                      <div style={{ textAlign: 'center', color: '#94a3b8' }}>
-                        <ImageIcon size={36} style={{ margin: '0 auto 0.4rem', opacity: 0.5 }} />
-                        <span style={{ fontSize: '0.8rem', display: 'block', fontWeight: '500' }}>No Image Selected</span>
+                  {(() => {
+                    const vFallback = VERTICAL_POSTER_MAP[idx % VERTICAL_POSTER_MAP.length] || vp1;
+                    const previewSrc = resolvePreviewUrl(item.image, vFallback);
+                    return (
+                      <div style={{ width: '100%', height: '220px', background: '#f8fafc', borderRadius: '8px', overflow: 'hidden', border: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        {previewSrc ? (
+                          <img 
+                            src={previewSrc} 
+                            alt={item.title || 'Vertical Project'} 
+                            onError={(e) => {
+                              if (vFallback && e.currentTarget.src !== vFallback) {
+                                e.currentTarget.src = vFallback;
+                              }
+                            }}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                          />
+                        ) : (
+                          <div style={{ textAlign: 'center', color: '#94a3b8' }}>
+                            <ImageIcon size={36} style={{ margin: '0 auto 0.4rem', opacity: 0.5 }} />
+                            <span style={{ fontSize: '0.8rem', display: 'block', fontWeight: '500' }}>No Image Selected</span>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
+                    );
+                  })()}
 
                   {/* Image URL & Upload */}
                   <div>
@@ -8266,16 +8421,31 @@ function App() {
                 </div>
 
                 {/* 1. Image Preview (Top) */}
-                <div style={{ width: '100%', height: '180px', background: '#f8fafc', borderRadius: '8px', overflow: 'hidden', border: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-                  {item.img ? (
-                    <img src={item.img} alt={`Logo ${idx + 1}`} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-                  ) : (
-                    <div style={{ textAlign: 'center', color: '#94a3b8' }}>
-                      <ImageIcon size={36} style={{ margin: '0 auto 0.4rem', opacity: 0.5 }} />
-                      <span style={{ fontSize: '0.8rem', display: 'block', fontWeight: '500' }}>No Logo Selected</span>
+                {(() => {
+                  const clientFallback = CLIENT_STATIC_MAP[idx % CLIENT_STATIC_MAP.length] || clientImg1;
+                  const previewSrc = resolvePreviewUrl(item.img, clientFallback);
+                  return (
+                    <div style={{ width: '100%', height: '180px', background: '#f8fafc', borderRadius: '8px', overflow: 'hidden', border: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+                      {previewSrc ? (
+                        <img 
+                          src={previewSrc} 
+                          alt={`Logo ${idx + 1}`} 
+                          onError={(e) => {
+                            if (clientFallback && e.currentTarget.src !== clientFallback) {
+                              e.currentTarget.src = clientFallback;
+                            }
+                          }}
+                          style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} 
+                        />
+                      ) : (
+                        <div style={{ textAlign: 'center', color: '#94a3b8' }}>
+                          <ImageIcon size={36} style={{ margin: '0 auto 0.4rem', opacity: 0.5 }} />
+                          <span style={{ fontSize: '0.8rem', display: 'block', fontWeight: '500' }}>No Logo Selected</span>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
+                  );
+                })()}
 
                 {/* 2. Upload Image & URL Controls */}
                 <div>
@@ -8665,7 +8835,12 @@ function App() {
                   <div key={blog.slug || idx} draggable onDragStart={(e) => handleEntertainmentBlogDragStart(e, idx)} onDragOver={(e) => handleEntertainmentBlogDragOver(e, idx)} onDrop={(e) => handleEntertainmentBlogDrop(e, idx)} onDragEnd={handleEntertainmentBlogDragEnd} className="blog-card" style={{ position: 'relative', border: isDragging ? '2px dashed #e20002' : isDragOver ? '2px solid #2563eb' : '1px solid #e2e8f0', borderRadius: '10px', overflow: 'hidden', background: '#fff', display: 'flex', flexDirection: 'column', opacity: isDragging ? 0.35 : 1, transform: isDragging ? 'scale(0.97)' : isDragOver ? 'scale(1.02)' : 'scale(1)', boxShadow: isDragOver ? '0 12px 28px -5px rgba(37, 99, 235, 0.35)' : '0 2px 8px rgba(0,0,0,0.04)', transition: 'transform 0.15s ease, opacity 0.15s ease, box-shadow 0.15s ease, border 0.15s ease', cursor: 'grab' }}>
                     {isDragOver && <div style={{ position: 'absolute', inset: 0, background: 'rgba(239, 246, 255, 0.95)', backdropFilter: 'blur(3px)', zIndex: 40, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', border: '2.5px dashed #2563eb', borderRadius: '10px', pointerEvents: 'none', color: '#1e40af' }}><ArrowDown size={28} /><strong>Drop Here (Slot #{idx + 1})</strong><span style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>Place: &quot;{blogs[draggedEntertainmentBlogIndex]?.title || 'Blog'}&quot;</span></div>}
                     <div style={{ height: '160px', overflow: 'hidden', position: 'relative' }}>
-                      <img src={blog.imageUrl ? (blog.imageUrl.startsWith('http') || blog.imageUrl.startsWith('/media/') ? blog.imageUrl : `${API_URL}${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`) : 'https://placehold.co/600x400?text=No+Image'} alt={blog.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <img 
+                        src={resolveUploadedUrl(blog.imageUrl)} 
+                        alt={blog.title} 
+                        onError={(e) => { e.currentTarget.src = 'https://placehold.co/600x400?text=Entertainment+Blog'; }}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                      />
                       <div style={{ position: 'absolute', top: '10px', left: '10px', background: '#e20002', color: 'white', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold' }}>
                         {blog.date ? new Date(blog.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase() : ''}
                       </div>
@@ -8992,7 +9167,12 @@ function App() {
 
                     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', pointerEvents: draggedAgencyBlogIndex !== null ? 'none' : 'auto' }}>
                       <div style={{ height: '160px', overflow: 'hidden', position: 'relative' }}>
-                        <img src={blog.imageUrl ? (blog.imageUrl.startsWith('http') ? blog.imageUrl : `${API_URL}${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`) : 'https://placehold.co/600x400?text=No+Image'} alt={blog.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <img 
+                          src={resolveUploadedUrl(blog.imageUrl)} 
+                          alt={blog.title} 
+                          onError={(e) => { e.currentTarget.src = 'https://placehold.co/600x400?text=Agency+Blog'; }}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                        />
                         
                         {/* Drag handle & date badge */}
                         <div style={{ position: 'absolute', top: '10px', left: '10px', display: 'flex', alignItems: 'center', gap: '0.35rem', background: '#3b82f6', color: 'white', padding: '0.25rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold', boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
@@ -9145,7 +9325,7 @@ function App() {
             </div>
           </div>
 
-          <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'center', gap: '1rem' }}>
+          <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'center' }}>
             <button
               type="button"
               onClick={() => setActiveSidebar('homepage-media')}
@@ -9153,10 +9333,46 @@ function App() {
             >
               Edit Media
             </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (activeSidebar === 'agency-contact' && activeSubMenu === 'contact') {
+      return (
+        <div className="editor-form-pane">
+          <div className="form-header">
+            <div>
+              <h2>Ad Agency Contact Settings</h2>
+              <p>Manage contact information and details for the Ad Agency</p>
+            </div>
+          </div>
+
+          <div className="section-card" style={{ marginTop: '2rem', padding: '2.5rem 1.5rem', textAlign: 'center', background: '#fff', borderRadius: '8px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.25rem' }}>
+            <div>
+              <h3 style={{ fontSize: '1.15rem', fontWeight: '700', color: '#0f172a', marginBottom: '0.5rem' }}>Global & Agency Contact Details</h3>
+              <p style={{ fontSize: '0.9rem', color: '#64748b', maxWidth: '500px', margin: '0 auto' }}>
+                Manage office address, emails, phone numbers, and map locations for the Contact page.
+              </p>
+            </div>
+
             <button
               type="button"
               onClick={() => setActiveSidebar('global-contact')}
-              style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: '#3b82f6', color: '#ffffff', border: 'none', padding: '0.6rem 2.5rem', borderRadius: '6px', fontWeight: '600', fontSize: '0.95rem', cursor: 'pointer' }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: '#3b82f6',
+                color: '#ffffff',
+                border: 'none',
+                padding: '0.75rem 2.5rem',
+                borderRadius: '6px',
+                fontWeight: '600',
+                fontSize: '0.95rem',
+                cursor: 'pointer',
+                boxShadow: '0 4px 6px -1px rgba(59, 130, 246, 0.25), 0 2px 4px -1px rgba(59, 130, 246, 0.1)'
+              }}
             >
               Edit Contact
             </button>
@@ -9202,7 +9418,7 @@ function App() {
           }}>
             <Film size={16} /> Entertainment Films
           </button>
-          <button className={`top-nav-tab agency ${activeSidebar === 'agency' ? 'active' : ''}`} onClick={() => {
+          <button className={`top-nav-tab agency ${activeSidebar.startsWith('agency') ? 'active' : ''}`} onClick={() => {
             setActiveSidebar('agency');
             setDomain('agency.redashfilms.com');
           }}>
@@ -10298,7 +10514,12 @@ function App() {
                 </div>
                 {newBlog.imageUrl && (
                   <div style={{ marginTop: '0.5rem', width: '100%', height: '120px', borderRadius: '6px', overflow: 'hidden' }}>
-                    <img src={newBlog.imageUrl.startsWith('http') ? newBlog.imageUrl : `${API_URL}${newBlog.imageUrl.startsWith('/') ? '' : '/'}${newBlog.imageUrl}`} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img 
+                      src={resolveUploadedUrl(newBlog.imageUrl)} 
+                      alt="Preview" 
+                      onError={(e) => { e.currentTarget.src = 'https://placehold.co/600x400?text=Preview'; }}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                    />
                   </div>
                 )}
               </div>

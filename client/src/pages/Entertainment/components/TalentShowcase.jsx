@@ -56,8 +56,8 @@ const ArtistCard = ({ artist }) => {
 
   let rawImg = artist.image || staticImageMap[artist.name];
   if (rawImg && typeof rawImg === 'string') {
-    while (rawImg.includes('https://redash-final-design.onrender.comhttps://')) {
-      rawImg = rawImg.replace('https://redash-final-design.onrender.comhttps://', 'https://');
+    if (rawImg.includes('redash-final-design.onrender.com')) {
+      rawImg = rawImg.replace(/https:\/\/redash-final-design\.onrender\.com/g, API_URL);
     }
     while (rawImg.includes('http://localhost:5000http')) {
       rawImg = rawImg.replace(/http:\/\/localhost:5000(?=http)/g, '');

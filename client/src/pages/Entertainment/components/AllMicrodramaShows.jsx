@@ -6,7 +6,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 import { microdramaShows } from '../../../data/microdramaShows';
-import { fetchContent } from '../../../utils/api';
+import { fetchContent, resolveClientImage } from '../../../utils/api';
+
 
 const VerticalCard = ({ project, cardRef }) => {
   const hasValidLink = Boolean(
@@ -60,15 +61,9 @@ const AllMicrodramaShows = () => {
       if (verticalCards && verticalCards.length > 0) {
         setShows(verticalCards.map((item, index) => {
           const fallback = microdramaShows[index] || {};
-          let customLink = item.linkHome || item.link || item.url;
-          if (customLink === '#' || customLink === 'null' || (customLink && customLink.includes('/browse'))) {
-            customLink = null;
-          }
-          const finalUrl = fallback.url !== undefined ? (customLink || fallback.url) : customLink;
-          let img = item.image;
-          if (index === 0 || !img || img.includes('1.webp') || img.includes('/@fs/') || img.includes('/src/assets/')) {
-            img = fallback.image || img;
-          }
+          // Always use static microdramaShows URL — DB link data may be stale/wrong
+          const staticUrl = fallback.url || null;
+          const img = resolveClientImage(item.image, fallback.image);
           return { 
             ...fallback, 
             ...item, 
@@ -77,9 +72,10 @@ const AllMicrodramaShows = () => {
             hoverScaleClass: fallback.hoverScaleClass || item.hoverScaleClass || 'group-hover:scale-105',
             image: img, 
             fallbackImage: fallback.image, 
-            url: finalUrl 
+            url: staticUrl 
           };
         }));
+
       } else {
         setShows(microdramaShows);
       }

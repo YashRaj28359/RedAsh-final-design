@@ -230,8 +230,7 @@ const VideoGrid = () => {
           className="flex flex-wrap justify-start gap-x-[8%] md:gap-x-[3%] xl:gap-x-[5%] gap-y-8 md:gap-y-6 w-full md:pl-[1.5%]"
           variants={containerVariants}
           initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-100px" }}
+          animate="show"
         >
           {finalVideoList.map((video) => (
             <motion.div 

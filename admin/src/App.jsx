@@ -1902,7 +1902,7 @@ function App() {
       setNewBlog({ ...blog, _idx: idx });
       blogContentRef.current = blog.content || '';
     } else {
-      setNewBlog({ title: '', slug: '', date: new Date().toISOString().split('T')[0], imageUrl: '', content: '', _idx: null });
+      setNewBlog({ title: '', slug: '', date: new Date().toISOString().split('T')[0], imageUrl: '', content: '', published: true, _idx: null });
       blogContentRef.current = '';
     }
     setShowAddBlogModal(true);
@@ -1937,6 +1937,10 @@ function App() {
       newBlog.id = Date.now();
     }
     newBlog.content = blogContentRef.current;
+    // Ensure new blogs are published by default
+    if (newBlog.published === undefined || newBlog.published === null) {
+      newBlog.published = true;
+    }
 
     if (newBlog._idx !== null && newBlog._idx !== undefined) {
       if (typeof newBlog._idx === 'string' && newBlog._idx.startsWith('static_')) {
@@ -8724,6 +8728,15 @@ function App() {
           if (blogToRemove.slug && !newState.entertainment.deletedBlogSlugs.includes(blogToRemove.slug)) {
             newState.entertainment.deletedBlogSlugs.push(blogToRemove.slug);
           }
+          // Delete image file from server uploads if it exists
+          if (blogToRemove.imageUrl && (blogToRemove.imageUrl.includes('/uploads/') || blogToRemove.imageUrl.startsWith('/uploads/'))) {
+            const token = localStorage.getItem('redash_admin_token');
+            fetch(`${API_URL}/api/delete-file`, {
+              method: 'DELETE',
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+              body: JSON.stringify({ fileUrl: blogToRemove.imageUrl })
+            }).catch(e => console.warn('Could not delete blog image file:', e));
+          }
           setContent(newState);
           handleSave(newState);
         }
@@ -8956,6 +8969,15 @@ function App() {
           if (!newState.agency.deletedBlogSlugs) newState.agency.deletedBlogSlugs = [];
           if (blogToRemove.slug && !newState.agency.deletedBlogSlugs.includes(blogToRemove.slug)) {
             newState.agency.deletedBlogSlugs.push(blogToRemove.slug);
+          }
+          // Delete image file from server uploads if it exists
+          if (blogToRemove.imageUrl && (blogToRemove.imageUrl.includes('/uploads/') || blogToRemove.imageUrl.startsWith('/uploads/'))) {
+            const token = localStorage.getItem('redash_admin_token');
+            fetch(`${API_URL}/api/delete-file`, {
+              method: 'DELETE',
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+              body: JSON.stringify({ fileUrl: blogToRemove.imageUrl })
+            }).catch(e => console.warn('Could not delete blog image file:', e));
           }
           setContent(newState);
           handleSave(newState);

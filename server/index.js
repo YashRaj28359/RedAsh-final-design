@@ -846,6 +846,50 @@ app.post('/api/admin/change-email', async (req, res) => {
   }
 });
 
+// DELETE uploaded file when blog/content image is removed
+app.delete('/api/delete-file', authenticateAdmin, async (req, res) => {
+  try {
+    const { fileUrl } = req.body;
+    if (!fileUrl || typeof fileUrl !== 'string') {
+      return res.status(400).json({ success: false, message: 'fileUrl is required' });
+    }
+
+    // Extract relative path from URL — support /uploads/... and /uploads/blogs/...
+    let relativePath = null;
+    if (fileUrl.startsWith('/uploads/')) {
+      relativePath = fileUrl;
+    } else {
+      // Handle full URL like https://api.redash.in/uploads/blogs/xyz.jpg
+      const match = fileUrl.match(/\/uploads\/.+/);
+      if (match) relativePath = match[0];
+    }
+
+    if (!relativePath) {
+      return res.status(400).json({ success: false, message: 'Could not resolve file path from URL' });
+    }
+
+    // Only allow deleting from uploads directory (security: no path traversal)
+    const filePath = path.join(__dirname, relativePath.replace(/\.\./g, ''));
+    const safeUploadsDir = path.resolve(uploadDir);
+    const resolvedFilePath = path.resolve(filePath);
+
+    if (!resolvedFilePath.startsWith(safeUploadsDir)) {
+      return res.status(403).json({ success: false, message: 'Access denied: file outside uploads directory' });
+    }
+
+    if (!fs.existsSync(resolvedFilePath)) {
+      return res.json({ success: true, message: 'File already removed or does not exist' });
+    }
+
+    fs.unlinkSync(resolvedFilePath);
+    console.log(`Deleted file: ${resolvedFilePath}`);
+    res.json({ success: true, message: 'File deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting file:', error);
+    res.status(500).json({ success: false, message: 'Error deleting file', error: error.message });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

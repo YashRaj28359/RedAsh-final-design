@@ -6,7 +6,7 @@ import { fetchContent } from '../../utils/api';
 import mediaData from '../../data/media.json';
 
 const MediaLinks = () => {
-  const [articles, setArticles] = useState([]);
+  const [articles, setArticles] = useState(() => mediaData.slice(0, 3));
   const [subtitle, setSubtitle] = useState('Featured news articles on RedAsh');
 
   useEffect(() => {

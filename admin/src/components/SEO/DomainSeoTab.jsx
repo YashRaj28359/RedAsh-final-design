@@ -44,19 +44,19 @@ const DOMAIN_DEFAULTS = {
   films: {
     title: 'Film Production Company & Ad Agency in India - RedAsh Films',
     description: 'Founded in 2007 by Ashish Lal, an engineer from IIT Delhi, RedAsh Films is a reputed Film Production Company & Ad Agency based in Mumbai.',
-    logo: '/logos/redash-films-logo.png',
+    logo: '/logos/redash-films-banner.png',
     name: 'RedAsh Entertainment'
   },
   agency: {
     title: 'RedAsh Ad Agency | High-Impact Brand Films & Commercials Mumbai',
     description: 'RedAsh Ad Agency produces high-converting TV commercials, corporate films, digital ad campaigns, and brand storytelling that drives massive ROI.',
-    logo: '/logos/redash-agency-logo.png',
+    logo: '/logos/redash-agency-banner.png',
     name: 'RedAsh Ad Agency'
   },
   main: {
     title: 'RedAsh Films & Media | Premium Film Production & Creative Ad Agency Mumbai',
     description: 'RedAsh is a premier film production house and creative ad agency creating captivating films, digital series, microdramas, and high-converting brand commercials.',
-    logo: '/logos/redash-main-logo.png',
+    logo: '/logos/redash-main-banner.png',
     name: 'RedAsh Films & Media'
   }
 };

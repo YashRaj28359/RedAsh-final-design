@@ -17,12 +17,12 @@ const DEFAULT_SEO_CLIENT = {
     favicon: '/logos/redash-main-logo.png',
     ogTitle: 'RedAsh Films & Media | Film Production & Creative Ad Agency',
     ogDescription: 'Premier film production company and creative ad agency crafting memorable storytelling for screens of every size.',
-    ogImage: '/logos/redash-main-logo.png',
+    ogImage: '/logos/redash-main-banner.png',
     ogType: 'website',
     twitterCard: 'summary_large_image',
     twitterTitle: 'RedAsh Films & Media',
     twitterDescription: 'Premier film production company and creative ad agency.',
-    twitterImage: '/logos/redash-main-logo.png'
+    twitterImage: '/logos/redash-main-banner.png'
   },
   films: {
     siteName: 'RedAsh Entertainment',
@@ -35,12 +35,12 @@ const DEFAULT_SEO_CLIENT = {
     favicon: '/logos/redash-films-logo.png',
     ogTitle: 'Film Production Company & Ad Agency in India - RedAsh Films',
     ogDescription: 'Founded in 2007 by Ashish Lal, an engineer from IIT Delhi, RedAsh Films is a reputed Film Production Company & Ad Agency based in Mumbai.',
-    ogImage: '/logos/redash-films-logo.png',
+    ogImage: '/logos/redash-films-banner.png',
     ogType: 'website',
     twitterCard: 'summary_large_image',
     twitterTitle: 'Film Production Company & Ad Agency in India - RedAsh Films',
     twitterDescription: 'Founded in 2007 by Ashish Lal, an engineer from IIT Delhi, RedAsh Films is a reputed Film Production Company & Ad Agency based in Mumbai.',
-    twitterImage: '/logos/redash-films-logo.png'
+    twitterImage: '/logos/redash-films-banner.png'
   },
   agency: {
     siteName: 'RedAsh Ad Agency',
@@ -53,12 +53,12 @@ const DEFAULT_SEO_CLIENT = {
     favicon: '/logos/redash-agency-logo.png',
     ogTitle: 'RedAsh Ad Agency | Impactful Brand Storytelling & Commercials',
     ogDescription: 'We help leading global and Indian brands create TVCs, digital video ads, and campaign films that resonate.',
-    ogImage: '/logos/redash-agency-logo.png',
+    ogImage: '/logos/redash-agency-banner.png',
     ogType: 'website',
     twitterCard: 'summary_large_image',
     twitterTitle: 'RedAsh Ad Agency',
     twitterDescription: 'Cinematic commercials, corporate films, and digital ad campaigns.',
-    twitterImage: '/logos/redash-agency-logo.png'
+    twitterImage: '/logos/redash-agency-banner.png'
   },
   global: {
     siteName: 'RedAsh Films & Media',
@@ -71,12 +71,12 @@ const DEFAULT_SEO_CLIENT = {
     favicon: '/logos/redash-main-logo.png',
     ogTitle: 'RedAsh Films & Media | Film Production & Creative Ad Agency',
     ogDescription: 'Premier film production company and creative ad agency crafting memorable storytelling for screens of every size.',
-    ogImage: '/logos/redash-main-logo.png',
+    ogImage: '/logos/redash-main-banner.png',
     ogType: 'website',
     twitterCard: 'summary_large_image',
     twitterTitle: 'RedAsh Films & Media',
     twitterDescription: 'Premier film production company and creative ad agency.',
-    twitterImage: '/logos/redash-main-logo.png'
+    twitterImage: '/logos/redash-main-banner.png'
   },
   pages: {}
 };

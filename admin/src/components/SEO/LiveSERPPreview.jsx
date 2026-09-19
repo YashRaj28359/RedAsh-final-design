@@ -44,10 +44,10 @@ const LiveSERPPreview = ({
   const [copiedLink, setCopiedLink] = useState(false);
 
   const defaultLogo = domainKey === 'films'
-    ? '/logos/redash-films-logo.png'
+    ? '/logos/redash-films-banner.png'
     : domainKey === 'agency'
-      ? '/logos/redash-agency-logo.png'
-      : '/logos/redash-main-logo.png';
+      ? '/logos/redash-agency-banner.png'
+      : '/logos/redash-main-banner.png';
 
   const effectiveOgTitle = ogTitle || title;
   const effectiveOgDesc = ogDescription || description;

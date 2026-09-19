@@ -17,14 +17,14 @@ export const DEFAULT_SEO = {
     // Open Graph / WhatsApp
     ogTitle: 'RedAsh Films & Media | Film Production & Creative Ad Agency',
     ogDescription: 'Premier film production company and creative ad agency crafting memorable storytelling for screens of every size.',
-    ogImage: '/logos/redash-main-logo.png',
+    ogImage: '/logos/redash-main-banner.png',
     ogType: 'website',
     
     // Twitter/X Card
     twitterCard: 'summary_large_image',
     twitterTitle: 'RedAsh Films & Media',
     twitterDescription: 'Premier film production company and creative ad agency.',
-    twitterImage: '/logos/redash-main-logo.png',
+    twitterImage: '/logos/redash-main-banner.png',
     twitterSite: '@RedashFilms',
     twitterCreator: '@RedashFilms',
 
@@ -72,14 +72,14 @@ export const DEFAULT_SEO = {
     // Open Graph / WhatsApp
     ogTitle: 'Film Production Company & Ad Agency in India - RedAsh Films',
     ogDescription: 'Founded in 2007 by Ashish Lal, an engineer from IIT Delhi, RedAsh Films is a reputed Film Production Company & Ad Agency based in Mumbai.',
-    ogImage: '/logos/redash-films-logo.png',
+    ogImage: '/logos/redash-films-banner.png',
     ogType: 'website',
     
     // Twitter/X Card
     twitterCard: 'summary_large_image',
     twitterTitle: 'Film Production Company & Ad Agency in India - RedAsh Films',
     twitterDescription: 'Founded in 2007 by Ashish Lal, an engineer from IIT Delhi, RedAsh Films is a reputed Film Production Company & Ad Agency based in Mumbai.',
-    twitterImage: '/logos/redash-films-logo.png',
+    twitterImage: '/logos/redash-films-banner.png',
     twitterSite: '@RedashFilms',
     twitterCreator: '@RedashFilms',
 
@@ -103,7 +103,7 @@ export const DEFAULT_SEO = {
         robots: 'index, follow',
         ogTitle: 'Film Production Company & Ad Agency in India - RedAsh Films',
         ogDescription: 'Founded in 2007 by Ashish Lal, an engineer from IIT Delhi, RedAsh Films is a reputed Film Production Company & Ad Agency based in Mumbai.',
-        ogImage: '/logos/redash-films-logo.png',
+        ogImage: '/logos/redash-films-banner.png',
         twitterTitle: '',
         twitterDescription: '',
         twitterImage: '',
@@ -223,14 +223,14 @@ export const DEFAULT_SEO = {
     // Open Graph / WhatsApp
     ogTitle: 'RedAsh Ad Agency | Impactful Brand Storytelling & Commercials',
     ogDescription: 'We help leading global and Indian brands create TVCs, digital video ads, and campaign films that resonate.',
-    ogImage: '/logos/redash-agency-logo.png',
+    ogImage: '/logos/redash-agency-banner.png',
     ogType: 'website',
     
     // Twitter/X Card
     twitterCard: 'summary_large_image',
     twitterTitle: 'RedAsh Ad Agency',
     twitterDescription: 'Cinematic commercials, corporate films, and digital ad campaigns.',
-    twitterImage: '/logos/redash-agency-logo.png',
+    twitterImage: '/logos/redash-agency-banner.png',
     twitterSite: '@RedashFilms',
     twitterCreator: '@RedashFilms',
 

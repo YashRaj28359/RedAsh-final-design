@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import Navbar from './components/Navbar';
 import AgencyFooter from './components/AgencyFooter';
+import SEOHead from '../../components/SEOHead';
 import blogsData from '../../data/blogs.json';
 import { getCachedContent, fetchContent, resolveClientImage } from '../../utils/api';
 
@@ -86,6 +87,24 @@ const BlogPost = () => {
 
   return (
     <div className="min-h-screen bg-white flex flex-col font-main">
+      <SEOHead 
+        customPageKey="blogPostTemplate" 
+        dynamicVars={{
+          post_title: blog.title ? blog.title.replace(/<[^>]*>?/gm, '').trim() : '',
+          page_name: blog.title ? blog.title.replace(/<[^>]*>?/gm, '').trim() : 'Blog Post',
+          category_name: 'Ad Agency',
+          author_name: blog.author || 'Ashish Lal',
+          slug: blog.slug || slug
+        }}
+        customOverrides={{
+          title: `${blog.title ? blog.title.replace(/<[^>]*>?/gm, '').trim() : ''} | RedAsh Ad Agency`,
+          description: blog.excerpt || (blog.content ? blog.content.replace(/<[^>]*>?/gm, '').slice(0, 160).trim() : ''),
+          ogTitle: blog.title ? blog.title.replace(/<[^>]*>?/gm, '').trim() : '',
+          ogDescription: blog.excerpt || (blog.content ? blog.content.replace(/<[^>]*>?/gm, '').slice(0, 160).trim() : ''),
+          ogImage: blog.imageUrl ? (blog.imageUrl.startsWith('http') ? blog.imageUrl : `${import.meta.env.VITE_API_URL}${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`) : undefined,
+          twitterImage: blog.imageUrl ? (blog.imageUrl.startsWith('http') ? blog.imageUrl : `${import.meta.env.VITE_API_URL}${blog.imageUrl.startsWith('/') ? '' : '/'}${blog.imageUrl}`) : undefined
+        }}
+      />
       <Navbar />
       
       {/* Hero Title */}

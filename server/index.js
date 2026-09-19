@@ -10,6 +10,7 @@ import { fileURLToPath } from 'url';
 import nodemailer from 'nodemailer';
 import Content from './models/Content.js';
 import Admin from './models/Admin.js';
+import { DEFAULT_SEO } from './seoDefaults.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -149,6 +150,12 @@ if (!fs.existsSync(uploadDir)){
 }
 app.use('/uploads', express.static(uploadDir));
 
+// Serve logos directory statically
+const logosDir = path.join(__dirname, '..', 'client', 'public', 'logos');
+if (fs.existsSync(logosDir)) {
+    app.use('/logos', express.static(logosDir));
+}
+
 // Configure Multer for File Uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -228,6 +235,281 @@ app.put('/api/content/:key', async (req, res) => {
   }
 });
 
+// Helper to merge database SEO data with defaults (3 domain profiles: main, films, agency)
+function mergeSeoData(dbData) {
+  if (!dbData || typeof dbData !== 'object') {
+    return JSON.parse(JSON.stringify(DEFAULT_SEO));
+  }
+
+  const globalFavicon =
+    dbData.globalFavicon ||
+    dbData.main?.favicon ||
+    dbData.global?.favicon ||
+    DEFAULT_SEO.globalFavicon;
+
+  const mergeDomainProfile = (domainKey) => {
+    const defaultProfile = DEFAULT_SEO[domainKey] || {};
+    // For 'main', also check the legacy 'global' key
+    const dbProfile = dbData[domainKey] || (domainKey === 'main' ? (dbData.global || {}) : {});
+
+    // Resolve domain-specific favicon: DB profile favicon > defaultProfile.favicon > fallback
+    let domainFavicon = dbProfile.favicon;
+    if (!domainFavicon || domainFavicon === '/favicon.svg') {
+      domainFavicon = defaultProfile.favicon || (
+        domainKey === 'films'
+          ? '/logos/redash-films-logo.png'
+          : domainKey === 'agency'
+            ? '/logos/redash-agency-logo.png'
+            : '/logos/redash-main-logo.png'
+      );
+    }
+
+    // Resolve domain-specific ogImage (WhatsApp / Social Preview image)
+    let domainOgImage = dbProfile.ogImage;
+    if (!domainOgImage) {
+      domainOgImage = defaultProfile.ogImage || (
+        domainKey === 'films'
+          ? '/logos/redash-films-logo.png'
+          : domainKey === 'agency'
+            ? '/logos/redash-agency-logo.png'
+            : '/logos/redash-main-logo.png'
+      );
+    }
+
+    // Merge pages: default pages first, then DB profile pages, then legacy top-level pages (old schema)
+    const mergedPages = { ...(defaultProfile.pages || {}) };
+    // Legacy: old DB stored pages at the root level for the main domain
+    const legacyTopLevelPages = (domainKey === 'main' && dbData.pages && typeof dbData.pages === 'object') ? dbData.pages : {};
+    const allDbPages = { ...legacyTopLevelPages, ...(dbProfile.pages || {}) };
+    Object.keys(allDbPages).forEach((pageKey) => {
+      mergedPages[pageKey] = {
+        ...(defaultProfile.pages?.[pageKey] || {}),
+        ...allDbPages[pageKey]
+      };
+    });
+
+    return {
+      ...defaultProfile,
+      ...dbProfile,
+      favicon: domainFavicon,
+      ogImage: domainOgImage,
+      twitterImage: dbProfile.twitterImage || domainOgImage,
+      ogTitle: dbProfile.ogTitle || dbProfile.title || defaultProfile.ogTitle || defaultProfile.title,
+      ogDescription: dbProfile.ogDescription || dbProfile.description || defaultProfile.ogDescription || defaultProfile.description,
+      pages: mergedPages
+    };
+  };
+
+  return {
+    globalFavicon: dbData.globalFavicon || DEFAULT_SEO.globalFavicon,
+    main: mergeDomainProfile('main'),
+    films: mergeDomainProfile('films'),
+    agency: mergeDomainProfile('agency'),
+    schema: { ...DEFAULT_SEO.schema, ...(dbData.schema || {}) },
+    verification: { ...DEFAULT_SEO.verification, ...(dbData.verification || {}) },
+    robotsTxt: { ...DEFAULT_SEO.robotsTxt, ...(dbData.robotsTxt || {}) },
+    sitemap: { ...DEFAULT_SEO.sitemap, ...(dbData.sitemap || {}) },
+    advanced: { ...DEFAULT_SEO.advanced, ...(dbData.advanced || {}) }
+  };
+}
+
+// GET public SEO settings
+app.get('/api/seo', async (req, res) => {
+  try {
+    const seoRecord = await Content.findOne({ key: 'seo' });
+    const merged = mergeSeoData(seoRecord?.data);
+    res.json(merged);
+  } catch (error) {
+    console.error('Error fetching SEO settings:', error);
+    res.status(500).json({ message: 'Error fetching SEO settings', error: error.message });
+  }
+});
+
+// GET admin SEO settings
+app.get('/api/admin/seo', async (req, res) => {
+  try {
+    const seoRecord = await Content.findOne({ key: 'seo' });
+    const merged = mergeSeoData(seoRecord?.data);
+    res.json(merged);
+  } catch (error) {
+    console.error('Error fetching admin SEO:', error);
+    res.status(500).json({ message: 'Error fetching admin SEO', error: error.message });
+  }
+});
+
+// PUT update SEO settings (Admin save)
+app.put('/api/admin/seo', async (req, res) => {
+  try {
+    const { data } = req.body;
+    if (!data || typeof data !== 'object') {
+      return res.status(400).json({ message: 'Invalid SEO data payload provided' });
+    }
+
+    const mergedData = mergeSeoData(data);
+
+    const updated = await Content.findOneAndUpdate(
+      { key: 'seo' },
+      { data: mergedData },
+      { new: true, upsert: true }
+    );
+
+    // Update memory cache
+    if (cachedContentMap) {
+      cachedContentMap['seo'] = mergedData;
+    } else {
+      await refreshCache();
+    }
+
+    res.json({
+      success: true,
+      message: 'SEO settings saved successfully',
+      seo: mergedData
+    });
+  } catch (error) {
+    console.error('Error saving SEO settings:', error);
+    res.status(500).json({ message: 'Error saving SEO settings', error: error.message });
+  }
+});
+
+// POST reset SEO settings to defaults
+app.post('/api/admin/seo/reset', async (req, res) => {
+  try {
+    const defaultData = JSON.parse(JSON.stringify(DEFAULT_SEO));
+    await Content.findOneAndUpdate(
+      { key: 'seo' },
+      { data: defaultData },
+      { new: true, upsert: true }
+    );
+
+    if (cachedContentMap) {
+      cachedContentMap['seo'] = defaultData;
+    } else {
+      await refreshCache();
+    }
+
+    res.json({
+      success: true,
+      message: 'SEO settings reset to defaults successfully',
+      seo: defaultData
+    });
+  } catch (error) {
+    console.error('Error resetting SEO settings:', error);
+    res.status(500).json({ message: 'Error resetting SEO settings', error: error.message });
+  }
+});
+
+// Dynamic XML Sitemap
+app.get('/sitemap.xml', async (req, res) => {
+  try {
+    const [seoRecord, entRecord, agencyRecord] = await Promise.all([
+      Content.findOne({ key: 'seo' }),
+      Content.findOne({ key: 'entertainment' }),
+      Content.findOne({ key: 'agency' })
+    ]);
+
+    const seo = mergeSeoData(seoRecord?.data);
+    const baseUrl = (seo.sitemap?.baseUrl || 'https://redash.in').replace(/\/$/, '');
+    const nowIso = new Date().toISOString().split('T')[0];
+
+    const urls = [];
+
+    // Static pages defined in SEO
+    const staticPages = [
+      { path: '/', priority: seo.sitemap?.homepagePriority || '1.0', changefreq: 'daily' },
+      { path: '/entertainment', priority: '0.9', changefreq: 'weekly' },
+      { path: '/entertainment/about', priority: '0.8', changefreq: 'monthly' },
+      { path: '/entertainment/films', priority: '0.9', changefreq: 'weekly' },
+      { path: '/entertainment/blog', priority: '0.8', changefreq: 'daily' },
+      { path: '/entertainment/media', priority: '0.7', changefreq: 'weekly' },
+      { path: '/entertainment/contact', priority: '0.7', changefreq: 'monthly' },
+      { path: '/ad-agency', priority: '0.9', changefreq: 'weekly' },
+      { path: '/ad-agency/about', priority: '0.8', changefreq: 'monthly' },
+      { path: '/ad-agency/films', priority: '0.9', changefreq: 'weekly' },
+      { path: '/ad-agency/blog', priority: '0.8', changefreq: 'daily' },
+      { path: '/ad-agency/media', priority: '0.7', changefreq: 'weekly' },
+      { path: '/ad-agency/contact', priority: '0.7', changefreq: 'monthly' }
+    ];
+
+    staticPages.forEach(p => {
+      urls.push(`
+  <url>
+    <loc>${baseUrl}${p.path}</loc>
+    <lastmod>${nowIso}</lastmod>
+    <changefreq>${p.changefreq}</changefreq>
+    <priority>${p.priority}</priority>
+  </url>`);
+    });
+
+    // Dynamic Published Entertainment Blogs
+    if (seo.sitemap?.includeBlogs !== false && entRecord?.data?.blogs && Array.isArray(entRecord.data.blogs)) {
+      entRecord.data.blogs
+        .filter(b => b.published !== false && b.slug)
+        .forEach(b => {
+          const blogDate = b.date ? new Date(b.date).toISOString().split('T')[0] : nowIso;
+          urls.push(`
+  <url>
+    <loc>${baseUrl}/entertainment/blog/${encodeURIComponent(b.slug)}</loc>
+    <lastmod>${blogDate}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>${seo.sitemap?.blogPriority || '0.7'}</priority>
+  </url>`);
+        });
+    }
+
+    // Dynamic Published Agency Blogs
+    if (seo.sitemap?.includeBlogs !== false && agencyRecord?.data?.blogs && Array.isArray(agencyRecord.data.blogs)) {
+      agencyRecord.data.blogs
+        .filter(b => b.published !== false && b.slug)
+        .forEach(b => {
+          const blogDate = b.date ? new Date(b.date).toISOString().split('T')[0] : nowIso;
+          urls.push(`
+  <url>
+    <loc>${baseUrl}/ad-agency/blog/${encodeURIComponent(b.slug)}</loc>
+    <lastmod>${blogDate}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>${seo.sitemap?.blogPriority || '0.7'}</priority>
+  </url>`);
+        });
+    }
+
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+${urls.join('')}
+</urlset>`;
+
+    res.header('Content-Type', 'application/xml; charset=utf-8');
+    res.header('Cache-Control', 'public, max-age=3600');
+    res.send(xml);
+  } catch (error) {
+    console.error('Error generating sitemap:', error);
+    res.status(500).send('Error generating sitemap');
+  }
+});
+
+// Dynamic robots.txt
+app.get('/robots.txt', async (req, res) => {
+  try {
+    const seoRecord = await Content.findOne({ key: 'seo' });
+    const seo = mergeSeoData(seoRecord?.data);
+    const baseUrl = (seo.sitemap?.baseUrl || 'https://redash.in').replace(/\/$/, '');
+
+    let body = seo.robotsTxt?.customRules || DEFAULT_SEO.robotsTxt.customRules;
+    if (!body.includes('Sitemap:')) {
+      body += `\n\nSitemap: ${baseUrl}/sitemap.xml`;
+    }
+
+    res.header('Content-Type', 'text/plain; charset=utf-8');
+    res.header('Cache-Control', 'public, max-age=3600');
+    res.send(body);
+  } catch (error) {
+    console.error('Error serving robots.txt:', error);
+    res.status(500).send('User-agent: *\nAllow: /');
+  }
+});
+
 const escapeHtml = (value = '') => String(value)
   .replace(/&/g, '&amp;')
   .replace(/</g, '&lt;')
@@ -299,13 +581,13 @@ app.get('/api/quotation/preview', (req, res) => {
                 <tr>
                   <td align="center">
                     <span style="display: inline-block; background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px;">
-                      💼 Ad Agency Division Lead
+                      💼 Quotation Request
                     </span>
                     <h1 style="margin: 6px 0 4px 0; color: #0f172a; font-size: 22px; font-weight: 800; letter-spacing: -0.3px;">
                       New <span style="color: #1672ef;">Quotation</span> Request
                     </h1>
                     <p style="margin: 0; color: #64748b; font-size: 13px;">
-                      Submitted via RedAsh Agency Quotation Portal
+                      Submitted via RedAsh Website
                     </p>
                   </td>
                 </tr>
@@ -419,9 +701,8 @@ app.get('/api/quotation/preview', (req, res) => {
 
 app.post('/api/quotation', async (req, res) => {
   try {
-    const { name, email, phone, phoneNumber, company, requirement, source, formType } = req.body || {};
+    const { name, email, phone, phoneNumber, company, requirement } = req.body || {};
     const effectivePhone = phone || phoneNumber;
-    const isEntertainment = (source === 'Entertainment Division' || formType === 'Investment / Sponsorship Query');
 
     // Validate all required fields
     if (
@@ -458,18 +739,14 @@ app.post('/api/quotation', async (req, res) => {
     const safeCompany = escapeHtml(String(company).trim());
     const safeRequirement = escapeHtml(String(requirement).trim()).replace(/\n/g, '<br/>');
 
-    const emailTitle = isEntertainment ? 'New Investment / Sponsorship Query' : 'New Quotation Request';
-    const emailSubtitle = isEntertainment ? 'Submitted via RedAsh Entertainment Division' : 'Submitted via RedAsh Ad Agency Division';
-    const badgeText = isEntertainment ? '🎬 Entertainment Division Lead' : '💼 Ad Agency Division Lead';
-    const badgeBg = isEntertainment ? '#fef2f2' : '#eff6ff';
-    const badgeColor = isEntertainment ? '#dc2626' : '#1d4ed8';
-    const badgeBorder = isEntertainment ? '#fecaca' : '#bfdbfe';
-    const accentColor = isEntertainment ? '#E20002' : '#1672ef';
-    const requirementTitle = isEntertainment ? 'Investment Query / Proposal' : 'Project Requirement';
+    const emailTitle = 'New Quotation Request';
+    const emailSubtitle = 'Submitted via RedAsh Website';
+    const accentColor = '#E20002';
+    const requirementTitle = 'Project Requirement';
 
     const transporter = createSmtpTransporter();
     const recipientEmail = process.env.QUOTATION_TO_EMAIL || 'info@redashfilms.com';
-    const senderDisplayName = process.env.SMTP_FROM_NAME || (isEntertainment ? 'RedAsh Films Lead' : 'Quotation Form');
+    const senderDisplayName = process.env.SMTP_FROM_NAME || 'RedAsh';
     const fromSender = process.env.SMTP_FROM || `"${senderDisplayName}" <${process.env.SMTP_USER || 'quotes@redashfilms.com'}>`;
 
     const htmlContent = `
@@ -493,14 +770,11 @@ app.post('/api/quotation', async (req, res) => {
               <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
                 <tr>
                   <td align="center">
-                    <span style="display: inline-block; background-color: ${badgeBg}; color: ${badgeColor}; border: 1px solid ${badgeBorder}; font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px;">
-                      ${badgeText}
-                    </span>
                     <h1 style="margin: 6px 0 4px 0; color: #0f172a; font-size: 22px; font-weight: 800; letter-spacing: -0.3px;">
-                      ${emailTitle}
+                      New <span style="color: #E20002;">Quotation</span> Request
                     </h1>
                     <p style="margin: 0; color: #64748b; font-size: 13px;">
-                      ${emailSubtitle}
+                      Submitted via RedAsh Website
                     </p>
                   </td>
                 </tr>
@@ -587,7 +861,7 @@ app.post('/api/quotation', async (req, res) => {
               </div>
 
               <div style="margin-top: 22px; text-align: center;">
-                <a href="mailto:${safeEmail}?subject=Re:%20${encodeURIComponent(emailTitle)}" style="display: inline-block; background-color: ${accentColor}; color: #ffffff; font-size: 14px; font-weight: 700; text-decoration: none; padding: 12px 28px; border-radius: 8px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+                <a href="mailto:${safeEmail}?subject=Re:%20RedAsh%20Quotation%20Request" style="display: inline-block; background-color: ${accentColor}; color: #ffffff; font-size: 14px; font-weight: 700; text-decoration: none; padding: 12px 28px; border-radius: 8px; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
                   ✉️ Reply to ${safeName}
                 </a>
               </div>
@@ -597,7 +871,7 @@ app.post('/api/quotation', async (req, res) => {
           <tr>
             <td style="background-color: #f8fafc; border-top: 1px solid #e2e8f0; padding: 18px 20px; text-align: center;">
               <p style="margin: 0 0 4px 0; font-size: 12px; color: #64748b;">
-                This lead was generated automatically by the <strong>RedAsh</strong> website quotation system.
+                This quotation request was generated automatically by the <strong>RedAsh</strong> website quotation system.
               </p>
               <p style="margin: 0; font-size: 11px; color: #94a3b8;">
                 You can directly reply to this email to get in touch with <strong>${safeName}</strong> at ${safeEmail}.
@@ -619,9 +893,7 @@ app.post('/api/quotation', async (req, res) => {
       `Company: ${String(company).trim()}\n\n` +
       `${requirementTitle}\n${String(requirement).trim()}`;
 
-    const emailSubject = isEntertainment
-      ? `[RedAsh Films] New Investment Query from ${String(name).trim()} (${String(company).trim()})`
-      : `[RedAsh Agency] New Quotation Request from ${String(name).trim()} (${String(company).trim()})`;
+    const emailSubject = `[RedAsh] New Quotation Request from ${String(name).trim()} (${String(company).trim()})`;
 
     await transporter.sendMail({
       from: fromSender,

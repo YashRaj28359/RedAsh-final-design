@@ -5,6 +5,7 @@ import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import Lenis from 'lenis';
 import EntertainmentNavbar from './components/EntertainmentNavbar';
 import EntertainmentFooter from './components/EntertainmentFooter';
+import SEOHead from '../../components/SEOHead';
 import blogsData from '../../data/entertainmentBlogs.json';
 import { fetchContent, resolveClientImage, API_URL } from '../../utils/api';
 
@@ -127,6 +128,24 @@ const EntertainmentBlogPost = () => {
 
   return (
     <div className="min-h-screen bg-white flex flex-col font-main overflow-x-hidden">
+      <SEOHead 
+        customPageKey="blogPostTemplate" 
+        dynamicVars={{
+          post_title: blog.title ? blog.title.replace(/<[^>]*>?/gm, '').trim() : '',
+          page_name: blog.title ? blog.title.replace(/<[^>]*>?/gm, '').trim() : 'Blog Post',
+          category_name: 'Entertainment',
+          author_name: blog.author || 'Ashish Lal',
+          slug: blog.slug || slug
+        }}
+        customOverrides={{
+          title: `${blog.title ? blog.title.replace(/<[^>]*>?/gm, '').trim() : ''} | RedAsh Entertainment`,
+          description: blog.excerpt || (blog.content ? blog.content.replace(/<[^>]*>?/gm, '').slice(0, 160).trim() : ''),
+          ogTitle: blog.title ? blog.title.replace(/<[^>]*>?/gm, '').trim() : '',
+          ogDescription: blog.excerpt || (blog.content ? blog.content.replace(/<[^>]*>?/gm, '').slice(0, 160).trim() : ''),
+          ogImage: blog.imageUrl ? getImageUrl(blog.imageUrl) : undefined,
+          twitterImage: blog.imageUrl ? getImageUrl(blog.imageUrl) : undefined
+        }}
+      />
       <EntertainmentNavbar />
       
       {/* Hero Title */}

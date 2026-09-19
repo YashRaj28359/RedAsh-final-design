@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { API_URL } from '../../../utils/api';
+import { API_URL, resolveClientImage } from '../../../utils/api';
 
 import imgAshish from '../../../assets/Films/celebs/Ashish - IMG_9131.jpg';
 import imgSurbhi from '../../../assets/Films/celebs/Surbhi jyoti.png';
@@ -36,6 +36,7 @@ const staticImageMap = {
   'Ashish Lal': imgAshish,
   'Surbhi Jyoti': imgSurbhi,
   'Upendra Limaye': imgUpendra,
+  'Updendra limaye': imgUpendra,
   'Vidya Malavade': imgVidya,
   'Zakir Hussain': imgZakir,
   'Navni Parihar': imgNavni,
@@ -54,21 +55,8 @@ const ArtistCard = ({ artist }) => {
                     artist.id % 3 === 0 ? 'hover:-rotate-2' : 
                     artist.id % 2 === 0 ? 'hover:rotate-2' : 'hover:-rotate-3';
 
-  let rawImg = artist.image || staticImageMap[artist.name];
-  if (rawImg && typeof rawImg === 'string') {
-    if (rawImg.includes('redash-final-design.onrender.com')) {
-      rawImg = rawImg.replace(/https:\/\/redash-final-design\.onrender\.com/g, API_URL);
-    }
-    while (rawImg.includes('http://localhost:5000http')) {
-      rawImg = rawImg.replace(/http:\/\/localhost:5000(?=http)/g, '');
-    }
-    if (rawImg.startsWith('/uploads/')) {
-      rawImg = `${API_URL}${rawImg}`;
-    } else if (rawImg.startsWith('http://localhost:5000')) {
-      rawImg = rawImg.replace('http://localhost:5000', API_URL);
-    }
-  }
-  const imageUrl = rawImg || staticImageMap[artist.name];
+  const staticFallback = staticImageMap[artist.name] || staticImageMap[artist.name?.trim()] || artists.find(a => a.name?.toLowerCase() === artist.name?.toLowerCase())?.image || '';
+  const imageUrl = resolveClientImage(artist.image, staticFallback);
 
   return (
     <motion.a 
@@ -84,6 +72,11 @@ const ArtistCard = ({ artist }) => {
       <img 
         src={imageUrl} 
         alt={artist.name} 
+        onError={(e) => {
+          if (staticFallback && e.currentTarget.src !== staticFallback) {
+            e.currentTarget.src = staticFallback;
+          }
+        }}
         className="w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105" 
         loading="lazy"
       />

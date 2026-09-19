@@ -98,6 +98,7 @@ const renderIconPreview = (val) => {
 };
 import JoditEditor from 'jodit-react';
 import { DEFAULT_VIDEOS } from './defaultVideos';
+import SEOManager from './components/SEO/SEOManager';
 import redashAdminLogo from '../../client/src/assets/Logo/redash-admin-logo.webp';
 import staticBlogs from '../../client/src/data/entertainmentBlogs.json';
 import staticAgencyBlogs from '../../client/src/data/blogs.json';
@@ -622,6 +623,57 @@ function App() {
   React.useEffect(() => {
     localStorage.setItem('adminActiveSubMenu', activeSubMenu);
   }, [activeSubMenu]);
+
+  // Dynamically update admin document title and favicon to match redash.in main website
+  React.useEffect(() => {
+    document.title = 'RedAsh Admin Dashboard | Content Management';
+
+    const resolveAdminFavicon = (url) => {
+      if (!url || typeof url !== 'string') return '/logos/redash-main-logo.png';
+      const trimmed = url.trim();
+      if (trimmed.startsWith('data:') || trimmed.startsWith('blob:')) return trimmed;
+      if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) return trimmed;
+      if (trimmed.startsWith('/uploads/') || trimmed.startsWith('uploads/')) {
+        const cleanPath = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
+        return `${API_URL}${cleanPath}`;
+      }
+      return trimmed;
+    };
+
+    const updateAdminFavicon = (href) => {
+      if (!href) return;
+      const existingIcons = document.querySelectorAll('link[rel*="icon"], link[rel="shortcut icon"]');
+      existingIcons.forEach(el => el.remove());
+
+      let mimeType = 'image/png';
+      if (href.endsWith('.jpg') || href.endsWith('.jpeg')) mimeType = 'image/jpeg';
+      else if (href.endsWith('.svg')) mimeType = 'image/svg+xml';
+      else if (href.endsWith('.ico')) mimeType = 'image/x-icon';
+      else if (href.endsWith('.webp')) mimeType = 'image/webp';
+
+      const newIcon = document.createElement('link');
+      newIcon.rel = 'icon';
+      newIcon.type = mimeType;
+      newIcon.href = href;
+      document.head.appendChild(newIcon);
+
+      const shortcutIcon = document.createElement('link');
+      shortcutIcon.rel = 'shortcut icon';
+      shortcutIcon.href = href;
+      document.head.appendChild(shortcutIcon);
+    };
+
+    fetch(`${API_URL}/api/seo?t=${Date.now()}`)
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        const iconUrl = data?.main?.favicon || data?.globalFavicon || '/logos/redash-main-logo.png';
+        const resolved = resolveAdminFavicon(iconUrl);
+        updateAdminFavicon(resolved);
+      })
+      .catch(() => {
+        updateAdminFavicon('/logos/redash-main-logo.png');
+      });
+  }, []);
   const [loading, setLoading] = useState(true);
   const [editingVideoIndex, setEditingVideoIndex] = useState(null);
   const blogContentRef = useRef('');
@@ -3114,6 +3166,13 @@ function App() {
             <p>Manage social media icons for navbar & footer</p>
           </div>
         );
+      case 'seo':
+        return (
+          <div className="section-header">
+            <h1>SEO Settings</h1>
+            <p>Dynamic SEO across redash.in, films & agency</p>
+          </div>
+        );
       case 'homepage-media':
         return (
           <div className="section-header">
@@ -3131,6 +3190,14 @@ function App() {
   };
 
   const renderEditor = () => {
+    if (activeSidebar === 'seo') {
+      return (
+        <div style={{ width: '100%', minHeight: '80vh' }}>
+          <SEOManager apiUrl={API_URL} showToast={showToast} />
+        </div>
+      );
+    }
+
     if (activeSidebar === 'global-footer') {
       const defaultIcons = [
         { id: '1', platform: 'LinkedIn', icon: 'FaLinkedin', url: 'https://www.linkedin.com/company/redashfilms/', enabled: true },
@@ -9455,6 +9522,9 @@ function App() {
           <button className={`top-nav-tab ${activeSidebar === 'global-footer' ? 'active' : ''}`} onClick={() => setActiveSidebar('global-footer')}>
             <Share2 size={16} /> Footer & Icons
           </button>
+          <button className={`top-nav-tab ${activeSidebar === 'seo' ? 'active' : ''}`} onClick={() => setActiveSidebar('seo')}>
+            <Globe size={16} /> SEO Settings
+          </button>
         </nav>
 
         <div className="user-profile-header">
@@ -9486,17 +9556,20 @@ function App() {
       </header>
 
       {/* Main Content Area */}
-      <div className="cms-body">
+      <div className="cms-body" style={activeSidebar === 'seo' ? { display: 'block', height: 'calc(100vh - 70px)', overflowY: 'auto' } : {}}>
         {/* Left Column: Section Menu */}
-        <div className="section-menu">
-          {renderSubMenu()}
-        </div>
+        {activeSidebar !== 'seo' && (
+          <div className="section-menu">
+            {renderSubMenu()}
+          </div>
+        )}
 
         {/* Right Column: Main Editor Area */}
-        <main className="main-editor-area">
+        <main className="main-editor-area" style={activeSidebar === 'seo' ? { height: 'auto', minHeight: '100%', overflow: 'visible' } : {}}>
           {/* Topbar */}
-          <header className="editor-topbar">
-            <div className="topbar-left">
+          {activeSidebar !== 'seo' && (
+            <header className="editor-topbar">
+              <div className="topbar-left">
               {activeSidebar.startsWith('entertainment') && (
                 <div className="cms-quick-links" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
                   <span style={{ fontSize: '0.85rem', fontWeight: '600', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Navigate CMS:</span>
@@ -9595,9 +9668,10 @@ function App() {
             <div className="topbar-right">
             </div>
           </header>
+          )}
 
           {/* Editor Grid */}
-          <div className="editor-grid">
+          <div className="editor-grid" style={activeSidebar === 'seo' ? { display: 'block', overflow: 'visible', width: '100%' } : {}}>
             {renderEditor()}
           </div>
         </main>

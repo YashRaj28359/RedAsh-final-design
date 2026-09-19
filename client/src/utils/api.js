@@ -81,11 +81,13 @@ export const resolveClientImage = (src, fallback) => {
   const s = typeof src === 'string' ? src.trim() : '';
   if (!s) return fallback;
   if (s.startsWith('data:') || s.startsWith('blob:')) return s;
-  // Reject broken Vite dev-server paths that do not exist in production
+  // Reject broken Vite dev-server paths that do not exist in dev or production
   if (
     s.includes('/@fs/') ||
     s.includes('localhost:5173') ||
-    s.startsWith('/src/assets/')
+    s.includes('localhost:5174') ||
+    s.startsWith('/src/assets/') ||
+    (isLocal && s.startsWith('/assets/'))
   ) return fallback;
   if (s.includes('redash-final-design.onrender.com')) {
     return s.replace('https://redash-final-design.onrender.com', API_URL);
@@ -98,6 +100,7 @@ export const resolveClientImage = (src, fallback) => {
   if (s.startsWith('uploads/')) return `${API_URL}/${s}`;
   if (s.startsWith('/media/')) return s;
   if (s.startsWith('http://') || s.startsWith('https://')) return s;
+  if (s.startsWith('/assets/')) return s;
   if (s.startsWith('/')) return s;
   return fallback || s;
 };

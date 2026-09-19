@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
+import SEOHead from './components/SEOHead';
 import Home from './pages/Home';
 import AgencyLanding from './pages/Agency/AgencyLanding';
 import AboutAgency from './pages/Agency/AboutAgency';
@@ -77,8 +78,8 @@ function AnimatedRoutes() {
   return (
     <Routes location={location} key={location.pathname}>
       <Route path="/" element={<Home />} />
-      
-      {/* Agency Division */}
+
+      {/* Agency Division (both /ad-agency and /agency routes) */}
       <Route path="/ad-agency" element={<AgencyLanding />} />
       <Route path="/ad-agency/about" element={<AboutAgency />} />
       <Route path="/ad-agency/blog" element={<BlogList />} />
@@ -87,7 +88,15 @@ function AnimatedRoutes() {
       <Route path="/ad-agency/contact" element={<Contact />} />
       <Route path="/ad-agency/films" element={<AgencyFilms />} />
 
-      {/* Entertainment Division */}
+      <Route path="/agency" element={<AgencyLanding />} />
+      <Route path="/agency/about" element={<AboutAgency />} />
+      <Route path="/agency/blog" element={<BlogList />} />
+      <Route path="/agency/blog/:slug" element={<BlogPost />} />
+      <Route path="/agency/media" element={<MediaPage />} />
+      <Route path="/agency/contact" element={<Contact />} />
+      <Route path="/agency/films" element={<AgencyFilms />} />
+
+      {/* Entertainment Division (both /entertainment and /films routes) */}
       <Route path="/entertainment" element={<EntertainmentLanding />} />
       <Route path="/entertainment/about" element={<AboutEntertainment />} />
       <Route path="/entertainment/films" element={<EntertainmentFilms />} />
@@ -95,6 +104,13 @@ function AnimatedRoutes() {
       <Route path="/entertainment/blog/:slug" element={<EntertainmentBlogPost />} />
       <Route path="/entertainment/media" element={<EntertainmentMedia />} />
       <Route path="/entertainment/contact" element={<EntertainmentContact />} />
+
+      <Route path="/films" element={<EntertainmentFilms />} />
+      <Route path="/about" element={<AboutAgency />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/media" element={<MediaPage />} />
+      <Route path="/blog" element={<BlogList />} />
+      <Route path="/blog/:slug" element={<BlogPost />} />
     </Routes>
   );
 }
@@ -102,6 +118,7 @@ function AnimatedRoutes() {
 function App() {
   return (
     <Router>
+      <SEOHead />
       <ScrollToTop />
       <AnimatedRoutes />
     </Router>
